@@ -1,9 +1,9 @@
 <?php
 /**
- * Displays header media
+ * Displays header media.
  *
- * @package Made I.T.
  * @since 1.0
+ *
  * @version 1.0
  */
 //TODO add blog description as overlay
