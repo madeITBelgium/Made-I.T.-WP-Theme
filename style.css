@@ -14,6 +14,73 @@ This theme, like WordPress, is licensed under the GPL.
 Use it to make something cool, have fun, and share what you've learned with others.
 */
 
+/* Gutenberg */
+.aligncenter {
+	
+}
+
+.alignleft {
+    float: left;
+}
+.alignright {
+    float: right;
+}
+
+/* Social style */
+.social-navigation {
+    font-size: 16px;
+    font-size: 1rem;
+    margin-bottom: 1em;
+}
+.social-navigation ul {
+    list-style: none;
+    margin-bottom: 0;
+    margin-left: 0;
+}
+.social-navigation li {
+    display: inline;
+}
+.social-navigation a {
+    background-color: #767676;
+    -webkit-border-radius: 40px;
+    border-radius: 40px;
+    color: #fff;
+    display: inline-block;
+    height: 40px;
+    margin: 0 1em 0.5em 0;
+    text-align: center;
+    width: 40px;
+}
+.screen-reader-text {
+    clip: rect(1px, 1px, 1px, 1px);
+    height: 1px;
+    overflow: hidden;
+    position: absolute !important;
+    width: 1px;
+    word-wrap: normal !important;
+}
+
+.icon {
+    display: inline-block;
+    fill: currentColor;
+    height: 1em;
+    position: relative;
+    top: -0.0625em;
+    vertical-align: middle;
+    width: 1em;
+}
+
+svg:not(:root) {
+    overflow: hidden;
+}
+
+.social-navigation .icon {
+    height: 16px;
+    top: 12px;
+    width: 16px;
+    vertical-align: top;
+}
+
 /* Hide brand name when custom logo is enabled */
 .wp-custom-logo .navbar-brand {
     display: none;
@@ -60,8 +127,87 @@ img {
     left: 35px;
 }
 
+.highlight-front-sections.madeit-customizer.madeit-front-page .madeit-panel:after {
+    border: 2px dashed #0085ba;
+    bottom: 1em;
+    content: "";
+    display: block;
+    left: 1em;
+    position: absolute;
+    right: 1em;
+    top: 1em;
+    z-index: 1;
+}
+
+/* Fix 2 or 1 column */
+.two-column-row.row {
+	flex-basis: auto !important;
+}
+
+/* Fix link color on primary background */
 .bg-primary a {
     color: #ffF;
+}
+
+
+/* Menu */
+.navbar a {
+    color: #222;
+    font-weight: 600;
+    -webkit-transition: color 0.2s;
+    transition: color 0.2s;
+}
+.navbar a:hover {
+    color: #bbb;
+}
+.navbar .active > a {
+    color: #767676;
+}
+
+/* Footer */
+.site-footer {
+    border-top: 1px solid #eee;
+}
+.site-info a {
+    color: #666;
+}
+
+/* Extra's */
+.voffset { margin-top: 2px; }
+.voffset1 { margin-top: 5px; }
+.voffset2 { margin-top: 10px; }
+.voffset3 { margin-top: 15px; }
+.voffset4 { margin-top: 30px; }
+.voffset5 { margin-top: 40px; }
+.voffset6 { margin-top: 60px; }
+.voffset7 { margin-top: 80px; }
+.voffset8 { margin-top: 100px; }
+.voffset9 { margin-top: 150px; }
+
+
+.vbottom0 { margin-bottom: 0 !important; }
+.vbottom  { margin-bottom: 2px !important; }
+.vbottom1 { margin-bottom: 5px !important; }
+.vbottom2 { margin-bottom: 10px !important; }
+.vbottom3 { margin-bottom: 15px !important; }
+.vbottom4 { margin-bottom: 30px !important; }
+.vbottom5 { margin-bottom: 40px !important; }
+.vbottom6 { margin-bottom: 60px !important; }
+.vbottom7 { margin-bottom: 80px !important; }
+.vbottom8 { margin-bottom: 100px !important; }
+.vbottom9 { margin-bottom: 150px !important; }
+
+@media screen and (max-width: 768px) {
+	.voffset-xs { margin-top: 2px; }
+	.voffset1-xs { margin-top: 5px; }
+	.voffset2-xs { margin-top: 10px; }
+	.voffset3-xs { margin-top: 15px; }
+	.voffset4-xs { margin-top: 30px; }
+	.voffset5-xs { margin-top: 40px; }
+	.voffset6-xs { margin-top: 60px; }
+	.voffset7-xs { margin-top: 80px; }
+	.voffset8-xs { margin-top: 100px; }
+	.voffset9-xs { margin-top: 150px; }
 }
 
 
@@ -192,6 +338,15 @@ body {
   color: #212529;
   text-align: left;
   background-color: #fff;
+}
+
+body, button, input, select, textarea {
+    color: #333;
+    font-family: "Libre Franklin", "Helvetica Neue", helvetica, arial, sans-serif;
+    font-size: 15px;
+    font-size: 0.9375rem;
+    font-weight: 400;
+    line-height: 1.66;
 }
 
 [tabindex="-1"]:focus {

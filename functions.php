@@ -428,6 +428,12 @@ function madeit_scripts()
 }
 add_action('wp_enqueue_scripts', 'madeit_scripts');
 
+function madeit_admin_style() {
+    wp_enqueue_style('madeit-fonts', madeit_fonts_url(), [], null);
+	wp_enqueue_style('madeit-gutenberg-editor', get_template_directory_uri().'/assets/css/gutenberg.css');
+}
+add_action('admin_enqueue_scripts', 'madeit_admin_style');
+
 /**
  * Add custom image sizes attribute to enhance responsive image functionality
  * for content images.

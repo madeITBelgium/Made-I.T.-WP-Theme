@@ -113,8 +113,10 @@
         value.bind( function( to ) {
             if ( 'one-column' === to ) {
                 $( 'body' ).addClass( 'page-one-column' ).removeClass( 'page-two-column' );
+                $('.two-column-row').addClass('row');
             } else {
                 $( 'body' ).removeClass( 'page-one-column' ).addClass( 'page-two-column' );
+                $('.two-column-row').removeClass('row');
             }
         } );
     } );
