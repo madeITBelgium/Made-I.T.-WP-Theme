@@ -27,11 +27,12 @@
 
 	// Ensure the sticky navigation doesn't cover current focused links.
 	$( 'a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, [tabindex], [contenteditable]', '.site-content-contain' ).filter( ':visible' ).focus( function() {
+		var windowScrollTop, fixedNavHeight, itemScrollTop, offsetDiff;
 		if ( $navigation.hasClass( 'site-navigation-fixed' ) ) {
-			var windowScrollTop = $( window ).scrollTop(),
-				fixedNavHeight = $navigation.height(),
-				itemScrollTop = $( this ).offset().top,
-				offsetDiff = itemScrollTop - windowScrollTop;
+			windowScrollTop = $( window ).scrollTop();
+			fixedNavHeight = $navigation.height();
+			itemScrollTop = $( this ).offset().top;
+			offsetDiff = itemScrollTop - windowScrollTop;
 
 			// Account for Admin bar.
 			if ( $( '#wpadminbar' ).length ) {
@@ -151,7 +152,7 @@
 	 * Test if an iOS device.
 	*/
 	function checkiOS() {
-		return /iPad|iPhone|iPod/.test(navigator.userAgent) && ! window.MSStream;
+		return /iPad|iPhone|iPod/.test( navigator.userAgent ) && ! window.MSStream;
 	}
 
 	/*
@@ -159,7 +160,7 @@
 	 * @link http://stackoverflow.com/questions/14115080/detect-support-for-background-attachment-fixed
 	 */
 	function supportsFixedBackground() {
-		var el = document.createElement('div'),
+		var el = document.createElement( 'div' ),
 			isSupported;
 
 		try {
@@ -170,7 +171,7 @@
 			isSupported = ( 'fixed' === el.style.backgroundAttachment );
 			return isSupported;
 		}
-		catch (e) {
+		catch ( e ) {
 			return false;
 		}
 	}

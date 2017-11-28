@@ -23,6 +23,7 @@
 			.attr( 'aria-expanded', 'true' )
 			.find( '.screen-reader-text' )
 			.text( madeitScreenReaderText.collapse );
+		
 		// Set the active submenu initial state.
 		container.find( '.current-menu-ancestor > .sub-menu' ).addClass( 'toggled-on' );
 
@@ -34,7 +35,7 @@
 			_this.toggleClass( 'toggled-on' );
 			_this.next( '.children, .sub-menu' ).toggleClass( 'toggled-on' );
 
-			_this.attr( 'aria-expanded', _this.attr( 'aria-expanded' ) === 'false' ? 'true' : 'false' );
+			_this.attr( 'aria-expanded',  'false' === _this.attr( 'aria-expanded' ) ? 'true' : 'false' );
 
 			screenReaderSpan.text( screenReaderSpan.text() === madeitScreenReaderText.expand ? madeitScreenReaderText.collapse : madeitScreenReaderText.expand );
 		});

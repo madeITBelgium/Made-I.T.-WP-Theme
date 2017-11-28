@@ -32,6 +32,7 @@
 			// If we've left the panel, hide the placeholders and scroll back to the top.
 			} else {
 				$( 'body' ).removeClass( 'highlight-front-sections' );
+				
 				// Don't change scroll when leaving - it's likely to have unintended consequences.
 				$( '.panel-placeholder' ).slideUp( 200 );
 			}
@@ -49,7 +50,7 @@
 			$( '.site-description' ).text( to );
 		});
 	});
-	
+
 	// Header text color.
 	wp.customize( 'header_textcolor', function( value ) {
 		value.bind( function( to ) {
@@ -58,6 +59,7 @@
 					clip: 'rect(1px, 1px, 1px, 1px)',
 					position: 'absolute'
 				});
+				
 				// Add class for different logo styles if title and description are hidden.
 				$( 'body' ).addClass( 'title-tagline-hidden' );
 			} else {
@@ -73,6 +75,7 @@
 				$( '.site-branding, .site-branding a, .site-description, .site-description a' ).css({
 					color: to
 				});
+				
 				// Add class for different logo styles if title and description are visible.
 				$( 'body' ).removeClass( 'title-tagline-hidden' );
 			}
