@@ -23,7 +23,7 @@ before_script:
     - mkdir -p $WP_DEVELOP_DIR
     
     - theme_slug=$(basename $(pwd))
-    - theme_dir=$WP_DEVELOP_DIR/src/wp-content/themes/$theme_slug
+    - theme_dir=$WP_DEVELOP_DIR/wp-content/themes/$theme_slug
     - cd ..
     - mv $theme_slug $theme_dir
     - bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
