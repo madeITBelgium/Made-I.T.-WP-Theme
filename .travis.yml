@@ -26,9 +26,6 @@ before_script:
     - theme_slug=$(basename $(pwd))
     - theme_dir=$WP_DEVELOP_DIR/wp-content/themes/$theme_slug
     - cd ..
-    - ls -la
-    - ls -la $WP_DEVELOP_DIR
-    - ls -la $WP_DEVELOP_DIR/wp-content
     - mv $theme_slug $theme_dir
     
     # Hop into themes directory.

@@ -3,6 +3,8 @@
     "fileExtensions": [ ".js" ],
     "excludeFiles": [
         "assets/js/html5.js",
-        "assets/js/jquery.scrollTo.js"
+        "assets/js/jquery.scrollTo.js",
+        "assets/js/bootstrap.js",
+        "assets/js/popper.min.js"
     ]
 }
