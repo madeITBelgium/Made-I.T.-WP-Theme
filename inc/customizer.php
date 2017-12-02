@@ -83,6 +83,28 @@ function madeit_customize_register($wp_customize)
         ],
         'active_callback' => 'madeit_is_view_with_layout_option',
     ]);
+    
+    /*
+     * container vs container-fluid
+     */
+    $wp_customize->add_setting('container_type', [
+        'default'           => 'container',
+        'sanitize_callback' => 'madeit_sanitize_container_type',
+        'transport'         => 'postMessage',
+    ]);
+
+    $wp_customize->add_control('container_type', [
+        'label'       => __('Page Width', 'madeit'),
+        'section'     => 'theme_options',
+        'type'        => 'radio',
+        'description' => __('Choise the screen width of you content.', 'madeit'),
+        'choices'     => [
+            'container' => __('Normal screen width', 'madeit'),
+            'container-fluid' => __('Full screen width', 'madeit'),
+        ],
+        'active_callback' => 'madeit_is_view_with_container_type',
+    ]);
+    
 
     /**
      * Filter number of front page sections in Made I.T..
@@ -130,6 +152,25 @@ function madeit_sanitize_page_layout($input)
     $valid = [
         'one-column' => __('One Column', 'madeit'),
         'two-column' => __('Two Column', 'madeit'),
+    ];
+
+    if (array_key_exists($input, $valid)) {
+        return $input;
+    }
+
+    return '';
+}
+
+/**
+ * Sanitize the container type options.
+ *
+ * @param string $input container type.
+ */
+function madeit_sanitize_container_type($input)
+{
+    $valid = [
+        'container' => __('Normal screen width', 'madeit'),
+        'container-fluid' => __('Full screen width', 'madeit'),
     ];
 
     if (array_key_exists($input, $valid)) {
@@ -196,6 +237,15 @@ function madeit_is_view_with_layout_option()
 {
     // This option is available on all pages. It's also available on archives when there isn't a sidebar.
     return  is_page() || (is_archive() && !is_active_sidebar('sidebar-1'));
+}
+
+/**
+ * Return whether we're on a view that supports a one or two column layout.
+ */
+function madeit_is_view_with_container_type()
+{
+    // This option is available on all pages. It's also available on archives when there isn't a sidebar.
+    return  is_page() || is_archive();
 }
 
 /**

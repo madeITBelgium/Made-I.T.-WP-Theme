@@ -23,7 +23,7 @@ global $madeitcounter;
 
     <?php endif; ?>
 
-    <div class="container">
+    <div class="<?php echo get_theme_mod('container_type'); ?> changable-container">
         <div class="row voffset8 vbottom8">
             <div class="col-sm">
                 <header class="entry-header">

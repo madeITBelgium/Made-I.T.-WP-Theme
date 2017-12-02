@@ -21,7 +21,7 @@
         </div><!-- .panel-image -->
 
     <?php endif; ?>
-    <div class="container">
+    <div class="<?php echo get_theme_mod('container_type'); ?> changable-container">
         <div class="row voffset7 vbottom7">
             <div class="col-sm">
                 <header class="entry-header">

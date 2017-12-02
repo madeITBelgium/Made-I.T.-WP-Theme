@@ -120,6 +120,16 @@
             }
         } );
     } );
+    
+    wp.customize( 'container_type', function( value ) {
+        value.bind( function( to ) {
+            if ( 'container-fluid' === to ) {
+                $('.changable-container').removeClass('container').addClass('container-fluid');
+            } else {
+                $('.changable-container').removeClass('container-fluid').addClass('container');
+            }
+        } );
+    } );
 
     // Whether a header image is available.
     function hasHeaderImage() {
