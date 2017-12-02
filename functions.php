@@ -98,32 +98,36 @@ function madeit_setup()
         'posts' => [
             'home',
             'about' => [
-                'thumbnail' => '{{image-sandwich}}',
+                'thumbnail' => '{{image-inside}}',
             ],
             'contact' => [
-                'thumbnail' => '{{image-espresso}}',
+                'thumbnail' => '{{image-price-table}}',
             ],
             'blog' => [
-                'thumbnail' => '{{image-coffee}}',
+                'thumbnail' => '{{image-koffie-machien}}',
             ],
             'homepage-section' => [
-                'thumbnail' => '{{image-espresso}}',
+                'thumbnail' => '{{image-outside}}',
             ],
         ],
 
         // Create the custom image attachments used as post thumbnails for pages.
         'attachments' => [
-            'image-espresso' => [
-                'post_title' => _x('Espresso', 'Theme starter content', 'madeit'),
-                'file'       => 'assets/images/espresso.jpg', // URL relative to the template directory.
+            'image-koffie-machien' => [
+                'post_title' => _x('Koffie Machien', 'Theme starter content', 'madeit'),
+                'file'       => 'assets/images/pexels-photo-296888.jpeg', // URL relative to the template directory.
             ],
-            'image-sandwich' => [
-                'post_title' => _x('Sandwich', 'Theme starter content', 'madeit'),
-                'file'       => 'assets/images/sandwich.jpg',
+            'image-outside' => [
+                'post_title' => _x('Outside', 'Theme starter content', 'madeit'),
+                'file'       => 'assets/images/pexels-photo-429247.jpeg',
             ],
-            'image-coffee' => [
-                'post_title' => _x('Coffee', 'Theme starter content', 'madeit'),
-                'file'       => 'assets/images/coffee.jpg',
+            'image-inside' => [
+                'post_title' => _x('Inside', 'Theme starter content', 'madeit'),
+                'file'       => 'assets/images/pexels-photo-704982.jpeg',
+            ],
+            'image-price-table' => [
+                'post_title' => _x('Price table', 'Theme starter content', 'madeit'),
+                'file'       => 'assets/images/pexels-photo-705676.jpeg',
             ],
         ],
 
@@ -136,10 +140,10 @@ function madeit_setup()
 
         // Set the front page section theme mods to the IDs of the core-registered pages.
         'theme_mods' => [
-            'panel_1' => '{{homepage-section}}',
-            'panel_2' => '{{about}}',
-            'panel_3' => '{{blog}}',
-            'panel_4' => '{{contact}}',
+            //'panel_1' => '{{homepage-section}}',
+            'panel_1' => '{{about}}',
+            'panel_2' => '{{blog}}',
+            'panel_3' => '{{contact}}',
         ],
 
         // Set up nav menus for each of the two areas registered in the theme.
@@ -400,27 +404,13 @@ function madeit_scripts()
     wp_script_add_data('html5', 'conditional', 'lt IE 9');
 
     wp_enqueue_script('madeit-skip-link-focus-fix', get_theme_file_uri('/assets/js/skip-link-focus-fix.js'), [], '1.0', true);
-
-    $madeit_l10n = [
-        'quote'          => madeit_get_svg(['icon' => 'quote-right']),
-    ];
-
-    //TODO Delete
-    if (has_nav_menu('top')) {
-        wp_enqueue_script('madeit-navigation', get_theme_file_uri('/assets/js/navigation.js'), ['jquery'], '1.0', true);
-        $madeit_l10n['expand'] = __('Expand child menu', 'madeit');
-        $madeit_l10n['collapse'] = __('Collapse child menu', 'madeit');
-        $madeit_l10n['icon'] = madeit_get_svg(['icon' => 'angle-down', 'fallback' => true]);
-    }
-
+	
+	wp_add_inline_script('jquery-core', '$=jQuery;');
+	
     wp_enqueue_script('popper', get_theme_file_uri('/assets/js/popper.min.js'), ['jquery'], '1.0.0', true);
     wp_enqueue_script('bootstrap', get_theme_file_uri('/assets/js/bootstrap.js'), ['jquery', 'popper'], '4.0.0', true);
 
-    wp_enqueue_script('madeit-global', get_theme_file_uri('/assets/js/global.js'), ['jquery'], '1.0', true);
-
     wp_enqueue_script('jquery-scrollto', get_theme_file_uri('/assets/js/jquery.scrollTo.js'), ['jquery'], '2.1.2', true);
-
-    wp_localize_script('madeit-skip-link-focus-fix', 'madeitScreenReaderText', $madeit_l10n);
 
     if (is_singular() && comments_open() && get_option('thread_comments')) {
         wp_enqueue_script('comment-reply');
@@ -555,7 +545,7 @@ function madeit_wp_bootstrap_head()
         ?>
 		<style>
 		body{ padding-top: 52px !important; }
-		body.logged-in .navbar.fixed-top{ top: 46px !important; }
+		/*body.logged-in .navbar.fixed-top{ top: 46px !important; }*/
 		@media only screen and (min-width: 783px) {
 			body{ padding-top: 52px !important; }
 			body.logged-in .navbar.fixed-top{ top: 28px !important; }

@@ -32,7 +32,7 @@ function madeit_custom_header_setup()
      * }
      */
     add_theme_support('custom-header', apply_filters('madeit_custom_header_args', [
-        'default-image'      => get_parent_theme_file_uri('/assets/images/header.jpg'),
+        'default-image'      => get_parent_theme_file_uri('/assets/images/pexels-photo-429247.jpeg'),
         'width'              => 2000,
         'height'             => 1200,
         'flex-height'        => true,
@@ -42,8 +42,8 @@ function madeit_custom_header_setup()
 
     register_default_headers([
         'default-image' => [
-            'url'           => '%s/assets/images/header.jpg',
-            'thumbnail_url' => '%s/assets/images/header.jpg',
+            'url'           => '%s/assets/images/pexels-photo-429247.jpeg',
+            'thumbnail_url' => '%s/assets/images/pexels-photo-429247.jpeg',
             'description'   => __('Default Header Image', 'madeit'),
         ],
     ]);

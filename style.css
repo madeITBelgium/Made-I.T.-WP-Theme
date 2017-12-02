@@ -26,6 +26,44 @@ Use it to make something cool, have fun, and share what you've learned with othe
     float: right;
 }
 
+/* Header */
+.single-featured-image-header {
+	position: relative;
+}
+.single-featured-image-header .site-branding-text {
+	position: absolute;
+	top: 15%;
+	left: 10%;
+}
+.single-featured-image-header .site-branding-text .site-title, .single-featured-image-header .site-branding-text .site-description {
+	color: #FFF;
+	display: none;
+}
+
+@media (min-width: 576px) {
+    .single-featured-image-header .site-branding-text .site-title, .single-featured-image-header .site-branding-text .site-description {
+        display: block;
+    }
+}
+
+@media (min-width: 768px) {
+    .single-featured-image-header .site-branding-text .site-title, .single-featured-image-header .site-branding-text .site-description {
+        display: block;
+    }
+}
+
+@media (min-width: 992px) {
+    .single-featured-image-header .site-branding-text .site-title, .single-featured-image-header .site-branding-text .site-description {
+        display: block;
+    }
+}
+
+@media (min-width: 1200px) {
+    .single-featured-image-header .site-branding-text .site-title, .single-featured-image-header .site-branding-text .site-description {
+        display: block;
+    }
+}
+
 /* Social style */
 .social-navigation {
     font-size: 16px;
@@ -162,6 +200,16 @@ img {
 }
 .navbar .active > a {
     color: #767676;
+}
+.navbar-toggler .icon-bar {
+    display: block;
+    width: 22px;
+    height: 2px;
+    border-radius: 0px;
+    background-color: #222;
+}
+.navbar-toggler .icon-bar+.icon-bar {
+    margin-top: 4px;
 }
 
 /* Footer */

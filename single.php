@@ -10,9 +10,9 @@
 get_header(); ?>
 
 <div class="container">
-	<div class="row">
-		<div class="col" id="primary" role="main">
-			<?php
+    <div class="row">
+        <div class="col" id="primary" role="main">
+            <?php
             /* Start the Loop */
             while (have_posts()) : the_post();
 
@@ -30,9 +30,9 @@ get_header(); ?>
 
             endwhile;
             ?>
-		</div>
-		<?php get_sidebar(); ?>
-	</div>
+        </div>
+        <?php get_sidebar(); ?>
+    </div>
 </div>
 
 <?php get_footer();

@@ -22,9 +22,9 @@ if (post_password_required()) {
 ?>
 
 <div id="comments" class="comments-area">
-	<?php if (have_comments()) : ?>
-		<h3 class="comments-title">
-			<?php
+    <?php if (have_comments()) : ?>
+        <h3 class="comments-title">
+            <?php
             $comments_number = get_comments_number();
             if ('1' === $comments_number) {
                 /* translators: %s: post title */
@@ -44,9 +44,9 @@ if (post_password_required()) {
                 );
             }
             ?>
-		</h3>
-		<ol class="comment-list">
-			<?php
+        </h3>
+        <ol class="comment-list">
+            <?php
                 /* Loop through and list the comments. Tell wp_list_comments()
                  * to use tpweb_comment() to format the comments.
                  * If you want to override this in a child theme, then you can
@@ -59,19 +59,19 @@ if (post_password_required()) {
                     ]
                 );
             ?>
-		</ol><!-- .comment-list -->
+        </ol><!-- .comment-list -->
 
-		<?php if (get_comment_pages_count() > 1 && get_option('page_comments')) : // are there comments to navigate through?>
-			<nav id="comment-nav-below" class="comment-navigation" role="navigation">
-				<div class="nav-previous"><?php previous_comments_link(esc_html__('Previous', 'madeit')); ?></div>
-				<div class="nav-next"><?php next_comments_link(esc_html__('Next', 'madeit')); ?></div>
-			</nav><!-- #comment-nav-below -->
-		<?php endif; ?>
-	<?php endif; ?>
+        <?php if (get_comment_pages_count() > 1 && get_option('page_comments')) : // are there comments to navigate through?>
+            <nav id="comment-nav-below" class="comment-navigation" role="navigation">
+                <div class="nav-previous"><?php previous_comments_link(esc_html__('Previous', 'madeit')); ?></div>
+                <div class="nav-next"><?php next_comments_link(esc_html__('Next', 'madeit')); ?></div>
+            </nav><!-- #comment-nav-below -->
+        <?php endif; ?>
+    <?php endif; ?>
 
-	<?php if (!comments_open() && '0' != get_comments_number() && post_type_supports(get_post_type(), 'comments')) : ?>
-			<p class="no-comments"><?php _e('Comments are closed.', 'madeit'); ?></p>
-	<?php endif; ?>
+    <?php if (!comments_open() && '0' != get_comments_number() && post_type_supports(get_post_type(), 'comments')) : ?>
+            <p class="no-comments"><?php _e('Comments are closed.', 'madeit'); ?></p>
+    <?php endif; ?>
 
-	<?php comment_form(['class_submit' => 'btn btn-default pull-right']); ?>
+    <?php comment_form(['class_submit' => 'btn btn-default pull-right']); ?>
 </div>

@@ -10,18 +10,18 @@
 get_header(); ?>
 
 <div class="container">
-	<header class="page-header">
-		<?php if (have_posts()) : ?>
-			<h1 class="page-title"><?php printf(__('Search Results for: %s', 'madeit'), '<span>'.get_search_query().'</span>'); ?></h1>
-		<?php else : ?>
-			<h1 class="page-title"><?php _e('Nothing Found', 'madeit'); ?></h1>
-		<?php endif; ?>
-	</header><!-- .page-header -->
+    <header class="page-header">
+        <?php if (have_posts()) : ?>
+            <h1 class="page-title"><?php printf(__('Search Results for: %s', 'madeit'), '<span>'.get_search_query().'</span>'); ?></h1>
+        <?php else : ?>
+            <h1 class="page-title"><?php _e('Nothing Found', 'madeit'); ?></h1>
+        <?php endif; ?>
+    </header><!-- .page-header -->
 
-	<div id="primary" class="row">
-		<div id="main" class="col" role="main">
+    <div id="primary" class="row">
+        <div id="main" class="col" role="main">
 
-			<?php
+            <?php
             if (have_posts()) :
                 /* Start the Loop */
                 while (have_posts()) : the_post();
@@ -43,15 +43,15 @@ get_header(); ?>
 
             else : ?>
 
-				<p><?php _e('Sorry, but nothing matched your search terms. Please try again with some different keywords.', 'madeit'); ?></p>
-				<?php
+                <p><?php _e('Sorry, but nothing matched your search terms. Please try again with some different keywords.', 'madeit'); ?></p>
+                <?php
                     get_search_form();
 
             endif;
             ?>
-		</div>
-		<?php get_sidebar(); ?>
-	</div>
+        </div>
+        <?php get_sidebar(); ?>
+    </div>
 </div>
 
 <?php get_footer();

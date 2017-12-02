@@ -12,26 +12,26 @@
 ?><!DOCTYPE html>
 <html <?php language_attributes(); ?> class="no-js no-svg">
 <head>
-<meta charset="<?php bloginfo('charset'); ?>">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="profile" href="http://gmpg.org/xfn/11">
+    <meta charset="<?php bloginfo('charset'); ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="profile" href="http://gmpg.org/xfn/11">
 
-<?php wp_head(); ?>
+    <?php wp_head(); ?>
 </head>
 
 <body <?php body_class(); ?>>
-	
-	<?php if (has_nav_menu('top')) : ?>
-		<?php get_template_part('template-parts/navigation/navigation', 'top'); ?>
-	<?php endif; ?>
-	<div id="page" class="site">
-		<header id="masthead" class="container-fluid site-header" role="banner">
-			<div class="row">
-				<?php get_template_part('template-parts/header/header', 'image'); ?>
-			</div>
-		</header><!-- #masthead -->
 
-	<?php
+    <?php if (has_nav_menu('top')) : ?>
+        <?php get_template_part('template-parts/navigation/navigation', 'top'); ?>
+    <?php endif; ?>
+    <div id="page" class="site">
+        <header id="masthead" class="container-fluid site-header" role="banner">
+            <div class="row">
+                <?php get_template_part('template-parts/header/header', 'image'); ?>
+            </div>
+        </header><!-- #masthead -->
+
+    <?php
 
     /*
      * If a regular post or page, and not the front page, show the featured image.

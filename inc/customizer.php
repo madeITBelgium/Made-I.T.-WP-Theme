@@ -17,7 +17,7 @@ function madeit_customize_register($wp_customize)
     $wp_customize->get_setting('header_textcolor')->transport = 'postMessage';
 
     $wp_customize->selective_refresh->add_partial('blogname', [
-        'selector'        => 'a.navbar-brand',
+        'selector'        => 'a.navbar-brand, .site-branding-text .site-title',
         'render_callback' => 'madeit_customize_partial_blogname',
     ]);
     $wp_customize->selective_refresh->add_partial('blogdescription', [

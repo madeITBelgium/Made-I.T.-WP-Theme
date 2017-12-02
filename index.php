@@ -15,20 +15,20 @@
 get_header(); ?>
 
 <div class="container">
-	<?php if (is_home() && !is_front_page()) : ?>
-		<header class="page-header">
-			<h1 class="page-title"><?php single_post_title(); ?></h1>
-		</header>
-	<?php else : ?>
-		<header class="page-header">
-			<h2 class="page-title"><?php _e('Posts', 'madeit'); ?></h2>
-		</header>
-	<?php endif; ?>
+    <?php if (is_home() && !is_front_page()) : ?>
+        <header class="page-header">
+            <h1 class="page-title"><?php single_post_title(); ?></h1>
+        </header>
+    <?php else : ?>
+        <header class="page-header">
+            <h2 class="page-title"><?php _e('Posts', 'madeit'); ?></h2>
+        </header>
+    <?php endif; ?>
 
-	<div class="row">
-		<div id="primary" class="col" id="main" role="main">
+    <div class="row">
+        <div id="primary" class="col" id="main" role="main">
 
-			<?php
+            <?php
             if (have_posts()) :
 
                 /* Start the Loop */
@@ -55,8 +55,8 @@ get_header(); ?>
 
             endif;
             ?>
-		</div>
-	</div>
-	<?php get_sidebar(); ?>
+        </div>
+    </div>
+    <?php get_sidebar(); ?>
 </div>
 <?php get_footer();
