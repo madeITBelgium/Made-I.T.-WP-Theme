@@ -404,9 +404,9 @@ function madeit_scripts()
     wp_script_add_data('html5', 'conditional', 'lt IE 9');
 
     wp_enqueue_script('madeit-skip-link-focus-fix', get_theme_file_uri('/assets/js/skip-link-focus-fix.js'), [], '1.0', true);
-	
-	wp_add_inline_script('jquery-core', '$=jQuery;');
-	
+
+    wp_add_inline_script('jquery-core', '$=jQuery;');
+
     wp_enqueue_script('popper', get_theme_file_uri('/assets/js/popper.min.js'), ['jquery'], '1.0.0', true);
     wp_enqueue_script('bootstrap', get_theme_file_uri('/assets/js/bootstrap.js'), ['jquery', 'popper'], '4.0.0', true);
 
