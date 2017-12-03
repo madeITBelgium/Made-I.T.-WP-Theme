@@ -557,11 +557,11 @@ function madeit_wp_bootstrap_head()
 add_action('wp_head', 'madeit_wp_bootstrap_head');
 
 /* Style read more button */
-function modify_read_more_link($text) {
-    return '<a class="more-link btn btn-block btn-warning" href="' . get_permalink() . '">' . __('Continue reading', 'madeit') . '</a>';
+function modify_read_more_link($text)
+{
+    return '<a class="more-link btn btn-block btn-warning" href="'.get_permalink().'">'.__('Continue reading', 'madeit').'</a>';
 }
-add_filter( 'the_content_more_link', 'modify_read_more_link' );
-
+add_filter('the_content_more_link', 'modify_read_more_link');
 
 /**
  * Implement the Custom Header feature.

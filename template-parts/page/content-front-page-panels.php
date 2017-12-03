@@ -34,8 +34,8 @@ global $madeitcounter;
                 </header><!-- .entry-header -->
             </div>
             <div class="col-sm two-column-row <?php if ((is_page() || is_archive()) && 'one-column' === get_theme_mod('page_layout')) {
-                echo 'row';
-            } ?>">
+            echo 'row';
+        } ?>">
                 <div class="entry-content">
                     <?php
                         /* translators: %s: Name of current post */
