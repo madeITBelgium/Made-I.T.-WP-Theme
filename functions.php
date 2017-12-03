@@ -377,7 +377,7 @@ add_action('wp_head', 'madeit_colors_css_wrap');
 function madeit_scripts()
 {
     // Add custom fonts, used in the main stylesheet.
-    wp_enqueue_style('madeit-fonts', madeit_fonts_url(), [], null);
+    //wp_enqueue_style('madeit-fonts', madeit_fonts_url(), [], null);
 
     // Theme stylesheet.
     wp_enqueue_style('madeit-style', get_stylesheet_uri());
@@ -389,18 +389,8 @@ function madeit_scripts()
         wp_enqueue_style('madeit-colors-dark', get_theme_file_uri('/assets/css/colors-dark.css'), ['madeit-style'], '1.0');
     }
 
-    // Load the Internet Explorer 9 specific stylesheet, to fix display issues in the Customizer.
-    if (is_customize_preview()) {
-        wp_enqueue_style('madeit-ie9', get_theme_file_uri('/assets/css/ie9.css'), ['madeit-style'], '1.0');
-        wp_style_add_data('madeit-ie9', 'conditional', 'IE 9');
-    }
-
-    // Load the Internet Explorer 8 specific stylesheet.
-    wp_enqueue_style('madeit-ie8', get_theme_file_uri('/assets/css/ie8.css'), ['madeit-style'], '1.0');
-    wp_style_add_data('madeit-ie8', 'conditional', 'lt IE 9');
-
     // Load the html5 shiv.
-    wp_enqueue_script('html5', get_theme_file_uri('/assets/js/html5.js'), [], '3.7.3');
+    wp_enqueue_script('html5', get_theme_file_uri('/assets/js/html5.js'), [], '3.7.3', true);
     wp_script_add_data('html5', 'conditional', 'lt IE 9');
 
     wp_enqueue_script('madeit-skip-link-focus-fix', get_theme_file_uri('/assets/js/skip-link-focus-fix.js'), [], '1.0', true);
@@ -418,12 +408,32 @@ function madeit_scripts()
 }
 add_action('wp_enqueue_scripts', 'madeit_scripts');
 
+function remove_jquery_migrate_and_move_jquery_to_footer( &$scripts) {
+    if(!is_admin()) {
+		$scripts->add_data( 'jquery', 'group', 1 );
+		$scripts->add_data( 'jquery-core', 'group', 1 );
+		$scripts->add_data( 'jquery-migrate', 'group', 1 );
+		
+        //$scripts->remove( 'jquery');
+        //$scripts->add( 'jquery', false, array( 'jquery-core' ), '1.12.4' );
+    }
+}
+add_filter( 'wp_default_scripts', 'remove_jquery_migrate_and_move_jquery_to_footer' );
+
 function madeit_admin_style()
 {
     wp_enqueue_style('madeit-fonts', madeit_fonts_url(), [], null);
     wp_enqueue_style('madeit-gutenberg-editor', get_template_directory_uri().'/assets/css/gutenberg.css');
 }
 add_action('admin_enqueue_scripts', 'madeit_admin_style');
+
+function remove_css_js_ver( $src ) {
+	if( strpos( $src, '?ver=' ) )
+		$src = remove_query_arg( 'ver', $src );
+	return $src;
+}
+add_filter( 'style_loader_src', 'remove_css_js_ver', 10, 2 );
+add_filter( 'script_loader_src', 'remove_css_js_ver', 10, 2 ); 
 
 /**
  * Add custom image sizes attribute to enhance responsive image functionality
