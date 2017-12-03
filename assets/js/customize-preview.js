@@ -113,10 +113,10 @@
         value.bind( function( to ) {
             if ( 'one-column' === to ) {
                 $( 'body' ).addClass( 'page-one-column' ).removeClass( 'page-two-column' );
-                $('.two-column-row').addClass('row');
+                $( '.two-column-row' ).addClass( 'row' );
             } else {
                 $( 'body' ).removeClass( 'page-one-column' ).addClass( 'page-two-column' );
-                $('.two-column-row').removeClass('row');
+                $( '.two-column-row' ).removeClass( 'row' );
             }
         } );
     } );
@@ -124,9 +124,9 @@
     wp.customize( 'container_type', function( value ) {
         value.bind( function( to ) {
             if ( 'container-fluid' === to ) {
-                $('.changable-container').removeClass('container').addClass('container-fluid');
+                $( '.changable-container' ).removeClass( 'container' ).addClass( 'container-fluid' );
             } else {
-                $('.changable-container').removeClass('container-fluid').addClass('container');
+                $( '.changable-container' ).removeClass( 'container-fluid' ).addClass( 'container' );
             }
         } );
     } );
