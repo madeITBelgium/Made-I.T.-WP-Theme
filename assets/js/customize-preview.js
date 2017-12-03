@@ -120,7 +120,7 @@
             }
         } );
     } );
-    
+
     wp.customize( 'container_type', function( value ) {
         value.bind( function( to ) {
             if ( 'container-fluid' === to ) {
