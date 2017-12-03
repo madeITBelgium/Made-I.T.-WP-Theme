@@ -43,13 +43,11 @@ function madeit_time_link()
         /* translators: %s: post date */
         __('<span>Posted on</span> %s', 'madeit'),
         '<a href="'.esc_url(get_permalink()).'" rel="bookmark">'.$time_string.'</a>'
-    ) . ' ';
-    
-    
-    
+    ).' ';
+
     if (get_the_time('U') !== get_the_modified_time('U')) {
         $time_string = '<time class="updated" datetime="%1$s">%2$s</time>';
-        
+
         $time_string = sprintf($time_string,
             get_the_modified_date(DATE_W3C),
             get_the_modified_date()
@@ -62,7 +60,7 @@ function madeit_time_link()
             '<a href="'.esc_url(get_permalink()).'" rel="bookmark">'.$time_string.'</a>'
         );
     }
-    
+
     return $result;
 }
 endif;
@@ -102,14 +100,14 @@ function madeit_entry_footer()
                 echo '</span> ';
             }
         }
-        wp_link_pages( array(
-            'before'            => '<div class="page-links">'.__( 'Pages:', 'madeit' ),
+        wp_link_pages([
+            'before'            => '<div class="page-links">'.__('Pages:', 'madeit'),
             'after'             => '</div>',
             'link_before'       => '<span>',
             'link_after'        => '</span>',
             'pagelink'          => '%',
-            'echo'              => 1) );
-        
+            'echo'              => 1, ]);
+
         madeit_edit_link();
 
         echo '</footer> <!-- .entry-footer -->';

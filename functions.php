@@ -408,17 +408,18 @@ function madeit_scripts()
 }
 add_action('wp_enqueue_scripts', 'madeit_scripts');
 
-function remove_jquery_migrate_and_move_jquery_to_footer( &$scripts) {
-    if(!is_admin()) {
-		$scripts->add_data( 'jquery', 'group', 1 );
-		$scripts->add_data( 'jquery-core', 'group', 1 );
-		$scripts->add_data( 'jquery-migrate', 'group', 1 );
-		
+function remove_jquery_migrate_and_move_jquery_to_footer(&$scripts)
+{
+    if (!is_admin()) {
+        $scripts->add_data('jquery', 'group', 1);
+        $scripts->add_data('jquery-core', 'group', 1);
+        $scripts->add_data('jquery-migrate', 'group', 1);
+
         //$scripts->remove( 'jquery');
         //$scripts->add( 'jquery', false, array( 'jquery-core' ), '1.12.4' );
     }
 }
-add_filter( 'wp_default_scripts', 'remove_jquery_migrate_and_move_jquery_to_footer' );
+add_filter('wp_default_scripts', 'remove_jquery_migrate_and_move_jquery_to_footer');
 
 function madeit_admin_style()
 {
@@ -427,13 +428,16 @@ function madeit_admin_style()
 }
 add_action('admin_enqueue_scripts', 'madeit_admin_style');
 
-function remove_css_js_ver( $src ) {
-	if( strpos( $src, '?ver=' ) )
-		$src = remove_query_arg( 'ver', $src );
-	return $src;
+function remove_css_js_ver($src)
+{
+    if (strpos($src, '?ver=')) {
+        $src = remove_query_arg('ver', $src);
+    }
+
+    return $src;
 }
-add_filter( 'style_loader_src', 'remove_css_js_ver', 10, 2 );
-add_filter( 'script_loader_src', 'remove_css_js_ver', 10, 2 ); 
+add_filter('style_loader_src', 'remove_css_js_ver', 10, 2);
+add_filter('script_loader_src', 'remove_css_js_ver', 10, 2);
 
 /**
  * Add custom image sizes attribute to enhance responsive image functionality
@@ -567,11 +571,11 @@ function madeit_wp_bootstrap_head()
 add_action('wp_head', 'madeit_wp_bootstrap_head');
 
 /* Style read more button */
-function modify_read_more_link($text) {
-    return '<a class="more-link btn btn-block btn-warning" href="' . get_permalink() . '">' . __('Continue reading', 'madeit') . '</a>';
+function modify_read_more_link($text)
+{
+    return '<a class="more-link btn btn-block btn-warning" href="'.get_permalink().'">'.__('Continue reading', 'madeit').'</a>';
 }
-add_filter( 'the_content_more_link', 'modify_read_more_link' );
-
+add_filter('the_content_more_link', 'modify_read_more_link');
 
 /**
  * Implement the Custom Header feature.

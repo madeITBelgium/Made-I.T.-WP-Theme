@@ -83,7 +83,7 @@ function madeit_customize_register($wp_customize)
         ],
         'active_callback' => 'madeit_is_view_with_layout_option',
     ]);
-    
+
     /*
      * container vs container-fluid
      */
@@ -99,12 +99,11 @@ function madeit_customize_register($wp_customize)
         'type'        => 'radio',
         'description' => __('Choise the screen width of you content.', 'madeit'),
         'choices'     => [
-            'container' => __('Normal screen width', 'madeit'),
+            'container'       => __('Normal screen width', 'madeit'),
             'container-fluid' => __('Full screen width', 'madeit'),
         ],
         'active_callback' => 'madeit_is_view_with_container_type',
     ]);
-    
 
     /**
      * Filter number of front page sections in Made I.T..
@@ -169,7 +168,7 @@ function madeit_sanitize_page_layout($input)
 function madeit_sanitize_container_type($input)
 {
     $valid = [
-        'container' => __('Normal screen width', 'madeit'),
+        'container'       => __('Normal screen width', 'madeit'),
         'container-fluid' => __('Full screen width', 'madeit'),
     ];
 
