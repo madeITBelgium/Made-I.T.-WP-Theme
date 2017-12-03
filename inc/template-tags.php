@@ -21,7 +21,7 @@ function madeit_posted_on()
     );
 
     // Finally, let's write all of this to the page.
-    echo '<span class="posted-on">'.madeit_time_link().'</span><span class="byline"> '.$byline.'</span>';
+    echo '<span class="posted-on">'.madeit_time_link().'</span> <span class="byline"> '.$byline.'</span>';
 }
 endif;
 
@@ -33,22 +33,37 @@ function madeit_time_link()
 {
     $time_string = '<time class="entry-date published updated" datetime="%1$s">%2$s</time>';
     if (get_the_time('U') !== get_the_modified_time('U')) {
-        $time_string = '<time class="entry-date published" datetime="%1$s">%2$s</time><time class="updated" datetime="%3$s">%4$s</time>';
+        $time_string = '<time class="entry-date published" datetime="%1$s">%2$s</time>';
     }
 
-    $time_string = sprintf($time_string,
-        get_the_date(DATE_W3C),
-        get_the_date(),
-        get_the_modified_date(DATE_W3C),
-        get_the_modified_date()
-    );
+    $time_string = sprintf($time_string, get_the_date(DATE_W3C), get_the_date());
 
     // Wrap the time string in a link, and preface it with 'Posted on'.
-    return sprintf(
+    $result = sprintf(
         /* translators: %s: post date */
-        __('<span class="screen-reader-text">Posted on</span> %s', 'madeit'),
+        __('<span>Posted on</span> %s', 'madeit'),
         '<a href="'.esc_url(get_permalink()).'" rel="bookmark">'.$time_string.'</a>'
-    );
+    ) . ' ';
+    
+    
+    
+    if (get_the_time('U') !== get_the_modified_time('U')) {
+        $time_string = '<time class="updated" datetime="%1$s">%2$s</time>';
+        
+        $time_string = sprintf($time_string,
+            get_the_modified_date(DATE_W3C),
+            get_the_modified_date()
+        );
+
+        // Wrap the time string in a link, and preface it with 'Posted on'.
+        $result .= sprintf(
+            /* translators: %s: post date */
+            __('<span>Updated on</span> %s', 'madeit'),
+            '<a href="'.esc_url(get_permalink()).'" rel="bookmark">'.$time_string.'</a>'
+        );
+    }
+    
+    return $result;
 }
 endif;
 
@@ -58,7 +73,6 @@ if (!function_exists('madeit_entry_footer')) :
  */
 function madeit_entry_footer()
 {
-
     /* translators: used between list items, there is a space after the comma */
     $separate_meta = __(', ', 'madeit');
 
@@ -74,21 +88,28 @@ function madeit_entry_footer()
 
         if ('post' === get_post_type()) {
             if (($categories_list && madeit_categorized_blog()) || $tags_list) {
-                echo '<span class="cat-tags-links">';
+                echo ' <span class="cat-tags-links">';
 
                 // Make sure there's more than one category before displaying.
                 if ($categories_list && madeit_categorized_blog()) {
-                    echo '<span class="cat-links">'.madeit_get_svg(['icon' => 'folder-open']).'<span class="screen-reader-text">'.__('Categories', 'madeit').'</span>'.$categories_list.'</span>';
+                    echo ' <span class="cat-links">'.madeit_get_svg(['icon' => 'folder-open']).'<span class="screen-reader-text">'.__('Categories', 'madeit').'</span>'.$categories_list.'</span>';
                 }
 
                 if ($tags_list && !is_wp_error($tags_list)) {
-                    echo '<span class="tags-links">'.madeit_get_svg(['icon' => 'hashtag']).'<span class="screen-reader-text">'.__('Tags', 'madeit').'</span>'.$tags_list.'</span>';
+                    echo ' <span class="tags-links">'.madeit_get_svg(['icon' => 'hashtag']).'<span class="screen-reader-text">'.__('Tags', 'madeit').'</span>'.$tags_list.'</span>';
                 }
 
-                echo '</span>';
+                echo '</span> ';
             }
         }
-
+        wp_link_pages( array(
+            'before'            => '<div class="page-links">'.__( 'Pages:', 'madeit' ),
+            'after'             => '</div>',
+            'link_before'       => '<span>',
+            'link_after'        => '</span>',
+            'pagelink'          => '%',
+            'echo'              => 1) );
+        
         madeit_edit_link();
 
         echo '</footer> <!-- .entry-footer -->';

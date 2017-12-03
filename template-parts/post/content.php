@@ -9,14 +9,17 @@
  */
 ?>
 
-<article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-	<?php
-    if (is_sticky() && is_home()) :
-        echo madeit_get_svg(['icon' => 'thumb-tack']);
-    endif;
-    ?>
-	<header class="entry-header">
-		<?php
+<article id="post-<?php the_ID(); ?>" <?php post_class(' blog-post '); ?>>
+    <header>
+        <?php
+        if (is_single()) {
+            the_title('<h1 class="entry-title">', '</h1>');
+        } elseif (is_front_page() && is_home()) {
+            the_title('<h3 class="entry-title"><a href="'.esc_url(get_permalink()).'" rel="bookmark">', '</a></h3>');
+        } else {
+            the_title('<h2 class="entry-title"><a href="'.esc_url(get_permalink()).'" rel="bookmark">', '</a></h2>');
+        }
+
         if ('post' === get_post_type()) {
             echo '<div class="entry-meta">';
             if (is_single()) {
@@ -27,46 +30,26 @@
             }
             echo '</div><!-- .entry-meta -->';
         }
+        if ('' !== get_the_post_thumbnail()) :
+            ?>
+            <div class="post-thumbnail">
+                <a href="<?php the_permalink(); ?>">
+                    <?php the_post_thumbnail('madeit-featured-blog-image'); ?>
+                </a>
+            </div><!-- .post-thumbnail -->
+            <?php
+        endif; ?>
 
-        if (is_single()) {
-            the_title('<h1 class="entry-title">', '</h1>');
-        } elseif (is_front_page() && is_home()) {
-            the_title('<h3 class="entry-title"><a href="'.esc_url(get_permalink()).'" rel="bookmark">', '</a></h3>');
-        } else {
-            the_title('<h2 class="entry-title"><a href="'.esc_url(get_permalink()).'" rel="bookmark">', '</a></h2>');
-        }
-        ?>
-	</header><!-- .entry-header -->
-
-	<?php if ('' !== get_the_post_thumbnail() && !is_single()) : ?>
-		<div class="post-thumbnail">
-			<a href="<?php the_permalink(); ?>">
-				<?php the_post_thumbnail('madeit-featured-image'); ?>
-			</a>
-		</div><!-- .post-thumbnail -->
-	<?php endif; ?>
-
-	<div class="entry-content">
-		<?php
+    </header>
+    <div class="content">
+        <?php
         /* translators: %s: Name of current post */
-        the_content(sprintf(
-            __('Continue reading<span class="screen-reader-text"> "%s"</span>', 'madeit'),
-            get_the_title()
-        ));
-
-        wp_link_pages([
-            'before'      => '<div class="page-links">'.__('Pages:', 'madeit'),
-            'after'       => '</div>',
-            'link_before' => '<span class="page-number">',
-            'link_after'  => '</span>',
-        ]);
+        the_content();
         ?>
-	</div><!-- .entry-content -->
-
-	<?php
+    </div>
+    <?php
     if (is_single()) {
         madeit_entry_footer();
     }
     ?>
-
-</article><!-- #post-## -->
+</article>

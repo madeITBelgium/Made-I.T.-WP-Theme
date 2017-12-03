@@ -24,7 +24,7 @@ function madeit_setup()
     add_theme_support('post-thumbnails');
 
     add_image_size('madeit-featured-image', 2000, 1200, true);
-
+    add_image_size('madeit-featured-blog-image', 1200, 630, true);
     add_image_size('madeit-thumbnail-avatar', 100, 100, true);
 
     $GLOBALS['content_width'] = 525;
@@ -555,6 +555,13 @@ function madeit_wp_bootstrap_head()
     }
 }
 add_action('wp_head', 'madeit_wp_bootstrap_head');
+
+/* Style read more button */
+function modify_read_more_link($text) {
+    return '<a class="more-link btn btn-block btn-warning" href="' . get_permalink() . '">' . __('Continue reading', 'madeit') . '</a>';
+}
+add_filter( 'the_content_more_link', 'modify_read_more_link' );
+
 
 /**
  * Implement the Custom Header feature.

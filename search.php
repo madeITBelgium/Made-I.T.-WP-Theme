@@ -9,17 +9,16 @@
  */
 get_header(); ?>
 
-<div class="container">
-    <header class="page-header">
-        <?php if (have_posts()) : ?>
-            <h1 class="page-title"><?php printf(__('Search Results for: %s', 'madeit'), '<span>'.get_search_query().'</span>'); ?></h1>
-        <?php else : ?>
-            <h1 class="page-title"><?php _e('Nothing Found', 'madeit'); ?></h1>
-        <?php endif; ?>
-    </header><!-- .page-header -->
-
+<div class="container voffset6">
     <div id="primary" class="row">
         <div id="main" class="col" role="main">
+            <header class="page-header">
+                <?php if (have_posts()) : ?>
+                    <h1 class="page-title"><?php printf(__('Search Results for: %s', 'madeit'), '<span>'.get_search_query().'</span>'); ?></h1>
+                <?php else : ?>
+                    <h1 class="page-title"><?php _e('Nothing Found', 'madeit'); ?></h1>
+                <?php endif; ?>
+            </header><!-- .page-header -->
 
             <?php
             if (have_posts()) :
