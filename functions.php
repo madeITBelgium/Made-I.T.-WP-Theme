@@ -422,10 +422,11 @@ function remove_jquery_migrate_and_move_jquery_to_footer(&$scripts)
 }
 add_filter('wp_default_scripts', 'remove_jquery_migrate_and_move_jquery_to_footer');
 
-function prefix_add_footer_styles() {
+function prefix_add_footer_styles()
+{
     wp_enqueue_style('font-awesome', get_theme_file_uri('/assets/css/font-awesome.min.css'), [], '4.7.0');
-};
-add_action( 'get_footer', 'prefix_add_footer_styles' );
+}
+add_action('get_footer', 'prefix_add_footer_styles');
 
 function madeit_admin_style()
 {
@@ -588,62 +589,63 @@ add_filter('the_content_more_link', 'modify_read_more_link');
  */
 require_once get_parent_theme_file_path('/inc/class-tgm-plugin-activation.php');
 
-function madeit_register_required_plugins() {
-	/*
-	 * Array of plugin arrays. Required keys are name and slug.
-	 * If the source is NOT from the .org repo, then source is also required.
-	 */
-	$plugins = array(
-		array(
-			'name'      => 'Better WordPress Minify',
-			'slug'      => 'bwp-minify',
-			'required'  => true,
-		),
-		array(
-			'name'      => 'Gutenberg',
-			'slug'      => 'gutenberg',
-			'required'  => true,
-		),
-		array(
-			'name'     => 'Smush Image Compression and Optimization',
-			'slug'     => 'wp-smushit',
-			'required' => true,
-		),
-		array(
-			'name'     => 'WP Super Cache',
-			'slug'     => 'wp-super-cache',
-			'required' => true,
-		),
-		array(
-			'name'        => 'WordPress SEO by Yoast',
-			'slug'        => 'wordpress-seo',
-			'is_callable' => 'wpseo_init',
-			'required'   => true,
-		),
-		array(
-			'name'     => 'Forms',
-			'slug'     => 'forms-by-made-it',
-			'required' => true,
-		),
-		array(
-			'name'     => 'WP Security By Made I.T.',
-			'slug'     => 'wp-security-by-made-it',
-			'required' => false,
-		),
-	);
+function madeit_register_required_plugins()
+{
+    /*
+     * Array of plugin arrays. Required keys are name and slug.
+     * If the source is NOT from the .org repo, then source is also required.
+     */
+    $plugins = [
+        [
+            'name'      => 'Better WordPress Minify',
+            'slug'      => 'bwp-minify',
+            'required'  => true,
+        ],
+        [
+            'name'      => 'Gutenberg',
+            'slug'      => 'gutenberg',
+            'required'  => true,
+        ],
+        [
+            'name'     => 'Smush Image Compression and Optimization',
+            'slug'     => 'wp-smushit',
+            'required' => true,
+        ],
+        [
+            'name'     => 'WP Super Cache',
+            'slug'     => 'wp-super-cache',
+            'required' => true,
+        ],
+        [
+            'name'        => 'WordPress SEO by Yoast',
+            'slug'        => 'wordpress-seo',
+            'is_callable' => 'wpseo_init',
+            'required'    => true,
+        ],
+        [
+            'name'     => 'Forms',
+            'slug'     => 'forms-by-made-it',
+            'required' => true,
+        ],
+        [
+            'name'     => 'WP Security By Made I.T.',
+            'slug'     => 'wp-security-by-made-it',
+            'required' => false,
+        ],
+    ];
 
-	$config = array(
-		'id'           => 'madeit',                 // Unique ID for hashing notices for multiple instances of TGMPA.
-		'default_path' => '',                      // Default absolute path to bundled plugins.
-		'menu'         => 'tgmpa-install-plugins', // Menu slug.
-		'has_notices'  => true,                    // Show admin notices or not.
-		'dismissable'  => true,                    // If false, a user cannot dismiss the nag message.
-		'dismiss_msg'  => '',                      // If 'dismissable' is false, this message will be output at top of nag.
-		'is_automatic' => true,                   // Automatically activate plugins after installation or not.
-		'message'      => '',                      // Message to output right before the plugins table.
-	);
+    $config = [
+        'id'           => 'madeit',                 // Unique ID for hashing notices for multiple instances of TGMPA.
+        'default_path' => '',                      // Default absolute path to bundled plugins.
+        'menu'         => 'tgmpa-install-plugins', // Menu slug.
+        'has_notices'  => true,                    // Show admin notices or not.
+        'dismissable'  => true,                    // If false, a user cannot dismiss the nag message.
+        'dismiss_msg'  => '',                      // If 'dismissable' is false, this message will be output at top of nag.
+        'is_automatic' => true,                   // Automatically activate plugins after installation or not.
+        'message'      => '',                      // Message to output right before the plugins table.
+    ];
 
-	tgmpa($plugins, $config);
+    tgmpa($plugins, $config);
 }
 add_action('tgmpa_register', 'madeit_register_required_plugins');
 
