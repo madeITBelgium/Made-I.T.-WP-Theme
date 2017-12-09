@@ -5,7 +5,7 @@
  * @link https://codex.wordpress.org/Template_Hierarchy
  * @since 1.0
  *
- * @version 1.2
+ * @version 1.0
  */
 ?>
 
@@ -36,7 +36,7 @@
                 <a href="<?php the_permalink(); ?>">
                     <?php the_post_thumbnail('madeit-featured-blog-image'); ?>
                 </a>
-            </div><!-- .post-thumbnail -->
+            </div>
             <?php
         endif; ?>
 
