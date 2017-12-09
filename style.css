@@ -312,6 +312,8 @@ img {
 	}
 }*/
 
+
+
 .blog-post header .picture {
     position: absolute;
     top: -30px;
@@ -322,6 +324,9 @@ img {
     border-radius: 50%;
 }
 
+.blog-post .content a {
+	text-decoration: underline;
+}
 .blog-post .content, .blog-post footer {
     width: 90%;
     margin: 0 auto;
