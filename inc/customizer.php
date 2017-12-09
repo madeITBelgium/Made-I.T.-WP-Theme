@@ -104,7 +104,7 @@ function madeit_customize_register($wp_customize)
         ],
         'active_callback' => 'madeit_is_view_with_container_type',
     ]);
-    
+
     /*
      * enable home page header image on other pages if no featured image is selected
      */
