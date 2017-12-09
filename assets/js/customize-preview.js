@@ -133,7 +133,7 @@
 
     wp.customize( 'show_header_on_sub_pages', function( value ) {
         value.bind( function( to ) {
-            if( false === to ) {
+            if ( false === to ) {
 
                 //Remove image
                 $( '#masthead.site-header.no-front-page' ).hide();
