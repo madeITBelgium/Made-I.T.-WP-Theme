@@ -104,6 +104,23 @@ function madeit_customize_register($wp_customize)
         ],
         'active_callback' => 'madeit_is_view_with_container_type',
     ]);
+    
+    /*
+     * enable home page header image on other pages if no featured image is selected
+     */
+    $wp_customize->add_setting('show_header_on_sub_pages', [
+        'default'           => true,
+        //'sanitize_callback' => 'madeit_sanitize_header_image_on_other_pages',
+        'transport'         => 'postMessage',
+    ]);
+
+    $wp_customize->add_control('show_header_on_sub_pages', [
+        'label'       => __('Show header image', 'madeit'),
+        'section'     => 'header_image',
+        'type'        => 'checkbox',
+        'description' => __('Show the homepage header image on sub pages when there is no post featured image.', 'madeit'),
+        //'active_callback' => 'madeit_is_view_with_container_type',
+    ]);
 
     /**
      * Filter number of front page sections in Made I.T..

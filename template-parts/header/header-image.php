@@ -18,7 +18,7 @@
                 <?php if (is_front_page()) : ?>
                     <h1 class="site-title"><?php bloginfo('name'); ?></h1>
                 <?php else : ?>
-                    <p class="site-title"><?php bloginfo('name'); ?></p>
+                    <p class="site-title h1"><?php bloginfo('name'); ?></p>
                 <?php endif; ?>
 
                 <?php

@@ -131,6 +131,19 @@
         } );
     } );
 
+    wp.customize( 'show_header_on_sub_pages', function( value ) {
+        value.bind( function( to ) {
+            if(false === to) {
+                //Remove image
+                $( '#masthead.site-header.no-front-page' ).hide();
+            }
+            else {
+                //Show image
+                $( '#masthead.site-header.no-front-page' ).show();
+            }
+        } );
+    } );
+
     // Whether a header image is available.
     function hasHeaderImage() {
         var image = wp.customize( 'header_image' )();

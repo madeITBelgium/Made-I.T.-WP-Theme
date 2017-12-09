@@ -67,6 +67,14 @@ Use it to make something cool, have fun, and share what you've learned with othe
     }
 }
 
+.site-header.no-front-page .wp-custom-header {
+	height: 40vh;
+	overflow: hidden;
+}
+.site-header.no-front-page img {
+	margin-top: -40vh;
+}
+
 /* Social style */
 .social-navigation {
     font-size: 16px;
