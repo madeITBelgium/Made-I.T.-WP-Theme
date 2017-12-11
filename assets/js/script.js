@@ -1,6 +1,6 @@
 jQuery( document ).ready( function( $ ) {
     $( '.lightbox' ).each( function( ) {
-        if ( 'a' == $( this ).parent( ).tagName ) {
+        if ( 'a' === $( this ).parent( ).tagName ) {
             $( this ).parent( ).addClass( 'click-lightbox' );
         } else {
             $( this ).wrap( '<a href="' + $( this ).attr( 'src' ) + '" class="click-lightbox"></a>' );
