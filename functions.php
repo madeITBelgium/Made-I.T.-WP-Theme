@@ -397,11 +397,12 @@ function madeit_scripts()
 
     //wp_add_inline_script('jquery-core', '$=jQuery;');
 
-    wp_enqueue_script('script', get_theme_file_uri('/assets/js/script-fix-jquery.js'), ['jquery'], '1.0.0', true);
+    wp_enqueue_script('script-fix-jquery', get_theme_file_uri('/assets/js/script-fix-jquery.js'), ['jquery'], '1.0.0', true);
     wp_enqueue_script('popper', get_theme_file_uri('/assets/js/popper.min.js'), ['jquery'], '1.0.0', true);
     wp_enqueue_script('bootstrap', get_theme_file_uri('/assets/js/bootstrap.js'), ['jquery', 'popper'], '4.0.0', true);
+    wp_enqueue_script('script', get_theme_file_uri('/assets/js/script.js'), ['bootstrap'], '1.0.0', true);
 
-    wp_enqueue_script('jquery-scrollto', get_theme_file_uri('/assets/js/jquery.scrollTo.js'), ['jquery'], '2.1.2', true);
+    //wp_enqueue_script('jquery-scrollto', get_theme_file_uri('/assets/js/jquery.scrollTo.js'), ['jquery'], '2.1.2', true);
 
     if (is_singular() && comments_open() && get_option('thread_comments')) {
         wp_enqueue_script('comment-reply');
@@ -648,6 +649,25 @@ function madeit_register_required_plugins()
     tgmpa($plugins, $config);
 }
 add_action('tgmpa_register', 'madeit_register_required_plugins');
+
+function madeit_add_image_popup_class($content)
+{
+    $content = mb_convert_encoding($content, 'HTML-ENTITIES', "UTF-8");
+    if(strlen($content) > 0) {
+        $document = new DOMDocument();
+        libxml_use_internal_errors(true);
+        $document->loadHTML(utf8_decode($content));
+
+        $imgs = $document->getElementsByTagName('img');
+        foreach ($imgs as $img) {
+           $existing_class = $img->getAttribute('class');
+            $img->setAttribute('class', "lightbox $existing_class");
+        }
+        $html = $document->saveHTML();
+        return $html;
+    }
+}
+add_filter('the_content', 'madeit_add_image_popup_class');
 
 /**
  * Implement the Custom Header feature.
