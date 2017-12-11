@@ -7,7 +7,6 @@
  *
  * @version 1.0
  */
-
 $content = apply_filters('the_content', get_the_content());
 $video = false;
 
