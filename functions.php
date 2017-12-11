@@ -652,18 +652,19 @@ add_action('tgmpa_register', 'madeit_register_required_plugins');
 
 function madeit_add_image_popup_class($content)
 {
-    $content = mb_convert_encoding($content, 'HTML-ENTITIES', "UTF-8");
-    if(strlen($content) > 0) {
+    $content = mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8');
+    if (strlen($content) > 0) {
         $document = new DOMDocument();
         libxml_use_internal_errors(true);
         $document->loadHTML(utf8_decode($content));
 
         $imgs = $document->getElementsByTagName('img');
         foreach ($imgs as $img) {
-           $existing_class = $img->getAttribute('class');
+            $existing_class = $img->getAttribute('class');
             $img->setAttribute('class', "lightbox $existing_class");
         }
         $html = $document->saveHTML();
+
         return $html;
     }
 }
