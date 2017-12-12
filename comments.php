@@ -73,5 +73,22 @@ if (post_password_required()) {
             <p class="no-comments"><?php _e('Comments are closed.', 'madeit'); ?></p>
     <?php endif; ?>
 
-    <?php comment_form(['class_submit' => 'btn btn-default pull-right']); ?>
+    <?php
+    $commenter = wp_get_current_commenter();
+    $comments_arg = array(
+        'form' => array(
+            'class' => 'form-horizontal'
+        ),
+        'fields' => apply_filters('comment_form_default_fields', array(
+                'autor' => '<div class="form-group required"><label for="author">' . __('Name') . '</label><input id="author" name="author" class="form-control" type="text" value="' . esc_attr($commenter['comment_author']) . '" size="30" maxlength="245" aria-required="true" /><p id="d1" class="text-danger"></p></div>',
+                'email' => '<div class="form-group required"><label for="email">' . __('Email') . '</label><input id="email" name="email" class="form-control" type="text" value="' . esc_attr($commenter['comment_author_email']) . '" size="30" maxlength="100" aria-required="true" /><p id="d2" class="text-danger"></p></div>',
+                'url' => '<div class="form-group"><label for="url">' . __('Website') . '</label><input id="url" name="url" class="form-control" type="text" value="' . esc_attr($commenter['comment_author_url']) . '" maxlength="200" size="30" /><p id="d3" class="text-danger"></p></div>',
+            )
+         ),
+        'comment_field' => '<div class="form-group required"><label for="comment">' . __('Comment', 'madeit') . '</label><textarea id="comment" class="form-control" name="comment" rows="3" maxlength="65525" aria-required="true"></textarea><p id="d4" class="text-danger"></p></div>',
+        'comment_notes_after' => '',
+        'class_submit' => 'btn btn-outline-primary pull-right vbottom2'
+    );
+    comment_form($comments_arg);
+    ?>
 </div>
