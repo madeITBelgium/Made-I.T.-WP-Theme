@@ -661,7 +661,9 @@ function madeit_add_image_popup_class($content)
         $imgs = $document->getElementsByTagName('img');
         foreach ($imgs as $img) {
             $existing_class = $img->getAttribute('class');
-            $img->setAttribute('class', "lightbox $existing_class");
+            if(strpos($existing_class, "no-lightbox") === false) {
+                $img->setAttribute('class', "lightbox $existing_class");
+            }
         }
         $html = $document->saveHTML();
 
