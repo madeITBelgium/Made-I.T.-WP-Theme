@@ -12,6 +12,6 @@ if (!is_active_sidebar('sidebar-1')) {
 }
 ?>
 
-<div id="secondary" class="col-4" role="complementary" aria-label="<?php esc_attr_e('Blog Sidebar', 'madeit'); ?>">
+<div id="secondary" class="col-lg-4" role="complementary" aria-label="<?php esc_attr_e('Blog Sidebar', 'madeit'); ?>">
 	<?php dynamic_sidebar('sidebar-1'); ?>
 </div>
