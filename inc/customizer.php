@@ -14,7 +14,7 @@ function madeit_customize_register($wp_customize)
 {
     $wp_customize->get_setting('blogname')->transport = 'postMessage';
     $wp_customize->get_setting('blogdescription')->transport = 'postMessage';
-    $wp_customize->get_setting('header_textcolor')->transport = 'postMessage';
+    $wp_customize->remove_control('header_textcolor');
 
     $wp_customize->selective_refresh->add_partial('blogname', [
         'selector'        => 'a.navbar-brand, .site-branding-text .site-title',
@@ -34,12 +34,6 @@ function madeit_customize_register($wp_customize)
         'sanitize_callback' => 'madeit_sanitize_colorscheme',
     ]);
 
-    $wp_customize->add_setting('colorscheme_hue', [
-        'default'           => 250,
-        'transport'         => 'postMessage',
-        'sanitize_callback' => 'absint', // The hue is stored as a positive integer.
-    ]);
-
     $wp_customize->add_control('colorscheme', [
         'type'     => 'radio',
         'label'    => __('Color Scheme', 'madeit'),
@@ -51,11 +45,84 @@ function madeit_customize_register($wp_customize)
         'section'  => 'colors',
         'priority' => 5,
     ]);
-
-    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'colorscheme_hue', [
-        'mode'     => 'hue',
-        'section'  => 'colors',
-        'priority' => 6,
+    
+    
+    $wp_customize->add_setting('primary_color_rgb', [
+        'default'    => '#007bff',
+        'transport'         => 'refresh',
+        'sanitize_callback' => 'madeit_check_rgb',
+    ]);
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'primary_color_rgb', [
+        'mode'       => 'rgb',
+        'label'      => __('Primary Color', 'madeit'),
+        'section'    => 'colors',
+        'settings'   => 'primary_color_rgb',
+    ]));
+    
+    
+    $wp_customize->add_setting('secondary_color_rgb', [
+        'default'    => '#868e96',
+        'transport'         => 'refresh',
+        'sanitize_callback' => 'madeit_check_rgb',
+    ]);
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'secondary_color_rgb', [
+        'mode'       => 'rgb',
+        'label'      => __('Secondary Color', 'madeit'),
+        'section'    => 'colors',
+        'settings'   => 'secondary_color_rgb',
+        'default'    => '#868e96',
+    ]));
+    
+    
+    $wp_customize->add_setting('success_color_rgb', [
+        'default'    => '#28a745',
+        'transport'         => 'refresh',
+        'sanitize_callback' => 'madeit_check_rgb',
+    ]);
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'success_color_rgb', [
+        'mode'       => 'rgb',
+        'label'      => __('Success Color', 'madeit'),
+        'section'    => 'colors',
+        'settings'   => 'success_color_rgb',
+    ]));
+    
+    
+    $wp_customize->add_setting('info_color_rgb', [
+        'default'    => '#17a2b8',
+        'transport'         => 'refresh',
+        'sanitize_callback' => 'madeit_check_rgb',
+    ]);
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'info_color_rgb', [
+        'mode'       => 'rgb',
+        'label'      => __('Info Color', 'madeit'),
+        'section'    => 'colors',
+        'settings'   => 'info_color_rgb',
+    ]));
+    
+    
+    $wp_customize->add_setting('warning_color_rgb', [
+        'default'    => '#ffc107',
+        'transport'         => 'refresh',
+        'sanitize_callback' => 'madeit_check_rgb',
+    ]);
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'warning_color_rgb', [
+        'mode'       => 'rgb',
+        'label'      => __('Warning Color', 'madeit'),
+        'section'    => 'colors',
+        'settings'   => 'warning_color_rgb',
+    ]));
+    
+    
+    $wp_customize->add_setting('danger_color_rgb', [
+        'default'    => '#dc3545',
+        'transport'         => 'refresh',
+        'sanitize_callback' => 'madeit_check_rgb',
+    ]);
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'danger_color_rgb', [
+        'mode'       => 'rgb',
+        'label'      => __('Danger Color', 'madeit'),
+        'section'    => 'colors',
+        'settings'   => 'danger_color_rgb',
     ]));
 
     /*
@@ -210,6 +277,26 @@ function madeit_sanitize_colorscheme($input)
     }
 
     return 'light';
+}
+
+function madeit_check_rgb($hex) {
+    // Complete patterns like #ffffff or #fff
+    if(preg_match("/^#([0-9a-fA-F]{6})$/", $hex) || preg_match("/^#([0-9a-fA-F]{3})$/", $hex)) {
+        // Remove #
+        $hex = substr($hex, 1);
+    }
+    
+    // Complete patterns without # like ffffff or 000000
+    if(preg_match("/^([0-9a-fA-F]{6})$/", $hex)) {
+        return '#' . $hex;
+    }
+    
+    // Short patterns without # like fff or 000
+    if(preg_match("/^([0-9a-f]{3})$/", $hex)) {
+        // Spread to 6 digits
+        return '#' . substr($hex, 0, 1) . substr($hex, 0, 1) . substr($hex, 1, 1) . substr($hex, 1, 1) . substr($hex, 2, 1) . substr($hex, 2, 1);
+    }
+    return false;
 }
 
 /**
