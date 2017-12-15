@@ -45,10 +45,9 @@ function madeit_customize_register($wp_customize)
         'section'  => 'colors',
         'priority' => 5,
     ]);
-    
-    
+
     $wp_customize->add_setting('primary_color_rgb', [
-        'default'    => '#007bff',
+        'default'           => '#007bff',
         'transport'         => 'refresh',
         'sanitize_callback' => 'madeit_check_rgb',
     ]);
@@ -58,10 +57,9 @@ function madeit_customize_register($wp_customize)
         'section'    => 'colors',
         'settings'   => 'primary_color_rgb',
     ]));
-    
-    
+
     $wp_customize->add_setting('secondary_color_rgb', [
-        'default'    => '#868e96',
+        'default'           => '#868e96',
         'transport'         => 'refresh',
         'sanitize_callback' => 'madeit_check_rgb',
     ]);
@@ -72,10 +70,9 @@ function madeit_customize_register($wp_customize)
         'settings'   => 'secondary_color_rgb',
         'default'    => '#868e96',
     ]));
-    
-    
+
     $wp_customize->add_setting('success_color_rgb', [
-        'default'    => '#28a745',
+        'default'           => '#28a745',
         'transport'         => 'refresh',
         'sanitize_callback' => 'madeit_check_rgb',
     ]);
@@ -85,10 +82,9 @@ function madeit_customize_register($wp_customize)
         'section'    => 'colors',
         'settings'   => 'success_color_rgb',
     ]));
-    
-    
+
     $wp_customize->add_setting('info_color_rgb', [
-        'default'    => '#17a2b8',
+        'default'           => '#17a2b8',
         'transport'         => 'refresh',
         'sanitize_callback' => 'madeit_check_rgb',
     ]);
@@ -98,10 +94,9 @@ function madeit_customize_register($wp_customize)
         'section'    => 'colors',
         'settings'   => 'info_color_rgb',
     ]));
-    
-    
+
     $wp_customize->add_setting('warning_color_rgb', [
-        'default'    => '#ffc107',
+        'default'           => '#ffc107',
         'transport'         => 'refresh',
         'sanitize_callback' => 'madeit_check_rgb',
     ]);
@@ -111,10 +106,9 @@ function madeit_customize_register($wp_customize)
         'section'    => 'colors',
         'settings'   => 'warning_color_rgb',
     ]));
-    
-    
+
     $wp_customize->add_setting('danger_color_rgb', [
-        'default'    => '#dc3545',
+        'default'           => '#dc3545',
         'transport'         => 'refresh',
         'sanitize_callback' => 'madeit_check_rgb',
     ]);
@@ -279,23 +273,25 @@ function madeit_sanitize_colorscheme($input)
     return 'light';
 }
 
-function madeit_check_rgb($hex) {
+function madeit_check_rgb($hex)
+{
     // Complete patterns like #ffffff or #fff
-    if(preg_match("/^#([0-9a-fA-F]{6})$/", $hex) || preg_match("/^#([0-9a-fA-F]{3})$/", $hex)) {
+    if (preg_match('/^#([0-9a-fA-F]{6})$/', $hex) || preg_match('/^#([0-9a-fA-F]{3})$/', $hex)) {
         // Remove #
         $hex = substr($hex, 1);
     }
-    
+
     // Complete patterns without # like ffffff or 000000
-    if(preg_match("/^([0-9a-fA-F]{6})$/", $hex)) {
-        return '#' . $hex;
+    if (preg_match('/^([0-9a-fA-F]{6})$/', $hex)) {
+        return '#'.$hex;
     }
-    
+
     // Short patterns without # like fff or 000
-    if(preg_match("/^([0-9a-f]{3})$/", $hex)) {
+    if (preg_match('/^([0-9a-f]{3})$/', $hex)) {
         // Spread to 6 digits
-        return '#' . substr($hex, 0, 1) . substr($hex, 0, 1) . substr($hex, 1, 1) . substr($hex, 1, 1) . substr($hex, 2, 1) . substr($hex, 2, 1);
+        return '#'.substr($hex, 0, 1).substr($hex, 0, 1).substr($hex, 1, 1).substr($hex, 1, 1).substr($hex, 2, 1).substr($hex, 2, 1);
     }
+
     return false;
 }
 
