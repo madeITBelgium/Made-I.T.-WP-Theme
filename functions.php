@@ -360,8 +360,7 @@ function madeit_colors_css_wrap()
         return;
     }
 
-    require_once get_parent_theme_file_path('/inc/color-patterns.php');
-    ?>
+    require_once get_parent_theme_file_path('/inc/color-patterns.php'); ?>
     <style type="text/css" id="custom-theme-colors">
         <?php echo madeit_custom_colors_css(); ?>
     </style>
