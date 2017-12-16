@@ -8,6 +8,10 @@
  */
 global $madeitcounter;
 
+$onlyOneColumn = false;
+if(function_exists('is_cart')) {
+    $onlyOneColumn = (is_cart() || is_checkout() || is_account_page());
+}
 ?>
 <article id="panel<?php echo $madeitcounter; ?>" <?php post_class('madeit-panel '); ?> >
     <?php if (has_post_thumbnail()) :
@@ -33,7 +37,7 @@ global $madeitcounter;
 
                 </header><!-- .entry-header -->
             </div>
-            <div class="col-sm two-column-row <?php if ((is_page() || is_archive()) && 'one-column' === get_theme_mod('page_layout')) {
+            <div class="col-sm two-column-row <?php if ((is_page() || is_archive()) && 'one-column' === get_theme_mod('page_layout') || $onlyOneColumn) {
             echo 'row';
         } ?>">
                 <div class="entry-content">

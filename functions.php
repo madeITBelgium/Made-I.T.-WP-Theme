@@ -630,6 +630,21 @@ function madeit_register_required_plugins()
             'slug'     => 'wp-security-by-made-it',
             'required' => false,
         ],
+        [
+            'name'     => 'WooCommerce',
+            'slug'     => 'woocommerce',
+            'required' => false,
+        ],
+        [
+            'name'     => 'WooCommerce EU VAT Assistant',
+            'slug'     => 'woocommerce-eu-vat-assistant',
+            'required' => false,
+        ],
+        [
+            'name'     => 'Aelia Foundation Classes for WooCommerce',
+            'slug'     => 'wc-aelia-foundation-classes',
+            'required' => false,
+        ],
     ];
 
     $config = [
@@ -668,6 +683,24 @@ function madeit_add_image_popup_class($content)
     }
 }
 add_filter('the_content', 'madeit_add_image_popup_class');
+
+/**
+ * WooCommerce form fields
+ */
+function madeit_woocommerce_form_field_args($args, $key, $value) {
+    $args['input_class'][] = 'form-control';
+    return $args;
+}
+add_filter('woocommerce_form_field_args', 'madeit_woocommerce_form_field_args', 10, 3);
+
+/**
+ * Fix WooCommerce active class
+ */
+function madeit_woocommerce_account_menu_item_classes($classes, $endpoint) {
+    $classes = str_replace("is-active", "active", $classes);
+    return $classes;
+}
+add_filter('woocommerce_account_menu_item_classes', 'madeit_woocommerce_account_menu_item_classes', 10, 2);
 
 /**
  * Implement the Custom Header feature.

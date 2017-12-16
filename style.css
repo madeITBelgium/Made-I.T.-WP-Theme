@@ -17,6 +17,11 @@ Use it to make something cool, have fun, and share what you've learned with othe
 /* Font */
 @import url('https://fonts.googleapis.com/css?family=Libre Franklin:300,300i,400,400i,600,600i,800,800i&subset=latin,latin-ext');
 
+/* WooCommerce */
+.entry-content {
+    width: 100%;
+}
+
 /* Gutenberg */
 .aligncenter {
 	
