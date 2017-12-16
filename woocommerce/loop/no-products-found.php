@@ -1,6 +1,6 @@
 <?php
 /**
- * Displayed when no products are found matching the current query
+ * Displayed when no products are found matching the current query.
  *
  * This template can be overridden by copying it to yourtheme/woocommerce/loop/no-products-found.php.
  *
@@ -11,14 +11,14 @@
  * the readme will list any important changes.
  *
  * @see 	    https://docs.woocommerce.com/document/template-structure/
+ *
  * @author 		WooThemes
- * @package 	WooCommerce/Templates
+ *
  * @version     2.0.0
  */
-
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+if (!defined('ABSPATH')) {
+    exit; // Exit if accessed directly
 }
 
 ?>
-<p class="woocommerce-info"><?php _e( 'No products were found matching your selection.', 'woocommerce' ); ?></p>
+<p class="woocommerce-info"><?php _e('No products were found matching your selection.', 'woocommerce'); ?></p>

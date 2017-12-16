@@ -11,14 +11,14 @@
  * the readme will list any important changes.
  *
  * @see     https://docs.woocommerce.com/document/template-structure/
+ *
  * @author  WooThemes
- * @package WooCommerce/Templates
+ *
  * @version 3.0.0
  */
-
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+if (!defined('ABSPATH')) {
+    exit;
 }
 
 ?>
-<p class="stock <?php echo esc_attr( $class ); ?>"><?php echo wp_kses_post( $availability ); ?></p>
+<p class="stock <?php echo esc_attr($class); ?>"><?php echo wp_kses_post($availability); ?></p>

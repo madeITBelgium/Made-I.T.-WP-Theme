@@ -1,6 +1,6 @@
 <?php
 /**
- * Auth footer
+ * Auth footer.
  *
  * This template can be overridden by copying it to yourtheme/woocommerce/auth/footer.php.
  *
@@ -11,13 +11,13 @@
  * the readme will list any important changes.
  *
  * @see 	    https://docs.woocommerce.com/document/template-structure/
+ *
  * @author  WooThemes
- * @package WooCommerce/Templates/Auth
+ *
  * @version 2.4.0
  */
-
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+if (!defined('ABSPATH')) {
+    exit;
 }
 
 ?>

@@ -1,6 +1,6 @@
 <?php
 /**
- * Additional Customer Details (plain)
+ * Additional Customer Details (plain).
  *
  * This is extra customer data which can be filtered by plugins. It outputs below the order item table.
  *
@@ -13,17 +13,17 @@
  * the readme will list any important changes.
  *
  * @see         https://docs.woocommerce.com/document/template-structure/
+ *
  * @author      WooThemes
- * @package     WooCommerce/Templates/Emails/Plain
+ *
  * @version     2.5.0
  */
-
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+if (!defined('ABSPATH')) {
+    exit;
 }
 
-echo strtoupper( __( 'Customer details', 'woocommerce' ) ) . "\n\n";
+echo strtoupper(__('Customer details', 'woocommerce'))."\n\n";
 
-foreach ( $fields as $field ) {
-	echo wp_kses_post( $field['label'] ) . ': ' . wp_kses_post( $field['value'] ) . "\n";
+foreach ($fields as $field) {
+    echo wp_kses_post($field['label']).': '.wp_kses_post($field['value'])."\n";
 }

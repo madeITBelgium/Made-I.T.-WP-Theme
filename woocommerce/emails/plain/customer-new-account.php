@@ -1,6 +1,6 @@
 <?php
 /**
- * Customer new account email
+ * Customer new account email.
  *
  * This template can be overridden by copying it to yourtheme/woocommerce/emails/plain/customer-new-account.php.
  *
@@ -11,25 +11,25 @@
  * the readme will list any important changes.
  *
  * @see 	    https://docs.woocommerce.com/document/template-structure/
+ *
  * @author 		WooThemes
- * @package 	WooCommerce/Templates/Emails/Plain
+ *
  * @version     2.0.0
  */
-
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+if (!defined('ABSPATH')) {
+    exit; // Exit if accessed directly
 }
 
-echo "= " . $email_heading . " =\n\n";
+echo '= '.$email_heading." =\n\n";
 
-echo sprintf( __( 'Thanks for creating an account on %1$s. Your username is %2$s', 'woocommerce' ), $blogname, '<strong>' . $user_login . '</strong>' ) . "\n\n";
+echo sprintf(__('Thanks for creating an account on %1$s. Your username is %2$s', 'woocommerce'), $blogname, '<strong>'.$user_login.'</strong>')."\n\n";
 
-if ( 'yes' === get_option( 'woocommerce_registration_generate_password' ) && $password_generated ) {
-	echo sprintf( __( 'Your password is %s.', 'woocommerce' ), '<strong>' . $user_pass . '</strong>' ) . "\n\n";
+if ('yes' === get_option('woocommerce_registration_generate_password') && $password_generated) {
+    echo sprintf(__('Your password is %s.', 'woocommerce'), '<strong>'.$user_pass.'</strong>')."\n\n";
 }
 
-echo sprintf( __( 'You can access your account area to view your orders and change your password here: %s.', 'woocommerce' ), wc_get_page_permalink( 'myaccount' ) ) . "\n\n";
+echo sprintf(__('You can access your account area to view your orders and change your password here: %s.', 'woocommerce'), wc_get_page_permalink('myaccount'))."\n\n";
 
 echo "\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n\n";
 
-echo apply_filters( 'woocommerce_email_footer_text', get_option( 'woocommerce_email_footer_text' ) );
+echo apply_filters('woocommerce_email_footer_text', get_option('woocommerce_email_footer_text'));

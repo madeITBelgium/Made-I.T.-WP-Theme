@@ -9,7 +9,7 @@
 global $madeitcounter;
 
 $onlyOneColumn = false;
-if(function_exists('is_cart')) {
+if (function_exists('is_cart')) {
     $onlyOneColumn = (is_cart() || is_checkout() || is_account_page());
 }
 ?>
