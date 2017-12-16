@@ -1,6 +1,6 @@
 <?php
 /**
- * Loop Rating
+ * Loop Rating.
  *
  * This template can be overridden by copying it to yourtheme/woocommerce/loop/rating.php.
  *
@@ -11,19 +11,19 @@
  * the readme will list any important changes.
  *
  * @see 	    https://docs.woocommerce.com/document/template-structure/
+ *
  * @author 		WooThemes
- * @package 	WooCommerce/Templates
+ *
  * @version     3.0.0
  */
-
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+if (!defined('ABSPATH')) {
+    exit;
 }
 
 global $product;
 
-if ( get_option( 'woocommerce_enable_review_rating' ) === 'no' ) {
-	return;
+if (get_option('woocommerce_enable_review_rating') === 'no') {
+    return;
 }
 
-echo wc_get_rating_html( $product->get_average_rating() );
+echo wc_get_rating_html($product->get_average_rating());

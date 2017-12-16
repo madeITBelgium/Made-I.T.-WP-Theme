@@ -1,6 +1,6 @@
 <?php
 /**
- * Order Customer Details
+ * Order Customer Details.
  *
  * This template can be overridden by copying it to yourtheme/woocommerce/order/order-details-customer.php.
  *
@@ -11,18 +11,18 @@
  * the readme will list any important changes.
  *
  * @see 	https://docs.woocommerce.com/document/template-structure/
+ *
  * @author  WooThemes
- * @package WooCommerce/Templates
+ *
  * @version 3.2.0
  */
-
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+if (!defined('ABSPATH')) {
+    exit;
 }
 ?>
 <section class="woocommerce-customer-details">
 
-	<?php if ( ! wc_ship_to_billing_address_only() && $order->needs_shipping_address() ) : ?>
+	<?php if (!wc_ship_to_billing_address_only() && $order->needs_shipping_address()) : ?>
 
 		<section class="woocommerce-columns woocommerce-columns--2 woocommerce-columns--addresses col2-set addresses row">
 
@@ -30,28 +30,28 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 				<?php endif; ?>
 
-				<h2 class="woocommerce-column__title"><?php _e( 'Billing address', 'woocommerce' ); ?></h2>
+				<h2 class="woocommerce-column__title"><?php _e('Billing address', 'woocommerce'); ?></h2>
 
 				<address>
-					<?php echo ( $address = $order->get_formatted_billing_address() ) ? $address : __( 'N/A', 'woocommerce' ); ?>
-					<?php if ( $order->get_billing_phone() ) : ?>
-						<p class="woocommerce-customer-details--phone"><?php echo esc_html( $order->get_billing_phone() ); ?></p>
+					<?php echo ($address = $order->get_formatted_billing_address()) ? $address : __('N/A', 'woocommerce'); ?>
+					<?php if ($order->get_billing_phone()) : ?>
+						<p class="woocommerce-customer-details--phone"><?php echo esc_html($order->get_billing_phone()); ?></p>
 					<?php endif; ?>
-					<?php if ( $order->get_billing_email() ) : ?>
-						<p class="woocommerce-customer-details--email"><?php echo esc_html( $order->get_billing_email() ); ?></p>
+					<?php if ($order->get_billing_email()) : ?>
+						<p class="woocommerce-customer-details--email"><?php echo esc_html($order->get_billing_email()); ?></p>
 					<?php endif; ?>
 				</address>
 
-				<?php if ( ! wc_ship_to_billing_address_only() && $order->needs_shipping_address() ) : ?>
+				<?php if (!wc_ship_to_billing_address_only() && $order->needs_shipping_address()) : ?>
 
 			</div><!-- /.col-1 -->
 
 			<div class="woocommerce-column woocommerce-column--2 woocommerce-column--shipping-address col-sm">
 
-				<h2 class="woocommerce-column__title"><?php _e( 'Shipping address', 'woocommerce' ); ?></h2>
+				<h2 class="woocommerce-column__title"><?php _e('Shipping address', 'woocommerce'); ?></h2>
 
 				<address>
-					<?php echo ( $address = $order->get_formatted_shipping_address() ) ? $address : __( 'N/A', 'woocommerce' ); ?>
+					<?php echo ($address = $order->get_formatted_shipping_address()) ? $address : __('N/A', 'woocommerce'); ?>
 				</address>
 
 			</div><!-- /.col-2 -->

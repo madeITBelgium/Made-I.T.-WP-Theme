@@ -1,6 +1,6 @@
 <?php
 /**
- * Single product short description
+ * Single product short description.
  *
  * This template can be overridden by copying it to yourtheme/woocommerce/single-product/short-description.php.
  *
@@ -11,22 +11,22 @@
  * the readme will list any important changes.
  *
  * @see 	    https://docs.woocommerce.com/document/template-structure/
+ *
  * @author 		WooThemes
- * @package 	WooCommerce/Templates
+ *
  * @version     1.6.4
  */
-
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+if (!defined('ABSPATH')) {
+    exit; // Exit if accessed directly
 }
 
 global $post;
 
-if ( ! $post->post_excerpt ) {
-	return;
+if (!$post->post_excerpt) {
+    return;
 }
 
 ?>
 <div class="woocommerce-product-details__short-description">
-    <?php echo apply_filters( 'woocommerce_short_description', $post->post_excerpt ); ?>
+    <?php echo apply_filters('woocommerce_short_description', $post->post_excerpt); ?>
 </div>

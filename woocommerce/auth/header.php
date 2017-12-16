@@ -1,6 +1,6 @@
 <?php
 /**
- * Auth header
+ * Auth header.
  *
  * This template can be overridden by copying it to yourtheme/woocommerce/auth/header.php.
  *
@@ -11,13 +11,13 @@
  * the readme will list any important changes.
  *
  * @see 	    https://docs.woocommerce.com/document/template-structure/
+ *
  * @author  WooThemes
- * @package WooCommerce/Templates/Auth
+ *
  * @version 2.4.0
  */
-
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+if (!defined('ABSPATH')) {
+    exit;
 }
 
 ?><!DOCTYPE html>
@@ -26,9 +26,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<meta name="viewport" content="width=device-width" />
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="robots" content="noindex, nofollow" />
-	<title><?php _e( 'Application authentication request', 'woocommerce' ); ?></title>
-	<?php wp_admin_css( 'install', true ); ?>
-	<link rel="stylesheet" href="<?php echo esc_url( str_replace( array( 'http:', 'https:' ), '', WC()->plugin_url() ) . '/assets/css/auth.css' ); ?>" type="text/css" />
+	<title><?php _e('Application authentication request', 'woocommerce'); ?></title>
+	<?php wp_admin_css('install', true); ?>
+	<link rel="stylesheet" href="<?php echo esc_url(str_replace(['http:', 'https:'], '', WC()->plugin_url()).'/assets/css/auth.css'); ?>" type="text/css" />
 </head>
 <body class="wc-auth wp-core-ui">
 	<h1 id="wc-logo"><img src="<?php echo WC()->plugin_url(); ?>/assets/images/woocommerce_logo.png" alt="WooCommerce" /></h1>

@@ -685,19 +685,23 @@ function madeit_add_image_popup_class($content)
 add_filter('the_content', 'madeit_add_image_popup_class');
 
 /**
- * WooCommerce form fields
+ * WooCommerce form fields.
  */
-function madeit_woocommerce_form_field_args($args, $key, $value) {
+function madeit_woocommerce_form_field_args($args, $key, $value)
+{
     $args['input_class'][] = 'form-control';
+
     return $args;
 }
 add_filter('woocommerce_form_field_args', 'madeit_woocommerce_form_field_args', 10, 3);
 
 /**
- * Fix WooCommerce active class
+ * Fix WooCommerce active class.
  */
-function madeit_woocommerce_account_menu_item_classes($classes, $endpoint) {
-    $classes = str_replace("is-active", "active", $classes);
+function madeit_woocommerce_account_menu_item_classes($classes, $endpoint)
+{
+    $classes = str_replace('is-active', 'active', $classes);
+
     return $classes;
 }
 add_filter('woocommerce_account_menu_item_classes', 'madeit_woocommerce_account_menu_item_classes', 10, 2);

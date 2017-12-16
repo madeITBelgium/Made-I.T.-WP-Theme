@@ -1,6 +1,6 @@
 <?php
 /**
- * The Template for displaying products in a product tag. Simply includes the archive template
+ * The Template for displaying products in a product tag. Simply includes the archive template.
  *
  * This template can be overridden by copying it to yourtheme/woocommerce/taxonomy-product_tag.php.
  *
@@ -11,12 +11,11 @@
  * the readme will list any important changes.
  *
  * @see 	    https://docs.woocommerce.com/document/template-structure/
- * @package 	WooCommerce/Templates
+ *
  * @version     1.6.4
  */
-
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+if (!defined('ABSPATH')) {
+    exit; // Exit if accessed directly
 }
 
-wc_get_template( 'archive-product.php' );
+wc_get_template('archive-product.php');
