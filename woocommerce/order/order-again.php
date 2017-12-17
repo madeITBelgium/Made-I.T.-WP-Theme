@@ -1,6 +1,6 @@
 <?php
 /**
- * Order again button
+ * Order again button.
  *
  * This template can be overridden by copying it to yourtheme/woocommerce/order/order-again.php.
  *
@@ -11,16 +11,16 @@
  * the readme will list any important changes.
  *
  * @see 	https://docs.woocommerce.com/document/template-structure/
+ *
  * @author  WooThemes
- * @package WooCommerce/Templates
+ *
  * @version 2.3.0
  */
-
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+if (!defined('ABSPATH')) {
+    exit; // Exit if accessed directly
 }
 ?>
 
 <p class="order-again">
-	<a href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'order_again', $order->get_id() ) , 'woocommerce-order_again' ) ); ?>" class="button"><?php _e( 'Order again', 'woocommerce' ); ?></a>
+	<a href="<?php echo esc_url(wp_nonce_url(add_query_arg('order_again', $order->get_id()), 'woocommerce-order_again')); ?>" class="button"><?php _e('Order again', 'woocommerce'); ?></a>
 </p>

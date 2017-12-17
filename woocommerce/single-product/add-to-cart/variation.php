@@ -1,17 +1,18 @@
 <?php
 /**
- * Single variation display
+ * Single variation display.
  *
  * This is a javascript-based template for single variations (see https://codex.wordpress.org/Javascript_Reference/wp.template).
  * The values will be dynamically replaced after selecting attributes.
  *
  * @see 	https://docs.woocommerce.com/document/template-structure/
+ *
  * @author  Made I.T.
- * @package madeit
+ *
  * @version 2.5.0
  */
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+if (!defined('ABSPATH')) {
+    exit;
 }
 ?>
 <script type="text/template" id="tmpl-variation-template">
@@ -28,5 +29,5 @@ if ( ! defined( 'ABSPATH' ) ) {
 	</div>
 </script>
 <script type="text/template" id="tmpl-unavailable-variation-template">
-	<p class="alert alert-warning"><?php _e( 'Sorry, this product is unavailable. Please choose a different combination.', 'woocommerce' ); ?></p>
+	<p class="alert alert-warning"><?php _e('Sorry, this product is unavailable. Please choose a different combination.', 'woocommerce'); ?></p>
 </script>

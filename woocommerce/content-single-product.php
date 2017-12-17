@@ -1,31 +1,32 @@
 <?php
 /**
- * The template for displaying product content in the single-product.php template
+ * The template for displaying product content in the single-product.php template.
  *
  * @see 	    https://docs.woocommerce.com/document/template-structure/
+ *
  * @author 		Made I.T.
- * @package 	madeit
+ *
  * @version     3.0.0
  */
-
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+if (!defined('ABSPATH')) {
+    exit; // Exit if accessed directly
 }
 
 ?>
 
 <?php
-	/**
-	 * woocommerce_before_single_product hook.
-	 *
-	 * @hooked wc_print_notices - 10
-	 */
-	 do_action( 'woocommerce_before_single_product' );
+     /**
+      * woocommerce_before_single_product hook.
+      *
+      * @hooked wc_print_notices - 10
+      */
+     do_action('woocommerce_before_single_product');
 
-	 if ( post_password_required() ) {
-	 	echo get_the_password_form();
-	 	return;
-	 }
+     if (post_password_required()) {
+         echo get_the_password_form();
+
+         return;
+     }
 ?>
 
 <div id="product-<?php the_ID(); ?>" <?php post_class(''); ?>>
@@ -38,7 +39,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                  * @hooked woocommerce_show_product_sale_flash - 10
                  * @hooked woocommerce_show_product_images - 20
                  */
-                do_action( 'woocommerce_before_single_product_summary' );
+                do_action('woocommerce_before_single_product_summary');
             ?>
         </div>
         <div class="col-md">
@@ -56,7 +57,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                  * @hooked woocommerce_template_single_sharing - 50
                  * @hooked WC_Structured_Data::generate_product_data() - 60
                  */
-                do_action( 'woocommerce_single_product_summary' );
+                do_action('woocommerce_single_product_summary');
             ?>
 
         </div><!-- .summary -->
@@ -71,9 +72,9 @@ if ( ! defined( 'ABSPATH' ) ) {
                  * @hooked woocommerce_upsell_display - 15
                  * @hooked woocommerce_output_related_products - 20
                  */
-                do_action( 'woocommerce_after_single_product_summary' );
+                do_action('woocommerce_after_single_product_summary');
             ?>
         </div>
     </div>
 </div><!-- #product-<?php the_ID(); ?> -->
-<?php do_action( 'woocommerce_after_single_product' ); ?>
+<?php do_action('woocommerce_after_single_product'); ?>
