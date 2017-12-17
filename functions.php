@@ -713,6 +713,42 @@ function madeit_woocommerce_account_menu_item_classes($classes, $endpoint)
 add_filter('woocommerce_account_menu_item_classes', 'madeit_woocommerce_account_menu_item_classes', 10, 2);
 
 /**
+ * Add cart icon to menu
+ */
+function madeit_woocommerce_shopping_cart_in_menu($menu, $args)
+{
+
+	// Check if WooCommerce is active and add a new item to a menu assigned to Primary Navigation Menu location
+	if (!in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins'))) || 'top' !== $args->theme_location)
+    {
+        return $menu;
+    }
+    
+    global $woocommerce;
+	ob_start();
+    $cart_contents_count = $woocommerce->cart->cart_contents_count;
+    if ($cart_contents_count == 0)
+    {
+        ?>
+        <li class="menu-item nav-item"><a class="wc-menu-cart nav-link" href="<?php echo get_permalink(wc_get_page_id('shop')); ?>" title="<?php echo  __('Start shopping', 'madeit'); ?>">
+        <?php
+    }
+    else {
+        ?>
+        <li class="menu-item nav-item"><a class="wc-menu-cart nav-link" href="<?php $woocommerce->cart->get_cart_url(); ?>" title="<?php __('View your shopping cart', 'madeit'); ?>">
+        <?php
+    }
+    ?>
+    <i class="fa fa-shopping-cart"></i>
+    <?php echo sprintf(_n('%d item', '%d items', $cart_contents_count, 'madeit'), $cart_contents_count) . ' - '. $woocommerce->cart->get_cart_total(); ?>
+    </a></li>
+    <?php
+    $social = ob_get_clean();
+    return $menu . $social;
+}
+add_filter('wp_nav_menu_items', 'madeit_woocommerce_shopping_cart_in_menu', 10, 2);
+
+/**
  * Implement the Custom Header feature.
  */
 require get_parent_theme_file_path('/inc/custom-header.php');
