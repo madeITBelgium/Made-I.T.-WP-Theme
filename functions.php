@@ -16,7 +16,8 @@ if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
 }
 
 add_action('after_setup_theme', 'madeit_woocommerce_support');
-function madeit_woocommerce_support() {
+function madeit_woocommerce_support()
+{
     add_theme_support('woocommerce');
 }
 
