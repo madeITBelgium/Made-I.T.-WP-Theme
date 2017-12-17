@@ -15,6 +15,11 @@ if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
     return;
 }
 
+add_action('after_setup_theme', 'madeit_woocommerce_support');
+function madeit_woocommerce_support() {
+    add_theme_support('woocommerce');
+}
+
 function madeit_setup()
 {
     load_theme_textdomain('madeit');
