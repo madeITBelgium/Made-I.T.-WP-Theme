@@ -182,7 +182,7 @@ function madeit_customize_register($wp_customize)
         'label'       => __('Page Width', 'madeit'),
         'section'     => 'theme_options',
         'type'        => 'radio',
-        'description' => __('Choise the screen width of you content.', 'madeit'),
+        'description' => __('Choose the screen width of your content.', 'madeit'),
         'choices'     => [
             'container'       => __('Normal screen width', 'madeit'),
             'container-fluid' => __('Full screen width', 'madeit'),
