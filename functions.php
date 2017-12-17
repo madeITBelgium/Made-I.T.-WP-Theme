@@ -15,23 +15,38 @@ if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
     return;
 }
 
-add_action('after_setup_theme', 'madeit_woocommerce_support');
-function madeit_woocommerce_support()
-{
-    add_theme_support('woocommerce');
-}
-
 function madeit_setup()
 {
     load_theme_textdomain('madeit');
     add_theme_support('automatic-feed-links');
     add_theme_support('title-tag');
+    add_theme_support('woocommerce');
 
     add_theme_support('post-thumbnails');
 
     add_image_size('madeit-featured-image', 2000, 1200, true);
     add_image_size('madeit-featured-blog-image', 1200, 630, true);
     add_image_size('madeit-thumbnail-avatar', 100, 100, true);
+    
+    $catalog = array(
+        'width' 	=> '300',	// px
+        'height'	=> '160',	// px
+        'crop'		=> 1 		// true
+    );
+    $single = array(
+        'width' 	=> '1200',	// px
+        'height'	=> '630',	// px
+        'crop'		=> 1 		// true
+    );
+    $thumbnail = array(
+        'width' 	=> '300',	// px
+        'height'	=> '160',	// px
+        'crop'		=> 0 		// false
+    );
+    // Image sizes
+    update_option( 'shop_catalog_image_size', $catalog ); 		// Product category thumbs
+    update_option( 'shop_single_image_size', $single ); 		// Single product image
+    update_option( 'shop_thumbnail_image_size', $thumbnail ); 	// Image gallery thumbs
 
     $GLOBALS['content_width'] = 525;
 
