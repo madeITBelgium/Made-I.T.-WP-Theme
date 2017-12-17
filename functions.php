@@ -27,26 +27,26 @@ function madeit_setup()
     add_image_size('madeit-featured-image', 2000, 1200, true);
     add_image_size('madeit-featured-blog-image', 1200, 630, true);
     add_image_size('madeit-thumbnail-avatar', 100, 100, true);
-    
-    $catalog = array(
+
+    $catalog = [
         'width' 	=> '300',	// px
         'height'	=> '160',	// px
-        'crop'		=> 1 		// true
-    );
-    $single = array(
+        'crop'		 => 1, 		// true
+    ];
+    $single = [
         'width' 	=> '1200',	// px
         'height'	=> '630',	// px
-        'crop'		=> 1 		// true
-    );
-    $thumbnail = array(
+        'crop'		 => 1, 		// true
+    ];
+    $thumbnail = [
         'width' 	=> '300',	// px
         'height'	=> '160',	// px
-        'crop'		=> 0 		// false
-    );
+        'crop'		 => 0, 		// false
+    ];
     // Image sizes
-    update_option( 'shop_catalog_image_size', $catalog ); 		// Product category thumbs
-    update_option( 'shop_single_image_size', $single ); 		// Single product image
-    update_option( 'shop_thumbnail_image_size', $thumbnail ); 	// Image gallery thumbs
+    update_option('shop_catalog_image_size', $catalog); 		// Product category thumbs
+    update_option('shop_single_image_size', $single); 		// Single product image
+    update_option('shop_thumbnail_image_size', $thumbnail); 	// Image gallery thumbs
 
     $GLOBALS['content_width'] = 525;
 
@@ -728,38 +728,35 @@ function madeit_woocommerce_account_menu_item_classes($classes, $endpoint)
 add_filter('woocommerce_account_menu_item_classes', 'madeit_woocommerce_account_menu_item_classes', 10, 2);
 
 /**
- * Add cart icon to menu
+ * Add cart icon to menu.
  */
 function madeit_woocommerce_shopping_cart_in_menu($menu, $args)
 {
 
-	// Check if WooCommerce is active and add a new item to a menu assigned to Primary Navigation Menu location
-	if (!in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins'))) || 'top' !== $args->theme_location)
-    {
+    // Check if WooCommerce is active and add a new item to a menu assigned to Primary Navigation Menu location
+    if (!in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins'))) || 'top' !== $args->theme_location) {
         return $menu;
     }
-    
+
     global $woocommerce;
-	ob_start();
+    ob_start();
     $cart_contents_count = $woocommerce->cart->cart_contents_count;
-    if ($cart_contents_count == 0)
-    {
+    if ($cart_contents_count == 0) {
         ?>
         <li class="menu-item nav-item"><a class="wc-menu-cart nav-link" href="<?php echo get_permalink(wc_get_page_id('shop')); ?>" title="<?php echo  __('Start shopping', 'madeit'); ?>">
         <?php
-    }
-    else {
+    } else {
         ?>
         <li class="menu-item nav-item"><a class="wc-menu-cart nav-link" href="<?php $woocommerce->cart->get_cart_url(); ?>" title="<?php __('View your shopping cart', 'madeit'); ?>">
         <?php
-    }
-    ?>
+    } ?>
     <i class="fa fa-shopping-cart"></i>
-    <?php echo sprintf(_n('%d item', '%d items', $cart_contents_count, 'madeit'), $cart_contents_count) . ' - '. $woocommerce->cart->get_cart_total(); ?>
+    <?php echo sprintf(_n('%d item', '%d items', $cart_contents_count, 'madeit'), $cart_contents_count).' - '.$woocommerce->cart->get_cart_total(); ?>
     </a></li>
     <?php
     $social = ob_get_clean();
-    return $menu . $social;
+
+    return $menu.$social;
 }
 add_filter('wp_nav_menu_items', 'madeit_woocommerce_shopping_cart_in_menu', 10, 2);
 
