@@ -10,6 +10,8 @@
  */
 function madeit_custom_colors_css()
 {
+    $text_color = get_theme_mod('text_color_rgb', '#212529');
+    $background_color = get_theme_mod('background_color_rgb', '#ffffff');
     $primary_color = get_theme_mod('primary_color_rgb', '#007bff');
     $secondary_color = get_theme_mod('secondary_color_rgb', '#868e96');
     $success_color = get_theme_mod('success_color_rgb', '#28a745');
@@ -18,6 +20,8 @@ function madeit_custom_colors_css()
     $danger_color = get_theme_mod('danger_color_rgb', '#dc3545');
 
     $colors = [
+        'text'      => $text_color,
+        'background' => $background_color,
         'primary'   => $primary_color,
         'secondary' => $secondary_color,
         'success'   => $success_color,
@@ -34,8 +38,8 @@ function madeit_custom_colors_css()
  */
  
  body {
-  color: #212529;
-  background-color: #fff;
+  color: ' . $text_color . ';
+  background-color: ' . $background_color . ';
 }
 a {
   color: '.$primary_color.';

@@ -45,6 +45,32 @@ function madeit_customize_register($wp_customize)
         'section'  => 'colors',
         'priority' => 5,
     ]);
+    
+    
+
+    $wp_customize->add_setting('text_color_rgb', [
+        'default'           => '#212529',
+        'transport'         => 'refresh',
+        'sanitize_callback' => 'madeit_check_rgb',
+    ]);
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'text_color_rgb', [
+        'mode'       => 'rgb',
+        'label'      => __('Text Color', 'madeit'),
+        'section'    => 'colors',
+        'settings'   => 'text_color_rgb',
+    ]));
+    
+    $wp_customize->add_setting('background_color_rgb', [
+        'default'           => '#ffffff',
+        'transport'         => 'refresh',
+        'sanitize_callback' => 'madeit_check_rgb',
+    ]);
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'background_color_rgb', [
+        'mode'       => 'rgb',
+        'label'      => __('Background Color', 'madeit'),
+        'section'    => 'colors',
+        'settings'   => 'background_color_rgb',
+    ]));
 
     $wp_customize->add_setting('primary_color_rgb', [
         'default'           => '#007bff',
