@@ -20,14 +20,14 @@ function madeit_custom_colors_css()
     $danger_color = get_theme_mod('danger_color_rgb', '#dc3545');
 
     $colors = [
-        'text'      => $text_color,
+        'text'       => $text_color,
         'background' => $background_color,
-        'primary'   => $primary_color,
-        'secondary' => $secondary_color,
-        'success'   => $success_color,
-        'info'      => $info_color,
-        'warning'   => $warning_color,
-        'danger'    => $danger_color,
+        'primary'    => $primary_color,
+        'secondary'  => $secondary_color,
+        'success'    => $success_color,
+        'info'       => $info_color,
+        'warning'    => $warning_color,
+        'danger'     => $danger_color,
     ];
 
     $css = '
@@ -38,8 +38,8 @@ function madeit_custom_colors_css()
  */
  
  body {
-  color: ' . $text_color . ';
-  background-color: ' . $background_color . ';
+  color: '.$text_color.';
+  background-color: '.$background_color.';
 }
 a {
   color: '.$primary_color.';
