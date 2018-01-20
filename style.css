@@ -242,6 +242,49 @@ img {
     color: #666;
 }
 
+/* Lightbox */
+.lightbox-nav-overlay {
+	z-index: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: -ms-flexbox;
+    display: flex;
+}
+.lightbox-nav-overlay a {
+    -ms-flex: 1;
+    flex: 1;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity .5s;
+    color: #fff;
+    font-size: 30px;
+    z-index: 1;
+}
+.lightbox-nav-overlay a span {
+    padding: 0 30px;
+}
+.lightbox-nav-overlay a:last-child span {
+    text-align: right;
+	float:right;
+	width: 100%;
+}
+.lightbox-nav-overlay a:hover {
+    opacity: 1;
+    text-decoration: none;
+}
+@media screen and (max-width: 768px) {
+	.lightbox-nav-overlay a {
+		opacity: 1;
+		text-decoration: none;
+	}
+}
+
 /* Extra's */
 .voffset { margin-top: 2px; }
 .voffset1 { margin-top: 5px; }
