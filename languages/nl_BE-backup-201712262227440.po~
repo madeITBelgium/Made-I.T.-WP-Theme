@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Made I.T.\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-17 20:59+0000\n"
-"PO-Revision-Date: 2017-12-17 21:00+0000\n"
+"POT-Creation-Date: 2017-12-26 22:25+0000\n"
+"PO-Revision-Date: 2017-12-26 22:26+0000\n"
 "Last-Translator: tjebbeke <tjebbe.lievens@madeit.be>\n"
 "Language-Team: Dutch (Belgium)\n"
 "Language: nl-BE\n"
@@ -13,54 +13,27 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco - https://localise.biz/"
 
-#: functions.php:138
-msgctxt "Theme starter content"
-msgid "Koffie Machien"
+#. Name of the template
+msgid "Page with sidebar"
+msgstr "Pagina met zijbalk"
+
+#. %s: Name of current post
+#: template-parts/page/content-front-page-panels.php:47
+#, php-format
+msgid "Continue reading <span class=\"screen-reader-text\">\"%s\"</span>"
+msgstr "Lees meer <span class=\"screen-reader-text\">\"%s\"</span>"
+
+#. Name of the theme
+#. Author of the theme
+msgid "Made I.T."
 msgstr ""
 
-#: functions.php:142
-msgctxt "Theme starter content"
-msgid "Outside"
+#. URI of the theme
+msgid "https://www.madeit.be"
 msgstr ""
 
-#: functions.php:146
-msgctxt "Theme starter content"
-msgid "Inside"
-msgstr ""
-
-#: functions.php:150
-msgctxt "Theme starter content"
-msgid "Price table"
-msgstr ""
-
-#: functions.php:746
-msgid "Start shopping"
-msgstr "Winkelen"
-
-#: functions.php:750
-msgid "View your shopping cart"
-msgstr "Toon je winkelmand"
-
-#: inc/customizer.php:185
-msgid "Choose the screen width of your content."
-msgstr "Selecteer de schermbreedte van de content."
-
-#: inc/customizer.php:187 inc/customizer.php:273
-msgid "Normal screen width"
-msgstr "Normale scherm breedte"
-
-#: inc/customizer.php:188 inc/customizer.php:274
-msgid "Full screen width"
-msgstr "Volledige scherm breedte"
-
-#: inc/customizer.php:203
-msgid "Show header image"
-msgstr "Toon header foto"
-
-#: inc/customizer.php:206
-msgid ""
-"Show the homepage header image on sub pages when there is no post featured "
-"image."
+#. Author URI of the theme
+msgid "https://wordpress.org/"
 msgstr ""
 
 #: footer.php:25
@@ -133,6 +106,26 @@ msgstr "Topmenu"
 msgid "Social Links Menu"
 msgstr "Sociale links menu"
 
+#: functions.php:138
+msgctxt "Theme starter content"
+msgid "Koffie Machien"
+msgstr "Koffiemachine"
+
+#: functions.php:142
+msgctxt "Theme starter content"
+msgid "Outside"
+msgstr "Exterieur"
+
+#: functions.php:146
+msgctxt "Theme starter content"
+msgid "Inside"
+msgstr "Interieur"
+
+#: functions.php:150
+msgctxt "Theme starter content"
+msgid "Price table"
+msgstr "Prijs tabel"
+
 #. Translators: If there are characters in your language that are not supported
 #. by Libre Franklin, translate this to 'off'. Do not translate into your own
 #. language.
@@ -164,8 +157,8 @@ msgid "Footer 2"
 msgstr "Footer 2"
 
 #. translators: %s: Name of current post
-#: functions.php:344 template-parts/page/content-front-page.php:41
-#: template-parts/page/content-front-page-panels.php:47
+#: functions.php:344 template-parts/page/content-page.php:29
+#: template-parts/page/content-front-page.php:41
 #, php-format
 msgid "Continue reading<span class=\"screen-reader-text\"> \"%s\"</span>"
 msgstr "<span class=\"screen-reader-text\">\"%s\" </span>verder lezen"
@@ -173,6 +166,14 @@ msgstr "<span class=\"screen-reader-text\">\"%s\" </span>verder lezen"
 #: functions.php:602
 msgid "Continue reading"
 msgstr "Meer lezen"
+
+#: functions.php:746
+msgid "Start shopping"
+msgstr "Winkelen"
+
+#: functions.php:750
+msgid "View your shopping cart"
+msgstr "Toon je winkelmand"
 
 #: functions.php:754
 #, php-format
@@ -267,7 +268,7 @@ msgstr "Categorieën"
 msgid "Tags"
 msgstr "Tags"
 
-#: inc/template-tags.php:104 template-parts/page/content-page.php:22
+#: inc/template-tags.php:104
 msgid "Pages:"
 msgstr "Pagina's:"
 
@@ -366,6 +367,30 @@ msgstr "Twee kolommen"
 msgid "Page Width"
 msgstr "Page breedte"
 
+#: inc/customizer.php:185
+msgid "Choose the screen width of your content."
+msgstr "Selecteer de schermbreedte van de content."
+
+#: inc/customizer.php:187 inc/customizer.php:273
+msgid "Normal screen width"
+msgstr "Normale scherm breedte"
+
+#: inc/customizer.php:188 inc/customizer.php:274
+msgid "Full screen width"
+msgstr "Volledige scherm breedte"
+
+#: inc/customizer.php:203
+msgid "Show header image"
+msgstr "Toon header foto"
+
+#: inc/customizer.php:206
+msgid ""
+"Show the homepage header image on sub pages when there is no post featured "
+"image."
+msgstr ""
+"Toon de homepagina header foto op sub pagina's als er geen featured post "
+"foto is ingesteld."
+
 #. translators: %d is the front page section number
 #: inc/customizer.php:229
 #, php-format
@@ -440,17 +465,3 @@ msgstr ""
 #: template-parts/navigation/navigation-top.php:13
 msgid "Menu"
 msgstr "Menu"
-
-#. Name of the theme
-#. Author of the theme
-msgid "Made I.T."
-msgstr "Made I.T."
-
-#. URI of the theme
-msgid "https://www.madeit.be"
-msgstr "https://www.madeit.be/"
-
-#. #-#-#-#-#  twentyseventeen.pot (Twenty Seventeen 1.4)  #-#-#-#-#
-#. Author URI of the plugin/theme
-msgid "https://wordpress.org/"
-msgstr "https://nl-be.wordpress.org/"

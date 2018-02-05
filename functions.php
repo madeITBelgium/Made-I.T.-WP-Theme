@@ -15,9 +15,12 @@ if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
     return;
 }
 
+require_once dirname(__FILE__) . "/inc/MadeIT_Updater.php";
+new WP_MadeIT_Sport_Event_Updater(__FILE__, 'madeITBelgium', 'Made-I.T.-WP-Theme', null);
+
 function madeit_setup()
 {
-    load_theme_textdomain('madeit');
+    load_theme_textdomain('madeit', get_template_directory() . '/languages');
     add_theme_support('automatic-feed-links');
     add_theme_support('title-tag');
     add_theme_support('woocommerce');
@@ -314,6 +317,16 @@ function madeit_widgets_init()
         'name'          => __('Footer 2', 'madeit'),
         'id'            => 'sidebar-3',
         'description'   => __('Add widgets here to appear in your footer.', 'madeit'),
+        'before_widget' => '<section id="%1$s" class="widget %2$s">',
+        'after_widget'  => '</section>',
+        'before_title'  => '<h2 class="widget-title">',
+        'after_title'   => '</h2>',
+    ]);
+
+    register_sidebar([
+        'name'          => __('Below index blog', 'madeit'),
+        'id'            => 'below-index-1',
+        'description'   => __('Add widgets here to appear below your blog/news list.', 'madeit'),
         'before_widget' => '<section id="%1$s" class="widget %2$s">',
         'after_widget'  => '</section>',
         'before_title'  => '<h2 class="widget-title">',

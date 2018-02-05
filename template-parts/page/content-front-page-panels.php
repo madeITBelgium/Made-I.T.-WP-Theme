@@ -44,7 +44,7 @@ if (function_exists('is_cart')) {
                     <?php
                         /* translators: %s: Name of current post */
                         the_content(sprintf(
-                            __('Continue reading<span class="screen-reader-text"> "%s"</span>', 'madeit'),
+                            __('Continue reading <span class="screen-reader-text">"%s"</span>', 'madeit'),
                             get_the_title()
                         ));
                     ?>

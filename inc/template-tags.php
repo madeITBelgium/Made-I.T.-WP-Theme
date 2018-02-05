@@ -39,11 +39,11 @@ function madeit_time_link()
     $time_string = sprintf($time_string, get_the_date(DATE_W3C), get_the_date());
 
     // Wrap the time string in a link, and preface it with 'Posted on'.
-    $result = sprintf(
+    $result = '<span class="published-on">' . sprintf(
         /* translators: %s: post date */
         __('<span>Posted on</span> %s', 'madeit'),
         '<a href="'.esc_url(get_permalink()).'" rel="bookmark">'.$time_string.'</a>'
-    ).' ';
+    ).'</span> ';
 
     if (get_the_time('U') !== get_the_modified_time('U')) {
         $time_string = '<time class="updated" datetime="%1$s">%2$s</time>';
@@ -54,11 +54,11 @@ function madeit_time_link()
         );
 
         // Wrap the time string in a link, and preface it with 'Posted on'.
-        $result .= sprintf(
+        $result .= '<span class="updated-on">' . sprintf(
             /* translators: %s: post date */
             __('<span>Updated on</span> %s', 'madeit'),
             '<a href="'.esc_url(get_permalink()).'" rel="bookmark">'.$time_string.'</a>'
-        );
+        ) . '</span>';
     }
 
     return $result;
