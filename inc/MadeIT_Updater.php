@@ -25,7 +25,7 @@ class MadeIT_Updater
     // Get information regarding our plugin from WordPress
     private function initThemeData()
     {
-        $this->slug = basename($this->themeFile);
+        $this->slug = get_template();
         $theme = wp_get_theme($this->slug);
         $this->themeData = [];
         $this->themeData['ThemeURI'] = esc_html($theme->get('ThemeURI'));
@@ -80,7 +80,7 @@ class MadeIT_Updater
             }
 
             $theme_array = [];
-            $theme_array['new_version'] = $this->github_api_result->tag_name;
+            $theme_array['new_version'] = $this->githubAPIResult->tag_name;
             $theme_array['url'] = $this->initThemeData['ThemeURI'];
             $theme_array['package'] = $package;
             $transient->response[$this->slug] = $theme_array;
