@@ -28,7 +28,7 @@ jQuery( document ).ready( function( $ ) {
             total = $( group ).find( '.click-lightbox' ).length - 1;
 
             leftIndex = index > 0 ? index - 1 : total;
-            rightIndex = index < total ? index + 1: 0;
+            rightIndex = index < total ? index + 1 : 0;
 
             leftUrl = $( group ).find( '.click-lightbox:eq(' + leftIndex + ')' ).attr( 'href' );
             rightUrl = $( group ) .find( '.click-lightbox:eq(' + rightIndex + ')' ).attr( 'href' );
