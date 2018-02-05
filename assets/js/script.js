@@ -2,7 +2,7 @@ jQuery( document ).ready( function( $ ) {
     var lightboxGroup;
 
     $( '.lightbox' ).each( function( ) {
-        if ( ( undefined === $( this ).parent( ).tagName && 'a' == $( this ).parent( )[0].localName ) || 'a' === $( this ).parent( ).tagName ) {
+        if ( ( undefined === $( this ).parent( ).tagName && 'a' === $( this ).parent( )[0].localName ) || 'a' === $( this ).parent( ).tagName ) {
             $( this ).parent( ).addClass( 'click-lightbox' );
         } else {
             $( this ).wrap( '<a href="' + $( this ).attr( 'src' ) + '" class="click-lightbox"></a>' );
