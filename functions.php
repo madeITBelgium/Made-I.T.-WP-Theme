@@ -15,12 +15,12 @@ if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
     return;
 }
 
-require_once dirname(__FILE__) . "/inc/MadeIT_Updater.php";
+require_once dirname(__FILE__).'/inc/MadeIT_Updater.php';
 new WP_MadeIT_Sport_Event_Updater(__FILE__, 'madeITBelgium', 'Made-I.T.-WP-Theme', null);
 
 function madeit_setup()
 {
-    load_theme_textdomain('madeit', get_template_directory() . '/languages');
+    load_theme_textdomain('madeit', get_template_directory().'/languages');
     add_theme_support('automatic-feed-links');
     add_theme_support('title-tag');
     add_theme_support('woocommerce');

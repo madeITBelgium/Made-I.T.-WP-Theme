@@ -54,7 +54,7 @@ get_header(); ?>
                 get_template_part('template-parts/post/content', 'none');
 
             endif;
-            
+
             get_template_part('template-parts/post/below-index', 'widgets');
             ?>
         </div>
