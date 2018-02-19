@@ -16,7 +16,7 @@ if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
 }
 
 require_once dirname(__FILE__).'/inc/MadeIT_Updater.php';
-new WP_MadeIT_Sport_Event_Updater(__FILE__, 'madeITBelgium', 'Made-I.T.-WP-Theme', null);
+new MadeIT_Updater(__FILE__, 'madeITBelgium', 'Made-I.T.-WP-Theme', null);
 
 function madeit_setup()
 {
