@@ -1107,7 +1107,8 @@ function madeit_contrast_color($hex)
     $r = round(255 * $r);
     $g = round(255 * $g);
     $b = round(255 * $b);
-    
+
     $a = 1 - (0.299 * $r + 0.587 * $g * 0.114 * $b) / 255;
+
     return $a < 0.5 ? '#000' : '#FFF';
 }
