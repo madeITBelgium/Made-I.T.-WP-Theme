@@ -592,7 +592,7 @@ add_filter('widget_tag_cloud_args', 'madeit_widget_tag_cloud_args');
 /*
  * Fix bootstrap menu when admin bar is enabled
  */
-if(!function_exists('madeit_wp_bootstrap_head')) {
+if (!function_exists('madeit_wp_bootstrap_head')) {
     function madeit_wp_bootstrap_head()
     {
         if (is_admin_bar_showing()) {
