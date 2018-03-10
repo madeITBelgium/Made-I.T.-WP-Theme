@@ -2,43 +2,43 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Made I.T.\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-26 22:27+0000\n"
-"PO-Revision-Date: 2017-12-26 22:27+0000\n"
+"POT-Creation-Date: 2018-03-10 20:28+0000\n"
+"PO-Revision-Date: 2018-03-10 20:33+0000\n"
 "Last-Translator: tjebbeke <tjebbe.lievens@madeit.be>\n"
 "Language-Team: Dutch (Belgium)\n"
-"Language: nl-BE\n"
-"Plural-Forms: nplurals=2; plural=n != 1\n"
+"Language: nl_BE\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Loco - https://localise.biz/"
+"X-Generator: Loco https://localise.biz/"
 
-#: ../madeit/footer.php:25
+#: footer.php:25
 msgid "Footer Social Links Menu"
 msgstr "Footer sociale links menu"
 
-#: ../madeit/search.php:17
+#: search.php:17
 #, php-format
 msgid "Search Results for: %s"
 msgstr "Zoekresultaten voor: %s"
 
-#: ../madeit/search.php:19 ../madeit/template-parts/post/content-none.php:14
+#: search.php:19 template-parts/post/content-none.php:14
 msgid "Nothing Found"
 msgstr "Niets gevonden"
 
-#: ../madeit/search.php:38 ../madeit/index.php:47 ../madeit/archive.php:35
+#: search.php:38 index.php:47 archive.php:35
 msgid "Previous page"
 msgstr "Vorige pagina"
 
-#: ../madeit/search.php:39 ../madeit/index.php:48 ../madeit/archive.php:36
+#: search.php:39 index.php:48 archive.php:36
 msgid "Next page"
 msgstr "Volgende pagina"
 
-#: ../madeit/search.php:40 ../madeit/index.php:49 ../madeit/archive.php:37
+#: search.php:40 index.php:49 archive.php:37
 msgid "Page"
 msgstr "Pagina"
 
-#: ../madeit/search.php:45
+#: search.php:45
 msgid ""
 "Sorry, but nothing matched your search terms. Please try again with some "
 "different keywords."
@@ -46,59 +46,59 @@ msgstr ""
 "Helaas, niets komt overeen met uw zoektermen. Probeer opnieuw met andere "
 "zoektermen."
 
-#: ../madeit/index.php:24
+#: index.php:24
 msgid "Posts"
 msgstr "Berichten"
 
-#: ../madeit/404.php:17
+#: 404.php:17
 msgid "Oops! That page can&rsquo;t be found."
 msgstr "Oeps! Die pagina werd niet gevonden."
 
-#: ../madeit/404.php:20
+#: 404.php:20
 msgid "It looks like nothing was found at this location. Maybe try a search?"
 msgstr ""
 "Het lijkt dat hier niets gevonden wordt. Probeer eens met een zoekopdracht?"
 
-#: ../madeit/single.php:27
+#: single.php:27
 msgid "Previous Post"
 msgstr "Vorig bericht"
 
-#: ../madeit/single.php:27 ../madeit/comments.php:66
+#: single.php:27 comments.php:66
 msgid "Previous"
 msgstr "Vorige"
 
-#: ../madeit/single.php:28
+#: single.php:28
 msgid "Next Post"
 msgstr "Volgend bericht"
 
-#: ../madeit/single.php:28 ../madeit/comments.php:67
+#: single.php:28 comments.php:67
 msgid "Next"
 msgstr "Volgende"
 
-#: ../madeit/functions.php:54 ../madeit/functions.php:174
+#: functions.php:61 functions.php:181
 msgid "Top Menu"
 msgstr "Topmenu"
 
-#: ../madeit/functions.php:55 ../madeit/functions.php:185
+#: functions.php:62 functions.php:192
 msgid "Social Links Menu"
 msgstr "Sociale links menu"
 
-#: ../madeit/functions.php:138
+#: functions.php:145
 msgctxt "Theme starter content"
 msgid "Koffie Machien"
 msgstr "Koffiemachine"
 
-#: ../madeit/functions.php:142
+#: functions.php:149
 msgctxt "Theme starter content"
 msgid "Outside"
 msgstr "Exterieur"
 
-#: ../madeit/functions.php:146
+#: functions.php:153
 msgctxt "Theme starter content"
 msgid "Inside"
 msgstr "Interieur"
 
-#: ../madeit/functions.php:150
+#: functions.php:157
 msgctxt "Theme starter content"
 msgid "Price table"
 msgstr "Prijs tabel"
@@ -106,69 +106,93 @@ msgstr "Prijs tabel"
 #. Translators: If there are characters in your language that are not supported
 #. by Libre Franklin, translate this to 'off'. Do not translate into your own
 #. language.
-#: ../madeit/functions.php:245
+#: functions.php:251
 msgctxt "Libre Franklin font: on or off"
 msgid "on"
 msgstr "aan"
 
-#: ../madeit/functions.php:294 ../madeit/sidebar.php:15
+#: functions.php:300 sidebar.php:15
 msgid "Blog Sidebar"
 msgstr "Blog Sidebar"
 
-#: ../madeit/functions.php:296
+#: functions.php:302
 msgid ""
 "Add widgets here to appear in your sidebar on blog posts and archive pages."
 msgstr ""
 "Voeg hier widgets toe in de sidebar op blog berichten en archiefpagina's."
 
-#: ../madeit/functions.php:304
+#: functions.php:310
 msgid "Footer 1"
 msgstr "Footer 1"
 
-#: ../madeit/functions.php:306 ../madeit/functions.php:316
+#: functions.php:312 functions.php:322
 msgid "Add widgets here to appear in your footer."
 msgstr "Voeg hier widgets toe om in de footer te tonen."
 
-#: ../madeit/functions.php:314
+#: functions.php:320
 msgid "Footer 2"
 msgstr "Footer 2"
 
+#: functions.php:330
+msgid "Below index blog"
+msgstr "Onder blog berichten."
+
+#: functions.php:332
+msgid "Add widgets here to appear below your blog/news list."
+msgstr "Voeg widgets toe onder je blog of nieuws berichten."
+
 #. translators: %s: Name of current post
-#: ../madeit/functions.php:344
-#: ../madeit/template-parts/page/content-page.php:29
-#: ../madeit/template-parts/page/content-front-page.php:41
+#: functions.php:360 template-parts/page/content-page.php:29
+#: template-parts/page/content-front-page.php:41
 #, php-format
 msgid "Continue reading<span class=\"screen-reader-text\"> \"%s\"</span>"
 msgstr "<span class=\"screen-reader-text\">\"%s\" </span>verder lezen"
 
-#: ../madeit/functions.php:602
+#: functions.php:620
 msgid "Continue reading"
 msgstr "Meer lezen"
 
-#: ../madeit/functions.php:746
+#: functions.php:764
 msgid "Start shopping"
 msgstr "Winkelen"
 
-#: ../madeit/functions.php:750
+#: functions.php:768
 msgid "View your shopping cart"
 msgstr "Toon je winkelmand"
 
-#: ../madeit/functions.php:754
+#: functions.php:772
 #, php-format
 msgid "%d item"
 msgid_plural "%d items"
 msgstr[0] "%d item"
 msgstr[1] "%d items"
 
+#: functions.php:784
+#, php-format
+msgid ""
+"By using our website you are consenting to our use of cookies in accordance "
+"with our <a href=\"%s\">cookie policy</a>."
+msgstr ""
+"Door gebruiken te maken van onze website stemt u in met gebruik van cookies "
+"in overeenstemming met ons <a href=\"%s\">cookiebeleid</a>."
+
+#: functions.php:801 functions.php:819
+msgid "Close"
+msgstr "Sluiten"
+
+#. Name of the template
+msgid "Page with sidebar"
+msgstr "Pagina met zijbalk"
+
 #. translators: %s: post title
-#: ../madeit/comments.php:31
+#: comments.php:31
 #, php-format
 msgctxt "comments title"
 msgid "One Reply to &ldquo;%s&rdquo;"
 msgstr "Een antwoord op &ldquo;%s&rdquo;"
 
 #. translators: 1: number of comments, 2: post title
-#: ../madeit/comments.php:35
+#: comments.php:35
 #, php-format
 msgctxt "comments title"
 msgid "%1$s Reply to &ldquo;%2$s&rdquo;"
@@ -176,157 +200,164 @@ msgid_plural "%1$s Replies to &ldquo;%2$s&rdquo;"
 msgstr[0] "%1$s Antwoord op &ldquo;%2$s&rdquo;"
 msgstr[1] "%1$s Antwoorden op &ldquo;%2$s&rdquo;"
 
-#: ../madeit/comments.php:73
+#: comments.php:73
 msgid "Comments are closed."
 msgstr "Reacties zijn gesloten."
 
-#: ../madeit/comments.php:88
+#: comments.php:88
 msgid "Comment"
 msgstr "Reactie"
 
-#: ../madeit/searchform.php:16
+#: searchform.php:16
 msgid "Search..."
 msgstr "Zoeken..."
 
-#: ../madeit/searchform.php:18
+#: searchform.php:18
 msgid "Search"
 msgstr "Zoeken"
 
-#: ../madeit/inc/template-functions.php:118
+#: inc/MadeIT_Updater.php:210
+msgid "Rename successful"
+msgstr "Hernoemen succesvol"
+
+#: inc/MadeIT_Updater.php:217
+msgid "Unable to rename downloaded repository."
+msgstr "Het was niet mogelijk om de download te hernoemen."
+
+#: inc/template-functions.php:118
 msgid "Pingback:"
 msgstr "Pingback:"
 
-#: ../madeit/inc/template-functions.php:118
-#: ../madeit/inc/template-functions.php:139
+#: inc/template-functions.php:118 inc/template-functions.php:139
 msgid "Edit"
 msgstr "Wijzig"
 
-#: ../madeit/inc/template-functions.php:130
+#: inc/template-functions.php:130
 #, php-format
 msgid "%s <span class=\"says\">:</span>"
 msgstr "%s <span class=\"says\">:</span>"
 
-#: ../madeit/inc/template-functions.php:136
+#: inc/template-functions.php:136
 #, php-format
 msgctxt "1: date, 2: time"
 msgid "%1$s om %2$s"
 msgstr "%1$s om %2$s"
 
-#: ../madeit/inc/template-functions.php:143
+#: inc/template-functions.php:143
 msgid "Je comentaar wacht op een review van de beheerder."
 msgstr "Je comentaar wacht op een review van de beheerder."
 
 #. translators: %s: post author
-#: ../madeit/inc/template-tags.php:19
+#: inc/template-tags.php:19
 #, php-format
 msgid "by %s"
 msgstr "door %s"
 
 #. %s: post date
-#: ../madeit/inc/template-tags.php:44
+#: inc/template-tags.php:44
 #, php-format
 msgid "<span>Posted on</span> %s"
 msgstr "Geplaatst op %s"
 
 #. %s: post date
-#: ../madeit/inc/template-tags.php:59
+#: inc/template-tags.php:59
 #, php-format
 msgid "<span>Updated on</span> %s"
 msgstr "Gewijzigd op %s"
 
 #. translators: used between list items, there is a space after the comma
-#: ../madeit/inc/template-tags.php:75
+#: inc/template-tags.php:75
 msgid ", "
 msgstr ", "
 
-#: ../madeit/inc/template-tags.php:93
+#: inc/template-tags.php:93
 msgid "Categories"
 msgstr "Categorieën"
 
-#: ../madeit/inc/template-tags.php:97
+#: inc/template-tags.php:97
 msgid "Tags"
 msgstr "Tags"
 
-#: ../madeit/inc/template-tags.php:104
+#: inc/template-tags.php:104
 msgid "Pages:"
 msgstr "Pagina's:"
 
 #. translators: %s: Name of current post
-#: ../madeit/inc/template-tags.php:132
+#: inc/template-tags.php:132
 #, php-format
 msgid "Edit<span class=\"screen-reader-text\"> \"%s\"</span>"
 msgstr "Bewerk<span class=\"screen-reader-text\"> \"%s\"</span>"
 
-#: ../madeit/inc/template-tags.php:167
+#: inc/template-tags.php:167
 #, php-format
 msgid "Front Page Section %1$s Placeholder"
 msgstr "Voorpagina sectie %1$s placeholder"
 
-#: ../madeit/inc/icon-functions.php:40
+#: inc/icon-functions.php:40
 msgid "Please define default parameters in the form of an array."
 msgstr "Gelieve standaard parameters te definiëren in de vorm van een array."
 
-#: ../madeit/inc/icon-functions.php:45
+#: inc/icon-functions.php:45
 msgid "Please define an SVG icon filename."
 msgstr "Gelieve een bestandsnaam voor een SVG icoon te geven."
 
-#: ../madeit/inc/customizer.php:39
+#: inc/customizer.php:39
 msgid "Color Scheme"
 msgstr "Kleurschema"
 
-#: ../madeit/inc/customizer.php:41
+#: inc/customizer.php:41
 msgid "Light"
 msgstr "Licht"
 
-#: ../madeit/inc/customizer.php:42
+#: inc/customizer.php:42
 msgid "Dark"
 msgstr "Donker"
 
-#: ../madeit/inc/customizer.php:43
+#: inc/customizer.php:43
 msgid "Custom"
 msgstr "Aangepast"
 
-#: ../madeit/inc/customizer.php:56
+#: inc/customizer.php:56
 msgid "Text Color"
 msgstr "Tekst kleur"
 
-#: ../madeit/inc/customizer.php:68
+#: inc/customizer.php:68
 msgid "Background Color"
 msgstr "Achtergrond kleur"
 
-#: ../madeit/inc/customizer.php:80
+#: inc/customizer.php:80
 msgid "Primary Color"
 msgstr "Primaire kleur"
 
-#: ../madeit/inc/customizer.php:92
+#: inc/customizer.php:92
 msgid "Secondary Color"
 msgstr "Secundaire kleur"
 
-#: ../madeit/inc/customizer.php:105
+#: inc/customizer.php:105
 msgid "Success Color"
 msgstr "Succes kleur"
 
-#: ../madeit/inc/customizer.php:117
+#: inc/customizer.php:117
 msgid "Info Color"
 msgstr "Info kleur"
 
-#: ../madeit/inc/customizer.php:129
+#: inc/customizer.php:129
 msgid "Warning Color"
 msgstr "Waarschuwings kleur"
 
-#: ../madeit/inc/customizer.php:141
+#: inc/customizer.php:141
 msgid "Danger Color"
 msgstr "Probleem kleur"
 
-#: ../madeit/inc/customizer.php:150
+#: inc/customizer.php:150
 msgid "Theme Options"
 msgstr "Thema opties"
 
-#: ../madeit/inc/customizer.php:161
+#: inc/customizer.php:161
 msgid "Page Layout"
 msgstr "Pagina lay-out"
 
-#: ../madeit/inc/customizer.php:164
+#: inc/customizer.php:164
 msgid ""
 "When the two-column layout is assigned, the page title is in one column and "
 "content is in the other."
@@ -334,35 +365,35 @@ msgstr ""
 "Wanneer de lay-out op twee kolommen gezet wordt, bevindt de titel van de "
 "pagina zich in de ene kolom en de inhoud in de andere."
 
-#: ../madeit/inc/customizer.php:166 ../madeit/inc/customizer.php:254
+#: inc/customizer.php:166 inc/customizer.php:297
 msgid "One Column"
 msgstr "Eén kolom"
 
-#: ../madeit/inc/customizer.php:167 ../madeit/inc/customizer.php:255
+#: inc/customizer.php:167 inc/customizer.php:298
 msgid "Two Column"
 msgstr "Twee kolommen"
 
-#: ../madeit/inc/customizer.php:182
+#: inc/customizer.php:182
 msgid "Page Width"
 msgstr "Page breedte"
 
-#: ../madeit/inc/customizer.php:185
+#: inc/customizer.php:185
 msgid "Choose the screen width of your content."
 msgstr "Selecteer de schermbreedte van de content."
 
-#: ../madeit/inc/customizer.php:187 ../madeit/inc/customizer.php:273
+#: inc/customizer.php:187 inc/customizer.php:316
 msgid "Normal screen width"
 msgstr "Normale scherm breedte"
 
-#: ../madeit/inc/customizer.php:188 ../madeit/inc/customizer.php:274
+#: inc/customizer.php:188 inc/customizer.php:317
 msgid "Full screen width"
 msgstr "Volledige scherm breedte"
 
-#: ../madeit/inc/customizer.php:203
+#: inc/customizer.php:203
 msgid "Show header image"
 msgstr "Toon header foto"
 
-#: ../madeit/inc/customizer.php:206
+#: inc/customizer.php:206
 msgid ""
 "Show the homepage header image on sub pages when there is no post featured "
 "image."
@@ -371,12 +402,12 @@ msgstr ""
 "foto is ingesteld."
 
 #. translators: %d is the front page section number
-#: ../madeit/inc/customizer.php:229
+#: inc/customizer.php:229
 #, php-format
 msgid "Front Page Section %d Content"
 msgstr "Startpagina sectie %d inhoud"
 
-#: ../madeit/inc/customizer.php:230
+#: inc/customizer.php:230
 msgid ""
 "Select pages to feature in each area from the dropdowns. Add an image to a "
 "section by setting a featured image in the page editor. Empty sections will "
@@ -386,8 +417,43 @@ msgstr ""
 "afbeelding toe aan een gebied door een uitgelichte afbeelding in te stellen "
 "in de pagina editor. Lege gebieden worden niet getoond."
 
-#: ../madeit/inc/back-compat.php:39 ../madeit/inc/back-compat.php:52
-#: ../madeit/inc/back-compat.php:68
+#: inc/customizer.php:249
+msgid "Cookie warning"
+msgstr "Cookie melding"
+
+#: inc/customizer.php:260
+msgid "Cookie warning position"
+msgstr "Cookie melding positie"
+
+#: inc/customizer.php:263
+msgid "Choose the position to place the cookie warning notice."
+msgstr "Kies de positie om de cookie melding te plaatsen."
+
+#: inc/customizer.php:265 inc/customizer.php:425
+msgid "Do not show"
+msgstr "Toon niet"
+
+#: inc/customizer.php:266 inc/customizer.php:426
+msgid "Popup"
+msgstr "Popup"
+
+#: inc/customizer.php:267 inc/customizer.php:427
+msgid "Static top notice"
+msgstr "Statisch bovenaan je website"
+
+#: inc/customizer.php:268 inc/customizer.php:428
+msgid "Static bottom notice"
+msgstr "Statisch onderaan op je website"
+
+#: inc/customizer.php:280
+msgid "Page of your cookie policy"
+msgstr "Pagina van je cookiebeleid"
+
+#: inc/customizer.php:281
+msgid "Select pages to link at in the cookie policy."
+msgstr "Selecteer de pagina die je wil linken in de cookie melding."
+
+#: inc/back-compat.php:39 inc/back-compat.php:52 inc/back-compat.php:68
 #, php-format
 msgid ""
 "Made I.T. requires at least WordPress version 4.7. You are running version "
@@ -396,44 +462,44 @@ msgstr ""
 "Made I.T. vereist minstens WordPress versie 4.7. Je gebruikt versie %s. "
 "Gelieve te upgraden en probeer dan opnieuw."
 
-#: ../madeit/inc/custom-header.php:47
+#: inc/custom-header.php:47
 msgid "Default Header Image"
 msgstr "Standaard header afbeelding"
 
-#: ../madeit/inc/custom-header.php:120
+#: inc/custom-header.php:120
 msgid "Play background video"
 msgstr "Speel achtergrondvideo"
 
-#: ../madeit/inc/custom-header.php:121
+#: inc/custom-header.php:121
 msgid "Pause background video"
 msgstr "Pauzeer achtergrondvideo"
 
-#: ../madeit/template-parts/footer/footer-widgets.php:15
+#: template-parts/footer/footer-widgets.php:15
 msgid "Footer"
 msgstr "Footer"
 
-#: ../madeit/template-parts/footer/site-info.php:10
+#: template-parts/footer/site-info.php:10
 msgid "https://www.madeit.be/"
 msgstr "https://www.madeit.be/"
 
-#: ../madeit/template-parts/footer/site-info.php:10
+#: template-parts/footer/site-info.php:10
 #, php-format
 msgid "Webdesign door %s uit Geel"
 msgstr "Webdesign door %s uit Geel"
 
-#: ../madeit/template-parts/footer/site-info.php:10
+#: template-parts/footer/site-info.php:10
 #, php-format
 msgid "Proudly powered by %s"
 msgstr "Ondersteund door %s"
 
-#: ../madeit/template-parts/post/content-none.php:20
+#: template-parts/post/content-none.php:20
 #, php-format
 msgid ""
 "Ready to publish your first post? <a href=\"%1$s\">Get started here</a>."
 msgstr ""
 "Klaar om je eerste bericht te publiceren? <a href=\"%1$s\">Begin hier</a>."
 
-#: ../madeit/template-parts/post/content-none.php:24
+#: template-parts/post/content-none.php:24
 msgid ""
 "It seems we can&rsquo;t find what you&rsquo;re looking for. Perhaps "
 "searching can help."
@@ -441,13 +507,26 @@ msgstr ""
 "Het lijkt dat we niet kunnen vinden wat u zoekt. Misschien kan de "
 "zoekfunctie helpen."
 
-#: ../madeit/template-parts/navigation/navigation-top.php:12
-#: ../madeit/template-parts/navigation/navigation-top.php:13
+#: template-parts/navigation/navigation-top.php:12
+#: template-parts/navigation/navigation-top.php:13
 msgid "Menu"
 msgstr "Menu"
 
 #. %s: Name of current post
-#: ../madeit/template-parts/page/content-front-page-panels.php:47
+#: template-parts/page/content-front-page-panels.php:47
 #, php-format
 msgid "Continue reading <span class=\"screen-reader-text\">\"%s\"</span>"
 msgstr "Lees meer <span class=\"screen-reader-text\">\"%s\"</span>"
+
+#. Name of the theme
+#. Author of the theme
+msgid "Made I.T."
+msgstr "Made I.T."
+
+#. URI of the theme
+msgid "https://www.madeit.be"
+msgstr "https://www.madeit.be"
+
+#. Author URI of the theme
+msgid "https://wordpress.org/"
+msgstr "https://wordpress.org/"
