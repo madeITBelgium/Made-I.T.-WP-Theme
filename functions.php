@@ -15,8 +15,12 @@ if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
     return;
 }
 
-require_once dirname(__FILE__).'/inc/MadeIT_Updater.php';
-new MadeIT_Updater(__FILE__, 'madeITBelgium', 'Made-I.T.-WP-Theme', null);
+if(file_exists(dirname(__FILE__).'/inc/MadeIT_Updater.php')) {
+    require_once dirname(__FILE__).'/inc/MadeIT_Updater.php';
+    if(class_exists('MadeIT_Updater')) {
+        new MadeIT_Updater(__FILE__, 'madeITBelgium', 'Made-I.T.-WP-Theme', null);
+    }
+}
 
 function madeit_setup()
 {
@@ -239,7 +243,6 @@ add_action('template_redirect', 'madeit_content_width', 0);
 function madeit_fonts_url()
 {
     $fonts_url = '';
-
     /*
      * Translators: If there are characters in your language that are not
      * supported by Libre Franklin, translate this to 'off'. Do not translate
@@ -774,6 +777,56 @@ function madeit_woocommerce_shopping_cart_in_menu($menu, $args)
     return $menu.$social;
 }
 add_filter('wp_nav_menu_items', 'madeit_woocommerce_shopping_cart_in_menu', 10, 2);
+
+function madeit_cookie_notice()
+{
+    $cookieUrl = get_permalink(get_theme_mod('cookie_url'));
+    $text = sprintf(__('By using our website you are consenting to our use of cookies in accordance with our <a href="%s">cookie policy</a>.', 'madeit'), $cookieUrl);
+    print_r($text);
+    $text = apply_filters('madeit-cookie-notice', $text);
+    
+    $class = "";
+    if(get_theme_mod('cookie_position') == 'top') {
+        $class = 'fixed-top';
+    }
+    elseif(get_theme_mod('cookie_position') == 'bottom') {
+        $class = 'fixed-bottom';
+    }
+
+    if(get_theme_mod('cookie_position') != 'none' && get_theme_mod('cookie_position') != 'popup') { ?>
+        <div class="alert container alert-warning <?php echo $class; ?>" style="<?php if(!is_customize_preview()) { echo 'display: none'; } ?>" id="cookie_directive_container">
+            <div class="" id="cookie_accept">
+                <a href="#" class="btn btn-default pull-right"><?php _e('Close', 'madeit'); ?></a>
+                <p class="text-muted credit">
+                    <?php echo $text; ?>
+                </p>
+            </div>
+        </div>
+    <?php }
+    elseif(get_theme_mod('cookie_position') == 'popup') { ?>
+        <div class="modal fade <?php if(!is_customize_preview()) { echo 'show'; } ?>" style="<?php if(!is_customize_preview()) { echo 'display: none'; } ?>" id="cookie_directive_container">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content alert alert-warning">
+                    <div class="modal-body">
+                        <div class="" id="cookie_accept">
+                            <a href="#" class="btn btn-default pull-right"><?php _e('Close', 'madeit'); ?></a>
+                            <p class="text-muted credit">
+                                <?php echo $text; ?>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php }
+}
+add_action('wp_footer', 'madeit_cookie_notice');
+
+//function madeit_cookie_notice_text($notice) {
+//    return $notice;
+//}
+//add_filter('madeit-cookie-notice', 'madeit_cookie_notice_text', 10, 1);
+
 
 /**
  * Implement the Custom Header feature.

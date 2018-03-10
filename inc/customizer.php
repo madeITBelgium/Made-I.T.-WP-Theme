@@ -240,6 +240,49 @@ function madeit_customize_register($wp_customize)
             'container_inclusive' => true,
         ]);
     }
+    
+    /**
+     * Cookie warning
+     *
+     */
+    $wp_customize->add_section('cookie_warning', [
+        'title'    => __('Cookie warning', 'madeit'),
+        'priority' => 130, // Before Additional CSS.
+    ]);
+
+    $wp_customize->add_setting('cookie_position', [
+        'default'           => 'none',
+        'sanitize_callback' => 'madeit_sanitize_cookie_position',
+        'transport'         => 'refresh',
+    ]);
+
+    $wp_customize->add_control('cookie_position', [
+        'label'       => __('Cookie warning position', 'madeit'),
+        'section'     => 'cookie_warning',
+        'type'        => 'radio',
+        'description' => __('Choose the position to place the cookie warning notice.', 'madeit'),
+        'choices'     => [
+            'none' => __('Do not show', 'madeit'),
+            'popup' => __('Popup', 'madeit'),
+            'top' => __('Static top notice', 'madeit'),
+            'bottom' => __('Static bottom notice', 'madeit'),
+        ],
+        //'active_callback' => 'madeit_is_view_with_layout_option',
+    ]);
+    
+    $wp_customize->add_setting('cookie_url', [
+            'default'           => false,
+            'sanitize_callback' => 'absint',
+            'transport'         => 'refresh',
+        ]);
+    
+    $wp_customize->add_control('cookie_url', [
+        'label'           => __('Page of your cookie policy', 'madeit'),
+        'description'     => __('Select pages to link at in the cookie policy.', 'madeit'),
+        'section'         => 'cookie_warning',
+        'type'            => 'dropdown-pages',
+        'allow_addition'  => true,
+    ]);
 }
 add_action('customize_register', 'madeit_customize_register');
 
@@ -369,6 +412,27 @@ function madeit_is_view_with_container_type()
 {
     // This option is available on all pages. It's also available on archives when there isn't a sidebar.
     return  is_page() || is_archive();
+}
+
+/**
+ * Sanitize the cookie position options options.
+ *
+ * @param string $input Page layout.
+ */
+function madeit_sanitize_cookie_position($input)
+{
+    $valid = [
+        'none' => __('Do not show', 'madeit'),
+        'popup' => __('Popup', 'madeit'),
+        'top' => __('Static top notice', 'madeit'),
+        'bottom' => __('Static bottom notice', 'madeit'),
+    ];
+
+    if (array_key_exists($input, $valid)) {
+        return $input;
+    }
+
+    return '';
 }
 
 /**
