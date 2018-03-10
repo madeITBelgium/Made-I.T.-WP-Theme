@@ -592,22 +592,24 @@ add_filter('widget_tag_cloud_args', 'madeit_widget_tag_cloud_args');
 /*
  * Fix bootstrap menu when admin bar is enabled
  */
-function madeit_wp_bootstrap_head()
-{
-    if (is_admin_bar_showing()) {
-        ?>
-        <style>
-        body{ padding-top: 52px !important; }
-        /*body.logged-in .navbar.fixed-top{ top: 46px !important; }*/
-        @media only screen and (min-width: 783px) {
+if(!function_exists('madeit_wp_bootstrap_head')) {
+    function madeit_wp_bootstrap_head()
+    {
+        if (is_admin_bar_showing()) {
+            ?>
+            <style>
             body{ padding-top: 52px !important; }
-            body.logged-in .navbar.fixed-top{ top: 28px !important; }
+            /*body.logged-in .navbar.fixed-top{ top: 46px !important; }*/
+            @media only screen and (min-width: 783px) {
+                body{ padding-top: 52px !important; }
+                body.logged-in .navbar.fixed-top{ top: 28px !important; }
+            }
+            </style>
+            <?php
         }
-        </style>
-        <?php
     }
+    add_action('wp_head', 'madeit_wp_bootstrap_head');
 }
-add_action('wp_head', 'madeit_wp_bootstrap_head');
 
 /* Style read more button */
 function modify_read_more_link($text)
