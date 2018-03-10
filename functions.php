@@ -830,11 +830,6 @@ function madeit_cookie_notice()
 }
 add_action('wp_footer', 'madeit_cookie_notice');
 
-//function madeit_cookie_notice_text($notice) {
-//    return $notice;
-//}
-//add_filter('madeit-cookie-notice', 'madeit_cookie_notice_text', 10, 1);
-
 /**
  * Implement the Custom Header feature.
  */
