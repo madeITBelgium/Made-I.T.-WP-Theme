@@ -240,8 +240,8 @@ function madeit_customize_register($wp_customize)
             'container_inclusive' => true,
         ]);
     }
-    
-    /**
+
+    /*
      * Cookie warning
      *
      */
@@ -262,20 +262,20 @@ function madeit_customize_register($wp_customize)
         'type'        => 'radio',
         'description' => __('Choose the position to place the cookie warning notice.', 'madeit'),
         'choices'     => [
-            'none' => __('Do not show', 'madeit'),
-            'popup' => __('Popup', 'madeit'),
-            'top' => __('Static top notice', 'madeit'),
+            'none'   => __('Do not show', 'madeit'),
+            'popup'  => __('Popup', 'madeit'),
+            'top'    => __('Static top notice', 'madeit'),
             'bottom' => __('Static bottom notice', 'madeit'),
         ],
         //'active_callback' => 'madeit_is_view_with_layout_option',
     ]);
-    
+
     $wp_customize->add_setting('cookie_url', [
             'default'           => false,
             'sanitize_callback' => 'absint',
             'transport'         => 'refresh',
         ]);
-    
+
     $wp_customize->add_control('cookie_url', [
         'label'           => __('Page of your cookie policy', 'madeit'),
         'description'     => __('Select pages to link at in the cookie policy.', 'madeit'),
@@ -422,9 +422,9 @@ function madeit_is_view_with_container_type()
 function madeit_sanitize_cookie_position($input)
 {
     $valid = [
-        'none' => __('Do not show', 'madeit'),
-        'popup' => __('Popup', 'madeit'),
-        'top' => __('Static top notice', 'madeit'),
+        'none'   => __('Do not show', 'madeit'),
+        'popup'  => __('Popup', 'madeit'),
+        'top'    => __('Static top notice', 'madeit'),
         'bottom' => __('Static bottom notice', 'madeit'),
     ];
 
