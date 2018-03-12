@@ -782,7 +782,7 @@ function madeit_cookie_notice()
 {
     $cookieUrl = get_permalink(get_theme_mod('cookie_url'));
     $text = sprintf(__('By using our website you are consenting to our use of cookies in accordance with our <a href="%s">cookie policy</a>.', 'madeit'), $cookieUrl);
-    print_r($text);
+    
     $text = apply_filters('madeit-cookie-notice', $text);
 
     $class = '';
