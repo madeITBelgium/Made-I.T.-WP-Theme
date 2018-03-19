@@ -1,3 +1,5 @@
+/*global escape: true */
+
 jQuery( document ).ready( function( $ ) {
     var lightboxGroup;
 
@@ -83,7 +85,7 @@ jQuery( document ).ready( function( $ ) {
             x = ARRcookies[i].substr( 0, ARRcookies[i].indexOf( '=' ) );
             y = ARRcookies[i].substr( ARRcookies[i].indexOf( '=' ) + 1 );
             x = x.replace( /^\s+|\s+$/g, '' );
-            if ( x == cName ) {
+            if ( x === cName ) {
                 return unescape( y );
             }
         }
