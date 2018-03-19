@@ -54,7 +54,8 @@ jQuery( document ).ready( function( $ ) {
         var consent = getCookieEU( 'cookies_consent' );
 
         if ( null == consent || '' === consent || undefined === consent ) {
-            // show notification bar
+
+            //Show notification bar
             if ( $( '#cookie_directive_container' ).hasClass( 'modal' ) ) {
                 $( '#cookie_directive_container' ).modal( 'show' );
             } else {
@@ -63,12 +64,12 @@ jQuery( document ).ready( function( $ ) {
         }
     }
 
-    function setCookieEu( c_name, value, exdays ) {
-        var exdate = new Date( );
+    function setCookieEu( cName, value, exdays ) {
+        var cValue, exdate = new Date( );
         exdate.setDate( exdate.getDate( ) + exdays );
-        var c_value = escape( value ) + ( ( exdays == null ) ? '' : '; expires=' + exdate.toUTCString( ) );
-        document.cookie = c_name + '=' + c_value+'; path=/';
-        
+        cValue = escape( value ) + ( ( null == exdays ) ? '' : '; expires=' + exdate.toUTCString( ) );
+        document.cookie = cName + '=' + cValue + '; path=/';
+
         if ( $( '#cookie_directive_container' ).hasClass( 'modal' ) ) {
             $( '#cookie_directive_container' ).modal( 'hide' );
         } else {
@@ -76,13 +77,13 @@ jQuery( document ).ready( function( $ ) {
         }
     }
 
-    function getCookieEU( c_name ) {
+    function getCookieEU( cName ) {
         var i, x, y, ARRcookies = document.cookie.split( ';' );
         for ( i = 0; i < ARRcookies.length; i++ ) {
             x = ARRcookies[i].substr( 0, ARRcookies[i].indexOf( '=' ) );
             y = ARRcookies[i].substr( ARRcookies[i].indexOf( '=' ) + 1 );
             x = x.replace( /^\s+|\s+$/g, '' );
-            if ( x == c_name ) {
+            if ( x == cName ) {
                 return unescape( y );
             }
         }
