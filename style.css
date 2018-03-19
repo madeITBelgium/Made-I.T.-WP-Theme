@@ -18,6 +18,56 @@ Use it to make something cool, have fun, and share what you've learned with othe
 /* Font */
 @import url('https://fonts.googleapis.com/css?family=Libre Franklin:300,300i,400,400i,600,600i,800,800i&subset=latin,latin-ext');
 
+/* Spacing */
+.m-6 {
+  margin: 5rem !important;
+}
+
+.mt-6,
+.my-6 {
+  margin-top: 5rem !important;
+}
+
+.mr-6,
+.mx-6 {
+  margin-right: 5rem !important;
+}
+
+.mb-6,
+.my-6 {
+  margin-bottom: 5rem !important;
+}
+
+.ml-6,
+.mx-6 {
+  margin-left: 5rem !important;
+}
+
+
+.m-7 {
+  margin: 8rem !important;
+}
+
+.mt-7,
+.my-7 {
+  margin-top: 8rem !important;
+}
+
+.mr-7,
+.mx-7 {
+  margin-right: 8rem !important;
+}
+
+.mb-7,
+.my-7 {
+  margin-bottom: 8rem !important;
+}
+
+.ml-7,
+.mx-7 {
+  margin-left: 8rem !important;
+}
+
 /* WooCommerce */
 .entry-content {
     width: 100%;
@@ -8883,3 +8933,47 @@ a.text-dark:focus, a.text-dark:hover {
   visibility: hidden !important;
 }
 /*# sourceMappingURL=bootstrap.css.map */
+
+
+
+/* Custom spacing */
+@media (min-width: 576px) {
+  .m-sm-6 {
+    margin: 5rem !important;
+  }
+  .mt-sm-6,
+  .my-sm-6 {
+    margin-top: 5rem !important;
+  }
+  .mr-sm-6,
+  .mx-sm-6 {
+    margin-right: 5rem !important;
+  }
+  .mb-sm-6,
+  .my-sm-6 {
+    margin-bottom: 5rem !important;
+  }
+  .ml-sm-6,
+  .mx-sm-6 {
+    margin-left: 5rem !important;
+  }
+  .m-sm-7 {
+    margin: 8rem !important;
+  }
+  .mt-sm-7,
+  .my-sm-7 {
+    margin-top: 8rem !important;
+  }
+  .mr-sm-7,
+  .mx-sm-7 {
+    margin-right: 8rem !important;
+  }
+  .mb-sm-7,
+  .my-sm-7 {
+    margin-bottom: 8rem !important;
+  }
+  .ml-sm-7,
+  .mx-sm-7 {
+    margin-left: 8rem !important;
+  }
+}
