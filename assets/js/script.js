@@ -1,4 +1,4 @@
-/*global escape: true */
+/*global escape: true, unescape: true */
 
 jQuery( document ).ready( function( $ ) {
     var lightboxGroup;
