@@ -15,9 +15,16 @@ if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
     return;
 }
 
+if (file_exists(dirname(__FILE__).'/inc/MadeIT_Updater.php')) {
+    require_once dirname(__FILE__).'/inc/MadeIT_Updater.php';
+    if (class_exists('MadeIT_Updater')) {
+        new MadeIT_Updater(__FILE__, 'madeITBelgium', 'Made-I.T.-WP-Theme', null);
+    }
+}
+
 function madeit_setup()
 {
-    load_theme_textdomain('madeit');
+    load_theme_textdomain('madeit', get_template_directory().'/languages');
     add_theme_support('automatic-feed-links');
     add_theme_support('title-tag');
     add_theme_support('woocommerce');
@@ -236,7 +243,6 @@ add_action('template_redirect', 'madeit_content_width', 0);
 function madeit_fonts_url()
 {
     $fonts_url = '';
-
     /*
      * Translators: If there are characters in your language that are not
      * supported by Libre Franklin, translate this to 'off'. Do not translate
@@ -314,6 +320,16 @@ function madeit_widgets_init()
         'name'          => __('Footer 2', 'madeit'),
         'id'            => 'sidebar-3',
         'description'   => __('Add widgets here to appear in your footer.', 'madeit'),
+        'before_widget' => '<section id="%1$s" class="widget %2$s">',
+        'after_widget'  => '</section>',
+        'before_title'  => '<h2 class="widget-title">',
+        'after_title'   => '</h2>',
+    ]);
+
+    register_sidebar([
+        'name'          => __('Below index blog', 'madeit'),
+        'id'            => 'below-index-1',
+        'description'   => __('Add widgets here to appear below your blog/news list.', 'madeit'),
         'before_widget' => '<section id="%1$s" class="widget %2$s">',
         'after_widget'  => '</section>',
         'before_title'  => '<h2 class="widget-title">',
@@ -579,22 +595,24 @@ add_filter('widget_tag_cloud_args', 'madeit_widget_tag_cloud_args');
 /*
  * Fix bootstrap menu when admin bar is enabled
  */
-function madeit_wp_bootstrap_head()
-{
-    if (is_admin_bar_showing()) {
-        ?>
-        <style>
-        body{ padding-top: 52px !important; }
-        /*body.logged-in .navbar.fixed-top{ top: 46px !important; }*/
-        @media only screen and (min-width: 783px) {
+if (!function_exists('madeit_wp_bootstrap_head')) {
+    function madeit_wp_bootstrap_head()
+    {
+        if (is_admin_bar_showing()) {
+            ?>
+            <style>
             body{ padding-top: 52px !important; }
-            body.logged-in .navbar.fixed-top{ top: 28px !important; }
+            /*body.logged-in .navbar.fixed-top{ top: 46px !important; }*/
+            @media only screen and (min-width: 783px) {
+                body{ padding-top: 52px !important; }
+                body.logged-in .navbar.fixed-top{ top: 28px !important; }
+            }
+            </style>
+            <?php
         }
-        </style>
-        <?php
     }
+    add_action('wp_head', 'madeit_wp_bootstrap_head');
 }
-add_action('wp_head', 'madeit_wp_bootstrap_head');
 
 /* Style read more button */
 function modify_read_more_link($text)
@@ -759,6 +777,58 @@ function madeit_woocommerce_shopping_cart_in_menu($menu, $args)
     return $menu.$social;
 }
 add_filter('wp_nav_menu_items', 'madeit_woocommerce_shopping_cart_in_menu', 10, 2);
+
+function madeit_cookie_notice()
+{
+    $cookieUrl = get_permalink(get_theme_mod('cookie_url'));
+    $text = sprintf(__('By using our website you are consenting to our use of cookies in accordance with our <a href="%s">cookie policy</a>.', 'madeit'), $cookieUrl);
+
+    $text = apply_filters('madeit-cookie-notice', $text);
+
+    $class = '';
+    if (get_theme_mod('cookie_position') == 'top') {
+        $class = 'fixed-top';
+    } elseif (get_theme_mod('cookie_position') == 'bottom') {
+        $class = 'fixed-bottom';
+    }
+
+    if (get_theme_mod('cookie_position') != 'none' && get_theme_mod('cookie_position') != 'popup') {
+        ?>
+        <div class="alert container alert-warning <?php echo $class; ?>" style="<?php if (!is_customize_preview()) {
+            echo 'display: none';
+        } ?>" id="cookie_directive_container">
+            <div class="" id="cookie_accept">
+                <a href="#" class="btn btn-default pull-right"><?php _e('Close', 'madeit'); ?></a>
+                <p class="text-muted credit">
+                    <?php echo $text; ?>
+                </p>
+            </div>
+        </div>
+    <?php
+    } elseif (get_theme_mod('cookie_position') == 'popup') {
+        ?>
+        <div class="modal fade <?php if (!is_customize_preview()) {
+            echo 'show';
+        } ?>" style="<?php if (!is_customize_preview()) {
+            echo 'display: none';
+        } ?>" id="cookie_directive_container">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content alert alert-warning">
+                    <div class="modal-body">
+                        <div class="" id="cookie_accept">
+                            <a href="#" class="btn btn-default pull-right"><?php _e('Close', 'madeit'); ?></a>
+                            <p class="text-muted credit">
+                                <?php echo $text; ?>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php
+    }
+}
+add_action('wp_footer', 'madeit_cookie_notice');
 
 /**
  * Implement the Custom Header feature.

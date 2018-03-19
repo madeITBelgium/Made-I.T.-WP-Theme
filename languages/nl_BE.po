@@ -2,68 +2,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Made I.T.\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-17 20:59+0000\n"
-"PO-Revision-Date: 2017-12-17 21:02+0000\n"
+"POT-Creation-Date: 2018-03-10 20:28+0000\n"
+"PO-Revision-Date: 2018-03-10 20:33+0000\n"
 "Last-Translator: tjebbeke <tjebbe.lievens@madeit.be>\n"
 "Language-Team: Dutch (Belgium)\n"
-"Language: nl-BE\n"
-"Plural-Forms: nplurals=2; plural=n != 1\n"
+"Language: nl_BE\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Loco - https://localise.biz/"
-
-#: functions.php:138
-msgctxt "Theme starter content"
-msgid "Koffie Machien"
-msgstr "Koffiemachine"
-
-#: functions.php:142
-msgctxt "Theme starter content"
-msgid "Outside"
-msgstr "Exterieur"
-
-#: functions.php:146
-msgctxt "Theme starter content"
-msgid "Inside"
-msgstr "Interieur"
-
-#: functions.php:150
-msgctxt "Theme starter content"
-msgid "Price table"
-msgstr "Prijs tabel"
-
-#: functions.php:746
-msgid "Start shopping"
-msgstr "Winkelen"
-
-#: functions.php:750
-msgid "View your shopping cart"
-msgstr "Toon je winkelmand"
-
-#: inc/customizer.php:185
-msgid "Choose the screen width of your content."
-msgstr "Selecteer de schermbreedte van de content."
-
-#: inc/customizer.php:187 inc/customizer.php:273
-msgid "Normal screen width"
-msgstr "Normale scherm breedte"
-
-#: inc/customizer.php:188 inc/customizer.php:274
-msgid "Full screen width"
-msgstr "Volledige scherm breedte"
-
-#: inc/customizer.php:203
-msgid "Show header image"
-msgstr "Toon header foto"
-
-#: inc/customizer.php:206
-msgid ""
-"Show the homepage header image on sub pages when there is no post featured "
-"image."
-msgstr ""
-"Toon de homepagina header foto op sub pagina's als er geen featured post "
-"foto is ingesteld."
+"X-Generator: Loco https://localise.biz/"
 
 #: footer.php:25
 msgid "Footer Social Links Menu"
@@ -127,61 +75,114 @@ msgstr "Volgend bericht"
 msgid "Next"
 msgstr "Volgende"
 
-#: functions.php:54 functions.php:174
+#: functions.php:61 functions.php:181
 msgid "Top Menu"
 msgstr "Topmenu"
 
-#: functions.php:55 functions.php:185
+#: functions.php:62 functions.php:192
 msgid "Social Links Menu"
 msgstr "Sociale links menu"
+
+#: functions.php:145
+msgctxt "Theme starter content"
+msgid "Koffie Machien"
+msgstr "Koffiemachine"
+
+#: functions.php:149
+msgctxt "Theme starter content"
+msgid "Outside"
+msgstr "Exterieur"
+
+#: functions.php:153
+msgctxt "Theme starter content"
+msgid "Inside"
+msgstr "Interieur"
+
+#: functions.php:157
+msgctxt "Theme starter content"
+msgid "Price table"
+msgstr "Prijs tabel"
 
 #. Translators: If there are characters in your language that are not supported
 #. by Libre Franklin, translate this to 'off'. Do not translate into your own
 #. language.
-#: functions.php:245
+#: functions.php:251
 msgctxt "Libre Franklin font: on or off"
 msgid "on"
 msgstr "aan"
 
-#: functions.php:294 sidebar.php:15
+#: functions.php:300 sidebar.php:15
 msgid "Blog Sidebar"
 msgstr "Blog Sidebar"
 
-#: functions.php:296
+#: functions.php:302
 msgid ""
 "Add widgets here to appear in your sidebar on blog posts and archive pages."
 msgstr ""
 "Voeg hier widgets toe in de sidebar op blog berichten en archiefpagina's."
 
-#: functions.php:304
+#: functions.php:310
 msgid "Footer 1"
 msgstr "Footer 1"
 
-#: functions.php:306 functions.php:316
+#: functions.php:312 functions.php:322
 msgid "Add widgets here to appear in your footer."
 msgstr "Voeg hier widgets toe om in de footer te tonen."
 
-#: functions.php:314
+#: functions.php:320
 msgid "Footer 2"
 msgstr "Footer 2"
 
+#: functions.php:330
+msgid "Below index blog"
+msgstr "Onder blog berichten."
+
+#: functions.php:332
+msgid "Add widgets here to appear below your blog/news list."
+msgstr "Voeg widgets toe onder je blog of nieuws berichten."
+
 #. translators: %s: Name of current post
-#: functions.php:344 template-parts/page/content-front-page.php:41
-#: template-parts/page/content-front-page-panels.php:47
+#: functions.php:360 template-parts/page/content-page.php:29
+#: template-parts/page/content-front-page.php:41
 #, php-format
 msgid "Continue reading<span class=\"screen-reader-text\"> \"%s\"</span>"
 msgstr "<span class=\"screen-reader-text\">\"%s\" </span>verder lezen"
 
-#: functions.php:602
+#: functions.php:620
 msgid "Continue reading"
 msgstr "Meer lezen"
 
-#: functions.php:754
+#: functions.php:764
+msgid "Start shopping"
+msgstr "Winkelen"
+
+#: functions.php:768
+msgid "View your shopping cart"
+msgstr "Toon je winkelmand"
+
+#: functions.php:772
 #, php-format
 msgid "%d item"
 msgid_plural "%d items"
 msgstr[0] "%d item"
 msgstr[1] "%d items"
+
+#: functions.php:784
+#, php-format
+msgid ""
+"By using our website you are consenting to our use of cookies in accordance "
+"with our <a href=\"%s\">cookie policy</a>."
+msgstr ""
+"Door gebruiken te maken van onze website stemt u in met gebruik van cookies "
+"in overeenstemming met ons <a href=\"%s\">cookiebeleid</a>."
+
+#: functions.php:801 functions.php:819
+msgid "Close"
+msgstr "Sluiten"
+
+#. Name of the template
+msgid "Page with sidebar"
+msgstr "Pagina met zijbalk"
 
 #. translators: %s: post title
 #: comments.php:31
@@ -214,6 +215,14 @@ msgstr "Zoeken..."
 #: searchform.php:18
 msgid "Search"
 msgstr "Zoeken"
+
+#: inc/MadeIT_Updater.php:210
+msgid "Rename successful"
+msgstr "Hernoemen succesvol"
+
+#: inc/MadeIT_Updater.php:217
+msgid "Unable to rename downloaded repository."
+msgstr "Het was niet mogelijk om de download te hernoemen."
 
 #: inc/template-functions.php:118
 msgid "Pingback:"
@@ -269,7 +278,7 @@ msgstr "Categorieën"
 msgid "Tags"
 msgstr "Tags"
 
-#: inc/template-tags.php:104 template-parts/page/content-page.php:22
+#: inc/template-tags.php:104
 msgid "Pages:"
 msgstr "Pagina's:"
 
@@ -356,17 +365,41 @@ msgstr ""
 "Wanneer de lay-out op twee kolommen gezet wordt, bevindt de titel van de "
 "pagina zich in de ene kolom en de inhoud in de andere."
 
-#: inc/customizer.php:166 inc/customizer.php:254
+#: inc/customizer.php:166 inc/customizer.php:297
 msgid "One Column"
 msgstr "Eén kolom"
 
-#: inc/customizer.php:167 inc/customizer.php:255
+#: inc/customizer.php:167 inc/customizer.php:298
 msgid "Two Column"
 msgstr "Twee kolommen"
 
 #: inc/customizer.php:182
 msgid "Page Width"
 msgstr "Page breedte"
+
+#: inc/customizer.php:185
+msgid "Choose the screen width of your content."
+msgstr "Selecteer de schermbreedte van de content."
+
+#: inc/customizer.php:187 inc/customizer.php:316
+msgid "Normal screen width"
+msgstr "Normale scherm breedte"
+
+#: inc/customizer.php:188 inc/customizer.php:317
+msgid "Full screen width"
+msgstr "Volledige scherm breedte"
+
+#: inc/customizer.php:203
+msgid "Show header image"
+msgstr "Toon header foto"
+
+#: inc/customizer.php:206
+msgid ""
+"Show the homepage header image on sub pages when there is no post featured "
+"image."
+msgstr ""
+"Toon de homepagina header foto op sub pagina's als er geen featured post "
+"foto is ingesteld."
 
 #. translators: %d is the front page section number
 #: inc/customizer.php:229
@@ -383,6 +416,42 @@ msgstr ""
 "Selecteer voor elk gebied een pagina uit het dropdown menu. Voeg een "
 "afbeelding toe aan een gebied door een uitgelichte afbeelding in te stellen "
 "in de pagina editor. Lege gebieden worden niet getoond."
+
+#: inc/customizer.php:249
+msgid "Cookie warning"
+msgstr "Cookie melding"
+
+#: inc/customizer.php:260
+msgid "Cookie warning position"
+msgstr "Cookie melding positie"
+
+#: inc/customizer.php:263
+msgid "Choose the position to place the cookie warning notice."
+msgstr "Kies de positie om de cookie melding te plaatsen."
+
+#: inc/customizer.php:265 inc/customizer.php:425
+msgid "Do not show"
+msgstr "Toon niet"
+
+#: inc/customizer.php:266 inc/customizer.php:426
+msgid "Popup"
+msgstr "Popup"
+
+#: inc/customizer.php:267 inc/customizer.php:427
+msgid "Static top notice"
+msgstr "Statisch bovenaan je website"
+
+#: inc/customizer.php:268 inc/customizer.php:428
+msgid "Static bottom notice"
+msgstr "Statisch onderaan op je website"
+
+#: inc/customizer.php:280
+msgid "Page of your cookie policy"
+msgstr "Pagina van je cookiebeleid"
+
+#: inc/customizer.php:281
+msgid "Select pages to link at in the cookie policy."
+msgstr "Selecteer de pagina die je wil linken in de cookie melding."
 
 #: inc/back-compat.php:39 inc/back-compat.php:52 inc/back-compat.php:68
 #, php-format
@@ -443,6 +512,12 @@ msgstr ""
 msgid "Menu"
 msgstr "Menu"
 
+#. %s: Name of current post
+#: template-parts/page/content-front-page-panels.php:47
+#, php-format
+msgid "Continue reading <span class=\"screen-reader-text\">\"%s\"</span>"
+msgstr "Lees meer <span class=\"screen-reader-text\">\"%s\"</span>"
+
 #. Name of the theme
 #. Author of the theme
 msgid "Made I.T."
@@ -450,9 +525,8 @@ msgstr "Made I.T."
 
 #. URI of the theme
 msgid "https://www.madeit.be"
-msgstr "https://www.madeit.be/"
+msgstr "https://www.madeit.be"
 
-#. #-#-#-#-#  twentyseventeen.pot (Twenty Seventeen 1.4)  #-#-#-#-#
-#. Author URI of the plugin/theme
+#. Author URI of the theme
 msgid "https://wordpress.org/"
-msgstr "https://nl-be.wordpress.org/"
+msgstr "https://wordpress.org/"

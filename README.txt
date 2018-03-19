@@ -2,7 +2,7 @@
 Contributors: madeit
 Requires at least: WordPress 4.7
 Tested up to: 4.9
-Version: 1.0
+Version: 1.0.6
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: madeit, bootstrap, bootstrap4, made i.t., Made I.T.
@@ -19,7 +19,7 @@ Tags: madeit, bootstrap, bootstrap4, made i.t., Made I.T.
 
 == Copyright ==
 
-Made I.T. WordPress Theme, Copyright 2017 Made I.T.
+Made I.T. WordPress Theme, Copyright 2017 - 2018 Made I.T.
 Made I.T. Theme is distributed under the terms of the GNU GPL
 
 This program is free software: you can redistribute it and/or modify
@@ -55,8 +55,13 @@ License: CC0 1.0 Universal (CC0 1.0)
 Source: https://unsplash.com/@englr?photo=bIhpiQA009k
 
 == Changelog ==
+= 1.0.5 =
+* Cookie notice
 
-= 0.1 =
-* Released: Comming soon
+= 1.0.1 - 1.0.4 =
+* Bug fixes
+
+= 1.0.0 =
+* Basic
 
 Initial release

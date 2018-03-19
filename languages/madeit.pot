@@ -3,16 +3,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-12-17 20:59+0000\n"
+"POT-Creation-Date: 2018-03-10 20:28+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
 "Language: \n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Loco - https://localise.biz/"
+"X-Generator: Loco https://localise.biz/"
 
 #: footer.php:25
 msgid "Footer Social Links Menu"
@@ -73,30 +73,30 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-#: functions.php:54 functions.php:174
+#: functions.php:61 functions.php:181
 msgid "Top Menu"
 msgstr ""
 
-#: functions.php:55 functions.php:185
+#: functions.php:62 functions.php:192
 msgid "Social Links Menu"
 msgstr ""
 
-#: functions.php:138
+#: functions.php:145
 msgctxt "Theme starter content"
 msgid "Koffie Machien"
 msgstr ""
 
-#: functions.php:142
+#: functions.php:149
 msgctxt "Theme starter content"
 msgid "Outside"
 msgstr ""
 
-#: functions.php:146
+#: functions.php:153
 msgctxt "Theme starter content"
 msgid "Inside"
 msgstr ""
 
-#: functions.php:150
+#: functions.php:157
 msgctxt "Theme starter content"
 msgid "Price table"
 msgstr ""
@@ -104,59 +104,82 @@ msgstr ""
 #. If there are characters in your language that are not
 #. supported by Libre Franklin, translate this to 'off'. Do not translate
 #. into your own language.
-#: functions.php:245
+#: functions.php:251
 msgctxt "Libre Franklin font: on or off"
 msgid "on"
 msgstr ""
 
-#: functions.php:294 sidebar.php:15
+#: functions.php:300 sidebar.php:15
 msgid "Blog Sidebar"
 msgstr ""
 
-#: functions.php:296
+#: functions.php:302
 msgid ""
 "Add widgets here to appear in your sidebar on blog posts and archive pages."
 msgstr ""
 
-#: functions.php:304
+#: functions.php:310
 msgid "Footer 1"
 msgstr ""
 
-#: functions.php:306 functions.php:316
+#: functions.php:312 functions.php:322
 msgid "Add widgets here to appear in your footer."
 msgstr ""
 
-#: functions.php:314
+#: functions.php:320
 msgid "Footer 2"
+msgstr ""
+
+#: functions.php:330
+msgid "Below index blog"
+msgstr ""
+
+#: functions.php:332
+msgid "Add widgets here to appear below your blog/news list."
 msgstr ""
 
 #. %s: Name of current post
 #. %s: Name of current post
 #. %s: Name of current post
-#: functions.php:344 template-parts/page/content-front-page.php:41
-#: template-parts/page/content-front-page-panels.php:47
+#: functions.php:360 template-parts/page/content-page.php:29
+#: template-parts/page/content-front-page.php:41
 #, php-format
 msgid "Continue reading<span class=\"screen-reader-text\"> \"%s\"</span>"
 msgstr ""
 
-#: functions.php:602
+#: functions.php:620
 msgid "Continue reading"
 msgstr ""
 
-#: functions.php:746
+#: functions.php:764
 msgid "Start shopping"
 msgstr ""
 
-#: functions.php:750
+#: functions.php:768
 msgid "View your shopping cart"
 msgstr ""
 
-#: functions.php:754
+#: functions.php:772
 #, php-format
 msgid "%d item"
 msgid_plural "%d items"
 msgstr[0] ""
 msgstr[1] ""
+
+#: functions.php:784
+#, php-format
+msgid ""
+"By using our website you are consenting to our use of cookies in accordance "
+"with our <a href=\"%s\">cookie policy</a>."
+msgstr ""
+
+#: functions.php:801 functions.php:819
+msgid "Close"
+msgstr ""
+
+#. Name of the template
+msgid "Page with sidebar"
+msgstr ""
 
 #. %s: post title
 #: comments.php:31
@@ -188,6 +211,14 @@ msgstr ""
 
 #: searchform.php:18
 msgid "Search"
+msgstr ""
+
+#: inc/MadeIT_Updater.php:210
+msgid "Rename successful"
+msgstr ""
+
+#: inc/MadeIT_Updater.php:217
+msgid "Unable to rename downloaded repository."
 msgstr ""
 
 #: inc/template-functions.php:118
@@ -244,7 +275,7 @@ msgstr ""
 msgid "Tags"
 msgstr ""
 
-#: inc/template-tags.php:104 template-parts/page/content-page.php:22
+#: inc/template-tags.php:104
 msgid "Pages:"
 msgstr ""
 
@@ -329,11 +360,11 @@ msgid ""
 "content is in the other."
 msgstr ""
 
-#: inc/customizer.php:166 inc/customizer.php:254
+#: inc/customizer.php:166 inc/customizer.php:297
 msgid "One Column"
 msgstr ""
 
-#: inc/customizer.php:167 inc/customizer.php:255
+#: inc/customizer.php:167 inc/customizer.php:298
 msgid "Two Column"
 msgstr ""
 
@@ -345,11 +376,11 @@ msgstr ""
 msgid "Choose the screen width of your content."
 msgstr ""
 
-#: inc/customizer.php:187 inc/customizer.php:273
+#: inc/customizer.php:187 inc/customizer.php:316
 msgid "Normal screen width"
 msgstr ""
 
-#: inc/customizer.php:188 inc/customizer.php:274
+#: inc/customizer.php:188 inc/customizer.php:317
 msgid "Full screen width"
 msgstr ""
 
@@ -374,6 +405,42 @@ msgid ""
 "Select pages to feature in each area from the dropdowns. Add an image to a "
 "section by setting a featured image in the page editor. Empty sections will "
 "not be displayed."
+msgstr ""
+
+#: inc/customizer.php:249
+msgid "Cookie warning"
+msgstr ""
+
+#: inc/customizer.php:260
+msgid "Cookie warning position"
+msgstr ""
+
+#: inc/customizer.php:263
+msgid "Choose the position to place the cookie warning notice."
+msgstr ""
+
+#: inc/customizer.php:265 inc/customizer.php:425
+msgid "Do not show"
+msgstr ""
+
+#: inc/customizer.php:266 inc/customizer.php:426
+msgid "Popup"
+msgstr ""
+
+#: inc/customizer.php:267 inc/customizer.php:427
+msgid "Static top notice"
+msgstr ""
+
+#: inc/customizer.php:268 inc/customizer.php:428
+msgid "Static bottom notice"
+msgstr ""
+
+#: inc/customizer.php:280
+msgid "Page of your cookie policy"
+msgstr ""
+
+#: inc/customizer.php:281
+msgid "Select pages to link at in the cookie policy."
 msgstr ""
 
 #: inc/back-compat.php:39 inc/back-compat.php:52 inc/back-compat.php:68
@@ -428,6 +495,12 @@ msgstr ""
 #: template-parts/navigation/navigation-top.php:12
 #: template-parts/navigation/navigation-top.php:13
 msgid "Menu"
+msgstr ""
+
+#. %s: Name of current post
+#: template-parts/page/content-front-page-panels.php:47
+#, php-format
+msgid "Continue reading <span class=\"screen-reader-text\">\"%s\"</span>"
 msgstr ""
 
 #. Name of the theme
