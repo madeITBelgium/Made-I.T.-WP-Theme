@@ -861,6 +861,6 @@ require get_parent_theme_file_path('/inc/icon-functions.php');
 require get_parent_theme_file_path('/inc/bootstrap-navwalker.php');
 
 /**
- * WP-Members
+ * WP-Members.
  */
 require get_parent_theme_file_path('/inc/wp-members.php');
