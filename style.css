@@ -15,6 +15,12 @@ This theme, like WordPress, is licensed under the GPL.
 Use it to make something cool, have fun, and share what you've learned with others.
 */
 
+/* WP-Members */
+#wpmem_reg, #wpmem_login {
+    color: inherit !important;
+    font-family: inherit !important;
+}
+
 /* Cookie */
 #cookie_directive_container {
 	border-bottom: 0;
