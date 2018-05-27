@@ -1,3 +1,5 @@
+/*global escape: true, unescape: true */
+
 jQuery( document ).ready( function( $ ) {
     var lightboxGroup;
 
@@ -43,5 +45,53 @@ jQuery( document ).ready( function( $ ) {
     $( '#lightbox-modal' ).on( 'click', '.lightbox-nav-overlay a', function( e ) {
         e.preventDefault( );
         $( lightboxGroup ).find( '.click-lightbox:eq(' + $( this ).attr( 'data-index' ) + ')' ).click( );
+    });
+
+    //Cookie notice
+    checkCookieEu();
+
+    function checkCookieEu()
+    {
+
+        var consent = getCookieEU( 'cookies_consent' );
+
+        if ( null == consent || '' === consent || undefined === consent ) {
+
+            //Show notification bar
+            if ( $( '#cookie_directive_container' ).hasClass( 'modal' ) ) {
+                $( '#cookie_directive_container' ).modal( 'show' );
+            } else {
+                $( '#cookie_directive_container' ).show( );
+            }
+        }
+    }
+
+    function setCookieEu( cName, value, exdays ) {
+        var cValue, exdate = new Date( );
+        exdate.setDate( exdate.getDate( ) + exdays );
+        cValue = escape( value ) + ( ( null == exdays ) ? '' : '; expires=' + exdate.toUTCString( ) );
+        document.cookie = cName + '=' + cValue + '; path=/';
+
+        if ( $( '#cookie_directive_container' ).hasClass( 'modal' ) ) {
+            $( '#cookie_directive_container' ).modal( 'hide' );
+        } else {
+            $( '#cookie_directive_container' ).hide( 'slow' );
+        }
+    }
+
+    function getCookieEU( cName ) {
+        var i, x, y, ARRcookies = document.cookie.split( ';' );
+        for ( i = 0; i < ARRcookies.length; i++ ) {
+            x = ARRcookies[i].substr( 0, ARRcookies[i].indexOf( '=' ) );
+            y = ARRcookies[i].substr( ARRcookies[i].indexOf( '=' ) + 1 );
+            x = x.replace( /^\s+|\s+$/g, '' );
+            if ( x === cName ) {
+                return unescape( y );
+            }
+        }
+    }
+
+    $( '#cookie_accept .btn' ).click( function( ) {
+        setCookieEu( 'cookies_consent', 1, 30 );
     });
 });

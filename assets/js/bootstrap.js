@@ -3846,5 +3846,5 @@ exports.Tooltip = Tooltip;
 
 return exports;
 
-}({},$,Popper));
+}({},jQuery,Popper));
 //# sourceMappingURL=bootstrap.js.map
