@@ -49,8 +49,14 @@ a:hover {
   color: '.madeit_color_luminance($primary_color, 0, 0, -0.15).';
 }
 
-
-
+.page-link {
+    color: ' . $primary_color . ';
+}
+.page-item.active .page-link {
+    color: ' . madeit_contrast_color(madeit_color_luminance($primary_color, 0, 0, 0)) . ';
+    background-color: ' . $primary_color . ';
+    border-color: ' . $primary_color . ';
+}
 
 a.list-group-item-primary:focus, a.list-group-item-primary:hover, button.list-group-item-primary:focus, button.list-group-item-primary:hover {
     background-color: '.madeit_color_luminance($primary_color, 0, 0, 0.31).';

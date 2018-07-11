@@ -584,6 +584,40 @@ ul.media-gallery li {
 	margin: 20px;
 }
 
+.nav-previous, .nav-next {
+    display: inline-block;
+    padding: 5px 14px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+}
+
+/* Aligns links to the left and right of the container */
+.nav-previous {
+    float: left;
+}
+
+.nav-next {
+    float: right;
+}
+
+.nav-previous:focus, .nav-next:focus,
+.nav-previous:hover, .nav-next:hover {
+    background-color: #eee;
+}
+
+.nav-previous a:focus, .nav-next a:focus,
+.nav-previous a:hover, .nav-next a:hover {
+    text-decoration: none;
+}
+
+@media screen and (max-width: 575px) {
+	.ft-wpbs .page-link {
+		font-size: .7rem;
+		padding: .3rem .45rem;
+	}
+}
+
 /*!
  * Bootstrap v4.1.0 (https://getbootstrap.com/)
  * Copyright 2011-2018 The Bootstrap Authors

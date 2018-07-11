@@ -94,4 +94,5 @@ if (post_password_required()) {
     ];
     comment_form($comments_arg);
     ?>
+    <div class="clearfix"></div>
 </div>
