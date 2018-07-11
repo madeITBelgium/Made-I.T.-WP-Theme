@@ -831,12 +831,19 @@ if(!function_exists('madeit_woocommerce_shopping_cart_in_menu')) {
 if(!function_exists('madeit_cookie_notice')) {
     function madeit_cookie_notice()
     {
-        $cookieUrl = get_permalink(get_theme_mod('cookie_url'));
-        $text = sprintf(__('By using our website you are consenting to our use of cookies in accordance with our <a href="%s">cookie policy</a>.', 'madeit'), $cookieUrl);
+        $cookieUrl = '';
+        if (function_exists('get_privacy_policy_url')) {
+            $cookieUrl = get_privacy_policy_url();
+        }
+        
+        if($cookieUrl == '' || $cookieUrl == '#') {
+            $cookieUrl = get_permalink(get_theme_mod('cookie_url'));
+        }
+        $text = sprintf(__('By using our website you are consenting to our use of cookies in accordance with our <a href="%s">cookie & privacy policy</a>.', 'madeit'), $cookieUrl);
 
         $text = apply_filters('madeit-cookie-notice', $text);
 
-        $class = '';
+        $class = !is_customize_preview() ? 'd-none' : '';
         if (get_theme_mod('cookie_position') == 'top') {
             $class = 'fixed-top';
         } elseif (get_theme_mod('cookie_position') == 'bottom') {
