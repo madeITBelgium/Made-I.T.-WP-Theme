@@ -566,6 +566,13 @@ p.logged-in-as {
   color: #C7254E;
 }
 
+#wp-comment-cookies-consent {
+    float: left;
+}
+[for='wp-comment-cookies-consent'] {
+    margin-left: 25px;
+}
+
 /*
 Media gallery
 */
