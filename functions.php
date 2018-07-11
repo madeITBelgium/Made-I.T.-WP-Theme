@@ -725,6 +725,11 @@ if(!function_exists('madeit_register_required_plugins')) {
                 'slug'     => 'wc-aelia-foundation-classes',
                 'required' => false,
             ],
+            [
+                'name'     => 'Google Analytics Dashboard for WP by ExactMetrics (formerly GADWP)',
+                'slug'     => 'google-analytics-dashboard-for-wp',
+                'required' => false,
+            ],
         ];
 
         $config = [
