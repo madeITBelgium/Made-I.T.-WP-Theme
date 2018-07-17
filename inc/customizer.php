@@ -269,7 +269,7 @@ function madeit_customize_register($wp_customize)
         ],
         //'active_callback' => 'madeit_is_view_with_layout_option',
     ]);
-    
+
     if (!function_exists('get_privacy_policy_url')) {
         $wp_customize->add_setting('cookie_url', [
                 'default'           => false,

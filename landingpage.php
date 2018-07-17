@@ -1,7 +1,7 @@
 <?php
 /**
  * Template Name: Landingpage
- * The template for displaying all landingpages
+ * The template for displaying all landingpages.
  *
  * @version 1.1
  */
