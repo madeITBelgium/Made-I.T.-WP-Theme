@@ -22,7 +22,7 @@ if (file_exists(dirname(__FILE__).'/inc/MadeIT_Updater.php')) {
     }
 }
 
-if(!function_exists('madeit_setup')) {
+if (!function_exists('madeit_setup')) {
     function madeit_setup()
     {
         load_theme_textdomain('madeit', get_template_directory().'/languages');
@@ -207,14 +207,14 @@ if(!function_exists('madeit_setup')) {
     add_action('after_setup_theme', 'madeit_setup');
 }
 
-/**
+/*
  * Set the content width in pixels, based on the theme's design and stylesheet.
  *
  * Priority 0 to make it available to lower priority callbacks.
  *
  * @global int $content_width
  */
-if(!function_exists('madeit_content_width')) {
+if (!function_exists('madeit_content_width')) {
     function madeit_content_width()
     {
         $content_width = $GLOBALS['content_width'];
@@ -241,38 +241,38 @@ if(!function_exists('madeit_content_width')) {
     add_action('template_redirect', 'madeit_content_width', 0);
 }
 
-/**
+/*
  * Register custom fonts.
  */
-if(!function_exists('madeit_fonts_url')) {
+if (!function_exists('madeit_fonts_url')) {
     function madeit_fonts_url()
     {
-    $fonts_url = '';
-    /*
-     * Translators: If there are characters in your language that are not
-     * supported by Libre Franklin, translate this to 'off'. Do not translate
-     * into your own language.
-     */
-    $libre_franklin = _x('on', 'Libre Franklin font: on or off', 'madeit');
+        $fonts_url = '';
+        /*
+         * Translators: If there are characters in your language that are not
+         * supported by Libre Franklin, translate this to 'off'. Do not translate
+         * into your own language.
+         */
+        $libre_franklin = _x('on', 'Libre Franklin font: on or off', 'madeit');
 
-    if ('off' !== $libre_franklin) {
-        $font_families = [];
+        if ('off' !== $libre_franklin) {
+            $font_families = [];
 
-        $font_families[] = 'Libre Franklin:300,300i,400,400i,600,600i,800,800i';
+            $font_families[] = 'Libre Franklin:300,300i,400,400i,600,600i,800,800i';
 
-        $query_args = [
+            $query_args = [
             'family' => urlencode(implode('|', $font_families)),
             'subset' => urlencode('latin,latin-ext'),
         ];
 
-        $fonts_url = add_query_arg($query_args, 'https://fonts.googleapis.com/css');
+            $fonts_url = add_query_arg($query_args, 'https://fonts.googleapis.com/css');
+        }
+
+        return esc_url_raw($fonts_url);
     }
-
-    return esc_url_raw($fonts_url);
-}
 }
 
-/**
+/*
  * Add preconnect for Google Fonts.
  *
  * @since Made I.T. 1.0
@@ -282,7 +282,7 @@ if(!function_exists('madeit_fonts_url')) {
  *
  * @return array $urls           URLs to print for resource hints.
  */
-if(!function_exists('madeit_resource_hints')) {
+if (!function_exists('madeit_resource_hints')) {
     function madeit_resource_hints($urls, $relation_type)
     {
         if (wp_style_is('madeit-fonts', 'queue') && 'preconnect' === $relation_type) {
@@ -297,12 +297,12 @@ if(!function_exists('madeit_resource_hints')) {
     add_filter('wp_resource_hints', 'madeit_resource_hints', 10, 2);
 }
 
-/**
+/*
  * Register widget area.
  *
  * @link https://developer.wordpress.org/themes/functionality/sidebars/#registering-a-sidebar
  */
-if(!function_exists('madeit_widgets_init')) {
+if (!function_exists('madeit_widgets_init')) {
     function madeit_widgets_init()
     {
         register_sidebar([
@@ -348,7 +348,7 @@ if(!function_exists('madeit_widgets_init')) {
     add_action('widgets_init', 'madeit_widgets_init');
 }
 
-/**
+/*
  * Replaces "[...]" (appended to automatically generated excerpts) with ... and
  * a 'Continue reading' link.
  *
@@ -358,7 +358,7 @@ if(!function_exists('madeit_widgets_init')) {
  *
  * @return string 'Continue reading' link prepended with an ellipsis.
  */
-if(!function_exists('madeit_excerpt_more')) {
+if (!function_exists('madeit_excerpt_more')) {
     function madeit_excerpt_more($link)
     {
         if (is_admin()) {
@@ -376,14 +376,14 @@ if(!function_exists('madeit_excerpt_more')) {
     add_filter('excerpt_more', 'madeit_excerpt_more');
 }
 
-/**
+/*
  * Handles JavaScript detection.
  *
  * Adds a `js` class to the root `<html>` element when JavaScript is detected.
  *
  * @since Made I.T. 1.0
  */
-if(!function_exists('madeit_javascript_detection')) {
+if (!function_exists('madeit_javascript_detection')) {
     function madeit_javascript_detection()
     {
         echo "<script>(function(html){html.className = html.className.replace(/\bno-js\b/,'js')})(document.documentElement);</script>\n";
@@ -391,10 +391,10 @@ if(!function_exists('madeit_javascript_detection')) {
     add_action('wp_head', 'madeit_javascript_detection', 0);
 }
 
-/**
+/*
  * Add a pingback url auto-discovery header for singularly identifiable articles.
  */
-if(!function_exists('madeit_pingback_header')) {
+if (!function_exists('madeit_pingback_header')) {
     function madeit_pingback_header()
     {
         if (is_singular() && pings_open()) {
@@ -404,10 +404,10 @@ if(!function_exists('madeit_pingback_header')) {
     add_action('wp_head', 'madeit_pingback_header');
 }
 
-/**
+/*
  * Display custom color CSS.
  */
-if(!function_exists('madeit_colors_css_wrap')) {
+if (!function_exists('madeit_colors_css_wrap')) {
     function madeit_colors_css_wrap()
     {
         if ('custom' !== get_theme_mod('colorscheme')) {
@@ -423,10 +423,10 @@ if(!function_exists('madeit_colors_css_wrap')) {
     add_action('wp_head', 'madeit_colors_css_wrap');
 }
 
-/**
+/*
  * Enqueue scripts and styles.
  */
-if(!function_exists('madeit_scripts')) {
+if (!function_exists('madeit_scripts')) {
     function madeit_scripts()
     {
         // Add custom fonts, used in the main stylesheet.
@@ -464,7 +464,7 @@ if(!function_exists('madeit_scripts')) {
     add_action('wp_enqueue_scripts', 'madeit_scripts');
 }
 
-if(!function_exists('remove_jquery_migrate_and_move_jquery_to_footer')) {
+if (!function_exists('remove_jquery_migrate_and_move_jquery_to_footer')) {
     function remove_jquery_migrate_and_move_jquery_to_footer(&$scripts)
     {
         if (!is_admin()) {
@@ -479,7 +479,7 @@ if(!function_exists('remove_jquery_migrate_and_move_jquery_to_footer')) {
     add_filter('wp_default_scripts', 'remove_jquery_migrate_and_move_jquery_to_footer');
 }
 
-if(!function_exists('prefix_add_footer_styles')) {
+if (!function_exists('prefix_add_footer_styles')) {
     function prefix_add_footer_styles()
     {
         wp_enqueue_style('font-awesome', get_theme_file_uri('/assets/css/font-awesome.min.css'), [], '4.7.0');
@@ -487,7 +487,7 @@ if(!function_exists('prefix_add_footer_styles')) {
     add_action('get_footer', 'prefix_add_footer_styles');
 }
 
-if(!function_exists('madeit_admin_style')) {
+if (!function_exists('madeit_admin_style')) {
     function madeit_admin_style()
     {
         wp_enqueue_style('madeit-fonts', madeit_fonts_url(), [], null);
@@ -496,7 +496,7 @@ if(!function_exists('madeit_admin_style')) {
     add_action('admin_enqueue_scripts', 'madeit_admin_style');
 }
 
-if(!function_exists('remove_css_js_ver')) {
+if (!function_exists('remove_css_js_ver')) {
     function remove_css_js_ver($src)
     {
         if (strpos($src, '?ver=')) {
@@ -509,7 +509,7 @@ if(!function_exists('remove_css_js_ver')) {
     add_filter('script_loader_src', 'remove_css_js_ver', 10, 2);
 }
 
-/**
+/*
  * Add custom image sizes attribute to enhance responsive image functionality
  * for content images.
  *
@@ -521,7 +521,7 @@ if(!function_exists('remove_css_js_ver')) {
  *
  * @return string A source size value for use in a content image 'sizes' attribute.
  */
-if(!function_exists('madeit_content_image_sizes_attr')) {
+if (!function_exists('madeit_content_image_sizes_attr')) {
     function madeit_content_image_sizes_attr($sizes, $size)
     {
         $width = $size[0];
@@ -541,7 +541,7 @@ if(!function_exists('madeit_content_image_sizes_attr')) {
     add_filter('wp_calculate_image_sizes', 'madeit_content_image_sizes_attr', 10, 2);
 }
 
-/**
+/*
  * Filter the `sizes` value in the header image markup.
  *
  * @since Made I.T. 1.0
@@ -552,7 +552,7 @@ if(!function_exists('madeit_content_image_sizes_attr')) {
  *
  * @return string The filtered header image HTML.
  */
-if(!function_exists('madeit_header_image_tag')) {
+if (!function_exists('madeit_header_image_tag')) {
     function madeit_header_image_tag($html, $header, $attr)
     {
         if (isset($attr['sizes'])) {
@@ -564,7 +564,7 @@ if(!function_exists('madeit_header_image_tag')) {
     add_filter('get_header_image_tag', 'madeit_header_image_tag', 10, 3);
 }
 
-/**
+/*
  * Add custom image sizes attribute to enhance responsive image functionality
  * for post thumbnails.
  *
@@ -576,7 +576,7 @@ if(!function_exists('madeit_header_image_tag')) {
  *
  * @return array The filtered attributes for the image markup.
  */
-if(!function_exists('madeit_post_thumbnail_sizes_attr')) {
+if (!function_exists('madeit_post_thumbnail_sizes_attr')) {
     function madeit_post_thumbnail_sizes_attr($attr, $attachment, $size)
     {
         if (is_archive() || is_search() || is_home()) {
@@ -590,7 +590,7 @@ if(!function_exists('madeit_post_thumbnail_sizes_attr')) {
     add_filter('wp_get_attachment_image_attributes', 'madeit_post_thumbnail_sizes_attr', 10, 3);
 }
 
-/**
+/*
  * Use front-page.php when Front page displays is set to a static page.
  *
  * @since Made I.T. 1.0
@@ -599,7 +599,7 @@ if(!function_exists('madeit_post_thumbnail_sizes_attr')) {
  *
  * @return string The template to be used: blank if is_home() is true (defaults to index.php), else $template.
  */
-if(!function_exists('madeit_front_page_template')) {
+if (!function_exists('madeit_front_page_template')) {
     function madeit_front_page_template($template)
     {
         return is_home() ? '' : $template;
@@ -607,7 +607,7 @@ if(!function_exists('madeit_front_page_template')) {
     add_filter('frontpage_template', 'madeit_front_page_template');
 }
 
-/**
+/*
  * Modifies tag cloud widget arguments to display all tags in the same font size
  * and use list format for better accessibility.
  *
@@ -617,7 +617,7 @@ if(!function_exists('madeit_front_page_template')) {
  *
  * @return array The filtered arguments for tag cloud widget.
  */
-if(!function_exists('madeit_widget_tag_cloud_args')) {
+if (!function_exists('madeit_widget_tag_cloud_args')) {
     function madeit_widget_tag_cloud_args($args)
     {
         $args['largest'] = 1;
@@ -653,7 +653,7 @@ if (!function_exists('madeit_wp_bootstrap_head')) {
 }
 
 /* Style read more button */
-if(!function_exists('modify_read_more_link')) {
+if (!function_exists('modify_read_more_link')) {
     function modify_read_more_link($text)
     {
         return '<a class="more-link btn btn-block btn-warning" href="'.get_permalink().'">'.__('Continue reading', 'madeit').'</a>';
@@ -666,7 +666,7 @@ if(!function_exists('modify_read_more_link')) {
  */
 require_once get_parent_theme_file_path('/inc/class-tgm-plugin-activation.php');
 
-if(!function_exists('madeit_register_required_plugins')) {
+if (!function_exists('madeit_register_required_plugins')) {
     function madeit_register_required_plugins()
     {
         /*
@@ -748,7 +748,7 @@ if(!function_exists('madeit_register_required_plugins')) {
     add_action('tgmpa_register', 'madeit_register_required_plugins');
 }
 
-if(!function_exists('madeit_add_image_popup_class')) {
+if (!function_exists('madeit_add_image_popup_class')) {
     function madeit_add_image_popup_class($content)
     {
         $content = mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8');
@@ -772,10 +772,10 @@ if(!function_exists('madeit_add_image_popup_class')) {
     add_filter('the_content', 'madeit_add_image_popup_class');
 }
 
-/**
+/*
  * WooCommerce form fields.
  */
-if(!function_exists('madeit_woocommerce_form_field_args')) {
+if (!function_exists('madeit_woocommerce_form_field_args')) {
     function madeit_woocommerce_form_field_args($args, $key, $value)
     {
         $args['input_class'][] = 'form-control';
@@ -785,10 +785,10 @@ if(!function_exists('madeit_woocommerce_form_field_args')) {
     add_filter('woocommerce_form_field_args', 'madeit_woocommerce_form_field_args', 10, 3);
 }
 
-/**
+/*
  * Fix WooCommerce active class.
  */
-if(!function_exists('madeit_woocommerce_account_menu_item_classes')) {
+if (!function_exists('madeit_woocommerce_account_menu_item_classes')) {
     function madeit_woocommerce_account_menu_item_classes($classes, $endpoint)
     {
         $classes = str_replace('is-active', 'active', $classes);
@@ -798,10 +798,10 @@ if(!function_exists('madeit_woocommerce_account_menu_item_classes')) {
     add_filter('woocommerce_account_menu_item_classes', 'madeit_woocommerce_account_menu_item_classes', 10, 2);
 }
 
-/**
+/*
  * Add cart icon to menu.
  */
-if(!function_exists('madeit_woocommerce_shopping_cart_in_menu')) {
+if (!function_exists('madeit_woocommerce_shopping_cart_in_menu')) {
     function madeit_woocommerce_shopping_cart_in_menu($menu, $args)
     {
 
@@ -833,15 +833,15 @@ if(!function_exists('madeit_woocommerce_shopping_cart_in_menu')) {
     add_filter('wp_nav_menu_items', 'madeit_woocommerce_shopping_cart_in_menu', 10, 2);
 }
 
-if(!function_exists('madeit_cookie_notice')) {
+if (!function_exists('madeit_cookie_notice')) {
     function madeit_cookie_notice()
     {
         $cookieUrl = '';
         if (function_exists('get_privacy_policy_url')) {
             $cookieUrl = get_privacy_policy_url();
         }
-        
-        if($cookieUrl == '' || $cookieUrl == '#') {
+
+        if ($cookieUrl == '' || $cookieUrl == '#') {
             $cookieUrl = get_permalink(get_theme_mod('cookie_url'));
         }
         $text = sprintf(__('By using our website you are consenting to our use of cookies in accordance with our <a href="%s">cookie & privacy policy</a>.', 'madeit'), $cookieUrl);
