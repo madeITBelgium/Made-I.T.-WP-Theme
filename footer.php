@@ -10,7 +10,7 @@
  * @version 1.2
  */
 ?>
-
+</div>
 <footer id="colophon" class="container-fluid site-footer" role="contentinfo">
     <div class="row voffset5 vbottom5">
         <div class="col-sm">

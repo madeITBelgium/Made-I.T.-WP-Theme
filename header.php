@@ -39,3 +39,4 @@
             </div>
         </header><!-- #masthead -->
     <?php endif; ?>
+    <div class="flex-grow">

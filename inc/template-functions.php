@@ -61,6 +61,8 @@ function madeit_body_classes($classes)
     // Get the colorscheme or the default if there isn't one.
     $colors = madeit_sanitize_colorscheme(get_theme_mod('colorscheme', 'light'));
     $classes[] = 'colors-'.$colors;
+    $classes[] = 'flex-column';
+    $classes[] = 'd-flex';
 
     return $classes;
 }
