@@ -34,11 +34,7 @@ get_header(); ?>
 
                 endwhile; // End of the loop.
 
-                the_posts_pagination([
-                    'prev_text'          => madeit_get_svg(['icon' => 'arrow-left']).'<span class="screen-reader-text">'.__('Previous page', 'madeit').'</span>',
-                    'next_text'          => '<span class="screen-reader-text">'.__('Next page', 'madeit').'</span>'.madeit_get_svg(['icon' => 'arrow-right']),
-                    'before_page_number' => '<span class="meta-nav screen-reader-text">'.__('Page', 'madeit').' </span>',
-                ]);
+                madeit_page_pagination();
 
             else : ?>
 
