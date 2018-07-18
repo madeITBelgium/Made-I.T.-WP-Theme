@@ -928,3 +928,8 @@ require get_parent_theme_file_path('/inc/bootstrap-navwalker.php');
  * WP-Members.
  */
 require get_parent_theme_file_path('/inc/wp-members.php');
+
+/**
+ * Gutenberg blocks
+ */
+require get_parent_theme_file_path('/gutenberg/gutenberg.php');
