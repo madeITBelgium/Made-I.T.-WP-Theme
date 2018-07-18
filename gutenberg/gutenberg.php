@@ -4,9 +4,8 @@
  *
  * @since 1.1
  */
-
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+if (!defined('ABSPATH')) {
+    exit;
 }
 
 //require get_parent_theme_file_path('/gutenberg/basic/plugin.php');
