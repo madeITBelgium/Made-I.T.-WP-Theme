@@ -43,7 +43,6 @@ get_header(); ?>
 
                 endwhile;
 
-                
                 madeit_page_pagination();
             else :
 
