@@ -14,9 +14,9 @@
     <div class="form-group">
         <div class="input-group">
             <input type="text" id="<?php echo $unique_id; ?>" class="form-control search-query" placeholder="<?php _e('Search...', 'madeit'); ?>" value="<?php echo esc_attr(get_search_query()); ?>" name="s">
-            <span class="input-group-btn">
-                <button type="submit" class="btn btn-secondary" name="submit" id="searchsubmit" value="<?php _e('Search', 'madeit'); ?>"><span class="fa fa-search"></span></button>
-            </span>
+            <div class="input-group-append">
+                <button type="submit" class="btn btn-primary" name="submit" id="searchsubmit" value="<?php _e('Search', 'madeit'); ?>"><span class="fa fa-search"></span></button>
+            </div>
         </div>
     </div>
 </form>
