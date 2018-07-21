@@ -930,6 +930,6 @@ require get_parent_theme_file_path('/inc/bootstrap-navwalker.php');
 require get_parent_theme_file_path('/inc/wp-members.php');
 
 /**
- * Gutenberg blocks
+ * Gutenberg blocks.
  */
 require get_parent_theme_file_path('/gutenberg/gutenberg.php');
