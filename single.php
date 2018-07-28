@@ -9,7 +9,7 @@
  */
 get_header(); ?>
 
-<div class="container voffset6">
+<div class="container mt-7">
     <div class="row">
         <div class="col" id="primary" role="main">
             <?php

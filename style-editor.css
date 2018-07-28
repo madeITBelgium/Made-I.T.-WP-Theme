@@ -1,0 +1,86 @@
+body.gutenberg-editor-page {
+	background-color: #FFF;
+	color: #000;
+}
+
+/* Main column width */
+body.gutenberg-editor-page .editor-post-title__block,
+body.gutenberg-editor-page .editor-default-block-appender,
+body.gutenberg-editor-page .editor-block-list__block {
+	max-width: 100%;
+    width: 100%;
+}
+
+body.gutenberg-editor-page .editor-block-list__block[data-align="wide"] {
+	max-width: 100%;
+    width: 100%;
+}
+
+@media (min-width: 576px) {
+    body.gutenberg-editor-page .editor-post-title__block,
+    body.gutenberg-editor-page .editor-default-block-appender,
+    body.gutenberg-editor-page .editor-block-list__block {
+        max-width: 540px;
+    }
+}
+
+@media (min-width: 768px) {
+    body.gutenberg-editor-page .editor-post-title__block,
+    body.gutenberg-editor-page .editor-default-block-appender,
+    body.gutenberg-editor-page .editor-block-list__block {
+        max-width: 720px;
+    }
+}
+
+@media (min-width: 992px) {
+    body.gutenberg-editor-page .editor-post-title__block,
+    body.gutenberg-editor-page .editor-default-block-appender,
+    body.gutenberg-editor-page .editor-block-list__block {
+        max-width: 960px;
+    }
+}
+
+@media (min-width: 1200px) {
+    body.gutenberg-editor-page .editor-post-title__block,
+    body.gutenberg-editor-page .editor-default-block-appender,
+    body.gutenberg-editor-page .editor-block-list__block {
+        max-width: 1140px;
+    }
+}
+
+/* Width of "full-wide" blocks */
+body.gutenberg-editor-page .editor-block-list__block[data-align="full"] {
+	max-width: none;
+}
+
+
+/* Fix overlapping columns */
+.edit-post-visual-editor .editor-block-list__block .editor-block-list__block-edit  {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+/* Fix color */
+.edit-post-visual-editor, .edit-post-visual-editor p, .edit-post-visual-editor h2, .edit-post-visual-editor h3 {
+    color: inherit;
+}
+.wp-block-shortcode {
+    color: #000;
+}
+
+.editor-block-list__layout > div:last-child {
+    width: 100%;
+}
+/*
+.editor-block-list__layout > div:last-child .editor-default-block-appender__content {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+*/
+
+/*
+.editor-block-list__block-edit {
+    margin-top: 15px !important;
+    margin-bottom: 15px !important;
+}
+*/

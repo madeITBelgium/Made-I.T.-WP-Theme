@@ -876,7 +876,29 @@ a.text-dark:focus, a.text-dark:hover {
 
 .btn-link:hover {
   color: '.madeit_color_luminance($primary_color, 0, 0, -0.15).';
-}';
+}
+';
+    $gutenbergColors = [
+        'default-text' => $text_color,
+        'default-background' => $background_color,
+        'primary' => $primary_color,
+        'secondary' => $secondary_color,
+        'success' => $success_color,
+        'info' => $info_color,
+        'warning' => $warning_color,
+        'danger' => $danger_color
+    ];
+    
+    foreach($gutenbergColors as $class => $color) {
+        $css .= "
+.has-" . $class . "-background-color {
+	background-color: " . $color . ";
+}
+
+.has-" . $class . "-color {
+	color: " . $color . ";
+}\n";
+    }
 
     /*
      * Filters Made I.T. custom colors CSS.

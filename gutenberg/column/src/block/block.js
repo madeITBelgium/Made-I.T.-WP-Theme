@@ -18,7 +18,6 @@ export const {
 } = wp.editor.InspectorControls ? wp.editor : wp.blocks
 
 
-export const ALLOWED_BLOCKS = [ 'madeit/block-column' ];
 
 export const edit = ( props ) => {
     const {
@@ -28,6 +27,11 @@ export const edit = ( props ) => {
     } = props
 
     const {
+        xs,
+        sm,
+        md,
+        lg,
+        xl,
         textColor,
         color,
         margin,
@@ -37,7 +41,7 @@ export const edit = ( props ) => {
     return [
         <div>
             <div
-                className={ className }
+                className={ 'col-' + xs + ' col-sm-' + sm + ' col-md-' + md + ' col-lg-' + lg + ' col-xl-' + xl + ' ' + className }
                 style = {{
                     color: textColor,
                     backgroundColor: color,
@@ -46,14 +50,46 @@ export const edit = ( props ) => {
                     marginTop: margin + 'px',
                     marginBottom: margin + 'px',
                 }}>
-                <wp.editor.InnerBlocks 
-                    /*template={ ALLOWED_BLOCKS }
-                    templateLock={ false }
-                    allowedBlocks={ ALLOWED_BLOCKS }*/ />
+                <wp.editor.InnerBlocks /* allowedBlocks={ ALLOWED_BLOCKS } */ />
             </div>
             {
                 isSelected &&
                 <InspectorControls key='inspector'>
+                    <RangeControl
+                        label={ __( 'XS size - Smartphone' ) }
+                        value={ xs }
+                        min='1'
+                        max='12'
+                        onChange={ ( value ) => setAttributes( { xs: value } ) }
+                    />
+                    <RangeControl
+                        label={ __( 'SM size - Small devices (landscape phones)' ) }
+                        value={ sm }
+                        min='1'
+                        max='12'
+                        onChange={ ( value ) => setAttributes( { sm: value } ) }
+                    />
+                    <RangeControl
+                        label={ __( 'MD size - Medium devices (tablets)' ) }
+                        value={ md }
+                        min='1'
+                        max='12'
+                        onChange={ ( value ) => setAttributes( { md: value } ) }
+                    />
+                    <RangeControl
+                        label={ __( 'LG size - Large devices (desktops)' ) }
+                        value={ lg }
+                        min='1'
+                        max='12'
+                        onChange={ ( value ) => setAttributes( { lg: value } ) }
+                    />
+                    <RangeControl
+                        label={ __( 'LG size - Extra large devices (large desktops)' ) }
+                        value={ xl }
+                        min='1'
+                        max='12'
+                        onChange={ ( value ) => setAttributes( { xl: value } ) }
+                    />
                     <RangeControl
                         label={ __( 'Margin' ) }
                         value={ margin }
@@ -96,6 +132,11 @@ export const edit = ( props ) => {
 
 export const save = ( props ) => {
     const {
+        xs,
+        sm,
+        md,
+        lg,
+        xl,
         textColor,
         color,
         margin,
@@ -104,11 +145,11 @@ export const save = ( props ) => {
     
     const {
         className
-    } = props;
+    } = props
     
     return (
         <div
-            className={ className }
+            className={ 'col-' + xs + ' col-sm-' + sm + ' col-md-' + md + ' col-lg-' + lg + ' col-xl-' + xl + ' ' + className }
             style = {{
                     color: textColor,
                     backgroundColor: color,
@@ -123,13 +164,13 @@ export const save = ( props ) => {
     );
 }
 
-registerBlockType( 'madeit/block-row', {
+registerBlockType( 'madeit/block-column', {
     // Block name. Block names must be string that contains a namespace prefix. Example: my-plugin/my-custom-block.
-    title: __( 'Row - Made IT Block' ), // Block title.
+    title: __( 'Column - Made IT Block' ), // Block title.
     icon: 'align-center', // Block icon from Dashicons → https://developer.wordpress.org/resource/dashicons/.
     category: 'common', // Block category — Group blocks together based on common traits E.g. common, formatting, layout widgets, embed.
     keywords: [
-        __( 'row' ),
+        __( 'column' ),
         __( 'Made IT' ),
         __( 'Made I.T.' ),
     ],
@@ -148,11 +189,37 @@ registerBlockType( 'madeit/block-row', {
         padding: {
             type: 'number',
             default: '0',
-        }
+        },
+        xs: {
+            type: 'number',
+            default: '12',
+        },
+        sm: {
+            type: 'number',
+            default: '12',
+        },
+        md: {
+            type: 'number',
+            default: '6',
+        },
+        lg: {
+            type: 'number',
+            default: '6',
+        },
+        xl: {
+            type: 'number',
+            default: '6',
+        },
     },
     
     getEditWrapperProps( attributes ) {
-        return { 'data-row': 'row' };
+        return {
+            'data-column-xs': attributes.xs,
+            'data-column-sm': attributes.sm,
+            'data-column-md': attributes.md,
+            'data-column-lg': attributes.lg,
+            'data-column-xl': attributes.xl
+        };
     },
 
     // The "edit" property must be a valid function.
