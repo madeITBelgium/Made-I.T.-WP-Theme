@@ -879,24 +879,24 @@ a.text-dark:focus, a.text-dark:hover {
 }
 ';
     $gutenbergColors = [
-        'default-text' => $text_color,
+        'default-text'       => $text_color,
         'default-background' => $background_color,
-        'primary' => $primary_color,
-        'secondary' => $secondary_color,
-        'success' => $success_color,
-        'info' => $info_color,
-        'warning' => $warning_color,
-        'danger' => $danger_color
+        'primary'            => $primary_color,
+        'secondary'          => $secondary_color,
+        'success'            => $success_color,
+        'info'               => $info_color,
+        'warning'            => $warning_color,
+        'danger'             => $danger_color,
     ];
-    
-    foreach($gutenbergColors as $class => $color) {
-        $css .= "
-.has-" . $class . "-background-color {
-	background-color: " . $color . ";
+
+    foreach ($gutenbergColors as $class => $color) {
+        $css .= '
+.has-'.$class.'-background-color {
+	background-color: '.$color.';
 }
 
-.has-" . $class . "-color {
-	color: " . $color . ";
+.has-'.$class.'-color {
+	color: '.$color.";
 }\n";
     }
 
