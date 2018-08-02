@@ -4,16 +4,14 @@
  *
  * @since 1.1
  */
-
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+if (!defined('ABSPATH')) {
+    exit;
 }
 
 //require get_parent_theme_file_path('/gutenberg/basic/plugin.php');
 require get_parent_theme_file_path('/gutenberg/container/plugin.php');
 require get_parent_theme_file_path('/gutenberg/row/plugin.php');
 require get_parent_theme_file_path('/gutenberg/column/plugin.php');
-
 
 require get_parent_theme_file_path('/gutenberg/container-simple/plugin.php');
 require get_parent_theme_file_path('/gutenberg/row-simple/plugin.php');
