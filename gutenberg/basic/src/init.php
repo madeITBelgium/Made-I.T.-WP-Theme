@@ -1,8 +1,8 @@
 <?php
 
 // Exit if accessed directly.
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+if (!defined('ABSPATH')) {
+    exit;
 }
 
 /**
@@ -12,18 +12,19 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 1.0.0
  */
-function basic_madeit_block_assets() {
-	// Styles.
-	wp_enqueue_style(
-		'basic-madeit-style-css', // Handle.
-		get_template_directory_uri() . '/gutenberg/basic/dist/blocks.style.build.css', // Block style CSS.
-		array( 'wp-blocks' ) // Dependency to include the CSS after it.
-		// filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.style.build.css' ) // Version: filemtime — Gets file modification time.
-	);
+function basic_madeit_block_assets()
+{
+    // Styles.
+    wp_enqueue_style(
+        'basic-madeit-style-css', // Handle.
+        get_template_directory_uri().'/gutenberg/basic/dist/blocks.style.build.css', // Block style CSS.
+        ['wp-blocks'] // Dependency to include the CSS after it.
+        // filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.style.build.css' ) // Version: filemtime — Gets file modification time.
+    );
 } // End function basic_cgb_block_assets().
 
 // Hook: Frontend assets.
-add_action( 'enqueue_block_assets', 'basic_madeit_block_assets' );
+add_action('enqueue_block_assets', 'basic_madeit_block_assets');
 
 /**
  * Enqueue Gutenberg block assets for backend editor.
@@ -34,24 +35,25 @@ add_action( 'enqueue_block_assets', 'basic_madeit_block_assets' );
  *
  * @since 1.0.0
  */
-function basic_madeit_editor_assets() {
-	// Scripts.
-	wp_enqueue_script(
-		'basic-madeit-block-js', // Handle.
-		get_template_directory_uri() . '/gutenberg/basic/dist/blocks.build.js', // Block.build.js: We register the block here. Built with Webpack.
-		array( 'wp-blocks', 'wp-i18n', 'wp-element' ), // Dependencies, defined above.
-		// filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.build.js' ), // Version: filemtime — Gets file modification time.
-		true // Enqueue the script in the footer.
-	);
+function basic_madeit_editor_assets()
+{
+    // Scripts.
+    wp_enqueue_script(
+        'basic-madeit-block-js', // Handle.
+        get_template_directory_uri().'/gutenberg/basic/dist/blocks.build.js', // Block.build.js: We register the block here. Built with Webpack.
+        ['wp-blocks', 'wp-i18n', 'wp-element'], // Dependencies, defined above.
+        // filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.build.js' ), // Version: filemtime — Gets file modification time.
+        true // Enqueue the script in the footer.
+    );
 
-	// Styles.
-	wp_enqueue_style(
-		'basic-madeit-block-editor-css', // Handle.
-		get_template_directory_uri() . '/gutenberg/basic/dist/blocks.editor.build.css', // Block editor CSS.
-		array( 'wp-edit-blocks' ) // Dependency to include the CSS after it.
-		// filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.editor.build.css' ) // Version: filemtime — Gets file modification time.
-	);
+    // Styles.
+    wp_enqueue_style(
+        'basic-madeit-block-editor-css', // Handle.
+        get_template_directory_uri().'/gutenberg/basic/dist/blocks.editor.build.css', // Block editor CSS.
+        ['wp-edit-blocks'] // Dependency to include the CSS after it.
+        // filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.editor.build.css' ) // Version: filemtime — Gets file modification time.
+    );
 } // End function basic_cgb_editor_assets().
 
 // Hook: Editor assets.
-add_action( 'enqueue_block_editor_assets', 'basic_madeit_editor_assets' );
+add_action('enqueue_block_editor_assets', 'basic_madeit_editor_assets');
