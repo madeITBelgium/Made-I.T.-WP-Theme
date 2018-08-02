@@ -564,8 +564,10 @@ if (!function_exists('madeit_admin_style')) {
 if (!function_exists('remove_css_js_ver')) {
     function remove_css_js_ver($src)
     {
-        if (strpos($src, '?ver=')) {
-            $src = remove_query_arg('ver', $src);
+        if (!is_admin()) {
+            if (strpos($src, '?ver=')) {
+                $src = remove_query_arg('ver', $src);
+            }
         }
 
         return $src;
