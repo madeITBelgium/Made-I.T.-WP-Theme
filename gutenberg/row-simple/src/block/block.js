@@ -2,7 +2,7 @@
 import './style.scss';
 import './editor.scss';
 
-import { times } from 'lodash/times';
+import times from 'lodash/times';
 import memoize from 'memize';
 
 export const { registerBlockType } = wp.blocks

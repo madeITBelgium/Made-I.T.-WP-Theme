@@ -117,12 +117,12 @@ export const edit = ( props ) => {
                         'manual' === type &&
                         <SelectControl
                             label={ __( 'Medium devices (tablets)' ) }
-                            value={ sm }
+                            value={ md }
                             options={ widths.map(({ value, label }) => ({
                                 value: value,
                                 label: label,
                             })) }
-                            onChange={ ( value ) => { setAttributes( { sm: value } ) } }
+                            onChange={ ( value ) => { setAttributes( { md: value } ) } }
                         />
                     }
                     {
