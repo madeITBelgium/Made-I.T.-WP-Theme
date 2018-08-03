@@ -9,4 +9,8 @@
  * Webpack is compiling as the input file.
  */
 
-import './block/block.js';
+import './block/tabs-content.js';
+import './block/tabs-title.js';
+import './block/tabs-contents.js';
+import './block/tabs-titles.js';
+import './block/tabs.js';
