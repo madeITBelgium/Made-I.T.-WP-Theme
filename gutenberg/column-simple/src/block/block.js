@@ -305,6 +305,60 @@ registerBlockType( 'madeit/block-column-simple', {
             'data-column-lg': lg
         };
     },
+    
+    
+
+    deprecated: [
+        {
+            save: function( props ) {
+                const {
+                    type,
+                    sm,
+                    md,
+                    lg,
+                    textColor,
+                    color,
+                    margin,
+                    padding
+                } = props.attributes;
+
+                const {
+                    className
+                } = props
+    
+    
+                var classes = "";
+                if('auto' === type) {
+                    classes = 'col';
+                }
+                else if('auto-sm' === type) {
+                    classes = 'col-12 col-md';
+                }
+                else if('auto-md' === type) {
+                    classes = 'col-12 col-lg';
+                }
+                if(className !== undefined) {
+                    classes += ' ' + className;
+                }
+                
+                return (
+                    <div
+                        className={ classes }
+                        style = {{
+                                color: textColor,
+                                backgroundColor: color,
+                                paddingTop: padding + 'px',
+                                paddingBottom: padding + 'px',
+                                marginTop: margin + 'px',
+                                marginBottom: margin + 'px',
+                            }}
+                        >
+                        <wp.editor.InnerBlocks.Content />
+                    </div>
+                );
+            },
+        }
+    ],
 
     // The "edit" property must be a valid function.
     edit: edit,
