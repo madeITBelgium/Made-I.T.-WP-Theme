@@ -76,7 +76,7 @@ export const edit = ( props ) => {
         classes += ' ' + className;
     }
     
-    if('manueel' === type) {
+    if('manual' === type) {
         classes += ' col-' + sm + ' col-md-' + md + ' col-lg-' + lg;
     }
     return [
@@ -212,7 +212,7 @@ export const save = ( props ) => {
         classes += ' ' + className;
     }
     
-    if('manueel' === type) {
+    if('manual' === type) {
         classes += ' col-' + sm + ' col-md-' + md + ' col-lg-' + lg;
     }
     
