@@ -75,6 +75,10 @@ export const edit = ( props ) => {
     if(className !== undefined) {
         classes += ' ' + className;
     }
+    
+    if('manueel' === type) {
+        classes += ' col-' + sm + ' col-md-' + md + ' col-lg-' + lg;
+    }
     return [
         <div>
             <div
@@ -117,12 +121,12 @@ export const edit = ( props ) => {
                         'manual' === type &&
                         <SelectControl
                             label={ __( 'Medium devices (tablets)' ) }
-                            value={ sm }
+                            value={ md }
                             options={ widths.map(({ value, label }) => ({
                                 value: value,
                                 label: label,
                             })) }
-                            onChange={ ( value ) => { setAttributes( { sm: value } ) } }
+                            onChange={ ( value ) => { setAttributes( { md: value } ) } }
                         />
                     }
                     {
@@ -206,6 +210,10 @@ export const save = ( props ) => {
     }
     if(className !== undefined) {
         classes += ' ' + className;
+    }
+    
+    if('manueel' === type) {
+        classes += ' col-' + sm + ' col-md-' + md + ' col-lg-' + lg;
     }
     
     return (
