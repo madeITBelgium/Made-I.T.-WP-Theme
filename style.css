@@ -22,6 +22,7 @@ body {
 
 .flex-grow {
    flex: 1;
+   margin-top: 60px;
 }
 
 #wpmem_reg, #wpmem_login {
