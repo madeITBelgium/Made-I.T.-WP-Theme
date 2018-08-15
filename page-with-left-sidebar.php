@@ -1,6 +1,6 @@
 <?php
 /**
- * Template Name: Page with right sidebar
+ * Template Name: Page with left sidebar
  * The template for displaying all pages with a sidebar.
  *
  * @version 1.0
@@ -9,6 +9,7 @@ get_header(); ?>
 
 <div class="container voffset8 vbottom8">
 	<div class="row">
+        <?php get_sidebar('left'); ?>
         <div class="col-sm">
             <?php
             while (have_posts()) : the_post();
@@ -23,7 +24,6 @@ get_header(); ?>
             endwhile; // End of the loop.
             ?>
         </div>
-        <?php get_sidebar(); ?>
     </div>
 </div>
 

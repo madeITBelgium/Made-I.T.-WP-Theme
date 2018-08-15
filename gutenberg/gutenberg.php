@@ -14,7 +14,9 @@ require get_parent_theme_file_path('/gutenberg/row/plugin.php');
 require get_parent_theme_file_path('/gutenberg/column/plugin.php');
 
 require get_parent_theme_file_path('/gutenberg/container-simple/plugin.php');
-require get_parent_theme_file_path('/gutenberg/row-simple/plugin.php');
-require get_parent_theme_file_path('/gutenberg/column-simple/plugin.php');
+//require get_parent_theme_file_path('/gutenberg/row-simple/plugin.php');
+//require get_parent_theme_file_path('/gutenberg/column-simple/plugin.php');
 
 require get_parent_theme_file_path('/gutenberg/tabs/plugin.php');
+
+require get_parent_theme_file_path('/gutenberg/carousel/plugin.php');

@@ -9,6 +9,4 @@
  * Webpack is compiling as the input file.
  */
 
-import './container/block.js';
-import './row/block.js';
-import './column/block.js';
+import './block/carousel.js';

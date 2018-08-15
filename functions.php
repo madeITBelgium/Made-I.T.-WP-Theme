@@ -299,7 +299,7 @@ if (!function_exists('madeit_content_width')) {
         }
 
         // Check if is single post and there is no sidebar.
-        if (is_single() && !is_active_sidebar('sidebar-1')) {
+        if (is_single() && !is_active_sidebar('sidebar-1') && !is_active_sidebar('sidebar-left')) {
             $content_width = 740;
         }
 
@@ -373,9 +373,19 @@ if (!function_exists('madeit_widgets_init')) {
     function madeit_widgets_init()
     {
         register_sidebar([
-            'name'          => __('Blog Sidebar', 'madeit'),
+            'name'          => __('Right Sidebar', 'madeit'),
             'id'            => 'sidebar-1',
             'description'   => __('Add widgets here to appear in your sidebar on blog posts and archive pages.', 'madeit'),
+            'before_widget' => '<section id="%1$s" class="widget %2$s">',
+            'after_widget'  => '</section>',
+            'before_title'  => '<h2 class="widget-title">',
+            'after_title'   => '</h2>',
+        ]);
+        
+        register_sidebar([
+            'name'          => __('Left Sidebar', 'madeit'),
+            'id'            => 'sidebar-left',
+            'description'   => __('Add widgets here to appear in your left sidebar.', 'madeit'),
             'before_widget' => '<section id="%1$s" class="widget %2$s">',
             'after_widget'  => '</section>',
             'before_title'  => '<h2 class="widget-title">',
@@ -972,6 +982,11 @@ require get_parent_theme_file_path('/inc/custom-header.php');
  * Custom template tags for this theme.
  */
 require get_parent_theme_file_path('/inc/template-tags.php');
+
+/**
+ * Custom template widgets for this theme.
+ */
+require get_parent_theme_file_path('/inc/template-widgets.php');
 
 /**
  * Additional features to allow styling of the templates.
