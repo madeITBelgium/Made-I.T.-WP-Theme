@@ -14,18 +14,15 @@
  */
 get_header();
 
-
 while (have_posts()) : the_post();
-    if(false !== strpos( $post->post_content, '<!-- wp:' )) {
+    if (false !== strpos($post->post_content, '<!-- wp:')) {
         get_template_part('template-parts/page/content', 'front-page-gutenberg');
-    }
-    else {
+    } else {
         ?>
         <div class="container-fluid">
             <div class="row">
                 <?php
-                get_template_part('template-parts/page/content-front-page', 'panels');
-                ?>
+                get_template_part('template-parts/page/content-front-page', 'panels'); ?>
             </div>
         </div>
         <?php
@@ -37,5 +34,4 @@ while (have_posts()) : the_post();
 
 endwhile; // End of the loop.
 
-        
 get_footer();
