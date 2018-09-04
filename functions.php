@@ -381,7 +381,7 @@ if (!function_exists('madeit_widgets_init')) {
             'before_title'  => '<h2 class="widget-title">',
             'after_title'   => '</h2>',
         ]);
-        
+
         register_sidebar([
             'name'          => __('Left Sidebar', 'madeit'),
             'id'            => 'sidebar-left',
