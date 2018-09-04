@@ -214,3 +214,51 @@ function madeit_page_pagination($pages = '', $range = 2)
         //echo '<div class="pagination-info mb-5 text-center">[ <span class="text-muted">Page</span> '.$paged.' <span class="text-muted">of</span> '.$pages.' ]</div>';
     }
 }
+
+if(!function_exists('madeit_show_title_metabox')) {
+    function madeit_show_title_metabox($post_type)
+    {
+        if('page' == $post_type) {
+            add_meta_box(
+                'madeit-pagetitle-meta-box',
+                'page' == $post_type ? __('Page Attributes') : __('Attributes'),
+                'madeit_pagetitle_meta_box_cb', 
+                'page', 
+                'side', 
+                'low'
+            );
+        }
+    }
+    add_action('add_meta_boxes', 'madeit_show_title_metabox');
+}
+
+if(!function_exists('madeit_pagetitle_meta_box_cb')) {
+    function madeit_pagetitle_meta_box_cb($post) {
+        $hidetitle = get_post_meta($post->ID, 'hide_title', true);
+        ?>
+        <input name="hide_title" type="checkbox" id="hide_title" value="1" style="float: right; margin-top: 2px;" <?php if(!empty($hidetitle)) { echo "CHECKED"; } ?> />
+        <p class="post-attributes-label-wrapper"><label class="post-attributes-label" for="hide_title"><?php _e( 'Hide page title', 'madeit' ); ?></label></p>
+        <?php
+    }
+    //add_action('page_attributes_misc_attributes', 'madeit_pagetitle_meta_box_cb');
+}
+
+if(!function_exists('madeit_pagetitle_meta_box_save')) {
+    function madeit_pagetitle_meta_box_save($post_id, $post)
+    {
+        if(current_user_can('edit_post', $post_id) && $post->post_type == 'page')
+        {
+            remove_action('save_post', 'madeit_pagetitle_meta_box_save', 99, 2);
+            if(isset($_POST['hide_title']))
+            {
+                update_post_meta($post_id, 'hide_title', 1);
+            }
+            else {
+                update_post_meta($post_id, 'hide_title', 0);
+            }
+            
+            add_action('save_post', 'madeit_pagetitle_meta_box_save', 99, 2);
+        }
+    }
+    add_action('save_post', 'madeit_pagetitle_meta_box_save', 99, 2);
+}
