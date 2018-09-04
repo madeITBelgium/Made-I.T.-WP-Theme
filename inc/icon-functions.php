@@ -8,7 +8,7 @@
 /**
  * Add SVG definitions to the footer.
  */
-if(!function_exists('madeit_include_svg_icons')) {
+if (!function_exists('madeit_include_svg_icons')) {
     function madeit_include_svg_icons()
     {
         // Define SVG sprite file.
