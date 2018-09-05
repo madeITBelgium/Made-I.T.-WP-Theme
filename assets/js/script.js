@@ -89,6 +89,19 @@ jQuery( document ).ready( function( $ ) {
         }
         $( '#lightbox-modal' ).modal( 'show' );
     });
+    
+    document.onkeyup = function(e) {
+        if($('#lightbox-modal').is(":visible") && $('#lightbox-modal .lightbox-nav-overlay a').length > 0) {
+            if(e.which == 37) {
+                //left
+                $('#lightbox-modal .lightbox-nav-overlay a:eq(0)').click();
+            }
+            else if(e.which == 39) {
+                //right
+                $('#lightbox-modal .lightbox-nav-overlay a:eq(1)').click();
+            }
+        }
+    };
 
     //Cookie notice
     checkCookieEu();
