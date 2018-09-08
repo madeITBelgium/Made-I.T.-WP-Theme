@@ -25,6 +25,10 @@ body {
    margin-top: 60px;
 }
 
+.wp-block-image .aligncenter {
+    margin: 0 auto;
+}
+
 #wpmem_reg, #wpmem_login {
     color: inherit !important;
     font-family: inherit !important;
@@ -154,6 +158,18 @@ body {
 }
 .site-header.no-front-page img {
 	margin-top: -40vh;
+}
+
+/* Lightbox */
+#lightbox-modal .modal-content {
+    background-color: transparent !important;
+}
+#lightbox-modal img {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    max-height: 90vh;
+    width: auto !important;
 }
 
 /* Social style */

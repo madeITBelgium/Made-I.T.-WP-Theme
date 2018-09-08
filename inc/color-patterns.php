@@ -547,7 +547,7 @@ a.text-secondary:focus, a.text-secondary:hover {
 }
 
 .text-success {
-    color: '.$secondary_color.' !important;
+    color: '.$success_color.' !important;
 }
 
 a.text-success:focus, a.text-success:hover {
