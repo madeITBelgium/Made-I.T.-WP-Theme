@@ -257,6 +257,16 @@ if (!function_exists('madeit_gutenberg_support')) {
                     'slug'  => 'danger',
                     'color' => get_theme_mod('danger_color_rgb', '#dc3545'),
                 ],
+                [
+                    'name'  => __('White Color', 'madeit'),
+                    'slug'  => 'white',
+                    'color' => '#FFFFFF',
+                ],
+                [
+                    'name'  => __('Black Color', 'madeit'),
+                    'slug'  => 'black',
+                    'color' => '#000000',
+                ],
             ]);
         }
     }
