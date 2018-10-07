@@ -257,6 +257,16 @@ if (!function_exists('madeit_gutenberg_support')) {
                     'slug'  => 'danger',
                     'color' => get_theme_mod('danger_color_rgb', '#dc3545'),
                 ],
+                [
+                    'name'  => __('White Color', 'madeit'),
+                    'slug'  => 'white',
+                    'color' => '#FFFFFF',
+                ],
+                [
+                    'name'  => __('Black Color', 'madeit'),
+                    'slug'  => 'black',
+                    'color' => '#000000',
+                ],
             ]);
         }
     }
@@ -530,7 +540,7 @@ if (!function_exists('madeit_scripts')) {
         wp_enqueue_script('script-fix-jquery', get_theme_file_uri('/assets/js/script-fix-jquery.js'), ['jquery'], '1.0.0', true);
         wp_enqueue_script('popper', get_theme_file_uri('/assets/js/popper.min.js'), ['jquery'], '1.0.0', true);
         wp_enqueue_script('bootstrap', get_theme_file_uri('/assets/js/bootstrap.js'), ['jquery', 'popper'], '4.0.0', true);
-        wp_enqueue_script('script', get_theme_file_uri('/assets/js/script.js'), ['bootstrap'], '1.0.0', true);
+        wp_enqueue_script('script', get_template_directory_uri().'/assets/js/script.js', ['bootstrap'], '1.0.0', true);
 
         //wp_enqueue_script('jquery-scrollto', get_theme_file_uri('/assets/js/jquery.scrollTo.js'), ['jquery'], '2.1.2', true);
 
