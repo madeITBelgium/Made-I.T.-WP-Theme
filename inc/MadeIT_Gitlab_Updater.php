@@ -1,6 +1,6 @@
 <?php
 
-class MadeIT_Updater
+class MadeIT_Gitlab_Updater
 {
     private $slug; // plugin slug
     private $themeData; // plugin data
@@ -9,8 +9,9 @@ class MadeIT_Updater
     private $themeFile; // __FILE__ of our plugin
     private $githubAPIResult; // holds data from GitHub
     private $accessToken; // GitHub private repo token
+    private $childTheme = false;
 
-    public function __construct($themeFile, $gitHubUsername, $gitHubProjectName, $accessToken = '')
+    public function __construct($themeFile, $gitHubUsername, $gitHubProjectName, $accessToken = '', $child = false)
     {
         add_filter('pre_set_site_transient_update_themes', [$this, 'setTransitent']);
         add_filter('themes_api', [$this, 'setThemeInfo'], 10, 3);
@@ -20,12 +21,13 @@ class MadeIT_Updater
         $this->username = $gitHubUsername;
         $this->repo = $gitHubProjectName;
         $this->accessToken = $accessToken;
+        $this->childTheme = $child;
     }
 
     // Get information regarding our plugin from WordPress
     private function initThemeData()
     {
-        $this->slug = get_template();
+        $this->slug = $this->childTheme ? get_option('stylesheet') : get_template();
         $theme = wp_get_theme($this->slug);
         $this->themeData = [];
         $this->themeData['ThemeURI'] = esc_html($theme->get('ThemeURI'));
@@ -43,7 +45,7 @@ class MadeIT_Updater
             return;
         }
         // Query the GitHub API
-        $url = "https://api.github.com/repos/{$this->username}/{$this->repo}/releases";
+        $url = "http://server4.ech.be:10080/api/v4/projects/{$this->repo}/repository/tags/"
         // We need the access token for private repos
         if (!empty($this->accessToken)) {
             $url = add_query_arg(['access_token' => $this->accessToken], $url);
@@ -70,18 +72,16 @@ class MadeIT_Updater
         $this->initThemeData();
         $this->getRepoReleaseInfo();
         // Check the versions if we need to do an update
-        $doUpdate = version_compare($this->githubAPIResult->tag_name, $transient->checked[$this->slug]);
+        error_log($this->slug);
+        error_log($this->githubAPIResult->name . "-" . $transient->checked[$this->slug]);
+        $doUpdate = version_compare($this->githubAPIResult->name, $transient->checked[$this->slug]);
         // Update the transient to include our updated plugin data
         if ($doUpdate == 1) {
-            $package = $this->githubAPIResult->zipball_url;
-            // Include the access token for private GitHub repos
-            if (!empty($this->accessToken)) {
-                $package = add_query_arg(['access_token' => $this->accessToken], $package);
-            }
-
+            $zipballUrl = "http://server4.ech.be:10080/api/v4/projects/{$this->repo}/repository/archive.zip?sha={$this->githubAPIResult->name}&private_token=$this->accessToken";
+            
             $theme_array = [];
-            $theme_array['new_version'] = $this->githubAPIResult->tag_name;
-            $theme_array['url'] = $this->initThemeData['ThemeURI'];
+            $theme_array['new_version'] = $this->githubAPIResult->name;
+            $theme_array['url'] = $this->themeData['ThemeURI'];
             $theme_array['package'] = $package;
             $transient->response[$this->slug] = $theme_array;
         }
@@ -99,15 +99,18 @@ class MadeIT_Updater
         if (empty($response->slug) || $response->slug != $this->slug) {
             return false;
         }
+        
+        $zipballUrl = "http://server4.ech.be:10080/api/v4/projects/{$this->repo}/repository/archive.zip?sha={$this->githubAPIResult->name}&private_token=$this->accessToken";
+        
         // Add our plugin information
         $response->last_updated = $this->githubAPIResult->published_at;
         $response->slug = $this->slug;
         $response->name = $this->themeData['Name'];
-        $response->version = $this->githubAPIResult->tag_name;
+        $response->version = $this->githubAPIResult->name;
         $response->author = $this->themeData['AuthorName'];
         $response->homepage = $this->themeData['ThemeURI'];
         // This is our release download zip file
-        $downloadLink = $this->githubAPIResult->zipball_url;
+        $downloadLink = $zipballUrl;
         // Include the access token for private GitHub repos
         if (!empty($this->accessToken)) {
             $downloadLink = add_query_arg(
