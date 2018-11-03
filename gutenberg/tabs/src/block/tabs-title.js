@@ -21,7 +21,6 @@ export const edit = ( props ) => {
     } = props
 
     const {
-        aantaltabs,
         content,
     } = props.attributes
     
@@ -44,7 +43,6 @@ export const edit = ( props ) => {
 
 export const save = ( props ) => {
     const {
-        aantaltabs,
         tabid,
         content
     } = props.attributes;
@@ -82,11 +80,11 @@ registerBlockType( 'madeit/block-tabs-title', {
 
     attributes: {
         tabid: {
-            type: 'string'
+            type: 'number',
+            default: 0
         },
         content: {
-            type: 'array',
-            source: 'children',
+            source: 'html',
             selector: 'a',
             default: [],
         },
@@ -98,6 +96,91 @@ registerBlockType( 'madeit/block-tabs-title', {
             'data-tab-title': 'true',
         };
     },
+    
+    deprecated: [
+        {
+            save: function( props ) {
+                const {
+                    aantaltabs,
+                    tabid,
+                    content
+                } = props.attributes;
+
+                const {
+                    className
+                } = props
+
+                var classN = className !== undefined ? className : '';
+                var active = tabid == 0 ? 'active' : '';
+
+                return (
+                    <li className={ 'nav-item ' + classN }>
+                        <RichText.Content
+                            tagName="a"
+                            className={'nav-link ' + active} 
+                            id={ 'tab-' + tabid}
+                            href={'#' + tabid }
+                            role="tab"
+                            value={ content }
+                        />
+                    </li>
+                );
+            },
+        },
+        {
+            attributes: {
+                tabid: {
+                    type: 'string',
+                    default: 0
+                },
+                content: {
+                    type: 'array',
+                    source: 'children',
+                    selector: 'a',
+                    default: [],
+                }
+            },
+
+            migrate: function( attributes ) {
+                return {
+                    tabid: parseInt(attributes.tabid),
+                    content: attributes.content,
+                };
+            },
+
+            save: function( props ) {
+                const {
+                    tabid,
+                    content
+                } = props.attributes;
+                
+                var tabnr = tabid;
+                
+                const {
+                    className
+                } = props
+
+                var classN = className !== undefined ? className : '';
+                var active = tabnr == 0 ? 'active' : '';
+
+                return (
+                    <li className={ 'nav-item ' + classN }>
+                        <RichText.Content
+                            tagName="a"
+                            className={'nav-link ' + active} 
+                            id={ 'tab-' + tabnr}
+                            data-toggle="tab"
+                            href={'#' + tabnr }
+                            role="tab"
+                            aria-controls={ tabnr }
+                            aria-selected="true"
+                            value={ content }
+                        />
+                    </li>
+                );
+            },
+        },
+    ],
     
     edit: edit,
     
