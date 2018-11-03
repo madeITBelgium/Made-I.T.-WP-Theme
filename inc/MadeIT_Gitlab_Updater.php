@@ -73,12 +73,12 @@ class MadeIT_Gitlab_Updater
         $this->getRepoReleaseInfo();
         // Check the versions if we need to do an update
         error_log($this->slug);
-        error_log($this->githubAPIResult->name . "-" . $transient->checked[$this->slug]);
+        error_log($this->githubAPIResult->name.'-'.$transient->checked[$this->slug]);
         $doUpdate = version_compare($this->githubAPIResult->name, $transient->checked[$this->slug]);
         // Update the transient to include our updated plugin data
         if ($doUpdate == 1) {
             $zipballUrl = "http://server4.ech.be:10080/api/v4/projects/{$this->repo}/repository/archive.zip?sha={$this->githubAPIResult->name}&private_token=$this->accessToken";
-            
+
             $theme_array = [];
             $theme_array['new_version'] = $this->githubAPIResult->name;
             $theme_array['url'] = $this->themeData['ThemeURI'];
@@ -99,9 +99,9 @@ class MadeIT_Gitlab_Updater
         if (empty($response->slug) || $response->slug != $this->slug) {
             return false;
         }
-        
+
         $zipballUrl = "http://server4.ech.be:10080/api/v4/projects/{$this->repo}/repository/archive.zip?sha={$this->githubAPIResult->name}&private_token=$this->accessToken";
-        
+
         // Add our plugin information
         $response->last_updated = $this->githubAPIResult->published_at;
         $response->slug = $this->slug;
