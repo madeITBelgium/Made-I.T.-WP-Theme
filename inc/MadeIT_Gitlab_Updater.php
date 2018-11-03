@@ -45,7 +45,7 @@ class MadeIT_Gitlab_Updater
             return;
         }
         // Query the GitHub API
-        $url = "http://server4.ech.be:10080/api/v4/projects/{$this->repo}/repository/tags/"
+        $url = "http://server4.ech.be:10080/api/v4/projects/{$this->repo}/repository/tags/";
         // We need the access token for private repos
         if (!empty($this->accessToken)) {
             $url = add_query_arg(['access_token' => $this->accessToken], $url);

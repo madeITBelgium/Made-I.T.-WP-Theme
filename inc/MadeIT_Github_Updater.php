@@ -72,8 +72,6 @@ class MadeIT_Github_Updater
         $this->initThemeData();
         $this->getRepoReleaseInfo();
         // Check the versions if we need to do an update
-        error_log($this->slug);
-        error_log($this->githubAPIResult->tag_name . "-" . $transient->checked[$this->slug]);
         $doUpdate = version_compare($this->githubAPIResult->tag_name, $transient->checked[$this->slug]);
         // Update the transient to include our updated plugin data
         if ($doUpdate == 1) {
