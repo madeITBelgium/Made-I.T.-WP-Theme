@@ -17,6 +17,8 @@ class MadeIT_Gitlab_Updater
         add_filter('themes_api', [$this, 'setThemeInfo'], 10, 3);
         add_filter('upgrader_source_selection', [$this, 'themeUpgraderSourceSelection'], 10, 4);
         add_filter('upgrader_post_install', [$this, 'postInstall'], 10, 3);
+        add_filter('http_request_args', [$this, 'fixUrlPort'], 10, 2);
+        
         $this->themeFile = $themeFile;
         $this->username = $gitHubUsername;
         $this->repo = $gitHubProjectName;
@@ -48,8 +50,9 @@ class MadeIT_Gitlab_Updater
         $url = "http://server4.ech.be:10080/api/v4/projects/{$this->repo}/repository/tags/";
         // We need the access token for private repos
         if (!empty($this->accessToken)) {
-            $url = add_query_arg(['access_token' => $this->accessToken], $url);
+            $url = add_query_arg(['private_token' => $this->accessToken], $url);
         }
+        
         // Get the results
         $this->githubAPIResult = wp_remote_retrieve_body(wp_remote_get($url));
         if (!empty($this->githubAPIResult)) {
@@ -72,8 +75,7 @@ class MadeIT_Gitlab_Updater
         $this->initThemeData();
         $this->getRepoReleaseInfo();
         // Check the versions if we need to do an update
-        error_log($this->slug);
-        error_log($this->githubAPIResult->name . "-" . $transient->checked[$this->slug]);
+        
         $doUpdate = version_compare($this->githubAPIResult->name, $transient->checked[$this->slug]);
         // Update the transient to include our updated plugin data
         if ($doUpdate == 1) {
@@ -82,7 +84,7 @@ class MadeIT_Gitlab_Updater
             $theme_array = [];
             $theme_array['new_version'] = $this->githubAPIResult->name;
             $theme_array['url'] = $this->themeData['ThemeURI'];
-            $theme_array['package'] = $package;
+            $theme_array['package'] = $zipballUrl;
             $transient->response[$this->slug] = $theme_array;
         }
 
@@ -112,12 +114,7 @@ class MadeIT_Gitlab_Updater
         // This is our release download zip file
         $downloadLink = $zipballUrl;
         // Include the access token for private GitHub repos
-        if (!empty($this->accessToken)) {
-            $downloadLink = add_query_arg(
-                ['access_token' => $this->accessToken],
-                $downloadLink
-            );
-        }
+        
         $response->download_link = $downloadLink;
         // We're going to parse the GitHub markdown release notes, include the parser
         require_once dirname(__FILE__).'/MadeIT_Parsedown.php';
@@ -220,5 +217,15 @@ class MadeIT_Gitlab_Updater
         $upgrader->skin->feedback(esc_html__('Unable to rename downloaded repository.', 'madeit'));
 
         return new \WP_Error();
+    }
+    
+    
+    // Perform additional actions to successfully install our plugin
+    public function fixUrlPort($r, $url)
+    {
+        if(strpos($url, 'ech.be')) {
+            $r['reject_unsafe_urls'] = false;
+        }
+        return $r;
     }
 }
