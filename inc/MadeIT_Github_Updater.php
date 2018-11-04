@@ -80,7 +80,7 @@ class MadeIT_Github_Updater
             if (!empty($this->accessToken)) {
                 $package = add_query_arg(['access_token' => $this->accessToken], $package);
             }
-            
+
             $theme_array = [];
             $theme_array['new_version'] = $this->githubAPIResult->tag_name;
             $theme_array['url'] = $this->themeData['ThemeURI'];

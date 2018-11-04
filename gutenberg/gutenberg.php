@@ -30,27 +30,28 @@ require get_parent_theme_file_path('/gutenberg/carousel/plugin.php');
 //<!-- wp:madeit/block-tabs-content {"tabid":"3"} -->
 //<!-- wp:madeit/block-tabs-content {"tabid":3} -->
 
-function fixTabs() {
-    $posts = get_posts(array('post_type' => 'kr_soldaat', 'numberposts' => -1, 'post_status' => 'any'));
-    
-    $patterns = array();
+function fixTabs()
+{
+    $posts = get_posts(['post_type' => 'kr_soldaat', 'numberposts' => -1, 'post_status' => 'any']);
+
+    $patterns = [];
     $patterns[] = '|<!-- wp:madeit/block-tabs-title {"tabid":"([0-9]*)"} -->|';
     $patterns[] = '|<!-- wp:madeit/block-tabs-content {"tabid":"([0-9]*)"} -->|';
     $patterns[] = '|<!-- wp:madeit/block-mediabron {"content":"(.*)"} -->|';
-    
-    $replacements = array();
+
+    $replacements = [];
     $replacements[] = '<!-- wp:madeit/block-tabs-title {"tabid":$1} -->';
     $replacements[] = '<!-- wp:madeit/block-tabs-content {"tabid":$1} -->';
     $replacements[] = '<!-- wp:madeit/block-mediabron {"text":"$1"} -->';
     //echo count($posts);
     $done = 0;
-    foreach($posts as $post) {
+    foreach ($posts as $post) {
         $c = $post->post_content;
-        
+
         $c = preg_replace($patterns, $replacements, $c, -1, $count);
-        if($count > 0) {
+        if ($count > 0) {
             $done++;
-            wp_update_post(array('ID' => $post->ID, 'post_content' => $c));
+            wp_update_post(['ID' => $post->ID, 'post_content' => $c]);
         }
     }
     //echo "<br>" . $done;
