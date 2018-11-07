@@ -34,9 +34,7 @@ export const edit = ( props ) => {
 }
 
 export const save = ( props ) => {
-    const {
-        tabid
-    } = props.attributes;
+    var tabid = props.attributes.tabid;
     
     const {
         className
@@ -64,11 +62,47 @@ registerBlockType( 'madeit/block-tabs-content', {
 
     attributes: {
         tabid: {
-            type: 'string'
+            type: 'number'
         },
     },
     
     edit: edit,
     
     save: save,
+    
+    deprecated: [
+        {
+            attributes: {
+                tabid: {
+                    type: 'string'
+                },
+            },
+
+            migrate: function( attributes ) {
+                return {
+                    tabid: parseInt(attributes.tabid),
+                };
+            },
+
+            save: function( props ) {
+                var tabid = props.attributes.tabid;
+    
+                const {
+                    className
+                } = props
+
+                var classN = className !== undefined ? className : '';
+                classN += tabid == 0 ? ' show active' : '';
+
+                return (
+                    <div className={ 'tab-pane fade ' + classN }
+                    role="tabpanel"
+                    id={tabid}
+                    aria-labelledby={ tabid + '-tab'}>
+                        <InnerBlocks.Content />
+                    </div>
+                );
+            },
+        },
+    ]
 } )

@@ -10,7 +10,7 @@ export const {
     InspectorControls,
     BlockControls,
     RichText,
-} = wp.editor.InspectorControls ? wp.editor : wp.blocks
+} = wp.editor
 
 export const ALLOWED_BLOCKS = [ 'madeit/block-tabs-title' ];
 
@@ -62,7 +62,7 @@ registerBlockType( 'madeit/block-tabs-titles', {
     attributes: {
         aantaltabs: {
             type: 'number',
-            default: '3',
+            default: 3,
         },
     },
     
@@ -75,4 +75,39 @@ registerBlockType( 'madeit/block-tabs-titles', {
     edit: edit,
     
     save: save,
+    
+    deprecated: [
+        {
+            attributes: {
+                aantaltabs: {
+                    type: 'number',
+                    default: '3',
+                },
+            },
+
+            migrate: function( attributes ) {
+                return {
+                    aantaltabs: parseInt(attributes.aantaltabs)
+                };
+            },
+
+            save: function( props ) {
+                const {
+                    aantaltabs,
+                } = props.attributes;
+
+                const {
+                    className
+                } = props
+
+                return (
+                    <div className={ className }>
+                        <ul class="nav nav-tabs" role="tablist">
+                            <wp.editor.InnerBlocks.Content />
+                        </ul>
+                    </div>
+                );
+            },
+        }
+    ]
 } )

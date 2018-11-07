@@ -11,7 +11,7 @@ export const {
     BlockControls,
     RichText,
     InnerBlocks
-} = wp.editor.InspectorControls ? wp.editor : wp.blocks
+} = wp.editor
 
 export const ALLOWED_BLOCKS = [ 'madeit/block-tabs-content' ];
 
@@ -63,11 +63,46 @@ registerBlockType( 'madeit/block-tabs-contents', {
     attributes: {
         aantaltabs: {
             type: 'number',
-            default: '3',
+            default: 3,
         },
     },
 
     edit: edit,
 
     save: save,
+    
+    deprecated: [
+        {
+            attributes: {
+                aantaltabs: {
+                    type: 'number',
+                    default: '3',
+                },
+            },
+
+            migrate: function( attributes ) {
+                return {
+                    aantaltabs: parseInt(attributes.aantaltabs)
+                };
+            },
+
+            save: function( props ) {
+                const {
+                    aantaltabs,
+                } = props.attributes;
+
+                const {
+                    className
+                } = props;
+
+                var classN = className !== undefined ? className : '';
+
+                return (
+                    <div className={ 'tab-content ' + classN }>
+                        <InnerBlocks.Content />
+                    </div>
+                );
+            },
+        }
+    ]
 } )

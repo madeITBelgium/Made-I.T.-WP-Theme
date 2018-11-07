@@ -160,18 +160,6 @@ body {
 	margin-top: -40vh;
 }
 
-/* Lightbox */
-#lightbox-modal .modal-content {
-    background-color: transparent !important;
-}
-#lightbox-modal img {
-    margin-left: auto;
-    margin-right: auto;
-    display: block;
-    max-height: 90vh;
-    width: auto !important;
-}
-
 /* Social style */
 .social-navigation {
     font-size: 16px;
@@ -334,6 +322,22 @@ img {
 }
 
 /* Lightbox */
+#lightbox-modal .modal-content {
+    background-color: transparent !important;
+}
+#lightbox-modal img {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    max-height: 90vh;
+    width: auto !important;
+}
+#lightbox-modal {
+    text-align: center;
+}
+#lightbox-modal .modal-dialog {
+    display: inline-block;
+}
 .lightbox-nav-overlay {
 	z-index: 1;
     position: absolute;
