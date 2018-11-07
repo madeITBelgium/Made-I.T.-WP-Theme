@@ -17,8 +17,7 @@ while (have_posts()) : the_post();
             <div class="row">
                 <div class="col">
                     <?php
-                    get_template_part('template-parts/page/content', 'page');
-                    ?>
+                    get_template_part('template-parts/page/content', 'page'); ?>
                 </div>
             </div>
         </div>
