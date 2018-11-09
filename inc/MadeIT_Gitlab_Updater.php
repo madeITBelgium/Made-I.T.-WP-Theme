@@ -18,7 +18,7 @@ class MadeIT_Gitlab_Updater
         add_filter('upgrader_source_selection', [$this, 'themeUpgraderSourceSelection'], 10, 4);
         add_filter('upgrader_post_install', [$this, 'postInstall'], 10, 3);
         add_filter('http_request_args', [$this, 'fixUrlPort'], 10, 2);
-        
+
         $this->themeFile = $themeFile;
         $this->username = $gitHubUsername;
         $this->repo = $gitHubProjectName;
@@ -52,7 +52,7 @@ class MadeIT_Gitlab_Updater
         if (!empty($this->accessToken)) {
             $url = add_query_arg(['private_token' => $this->accessToken], $url);
         }
-        
+
         // Get the results
         $this->githubAPIResult = wp_remote_retrieve_body(wp_remote_get($url));
         if (!empty($this->githubAPIResult)) {
@@ -75,12 +75,12 @@ class MadeIT_Gitlab_Updater
         $this->initThemeData();
         $this->getRepoReleaseInfo();
         // Check the versions if we need to do an update
-        
+
         $doUpdate = version_compare($this->githubAPIResult->name, $transient->checked[$this->slug]);
         // Update the transient to include our updated plugin data
         if ($doUpdate == 1) {
             $zipballUrl = "http://server4.ech.be:10080/api/v4/projects/{$this->repo}/repository/archive.zip?sha={$this->githubAPIResult->name}&private_token=$this->accessToken";
-            
+
             $theme_array = [];
             $theme_array['new_version'] = $this->githubAPIResult->name;
             $theme_array['url'] = $this->themeData['ThemeURI'];
@@ -101,9 +101,9 @@ class MadeIT_Gitlab_Updater
         if (empty($response->slug) || $response->slug != $this->slug) {
             return false;
         }
-        
+
         $zipballUrl = "http://server4.ech.be:10080/api/v4/projects/{$this->repo}/repository/archive.zip?sha={$this->githubAPIResult->name}&private_token=$this->accessToken";
-        
+
         // Add our plugin information
         $response->last_updated = $this->githubAPIResult->published_at;
         $response->slug = $this->slug;
@@ -114,7 +114,7 @@ class MadeIT_Gitlab_Updater
         // This is our release download zip file
         $downloadLink = $zipballUrl;
         // Include the access token for private GitHub repos
-        
+
         $response->download_link = $downloadLink;
         // We're going to parse the GitHub markdown release notes, include the parser
         require_once dirname(__FILE__).'/MadeIT_Parsedown.php';
@@ -218,14 +218,14 @@ class MadeIT_Gitlab_Updater
 
         return new \WP_Error();
     }
-    
-    
+
     // Perform additional actions to successfully install our plugin
     public function fixUrlPort($r, $url)
     {
-        if(strpos($url, 'ech.be')) {
+        if (strpos($url, 'ech.be')) {
             $r['reject_unsafe_urls'] = false;
         }
+
         return $r;
     }
 }

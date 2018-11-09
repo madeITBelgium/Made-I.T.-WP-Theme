@@ -20,3 +20,4 @@ require get_parent_theme_file_path('/gutenberg/container-simple/plugin.php');
 require get_parent_theme_file_path('/gutenberg/tabs/plugin.php');
 
 require get_parent_theme_file_path('/gutenberg/carousel/plugin.php');
+
