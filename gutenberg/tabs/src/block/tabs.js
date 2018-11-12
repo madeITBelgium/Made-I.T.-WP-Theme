@@ -51,7 +51,7 @@ export const edit = ( props ) => {
                         label={ __( 'Aantal tabs' ) }
                         value={ aantaltabs }
                         type='number'
-                        onChange={ ( value ) => setAttributes( { aantaltabs: value } ) }
+                        onChange={ ( value ) => setAttributes( { aantaltabs: parseInt(value) } ) }
                     />
                 </InspectorControls>
             }

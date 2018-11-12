@@ -92,21 +92,21 @@ export const edit = ( props ) => {
                             value: value,
                             label: label,
                         })) }
-                        onChange={ ( value ) => { setAttributes( { rows: value } ) } }
+                        onChange={ ( value ) => { setAttributes( { rows: parseInt(value) } ) } }
                     />
                     <RangeControl
                         label={ __( 'Margin' ) }
                         value={ margin }
                         min='0'
                         max='100'
-                        onChange={ ( value ) => setAttributes( { margin: value } ) }
+                        onChange={ ( value ) => setAttributes( { margin: parseInt(value) } ) }
                     />
                     <RangeControl
                         label={ __( 'Padding' ) }
                         value={ padding }
                         min='0'
                         max='100'
-                        onChange={ ( value ) => setAttributes( { padding: value } ) }
+                        onChange={ ( value ) => setAttributes( { padding: parseInt(value) } ) }
                     />
                     <PanelColor
                         title={ __( 'Text Color' ) }
@@ -212,4 +212,74 @@ registerBlockType( 'madeit/block-container-simple', {
 
     // The "save" property must be  valid function.
     save: save,
+    
+    deprecated: [
+        {
+            attributes: {
+                rows: {
+                    type:'number',
+                    default: 1,
+                },
+                textColor: {
+                    type: 'string',
+                },
+                color: {
+                    type: 'string',
+                },
+                size: {
+                    type: 'string',
+                    default: 'container',
+                },
+                margin: {
+                    type: 'number',
+                    default: 0,
+                },
+                padding: {
+                    type: 'number',
+                    default: 30,
+                }
+            },
+
+            migrate: function( attributes ) {
+                return {
+                    rows: parseInt(attributes.rows),
+                    textColor: attributes.textColor,
+                    color: attributes.color,
+                    size: attributes.size,
+                    margin: parseInt(attributes.margin),
+                    padding: parseInt(attributes.padding),
+                };
+            },
+
+            save: function( props ) {
+                const {
+                    textColor,
+                    color,
+                    size,
+                    margin,
+                    padding
+                } = props.attributes;
+
+                const {
+                    className
+                } = props
+
+                return (
+                    <div
+                        className={ size + ' ' + className }
+                        style = {{
+                                color: textColor,
+                                backgroundColor: color,
+                                paddingTop: padding + 'px',
+                                paddingBottom: padding + 'px',
+                                marginTop: margin + 'px',
+                                marginBottom: margin + 'px',
+                            }}
+                        >
+                        <wp.editor.InnerBlocks.Content />
+                    </div>
+                );
+            },
+        }
+    ]
 } )
