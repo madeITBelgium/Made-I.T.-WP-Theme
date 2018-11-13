@@ -6,17 +6,20 @@ export const { registerBlockType } = wp.blocks
 export const { __ } = wp.i18n
 export const {
     withState,
-    PanelColor,
     RangeControl,
     SelectControl,
     TextControl,
 } = wp.components
 
+export const { Fragment, PanelBody } = wp.element;
+
 export const {
     InspectorControls,
     BlockControls,
-    ColorPalette,
-} = wp.editor.InspectorControls ? wp.editor : wp.blocks
+    ContrastChecker,
+    InnerBlocks,
+    PanelColorSettings
+} = wp.editor
 
 
 export const ALLOWED_BLOCKS = [ 'madeit/block-row' ];
@@ -31,7 +34,6 @@ export const CONTAINER_TEMPLATE = [ [ 'madeit/block-row', {}, [
 
 export const edit = ( props ) => {
     const {
-        isSelected,
         setAttributes,
         className
     } = props
@@ -43,6 +45,9 @@ export const edit = ( props ) => {
         margin,
         padding
     } = props.attributes
+    
+    const fallbackTextColor = '#FFFFFF';
+    const fallbackBackgroundColor = '#000000';
 
     const containerSizes = [
         { value: 'container', label: __( 'Boxed' ) },
@@ -50,70 +55,71 @@ export const edit = ( props ) => {
     ]
 
     return [
-        <div>
-            <div
-                className={ size + ' ' + className }
-                style = {{
-                    color: textColor,
-                    backgroundColor: color,
-                    paddingTop: padding + 'px',
-                    paddingBottom: padding + 'px',
-                    marginTop: margin + 'px',
-                    marginBottom: margin + 'px',
-                }}>
-                <wp.editor.InnerBlocks
-                    /*template={ CONTAINER_TEMPLATE }
-                    templateLock={ false }
-                    allowedBlocks={ ALLOWED_BLOCKS }*/ />
-            </div>
-            {
-                isSelected &&
-                <InspectorControls key='inspector'>
-                    <SelectControl
-                        label={ __( 'Size' ) }
-                        value={ size }
-                        options={ containerSizes.map( ( { value, label } ) => ( {
-                            value: value,
-                            label: label,
-                        } ) ) }
-                        onChange={ ( newSize ) => { setAttributes( { size: newSize } ) } }
-                    />
-                    <RangeControl
-                        label={ __( 'Margin' ) }
-                        value={ margin }
-                        min='0'
-                        max='100'
-                        onChange={ ( value ) => setAttributes( { margin: value } ) }
-                    />
-                    <RangeControl
-                        label={ __( 'Padding' ) }
-                        value={ padding }
-                        min='0'
-                        max='100'
-                        onChange={ ( value ) => setAttributes( { padding: value } ) }
-                    />
-                    <PanelColor
-                        title={ __( 'Text Color' ) }
-                        colorValue={ textColor }
-                        initialOpen={ false }
-                        >
-                        <ColorPalette
-                            value={ textColor }
-                            onChange={ ( colorValue ) => setAttributes( { textColor: colorValue } ) }
-                        />
-                    </PanelColor>
-                    <PanelColor
-                        title={ __( 'Background Color' ) }
-                        colorValue={ color }
-                        initialOpen={ false }
-                        >
-                        <ColorPalette
-                            value={ color }
-                            onChange={ ( colorValue ) => setAttributes( { color: colorValue } ) }
-                        />
-                    </PanelColor>
-                </InspectorControls>
-            }
+        <InspectorControls key='inspector'>
+            <SelectControl
+                label={ __( 'Size' ) }
+                value={ size }
+                options={ containerSizes.map( ( { value, label } ) => ( {
+                    value: value,
+                    label: label,
+                } ) ) }
+                onChange={ ( newSize ) => { setAttributes( { size: newSize } ) } }
+            />
+            <RangeControl
+                label={ __( 'Margin' ) }
+                value={ margin }
+                min='0'
+                max='100'
+                onChange={ ( value ) => setAttributes( { margin: value } ) }
+            />
+            <RangeControl
+                label={ __( 'Padding' ) }
+                value={ padding }
+                min='0'
+                max='100'
+                onChange={ ( value ) => setAttributes( { padding: value } ) }
+            />
+            <PanelColorSettings
+                title={ __( 'Color Settings' ) }
+                initialOpen={ false }
+                colorSettings={ [
+                    {
+                        value: color,
+                        onChange:  ( value ) => setAttributes( { color: value } ) ,
+                        label: __( 'Background Color' ),
+                    },
+                    {
+                        value: textColor,
+                        onChange: ( value ) => setAttributes( { textColor: value } ) ,
+                        label: __( 'Text Color' ),
+                    },
+                ] }
+                >
+                <ContrastChecker
+                    { ...{
+                        textColor: textColor,
+                        backgroundColor: color,
+                        fallbackTextColor,
+                        fallbackBackgroundColor,
+                    } }
+                />
+            </PanelColorSettings>
+        </InspectorControls>
+        ,
+        <div
+            className={ size + ' ' + className }
+            style = {{
+                color: textColor,
+                backgroundColor: color,
+                paddingTop: padding + 'px',
+                paddingBottom: padding + 'px',
+                marginTop: margin + 'px',
+                marginBottom: margin + 'px',
+            }}>
+            <wp.editor.InnerBlocks
+                /*template={ CONTAINER_TEMPLATE }
+                templateLock={ false }
+                allowedBlocks={ ALLOWED_BLOCKS }*/ />
         </div>
     ]
 }
@@ -171,11 +177,11 @@ registerBlockType( 'madeit/block-container', {
         },
         margin: {
             type: 'number',
-            default: '0',
+            default: 0,
         },
         padding: {
             type: 'number',
-            default: '0',
+            default: 0,
         }
     },
     
