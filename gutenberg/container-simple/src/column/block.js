@@ -6,23 +6,25 @@ export const { registerBlockType } = wp.blocks
 export const { __ } = wp.i18n
 export const {
     withState,
-    PanelColor,
     RangeControl,
-    TextControl,
     SelectControl,
+    TextControl,
 } = wp.components
+
+export const { Fragment, PanelBody } = wp.element;
 
 export const {
     InspectorControls,
     BlockControls,
-    ColorPalette,
-} = wp.editor.InspectorControls ? wp.editor : wp.blocks
+    ContrastChecker,
+    InnerBlocks,
+    PanelColorSettings
+} = wp.editor
 
 
 
 export const edit = ( props ) => {
     const {
-        isSelected,
         setAttributes,
         className
     } = props
@@ -37,6 +39,9 @@ export const edit = ( props ) => {
         margin,
         padding
     } = props.attributes
+    
+    const fallbackTextColor = '#FFFFFF';
+    const fallbackBackgroundColor = '#000000';
     
     
     const columnTypes = [
@@ -80,103 +85,104 @@ export const edit = ( props ) => {
         classes += ' col-' + sm + ' col-md-' + md + ' col-lg-' + lg;
     }
     return [
-        <div>
-            <div
-                className={ classes }
-                style = {{
-                    color: textColor,
-                    backgroundColor: color,
-                    paddingTop: padding + 'px',
-                    paddingBottom: padding + 'px',
-                    marginTop: margin + 'px',
-                    marginBottom: margin + 'px',
-                }}>
-                <wp.editor.InnerBlocks templateLock={ false } />
-            </div>
+        <InspectorControls key='inspector'>
+            <SelectControl
+                label={ __( 'Type' ) }
+                value={ type }
+                options={ columnTypes.map(({ value, label }) => ({
+                    value: value,
+                    label: label,
+                })) }
+                onChange={ ( newType ) => { setAttributes( { type: newType } ) } }
+            />
             {
-                isSelected &&
-                <InspectorControls key='inspector'>
-                    <SelectControl
-                        label={ __( 'Type' ) }
-                        value={ type }
-                        options={ columnTypes.map(({ value, label }) => ({
-                            value: value,
-                            label: label,
-                        })) }
-                        onChange={ ( newType ) => { setAttributes( { type: newType } ) } }
-                    />
-                    {
-                        'manual' === type &&
-                        <SelectControl
-                            label={ __( 'Small devices (Smartphones, tablets)' ) }
-                            value={ sm }
-                            options={ widths.map(({ value, label }) => ({
-                                value: value,
-                                label: label,
-                            })) }
-                            onChange={ ( value ) => { setAttributes( { sm: value } ) } }
-                        />
-                    }
-                    {
-                        'manual' === type &&
-                        <SelectControl
-                            label={ __( 'Medium devices (tablets)' ) }
-                            value={ md }
-                            options={ widths.map(({ value, label }) => ({
-                                value: value,
-                                label: label,
-                            })) }
-                            onChange={ ( value ) => { setAttributes( { md: value } ) } }
-                        />
-                    }
-                    {
-                        'manual' === type &&
-                        <SelectControl
-                            label={ __( 'Large devices (Laptops, desktops)' ) }
-                            value={ lg }
-                            options={ widths.map(({ value, label }) => ({
-                                value: value,
-                                label: label,
-                            })) }
-                            onChange={ ( value ) => { setAttributes( { lg: value } ) } }
-                        />
-                    }
-                    <RangeControl
-                        label={ __( 'Margin' ) }
-                        value={ margin }
-                        min='0'
-                        max='100'
-                        onChange={ ( value ) => setAttributes( { margin: value } ) }
-                    />
-                    <RangeControl
-                        label={ __( 'Padding' ) }
-                        value={ padding }
-                        min='0'
-                        max='100'
-                        onChange={ ( value ) => setAttributes( { padding: value } ) }
-                    />
-                    <PanelColor
-                        title={ __( 'Text Color' ) }
-                        colorValue={ textColor }
-                        initialOpen={ false }
-                        >
-                        <ColorPalette
-                            value={ textColor }
-                            onChange={ ( colorValue ) => setAttributes( { textColor: colorValue } ) }
-                        />
-                    </PanelColor>
-                    <PanelColor
-                        title={ __( 'Background Color' ) }
-                        colorValue={ color }
-                        initialOpen={ false }
-                        >
-                        <ColorPalette
-                            value={ color }
-                            onChange={ ( colorValue ) => setAttributes( { color: colorValue } ) }
-                        />
-                    </PanelColor>
-                </InspectorControls>
+                'manual' === type &&
+                <SelectControl
+                    label={ __( 'Small devices (Smartphones, tablets)' ) }
+                    value={ sm }
+                    options={ widths.map(({ value, label }) => ({
+                        value: value,
+                        label: label,
+                    })) }
+                    onChange={ ( value ) => { setAttributes( { sm: value } ) } }
+                />
             }
+            {
+                'manual' === type &&
+                <SelectControl
+                    label={ __( 'Medium devices (tablets)' ) }
+                    value={ md }
+                    options={ widths.map(({ value, label }) => ({
+                        value: value,
+                        label: label,
+                    })) }
+                    onChange={ ( value ) => { setAttributes( { md: value } ) } }
+                />
+            }
+            {
+                'manual' === type &&
+                <SelectControl
+                    label={ __( 'Large devices (Laptops, desktops)' ) }
+                    value={ lg }
+                    options={ widths.map(({ value, label }) => ({
+                        value: value,
+                        label: label,
+                    })) }
+                    onChange={ ( value ) => { setAttributes( { lg: value } ) } }
+                />
+            }
+            <RangeControl
+                label={ __( 'Margin' ) }
+                value={ margin }
+                min='0'
+                max='100'
+                onChange={ ( value ) => setAttributes( { margin: value } ) }
+            />
+            <RangeControl
+                label={ __( 'Padding' ) }
+                value={ padding }
+                min='0'
+                max='100'
+                onChange={ ( value ) => setAttributes( { padding: value } ) }
+            />
+            <PanelColorSettings
+                title={ __( 'Color Settings' ) }
+                initialOpen={ false }
+                colorSettings={ [
+                    {
+                        value: color,
+                        onChange:  ( value ) => setAttributes( { color: value } ) ,
+                        label: __( 'Background Color' ),
+                    },
+                    {
+                        value: textColor,
+                        onChange: ( value ) => setAttributes( { textColor: value } ) ,
+                        label: __( 'Text Color' ),
+                    },
+                ] }
+                >
+                <ContrastChecker
+                    { ...{
+                        textColor: textColor,
+                        backgroundColor: color,
+                        fallbackTextColor,
+                        fallbackBackgroundColor,
+                    } }
+                />
+            </PanelColorSettings>
+        </InspectorControls>
+        ,
+        <div
+            className={ classes }
+            style = {{
+                color: textColor,
+                backgroundColor: color,
+                paddingTop: padding + 'px',
+                paddingBottom: padding + 'px',
+                marginTop: margin + 'px',
+                marginBottom: margin + 'px',
+            }}>
+            <InnerBlocks templateLock={ false } />
         </div>
     ]
 }
@@ -228,7 +234,7 @@ export const save = ( props ) => {
                     marginBottom: margin + 'px',
                 }}
             >
-            <wp.editor.InnerBlocks.Content />
+            <InnerBlocks.Content />
         </div>
     );
 }
