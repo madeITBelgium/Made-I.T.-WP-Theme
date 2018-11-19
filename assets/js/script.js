@@ -5,6 +5,9 @@ jQuery( document ).ready( function( $ ) {
     var gutenbergGallery = false;
 
     $( '.lightbox' ).each( function( ) {
+        if($( this ).parent( ).hasClass('no-lightbox')) {
+            return;
+        }
         if ( ( undefined === $( this ).parent( ).tagName && 'a' === $( this ).parent( )[0].localName ) || 'a' === $( this ).parent( ).tagName ) {
             $( this ).parent( ).addClass( 'click-lightbox' );
         } else {

@@ -1,3 +1,5 @@
+/* global esversion: 6 */
+
 /**
  * External Dependencies
  */
