@@ -288,32 +288,3 @@ registerBlockType( 'madeit/block-container-simple', {
         }
     ]
 } )
-
-
-
-
-/*
-
-                <PanelColor
-                    title={ __( 'Text Color' ) }
-                    colorValue={ textColor }
-                    initialOpen={ false }
-                    >
-                    <ColorPalette
-                        value={ textColor }
-                        onChange={ ( colorValue ) => setAttributes( { textColor: colorValue } ) }
-                    />
-                </PanelColor>
-                <PanelColorSettings
-                    title={ __( 'Background Color' ) }
-                    colorValue={ color }
-                    initialOpen={ false }
-                    >
-                    <ColorPalette
-                        value={ color }
-                        onChange={ ( colorValue ) => setAttributes( { color: colorValue } ) }
-                    />
-                </PanelColorSettings>
-            </InspectorControls>
-
-*/

@@ -66,21 +66,21 @@ export const edit = ( props ) => {
                     value: value,
                     label: label,
                 })) }
-                onChange={ ( value ) => { setAttributes( { columns: value } ) } }
+                onChange={ ( value ) => { setAttributes( { columns: parseInt(value) } ) } }
             />
             <RangeControl
                 label={ __( 'Margin' ) }
                 value={ margin }
                 min='0'
                 max='100'
-                onChange={ ( value ) => setAttributes( { margin: value } ) }
+                onChange={ ( value ) => setAttributes( { margin: parseInt(value) } ) }
             />
             <RangeControl
                 label={ __( 'Padding' ) }
                 value={ padding }
                 min='0'
                 max='100'
-                onChange={ ( value ) => setAttributes( { padding: value } ) }
+                onChange={ ( value ) => setAttributes( { padding: parseInt(value) } ) }
             />
             <PanelColorSettings
                 title={ __( 'Color Settings' ) }
@@ -199,4 +199,70 @@ registerBlockType( 'madeit/block-row-simple', {
 
     // The "save" property must be  valid function.
     save: save,
+    
+        
+    deprecated: [
+        {
+            attributes: {
+                columns: {
+                    type: 'number',
+                    default: 2,
+                },
+                textColor: {
+                    type: 'string',
+                },
+                color: {
+                    type: 'string',
+                },
+                margin: {
+                    type: 'number',
+                    default: 0,
+                },
+                padding: {
+                    type: 'number',
+                    default: 30,
+                }
+            },
+
+            migrate: function( attributes ) {
+                return {
+                    columns: parseInt(attributes.columns),
+                    textColor: attributes.textColor,
+                    color: attributes.color,
+                    margin: parseInt(attributes.margin),
+                    padding: parseInt(attributes.padding),
+                };
+            },
+
+            save: function( props ) {
+               const {
+                    textColor,
+                    color,
+                    margin,
+                    padding,
+                    columns
+                } = props.attributes;
+
+                const {
+                    className
+                } = props;
+
+                return (
+                    <div
+                        className={ className }
+                        style = {{
+                                color: textColor,
+                                backgroundColor: color,
+                                paddingTop: padding + 'px',
+                                paddingBottom: padding + 'px',
+                                marginTop: margin + 'px',
+                                marginBottom: margin + 'px',
+                            }}
+                        >
+                        <InnerBlocks.Content />
+                    </div>
+                );
+            },
+        }
+    ]
 } )

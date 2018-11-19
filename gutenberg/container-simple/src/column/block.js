@@ -53,18 +53,18 @@ export const edit = ( props ) => {
     
     
     const widths = [
-        { value: '12', label: __( 'Full width' ) },
-        { value: '11', label: __( '11/12de' ) },
-        { value: '10', label: __( '10/12de' ) },
-        { value: '9', label: __( '9/12de' ) },
-        { value: '8', label: __( '8/12de' ) },
-        { value: '7', label: __( '7/12de' ) },
-        { value: '6', label: __( '6/12de' ) },
-        { value: '5', label: __( '5/12de' ) },
-        { value: '4', label: __( '4/12de' ) },
-        { value: '3', label: __( '3/12de' ) },
-        { value: '2', label: __( '2/12de' ) },
-        { value: '1', label: __( '1/12de' ) },
+        { value: 12, label: __( 'Full width' ) },
+        { value: 11, label: __( '11/12de' ) },
+        { value: 10, label: __( '10/12de' ) },
+        { value: 9, label: __( '9/12de' ) },
+        { value: 8, label: __( '8/12de' ) },
+        { value: 7, label: __( '7/12de' ) },
+        { value: 6, label: __( '6/12de' ) },
+        { value: 5, label: __( '5/12de' ) },
+        { value: 4, label: __( '4/12de' ) },
+        { value: 3, label: __( '3/12de' ) },
+        { value: 2, label: __( '2/12de' ) },
+        { value: 1, label: __( '1/12de' ) },
     ];
     
     var classes = "";
@@ -104,7 +104,7 @@ export const edit = ( props ) => {
                         value: value,
                         label: label,
                     })) }
-                    onChange={ ( value ) => { setAttributes( { sm: value } ) } }
+                    onChange={ ( value ) => { setAttributes( { sm: parseInt(value) } ) } }
                 />
             }
             {
@@ -116,7 +116,7 @@ export const edit = ( props ) => {
                         value: value,
                         label: label,
                     })) }
-                    onChange={ ( value ) => { setAttributes( { md: value } ) } }
+                    onChange={ ( value ) => { setAttributes( { md: parseInt(value) } ) } }
                 />
             }
             {
@@ -128,7 +128,7 @@ export const edit = ( props ) => {
                         value: value,
                         label: label,
                     })) }
-                    onChange={ ( value ) => { setAttributes( { lg: value } ) } }
+                    onChange={ ( value ) => { setAttributes( { lg: parseInt(value) } ) } }
                 />
             }
             <RangeControl
@@ -136,14 +136,14 @@ export const edit = ( props ) => {
                 value={ margin }
                 min='0'
                 max='100'
-                onChange={ ( value ) => setAttributes( { margin: value } ) }
+                onChange={ ( value ) => setAttributes( { margin: parseInt(value) } ) }
             />
             <RangeControl
                 label={ __( 'Padding' ) }
                 value={ padding }
                 min='0'
                 max='100'
-                onChange={ ( value ) => setAttributes( { padding: value } ) }
+                onChange={ ( value ) => setAttributes( { padding: parseInt(value) } ) }
             />
             <PanelColorSettings
                 title={ __( 'Color Settings' ) }
@@ -360,6 +360,105 @@ registerBlockType( 'madeit/block-column-simple', {
                             }}
                         >
                         <wp.editor.InnerBlocks.Content />
+                    </div>
+                );
+            },
+        },
+        {
+            attributes: {
+                type: {
+                    type: 'string',
+                    default: 'auto-sm'
+                },
+                textColor: {
+                    type: 'string',
+                },
+                color: {
+                    type: 'string',
+                },
+                margin: {
+                    type: 'number',
+                    default: 0,
+                },
+                padding: {
+                    type: 'number',
+                    default: 0,
+                },
+                sm: {
+                    type: 'number',
+                    default: 12,
+                },
+                md: {
+                    type: 'number',
+                    default: 6,
+                },
+                lg: {
+                    type: 'number',
+                    default: 6,
+                },
+            },
+
+            migrate: function( attributes ) {
+                return {
+                    type: attributes.type,
+                    sm: parseInt(attributes.sm),
+                    md: parseInt(attributes.md),
+                    lg: parseInt(attributes.lg),
+                    textColor: attributes.textColor,
+                    color: attributes.color,
+                    margin: parseInt(attributes.margin),
+                    padding: parseInt(attributes.padding),
+                };
+            },
+
+            save: function( props ) {
+               const {
+                    type,
+                    sm,
+                    md,
+                    lg,
+                    textColor,
+                    color,
+                    margin,
+                    padding
+                } = props.attributes;
+
+                const {
+                    className
+                } = props
+
+
+                var classes = "";
+                if('auto' === type) {
+                    classes = 'col';
+                }
+                else if('auto-sm' === type) {
+                    classes = 'col-12 col-md';
+                }
+                else if('auto-md' === type) {
+                    classes = 'col-12 col-lg';
+                }
+                if(className !== undefined) {
+                    classes += ' ' + className;
+                }
+
+                if('manual' === type) {
+                    classes += ' col-' + sm + ' col-md-' + md + ' col-lg-' + lg;
+                }
+
+                return (
+                    <div
+                        className={ classes }
+                        style = {{
+                                color: textColor,
+                                backgroundColor: color,
+                                paddingTop: padding + 'px',
+                                paddingBottom: padding + 'px',
+                                marginTop: margin + 'px',
+                                marginBottom: margin + 'px',
+                            }}
+                        >
+                        <InnerBlocks.Content />
                     </div>
                 );
             },
