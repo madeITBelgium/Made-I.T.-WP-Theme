@@ -4,4 +4,4 @@ assets/js/bootstrap.js
 assets/js/popper.min.js
 assets/js/script-fix-jquery.js
 gutenberg/*/dist/blocks.build.js
-gutenberg/*/blocks.js
+gutenberg/*/src/blocks.js
