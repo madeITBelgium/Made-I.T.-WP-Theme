@@ -380,6 +380,34 @@ img {
 	}
 }
 
+#lightbox-modal .model-header {
+    height: 0;
+    padding: 0;
+}
+#lightbox-modal .close {
+    top: 16px;
+    right: -16px;
+    line-height: 25px;
+    width: 30px;
+    cursor: pointer;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    background: rgba(0,0,0, 0.3);
+    color: #fff;
+    -webkit-box-shadow: 0 0 6px -1px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 6px -1px rgba(0, 0, 0, 0.2);
+    opacity: 1;
+    border-radius: 15px;
+    position: relative;
+    z-index: 1060;
+    margin-top: -2px;
+    float: right;
+    font-size: 21px;
+    font-weight: bold;
+    padding: 2px;
+}
+
+
 /* Extra's */
 .voffset { margin-top: 2px; }
 .voffset1 { margin-top: 5px; }

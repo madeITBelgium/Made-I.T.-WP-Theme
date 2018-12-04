@@ -40,7 +40,7 @@ jQuery( document ).ready( function( $ ) {
             leftUrl = $( group ).find( '.click-lightbox:eq(' + leftIndex + ')' ).attr( 'href' );
             rightUrl = $( group ) .find( '.click-lightbox:eq(' + rightIndex + ')' ).attr( 'href' );
 
-            $( '#lightbox-modal .modal-content' ).html( '<div class="lightbox-nav-overlay"><a href="' + leftUrl + '" data-index="' + leftIndex + '"><span>❮</span></a><a href="' + rightUrl + '" data-index="' + rightIndex + '"><span>❯</span></a></div><img src="' + url + '" alt="" style="width: 100%">' );
+            $( '#lightbox-modal .modal-content' ).html( '<div class="modal-header"><button type="button" aria-label="Close" data-dismiss="modal" class="close"><span aria-hidden="true">×</span></button></div><div class="lightbox-nav-overlay"><a href="' + leftUrl + '" data-index="' + leftIndex + '"><span>❮</span></a><a href="' + rightUrl + '" data-index="' + rightIndex + '"><span>❯</span></a></div><img src="' + url + '" alt="" style="width: 100%">' );
         } else {
             $( '#lightbox-modal .modal-content' ).html( '<img src="' + url + '" alt="" style="width: 100%">' );
         }
@@ -86,7 +86,7 @@ jQuery( document ).ready( function( $ ) {
             leftUrl = $( group ).find( 'a:eq(' + leftIndex + ')' ).attr( 'href' );
             rightUrl = $( group ) .find( 'a:eq(' + rightIndex + ')' ).attr( 'href' );
 
-            $( '#lightbox-modal .modal-content' ).html( '<div class="lightbox-nav-overlay"><a href="' + leftUrl + '" data-index="' + leftIndex + '"><span>❮</span></a><a href="' + rightUrl + '" data-index="' + rightIndex + '"><span>❯</span></a></div><img src="' + url + '" alt="" style="width: 100%">' );
+            $( '#lightbox-modal .modal-content' ).html( '<div class="modal-header"><button type="button" aria-label="Close" data-dismiss="modal" class="close"><span aria-hidden="true">×</span></button></div><div class="lightbox-nav-overlay"><a href="' + leftUrl + '" data-index="' + leftIndex + '"><span>❮</span></a><a href="' + rightUrl + '" data-index="' + rightIndex + '"><span>❯</span></a></div><img src="' + url + '" alt="" style="width: 100%">' );
         } else {
             $( '#lightbox-modal .modal-content' ).html( '<img src="' + url + '" alt="" style="width: 100%">' );
         }
