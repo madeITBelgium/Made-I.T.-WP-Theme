@@ -99,6 +99,20 @@ jQuery( document ).ready( function( $ ) {
 
             leftUrl = $( group ).find( 'a:eq(' + leftIndex + ')' ).attr( 'href' );
             rightUrl = $( group ) .find( 'a:eq(' + rightIndex + ')' ).attr( 'href' );
+            
+            var hasDescription = false;
+            var description = '';
+            if( $( this ).parents( '.blocks-gallery-item' ).length > 0 ) {
+                hasDescription = $( this ).parents( '.blocks-gallery-item' ).find( 'figcaption' ).length === 1;
+                if(hasDescription) {
+                    description = $( this ).parents( '.blocks-gallery-item' ).find( 'figcaption:eq(0)' ).html();
+                }
+            }
+            
+            var descHtml = '';
+            if(hasDescription && description.length > 0) {
+                descHtml = '<div class="bg-white">' + description + '</div>';
+            }
 
             $( '#lightbox-modal .modal-content' ).html( `
                 <div class="modal-header">
@@ -107,12 +121,12 @@ jQuery( document ).ready( function( $ ) {
                 <div class="lightbox-nav-overlay">
                     <a href="` + leftUrl + `" data-index="` + leftIndex + `"><span>❮</span></a>
                     <a href="` + rightUrl + `" data-index="` + rightIndex + `"><span>❯</span></a>
-                </div><img src="` + url + `" alt="" style="width: 100%">` );
+                </div><img src="` + url + `" alt="" style="width: 100%">` + descHtml );
         } else {
             $( '#lightbox-modal .modal-content' ).html( `<div class="modal-header">
                     <button type="button" aria-label="Close" data-dismiss="modal" class="close"><span aria-hidden="true">×</span></button>
                 </div>
-                <img src="` + url + `" alt="" style="width: 100%">` );
+                <img src="` + url + `" alt="" style="width: 100%">` + descHtml );
         }
         $( '#lightbox-modal' ).modal( 'show' );
     });

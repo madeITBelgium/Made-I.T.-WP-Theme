@@ -9,6 +9,8 @@
 /**
  * Made I.T. Theme only works in WordPress 4.7 or later.
  */
+define('MADEIT_VERSION', '2.0.0');
+
 if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
     require get_template_directory().'/inc/back-compat.php';
 
@@ -278,7 +280,7 @@ if (!function_exists('madeit_gutenberg_support')) {
 if (!function_exists('madeit_block_editor_styles')) {
     function madeit_block_editor_styles()
     {
-        wp_enqueue_style('madeit-block-editor-styles', get_theme_file_uri('/style-editor.css'), false, '1.0', 'all');
+        wp_enqueue_style('madeit-block-editor-styles', get_theme_file_uri('/style-editor.css'), false, MADEIT_VERSION, 'all');
     }
 
     add_action('enqueue_block_editor_assets', 'madeit_block_editor_styles');
@@ -526,21 +528,21 @@ if (!function_exists('madeit_scripts')) {
 
         // Load the dark colorscheme.
         if ('dark' === get_theme_mod('colorscheme', 'light') || is_customize_preview()) {
-            wp_enqueue_style('madeit-colors-dark', get_theme_file_uri('/assets/css/colors-dark.css'), ['madeit-style'], '1.0');
+            wp_enqueue_style('madeit-colors-dark', get_theme_file_uri('/assets/css/colors-dark.css'), ['madeit-style'], MADEIT_VERSION);
         }
 
         // Load the html5 shiv.
         wp_enqueue_script('html5', get_theme_file_uri('/assets/js/html5.js'), [], '3.7.3', true);
         wp_script_add_data('html5', 'conditional', 'lt IE 9');
 
-        wp_enqueue_script('madeit-skip-link-focus-fix', get_theme_file_uri('/assets/js/skip-link-focus-fix.js'), [], '1.0', true);
+        wp_enqueue_script('madeit-skip-link-focus-fix', get_theme_file_uri('/assets/js/skip-link-focus-fix.js'), [], MADEIT_VERSION, true);
 
         //wp_add_inline_script('jquery-core', '$=jQuery;');
 
-        wp_enqueue_script('script-fix-jquery', get_theme_file_uri('/assets/js/script-fix-jquery.js'), ['jquery'], '1.0.0', true);
-        wp_enqueue_script('popper', get_theme_file_uri('/assets/js/popper.min.js'), ['jquery'], '1.0.0', true);
-        wp_enqueue_script('bootstrap', get_theme_file_uri('/assets/js/bootstrap.js'), ['jquery', 'popper'], '4.0.0', true);
-        wp_enqueue_script('script', get_template_directory_uri().'/assets/js/script.js', ['bootstrap'], '1.0.0', true);
+        wp_enqueue_script('script-fix-jquery', get_theme_file_uri('/assets/js/script-fix-jquery.js'), ['jquery'], MADEIT_VERSION, true);
+        wp_enqueue_script('popper', get_theme_file_uri('/assets/js/popper.min.js'), ['jquery'], MADEIT_VERSION, true);
+        wp_enqueue_script('bootstrap', get_theme_file_uri('/assets/js/bootstrap.js'), ['jquery', 'popper'], '4.1.0', true);
+        wp_enqueue_script('script', get_template_directory_uri().'/assets/js/script.js', ['bootstrap'], MADEIT_VERSION, true);
 
         //wp_enqueue_script('jquery-scrollto', get_theme_file_uri('/assets/js/jquery.scrollTo.js'), ['jquery'], '2.1.2', true);
 
