@@ -41,7 +41,7 @@ function container_madeit_editor_assets()
     wp_enqueue_script(
         'container-madeit-block-js', // Handle.
         get_template_directory_uri().'/gutenberg/container/dist/blocks.build.js', // Block.build.js: We register the block here. Built with Webpack.
-        ['wp-blocks', 'wp-i18n', 'wp-element', 'wp-components' , 'wp-editor'], // Dependencies, defined above.
+        ['wp-blocks', 'wp-i18n', 'wp-element', 'wp-components', 'wp-editor'], // Dependencies, defined above.
         // filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.build.js' ), // Version: filemtime — Gets file modification time.
         true // Enqueue the script in the footer.
     );
