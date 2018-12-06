@@ -43,6 +43,10 @@ body {
 	maring-top: 70px;
 }
 
+#cookie_directive_container .text-muted { 
+    color: #4C5257 !important;
+}
+
 /* Spacing */
 .m-6 {
   margin: 5rem !important;
