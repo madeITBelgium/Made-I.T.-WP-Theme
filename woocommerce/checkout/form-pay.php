@@ -8,7 +8,7 @@
  *
  * @version  3.4.0
  */
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 $totals = $order->get_order_item_totals();
 ?>
@@ -35,11 +35,11 @@ $totals = $order->get_order_item_totals();
 							<?php
                                 echo apply_filters('woocommerce_order_item_name', esc_html($item->get_name()), $item, false);
 
-                                do_action( 'woocommerce_order_item_meta_start', $item_id, $item, $order, false );
+                                do_action('woocommerce_order_item_meta_start', $item_id, $item, $order, false);
 
                                 wc_display_item_meta($item);
 
-                                do_action( 'woocommerce_order_item_meta_end', $item_id, $item, $order, false );
+                                do_action('woocommerce_order_item_meta_end', $item_id, $item, $order, false);
                             ?>
 						</td>
 						<td class="product-quantity"><?php echo apply_filters('woocommerce_order_item_quantity_html', ' <strong class="product-quantity">'.sprintf('&times; %s', esc_html($item->get_quantity())).'</strong>', $item); ?></td>
@@ -64,12 +64,12 @@ $totals = $order->get_order_item_totals();
 		<?php if ($order->needs_payment()) : ?>
 			<ul class="wc_payment_methods payment_methods methods">
 				<?php
-                if ( ! empty( $available_gateways ) ) {
-                    foreach ( $available_gateways as $gateway ) {
-                        wc_get_template( 'checkout/payment-method.php', array( 'gateway' => $gateway ) );
+                if (!empty($available_gateways)) {
+                    foreach ($available_gateways as $gateway) {
+                        wc_get_template('checkout/payment-method.php', ['gateway' => $gateway]);
                     }
                 } else {
-                    echo '<li class="woocommerce-notice woocommerce-notice--info woocommerce-info">' . apply_filters( 'woocommerce_no_available_payment_methods_message', __( 'Sorry, it seems that there are no available payment methods for your location. Please contact us if you require assistance or wish to make alternate arrangements.', 'woocommerce' ) ) . '</li>'; // @codingStandardsIgnoreLine
+                    echo '<li class="woocommerce-notice woocommerce-notice--info woocommerce-info">'.apply_filters('woocommerce_no_available_payment_methods_message', __('Sorry, it seems that there are no available payment methods for your location. Please contact us if you require assistance or wish to make alternate arrangements.', 'woocommerce')).'</li>'; // @codingStandardsIgnoreLine
                 }
                 ?>
 			</ul>
@@ -81,11 +81,11 @@ $totals = $order->get_order_item_totals();
 
 			<?php do_action('woocommerce_pay_order_before_submit'); ?>
 
-			<?php echo apply_filters( 'woocommerce_pay_order_button_html', '<button type="submit" class="button alt" id="place_order" value="' . esc_attr( $order_button_text ) . '" data-value="' . esc_attr( $order_button_text ) . '">' . esc_html( $order_button_text ) . '</button>' ); // @codingStandardsIgnoreLine ?>
+			<?php echo apply_filters('woocommerce_pay_order_button_html', '<button type="submit" class="button alt" id="place_order" value="'.esc_attr($order_button_text).'" data-value="'.esc_attr($order_button_text).'">'.esc_html($order_button_text).'</button>'); // @codingStandardsIgnoreLine?>
 
 			<?php do_action('woocommerce_pay_order_after_submit'); ?>
 
-			<?php wp_nonce_field( 'woocommerce-pay', 'woocommerce-pay-nonce' ); ?>
+			<?php wp_nonce_field('woocommerce-pay', 'woocommerce-pay-nonce'); ?>
 		</div>
 	</div>
 </form>

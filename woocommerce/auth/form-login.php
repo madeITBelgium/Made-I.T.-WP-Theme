@@ -40,7 +40,7 @@ if (!defined('ABSPATH')) {
 		<input class="input-text form-control" type="password" name="password" id="password" />
 	</p>
 	<p class="wc-auth-actions">
-		<?php wp_nonce_field( 'woocommerce-login', 'woocommerce-login-nonce' ); ?>
+		<?php wp_nonce_field('woocommerce-login', 'woocommerce-login-nonce'); ?>
 		<input type="submit" class="btn btn-lg btn-primary wc-auth-login-button" name="login" value="<?php esc_attr_e('Login', 'woocommerce'); ?>" />
 		<input type="hidden" name="redirect" value="<?php echo esc_url($redirect_url); ?>" />
 	</p>

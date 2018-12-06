@@ -49,11 +49,11 @@ do_action('woocommerce_before_mini_cart'); ?>
                             esc_attr($cart_item_key),
                             esc_attr($_product->get_sku())
                         ), $cart_item_key); ?>
-						<?php if (empty( $product_permalink )) : ?>
-							<?php echo $thumbnail . $product_name; ?>
+						<?php if (empty($product_permalink)) : ?>
+							<?php echo $thumbnail.$product_name; ?>
 						<?php else : ?>
 							<a href="<?php echo esc_url($product_permalink); ?>">
-								<?php echo $thumbnail . $product_name; ?>
+								<?php echo $thumbnail.$product_name; ?>
 							</a>
 						<?php endif; ?>
 						<?php echo wc_get_formatted_cart_item_data($cart_item); ?>
