@@ -17,8 +17,8 @@ function container_simple_madeit_block_assets()
     // Styles.
     wp_enqueue_style(
         'container-simple-madeit-style-css', // Handle.
-        get_template_directory_uri().'/gutenberg/container-simple/dist/blocks.style.build.css', // Block style CSS.
-        ['wp-blocks'] // Dependency to include the CSS after it.
+        get_theme_file_uri('/gutenberg/container-simple/dist/blocks.style.build.css'), // Block style CSS.
+        ['wp-editor'] // Dependency to include the CSS after it.
         // filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.style.build.css' ) // Version: filemtime — Gets file modification time.
     );
 } // End function container-simple_madeit_block_assets().

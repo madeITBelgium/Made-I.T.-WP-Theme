@@ -18,7 +18,7 @@ function tabs_madeit_block_assets()
     wp_enqueue_style(
         'tabs-madeit-style-css', // Handle.
         get_template_directory_uri().'/gutenberg/tabs/dist/blocks.style.build.css', // Block style CSS.
-        ['wp-blocks'] // Dependency to include the CSS after it.
+        ['wp-editor'] // Dependency to include the CSS after it.
         // filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.style.build.css' ) // Version: filemtime — Gets file modification time.
     );
 } // End function tabs_madeit_block_assets().
