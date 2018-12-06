@@ -10,10 +10,10 @@
  *
  * @version 3.4.4
  */
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
-if ( ! wc_coupons_enabled() ) { // @codingStandardsIgnoreLine.
-	return;
+if (!wc_coupons_enabled()) { // @codingStandardsIgnoreLine.
+    return;
 }
 
 if (empty(WC()->cart->applied_coupons)) {
@@ -23,10 +23,10 @@ if (empty(WC()->cart->applied_coupons)) {
 ?>
 
 <div class="woocommerce-form-coupon-toggle">
-	<?php wc_print_notice( apply_filters( 'woocommerce_checkout_coupon_message', __( 'Have a coupon?', 'woocommerce' ) . ' <a href="#" class="showcoupon">' . __( 'Click here to enter your code', 'woocommerce' ) . '</a>' ), 'notice' ); ?>
+	<?php wc_print_notice(apply_filters('woocommerce_checkout_coupon_message', __('Have a coupon?', 'woocommerce').' <a href="#" class="showcoupon">'.__('Click here to enter your code', 'woocommerce').'</a>'), 'notice'); ?>
 </div>
  <form class="checkout_coupon woocommerce-form-coupon" method="post" style="display:none">
-    <p><?php esc_html_e( 'If you have a coupon code, please apply it below.', 'woocommerce' ); ?></p>
+    <p><?php esc_html_e('If you have a coupon code, please apply it below.', 'woocommerce'); ?></p>
 
 	<p class="form-row form-row-first">
 		<input type="text" name="coupon_code" class="input-text form-control" placeholder="<?php esc_attr_e('Coupon code', 'woocommerce'); ?>" id="coupon_code" value="" />

@@ -53,14 +53,13 @@ get_header('shop'); ?>
                  * @hooked woocommerce_result_count - 20
                  * @hooked woocommerce_catalog_ordering - 30
                  */
-                do_action('woocommerce_before_shop_loop');
-                ?>
+                do_action('woocommerce_before_shop_loop'); ?>
             </div>
             <?php
             woocommerce_product_loop_start();
 
-            if ( wc_get_loop_prop( 'total' ) ) {
-                while ( have_posts() ) {
+            if (wc_get_loop_prop('total')) {
+                while (have_posts()) {
                     the_post();
                     /*
                      * woocommerce_shop_loop hook.
@@ -70,7 +69,6 @@ get_header('shop'); ?>
                     do_action('woocommerce_shop_loop');
 
                     wc_get_template_part('content', 'product');
-
                 } // end of the loop.
             }
 
