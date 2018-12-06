@@ -522,7 +522,7 @@ if (!function_exists('madeit_scripts')) {
         //wp_enqueue_style('madeit-fonts', madeit_fonts_url(), [], null);
 
         // Theme stylesheet.
-        wp_enqueue_style('madeit-style', get_stylesheet_uri());
+        wp_enqueue_style('madeit-style', get_stylesheet_uri(), array(), wp_get_theme()->get( 'Version' ));
 
         //wp_enqueue_style('font-awesome', get_theme_file_uri('/assets/css/font-awesome.min.css'), ['madeit-style'], '4.7.0');
 
