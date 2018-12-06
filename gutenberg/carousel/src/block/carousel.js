@@ -10,10 +10,10 @@ import every from 'lodash/every';
 /**
  * WordPress dependencies
  */
-export const { createBlock, registerBlockType } = wp.blocks
-export const { __ } = wp.i18n
-export const { RichText, mediaUpload } = wp.editor
-export const { createBlobURL } = wp.blob
+export const { createBlock, registerBlockType } = wp.blocks;
+export const { __ } = wp.i18n;
+export const { RichText, mediaUpload } = wp.editor;
+export const { createBlobURL } = wp.blob;
 
 import { default as edit } from './edit';
 

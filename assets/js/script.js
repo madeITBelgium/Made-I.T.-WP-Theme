@@ -126,7 +126,7 @@ jQuery( document ).ready( function( $ ) {
             $( '#lightbox-modal .modal-content' ).html( `<div class="modal-header">
                     <button type="button" aria-label="Close" data-dismiss="modal" class="close"><span aria-hidden="true">×</span></button>
                 </div>
-                <img src="` + url + `" alt="" style="width: 100%">` + descHtml );
+                <img src="` + url + `" alt="" style="width: 100%">`);
         }
         $( '#lightbox-modal' ).modal( 'show' );
     });
