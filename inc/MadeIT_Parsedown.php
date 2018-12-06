@@ -10,7 +10,7 @@ class MadeIT_Parsedown
         if (isset(self::$instances[$name])) {
             return self::$instances[$name];
         }
-        $instance = new Parsedown();
+        $instance = new MadeIT_Parsedown();
         self::$instances[$name] = $instance;
 
         return $instance;
