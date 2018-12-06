@@ -14,7 +14,7 @@
  *
  * @author  WooThemes
  *
- * @version 2.4.0
+ * @version 3.4.0
  */
 if (!defined('ABSPATH')) {
     exit;
@@ -28,19 +28,19 @@ if (!defined('ABSPATH')) {
 
 <?php wc_print_notices(); ?>
 
-	<p><?php printf(__('To connect to %1$s you need to be logged in. Log in to your store below, or <a href="%2$s">cancel and return to %1$s</a>', 'woocommerce'), wc_clean($app_name), esc_url($return_url)); ?></p>
+<p><?php printf(__('To connect to %1$s you need to be logged in. Log in to your store below, or <a href="%2$s">cancel and return to %1$s</a>', 'woocommerce'), wc_clean($app_name), esc_url($return_url)); ?></p>
 
 <form method="post" class="wc-auth-login">
 	<p class="form-row form-row-wide">
-		<label for="username"><?php _e('Username or email address', 'woocommerce'); ?> <span class="required">*</span></label>
+		<label for="username"><?php _e('Username or email address', 'woocommerce'); ?>&nbsp;<span class="required">*</span></label>
 		<input type="text" class="input-text form-control" name="username" id="username" value="<?php echo (!empty($_POST['username'])) ? esc_attr($_POST['username']) : ''; ?>" />
 	</p>
 	<p class="form-row form-row-wide">
-		<label for="password"><?php _e('Password', 'woocommerce'); ?> <span class="required">*</span></label>
+		<label for="password"><?php _e('Password', 'woocommerce'); ?>&nbsp;<span class="required">*</span></label>
 		<input class="input-text form-control" type="password" name="password" id="password" />
 	</p>
 	<p class="wc-auth-actions">
-		<?php wp_nonce_field('woocommerce-login'); ?>
+		<?php wp_nonce_field( 'woocommerce-login', 'woocommerce-login-nonce' ); ?>
 		<input type="submit" class="btn btn-lg btn-primary wc-auth-login-button" name="login" value="<?php esc_attr_e('Login', 'woocommerce'); ?>" />
 		<input type="hidden" name="redirect" value="<?php echo esc_url($redirect_url); ?>" />
 	</p>

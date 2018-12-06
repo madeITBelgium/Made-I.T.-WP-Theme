@@ -14,13 +14,11 @@
  *
  * @author  WooThemes
  *
- * @version 3.1.0
+ * @version 3.5.0
  */
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
-
-wc_print_notices();
 
 /*
  * @hooked wc_empty_cart_message - 10
