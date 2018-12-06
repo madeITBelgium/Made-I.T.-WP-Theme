@@ -12,28 +12,28 @@
 define('MADEIT_VERSION', '2.0.0');
 
 /* Default colors */
-if(!defined('MADEIT_TEXT_COLOR')) {
+if (!defined('MADEIT_TEXT_COLOR')) {
     define('MADEIT_TEXT_COLOR', '#212529');
 }
-if(!defined('MADEIT_BACKGROUND_COLOR')) {
+if (!defined('MADEIT_BACKGROUND_COLOR')) {
     define('MADEIT_BACKGROUND_COLOR', '#ffffff');
 }
-if(!defined('MADEIT_PRIMARY_COLOR')) {
+if (!defined('MADEIT_PRIMARY_COLOR')) {
     define('MADEIT_PRIMARY_COLOR', '#0051A8');
 }
-if(!defined('MADEIT_SECONDARY_COLOR')) {
+if (!defined('MADEIT_SECONDARY_COLOR')) {
     define('MADEIT_SECONDARY_COLOR', '#868e96');
 }
-if(!defined('MADEIT_SUCCESS_COLOR')) {
+if (!defined('MADEIT_SUCCESS_COLOR')) {
     define('MADEIT_SUCCESS_COLOR', '#28a745');
 }
-if(!defined('MADEIT_INFO_COLOR')) {
+if (!defined('MADEIT_INFO_COLOR')) {
     define('MADEIT_INFO_COLOR', '#17a2b8');
 }
-if(!defined('MADEIT_WARNING_COLOR')) {
+if (!defined('MADEIT_WARNING_COLOR')) {
     define('MADEIT_WARNING_COLOR', '#ffc107');
 }
-if(!defined('MADEIT_DANGER_COLOR')) {
+if (!defined('MADEIT_DANGER_COLOR')) {
     define('MADEIT_DANGER_COLOR', '#dc3545');
 }
 
@@ -548,7 +548,7 @@ if (!function_exists('madeit_scripts')) {
         //wp_enqueue_style('madeit-fonts', madeit_fonts_url(), [], null);
 
         // Theme stylesheet.
-        wp_enqueue_style('madeit-style', get_stylesheet_uri(), array(), wp_get_theme()->get( 'Version' ));
+        wp_enqueue_style('madeit-style', get_stylesheet_uri(), [], wp_get_theme()->get('Version'));
 
         //wp_enqueue_style('font-awesome', get_theme_file_uri('/assets/css/font-awesome.min.css'), ['madeit-style'], '4.7.0');
 
