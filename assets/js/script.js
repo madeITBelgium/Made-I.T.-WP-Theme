@@ -71,17 +71,19 @@ jQuery( document ).ready( function( $ ) {
     });
 
     $( '.wp-block-gallery' ).each( function( ) {
-        if( $( this ).find( 'a' ).length > 0 && ! $( this ).hasClass( 'no-lightbox' ) ) {
-            var id = makeid( );
+        var id;
+        if ( $( this ).find( 'a' ).length > 0 && ! $( this ).hasClass( 'no-lightbox' ) ) {
+            id = makeid( );
             $( this ).attr( 'data-galary-id', id );
         }
     });
-    
+
     $( '.wp-block-gallery[data-galary-id] a' ).click( function( e ) {
         var url = $( this ).attr( 'href' );
         var group, index, total, leftIndex, rightIndex, leftUrl, rightUrl;
         var hasDescription = false;
         var description = '';
+        var descHtml = '';
         e.preventDefault();
         if ( ! url.endsWith( '.jpg' ) && ! url.endsWith( '.png' ) ) {
             url = $( this ).find( 'img:eq(0)' ).attr( 'src' );
@@ -100,15 +102,14 @@ jQuery( document ).ready( function( $ ) {
 
             leftUrl = $( group ).find( 'a:eq(' + leftIndex + ')' ).attr( 'href' );
             rightUrl = $( group ) .find( 'a:eq(' + rightIndex + ')' ).attr( 'href' );
-            
+
             if ( $( this ).parents( '.blocks-gallery-item' ).length > 0 ) {
                 hasDescription = 1 === $( this ).parents( '.blocks-gallery-item' ).find( 'figcaption' ).length;
-                if( hasDescription ) {
+                if ( hasDescription ) {
                     description = $( this ).parents( '.blocks-gallery-item' ).find( 'figcaption:eq(0)' ).html();
                 }
             }
-            
-            var descHtml = '';
+
             if ( hasDescription && description.length > 0 ) {
                 descHtml = '<div class="bg-white">' + description + '</div>';
             }
@@ -131,13 +132,14 @@ jQuery( document ).ready( function( $ ) {
     });
 
     document.onkeyup = function( e ) {
-        if ( $( '#lightbox-modal' ).is( ":visible" ) && $( '#lightbox-modal .lightbox-nav-overlay a' ).length > 0) {
-            if ( e.which === 37 ) {
-                //left
+        if ( $( '#lightbox-modal' ).is( ':visible' ) && $( '#lightbox-modal .lightbox-nav-overlay a' ).length > 0 ) {
+            if ( 37 === e.which ) {
+
+                //Left
                 $( '#lightbox-modal .lightbox-nav-overlay a:eq(0)' ).click( );
-            }
-            else if ( e.which === 39 ) {
-                //right
+            } else if ( 39 === e.which ) {
+
+                //Right
                 $( '#lightbox-modal .lightbox-nav-overlay a:eq(1)' ).click( );
             }
         }
@@ -162,7 +164,7 @@ jQuery( document ).ready( function( $ ) {
         }
     }
 
-    function setCookieEu( cName, value, exdays ){
+    function setCookieEu( cName, value, exdays ) {
         var cValue, exdate = new Date( );
         exdate.setDate( exdate.getDate( ) + exdays );
         cValue = escape( value ) + ( ( null == exdays ) ? '' : '; expires=' + exdate.toUTCString( ) );
@@ -191,13 +193,13 @@ jQuery( document ).ready( function( $ ) {
         e.preventDefault();
         setCookieEu( 'cookies_consent', 1, 30 );
     });
-    
+
     function makeid() {
         var text = '';
         var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-        for (var i = 0; i < 5; i++) {
-            text += possible.charAt(Math.floor(Math.random() * possible.length));
+        for ( var i = 0; i < 5; i++ ) {
+            text += possible.charAt( Math.floor( Math.random( ) * possible.length ) );
         }
 
         return text;

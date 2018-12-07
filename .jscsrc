@@ -5,6 +5,10 @@
         "assets/js/html5.js",
         "assets/js/jquery.scrollTo.js",
         "assets/js/bootstrap.js",
-        "assets/js/popper.min.js"
+        "assets/js/popper.min.js",
+        "gutenberg/carousel/dist/blocks.build.js",
+        "gutenberg/container/dist/blocks.build.js",
+        "gutenberg/container-simple/dist/blocks.build.js",
+        "gutenberg/tabs/dist/blocks.build.js"
     ]
 }
