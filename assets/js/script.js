@@ -5,7 +5,7 @@ jQuery( document ).ready( function( $ ) {
     var gutenbergGallery = false;
 
     $( '.lightbox' ).each( function( ) {
-        if($( this ).parent( ).hasClass('no-lightbox')) {
+        if ( $( this ).parent( ).hasClass( 'no-lightbox' ) ) {
             return;
         }
         if ( ( undefined === $( this ).parent( ).tagName && 'a' === $( this ).parent( )[0].localName ) || 'a' === $( this ).parent( ).tagName ) {
@@ -63,24 +63,25 @@ jQuery( document ).ready( function( $ ) {
 
     $( '#lightbox-modal' ).on( 'click', '.lightbox-nav-overlay a', function( e ) {
         e.preventDefault( );
-        if(!gutenbergGallery) {
+        if ( ! gutenbergGallery ) {
             $( lightboxGroup ).find( '.click-lightbox:eq(' + $( this ).attr( 'data-index' ) + ')' ).click( );
-        }
-        else {
+        } else {
             $( lightboxGroup ).find( 'a:eq(' + $( this ).attr( 'data-index' ) + ')' ).click( );
         }
     });
-    
-    $('.wp-block-gallery').each(function() {
-        if($(this).find('a').length > 0 && !$(this).hasClass('no-lightbox')) {
-            var id = makeid();
-            $(this).attr('data-galary-id', id);
+
+    $( '.wp-block-gallery' ).each( function( ) {
+        if( $( this ).find( 'a' ).length > 0 && ! $( this ).hasClass( 'no-lightbox' ) ) {
+            var id = makeid( );
+            $( this ).attr( 'data-galary-id', id );
         }
     });
     
-    $('.wp-block-gallery[data-galary-id] a').click(function(e) {
+    $( '.wp-block-gallery[data-galary-id] a' ).click( function( e ) {
         var url = $( this ).attr( 'href' );
         var group, index, total, leftIndex, rightIndex, leftUrl, rightUrl;
+        var hasDescription = false;
+        var description = '';
         e.preventDefault();
         if ( ! url.endsWith( '.jpg' ) && ! url.endsWith( '.png' ) ) {
             url = $( this ).find( 'img:eq(0)' ).attr( 'src' );
@@ -100,17 +101,15 @@ jQuery( document ).ready( function( $ ) {
             leftUrl = $( group ).find( 'a:eq(' + leftIndex + ')' ).attr( 'href' );
             rightUrl = $( group ) .find( 'a:eq(' + rightIndex + ')' ).attr( 'href' );
             
-            var hasDescription = false;
-            var description = '';
-            if( $( this ).parents( '.blocks-gallery-item' ).length > 0 ) {
-                hasDescription = $( this ).parents( '.blocks-gallery-item' ).find( 'figcaption' ).length === 1;
-                if(hasDescription) {
+            if ( $( this ).parents( '.blocks-gallery-item' ).length > 0 ) {
+                hasDescription = 1 === $( this ).parents( '.blocks-gallery-item' ).find( 'figcaption' ).length;
+                if( hasDescription ) {
                     description = $( this ).parents( '.blocks-gallery-item' ).find( 'figcaption:eq(0)' ).html();
                 }
             }
             
             var descHtml = '';
-            if(hasDescription && description.length > 0) {
+            if ( hasDescription && description.length > 0 ) {
                 descHtml = '<div class="bg-white">' + description + '</div>';
             }
 
@@ -126,20 +125,20 @@ jQuery( document ).ready( function( $ ) {
             $( '#lightbox-modal .modal-content' ).html( `<div class="modal-header">
                     <button type="button" aria-label="Close" data-dismiss="modal" class="close"><span aria-hidden="true">×</span></button>
                 </div>
-                <img src="` + url + `" alt="" style="width: 100%">`);
+                <img src="` + url + `" alt="" style="width: 100%">` );
         }
         $( '#lightbox-modal' ).modal( 'show' );
     });
-    
-    document.onkeyup = function(e) {
-        if($('#lightbox-modal').is(":visible") && $('#lightbox-modal .lightbox-nav-overlay a').length > 0) {
-            if(e.which == 37) {
+
+    document.onkeyup = function( e ) {
+        if ( $( '#lightbox-modal' ).is( ":visible" ) && $( '#lightbox-modal .lightbox-nav-overlay a' ).length > 0) {
+            if ( e.which === 37 ) {
                 //left
-                $('#lightbox-modal .lightbox-nav-overlay a:eq(0)').click();
+                $( '#lightbox-modal .lightbox-nav-overlay a:eq(0)' ).click( );
             }
-            else if(e.which == 39) {
+            else if ( e.which === 39 ) {
                 //right
-                $('#lightbox-modal .lightbox-nav-overlay a:eq(1)').click();
+                $( '#lightbox-modal .lightbox-nav-overlay a:eq(1)' ).click( );
             }
         }
     };
@@ -194,11 +193,12 @@ jQuery( document ).ready( function( $ ) {
     });
     
     function makeid() {
-        var text = "";
-        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        var text = '';
+        var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-        for (var i = 0; i < 5; i++)
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
+        for (var i = 0; i < 5; i++) {
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+        }
 
         return text;
     }

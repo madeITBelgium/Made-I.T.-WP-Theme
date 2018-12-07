@@ -34,4 +34,4 @@ do_action( 'woocommerce_before_lost_password_form' );
 
 </form>
 <?php
-do_action( 'woocommerce_after_lost_password_form' );s
+do_action( 'woocommerce_after_lost_password_form' );
