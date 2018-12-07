@@ -197,8 +197,9 @@ jQuery( document ).ready( function( $ ) {
     function makeid() {
         var text = '';
         var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        var i = 0;
 
-        for ( var i = 0; i < 5; i++ ) {
+        for ( i = 0; i < 5; i++ ) {
             text += possible.charAt( Math.floor( Math.random( ) * possible.length ) );
         }
 

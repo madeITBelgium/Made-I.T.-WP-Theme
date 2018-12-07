@@ -19,11 +19,11 @@ import { default as edit } from './edit';
 
 export const save = ( props ) => {
     const { images, anchor } = props.attributes;
-    
-    var elemID = anchor !== undefined ? anchor : 'demo';
+
+    var elemID = undefined !== anchor ? anchor : 'demo';
     var i = 0;
     var j = 0;
-    
+
     return (
         <div className="carousel slide" data-ride="carousel" ID={elemID}>
             <ul className="carousel-indicators">
