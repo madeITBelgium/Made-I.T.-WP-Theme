@@ -1106,7 +1106,7 @@ if (!function_exists('madeit_woocommerce_form_field')) {
             }
 
             break;
-        case 'textarea' :
+        case 'textarea':
 
             $field = '<div class="form-group form-row '.esc_attr(implode(' ', $args['class'])).'" id="'.esc_attr($key).'_field">';
 
