@@ -14,24 +14,23 @@
  *
  * @author 		WooThemes
  *
- * @version     3.2.1
+ * @version 3.4.0
  */
-if (!defined('ABSPATH')) {
-    exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
-
-echo "\n".strtoupper(__('Billing address', 'woocommerce'))."\n\n";
-echo preg_replace('#<br\s*/?>#i', "\n", $order->get_formatted_billing_address())."\n";
-
-if ($order->get_billing_phone()) {
-    echo $order->get_billing_phone()."\n";
+echo "\n" . esc_html( wc_strtoupper( __( 'Billing address', 'woocommerce' ) ) ) . "\n\n";
+echo preg_replace( '#<br\s*/?>#i', "\n", $order->get_formatted_billing_address() ) . "\n"; // WPCS: XSS ok.
+if ( $order->get_billing_phone() ) {
+	echo $order->get_billing_phone() . "\n"; // WPCS: XSS ok.
 }
-
-if ($order->get_billing_email()) {
-    echo $order->get_billing_email()."\n";
+if ( $order->get_billing_email() ) {
+	echo $order->get_billing_email() . "\n"; // WPCS: XSS ok.
 }
-
-if (!wc_ship_to_billing_address_only() && $order->needs_shipping_address() && ($shipping = $order->get_formatted_shipping_address())) {
-    echo "\n".strtoupper(__('Shipping address', 'woocommerce'))."\n\n";
-    echo preg_replace('#<br\s*/?>#i', "\n", $shipping)."\n";
+if ( ! wc_ship_to_billing_address_only() && $order->needs_shipping_address() ) {
+	$shipping = $order->get_formatted_shipping_address();
+	if ( $shipping ) {
+		echo "\n" . esc_html( wc_strtoupper( __( 'Shipping address', 'woocommerce' ) ) ) . "\n\n";
+		echo preg_replace( '#<br\s*/?>#i', "\n", $shipping ) . "\n"; // WPCS: XSS ok.
+	}
 }

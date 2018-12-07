@@ -6,11 +6,9 @@
  *
  * @author 		Made I.T.
  *
- * @version     3.0.0
+ * @version     3.4.0
  */
-if (!defined('ABSPATH')) {
-    exit; // Exit if accessed directly
-}
+defined( 'ABSPATH' ) || exit;
 
 ?>
 
@@ -29,7 +27,7 @@ if (!defined('ABSPATH')) {
      }
 ?>
 
-<div id="product-<?php the_ID(); ?>" <?php post_class(''); ?>>
+<div id="product-<?php the_ID(); ?>" <?php wc_product_class(''); ?>>
     <div class="row">
         <div class="col-md">
             <?php

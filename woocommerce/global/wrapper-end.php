@@ -14,7 +14,7 @@
  *
  * @author 		WooThemes
  *
- * @version     1.6.4
+ * @version     3.3.0
  */
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly

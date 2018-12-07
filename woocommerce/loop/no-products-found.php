@@ -11,11 +11,9 @@
  * the readme will list any important changes.
  *
  * @see 	    https://docs.woocommerce.com/document/template-structure/
- *
- * @author 		WooThemes
- *
  * @version     2.0.0
  */
+
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }

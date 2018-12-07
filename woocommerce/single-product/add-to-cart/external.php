@@ -6,16 +6,19 @@
  *
  * @author 		Made I.T.
  *
- * @version     2.1.0
+* @version 3.4.0
  */
-if (!defined('ABSPATH')) {
-    exit;
-}
+defined( 'ABSPATH' ) || exit;
+do_action( 'woocommerce_before_add_to_cart_form' ); ?>
 
-do_action('woocommerce_before_add_to_cart_button'); ?>
+<form class="cart" action="<?php echo esc_url( $product_url ); ?>" method="get">
+	<?php do_action( 'woocommerce_before_add_to_cart_button' ); ?>
 
-<p class="cart">
-	<a href="<?php echo esc_url($product_url); ?>" rel="nofollow" class="single_add_to_cart_button alt btn btn-success"><?php echo esc_html($button_text); ?></a>
-</p>
+	<button type="submit" class="single_add_to_cart_button button alt"><?php echo esc_html( $button_text ); ?></button>
 
-<?php do_action('woocommerce_after_add_to_cart_button'); ?>
+	<?php wc_query_string_form_fields( $product_url ); ?>
+
+	<?php do_action( 'woocommerce_after_add_to_cart_button' ); ?>
+</form>
+
+<?php do_action( 'woocommerce_after_add_to_cart_form' ); ?>

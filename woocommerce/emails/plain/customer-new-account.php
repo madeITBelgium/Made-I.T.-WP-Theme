@@ -14,22 +14,20 @@
  *
  * @author 		WooThemes
  *
- * @version     2.0.0
+ * @version 3.5.2
  */
-if (!defined('ABSPATH')) {
-    exit; // Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
 }
-
-echo '= '.$email_heading." =\n\n";
-
-echo sprintf(__('Thanks for creating an account on %1$s. Your username is %2$s', 'woocommerce'), $blogname, '<strong>'.$user_login.'</strong>')."\n\n";
-
-if ('yes' === get_option('woocommerce_registration_generate_password') && $password_generated) {
-    echo sprintf(__('Your password is %s.', 'woocommerce'), '<strong>'.$user_pass.'</strong>')."\n\n";
+echo '= ' . esc_html( $email_heading ) . " =\n\n";
+/* translators: %s Customer first name */
+echo sprintf( esc_html__( 'Hi %s,', 'woocommerce' ), esc_html( $user_login ) ) . "\n\n";
+/* translators: %1$s: Site title, %2$s: Username, %3$s: My account link */
+echo sprintf( esc_html__( 'Thanks for creating an account on %1$s. Your username is %2$s. You can access your account area to view orders, change your password, and more at: %3$s', 'woocommerce' ), esc_html( $blogname ), '<strong>' . esc_html( $user_login ) . '</strong>', esc_html( wc_get_page_permalink( 'myaccount' ) ) ) . "\n\n";
+if ( 'yes' === get_option( 'woocommerce_registration_generate_password' ) && $password_generated ) {
+	/* translators: %s Auto generated password */
+	echo sprintf( esc_html__( 'Your password has been automatically generated: %s.', 'woocommerce' ), esc_html( $user_pass ) ) . "\n\n";
 }
-
-echo sprintf(__('You can access your account area to view your orders and change your password here: %s.', 'woocommerce'), wc_get_page_permalink('myaccount'))."\n\n";
-
+echo esc_html__( 'We look forward to seeing you soon.', 'woocommerce' ) . "\n\n";
 echo "\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n\n";
-
-echo apply_filters('woocommerce_email_footer_text', get_option('woocommerce_email_footer_text'));
+echo apply_filters( 'woocommerce_email_footer_text', get_option( 'woocommerce_email_footer_text' ) ); // phpcs:ignore WordPress.XSS.EscapeOutput.OutputNotEscaped

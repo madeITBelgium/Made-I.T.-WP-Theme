@@ -6,25 +6,23 @@
  *
  * @author  Made I.T.
  *
- * @version 3.0.0
+ * @version 3.4.0
  */
-if (!defined('ABSPATH')) {
-    exit; // Exit if accessed directly
-}
+defined( 'ABSPATH' ) || exit;
 
 global $product;
 
-// Ensure visibility
+// Ensure visibility.
 if (empty($product) || !$product->is_visible()) {
     return;
 }
 ?>
-<div <?php post_class('col-lg-4 col-md-6 mb-4'); ?>>
+<div <?php wc_product_class('col-lg-4 col-md-6 mb-4'); ?>>
     <div class="card h-100">
         <a href="<?php echo get_the_permalink(); ?>">
             <?php
             /**
-             * woocommerce_before_shop_loop_item_title hook.
+             * Hook: woocommerce_before_shop_loop_item.
              *
              * @hooked woocommerce_show_product_loop_sale_flash - 10
              * @hooked woocommerce_template_loop_product_thumbnail - 10
