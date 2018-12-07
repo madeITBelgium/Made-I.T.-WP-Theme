@@ -36,7 +36,7 @@ if (is_user_logged_in()) {
 	<?php do_action('woocommerce_login_form'); ?>
 
 	<p class="form-row">
-		<?php wp_nonce_field( 'woocommerce-login', 'woocommerce-login-nonce' ); ?>
+		<?php wp_nonce_field('woocommerce-login', 'woocommerce-login-nonce'); ?>
         <button type="submit" class="btn btn-primary" name="login" value="<?php esc_attr_e('Login', 'woocommerce'); ?>"><?php esc_attr_e('Login', 'woocommerce'); ?></button>
 		<input type="hidden" name="redirect" value="<?php echo esc_url($redirect) ?>" />
 		<label class="woocommerce-form__label woocommerce-form__label-for-checkbox inline">

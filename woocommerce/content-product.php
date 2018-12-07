@@ -8,7 +8,7 @@
  *
  * @version 3.4.0
  */
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 global $product;
 
