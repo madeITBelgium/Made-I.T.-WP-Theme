@@ -5,7 +5,7 @@ jQuery( document ).ready( function( $ ) {
     var gutenbergGallery = false;
 
     $( '.lightbox' ).each( function( ) {
-        if ( $( this ).parent( ).hasClass( 'no-lightbox' ) ) {
+        if ( $( this ).parent( ).hasClass( 'no-lightbox' ) || $( this ).parents( '.wp-block-image' ).hasClass( 'no-lightbox' ) ) {
             return;
         }
         if ( ( undefined === $( this ).parent( ).tagName && 'a' === $( this ).parent( )[0].localName ) || 'a' === $( this ).parent( ).tagName ) {

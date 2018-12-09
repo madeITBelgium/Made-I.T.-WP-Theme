@@ -528,6 +528,10 @@ if (!function_exists('madeit_colors_css_wrap')) {
         if ('custom' !== get_theme_mod('colorscheme')) {
             return;
         }
+        
+        if ( is_admin() ) {
+            return;
+        }
 
         require_once get_parent_theme_file_path('/inc/color-patterns.php'); ?>
         <style type="text/css" id="custom-theme-colors">
@@ -536,6 +540,23 @@ if (!function_exists('madeit_colors_css_wrap')) {
     <?php
     }
     add_action('wp_head', 'madeit_colors_css_wrap');
+}
+
+/*
+ * Display custom color CSS.
+ */
+if (!function_exists('madeit_blocks_colors_inline')) {
+    function madeit_blocks_colors_inline()
+    {
+        if ('custom' !== get_theme_mod('colorscheme')) {
+            return;
+        }
+
+        require_once get_parent_theme_file_path('/inc/color-patterns.php');
+        wp_enqueue_style( 'madeit-color-gutenberg', get_theme_file_uri() . 'style.css');
+        wp_add_inline_style( 'madeit-color-gutenberg', madeit_custom_colors_css() );
+    }
+    add_action('enqueue_block_editor_assets', 'madeit_colors_css_wrap');
 }
 
 /*
@@ -794,11 +815,6 @@ if (!function_exists('madeit_register_required_plugins')) {
             [
                 'name'      => 'Better WordPress Minify',
                 'slug'      => 'bwp-minify',
-                'required'  => true,
-            ],
-            [
-                'name'      => 'Gutenberg',
-                'slug'      => 'gutenberg',
                 'required'  => true,
             ],
             [

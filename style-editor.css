@@ -18,7 +18,6 @@ body.gutenberg-editor-page {
     max-width: none;
 }
 
-
 /* Fix overlapping columns */
 .edit-post-visual-editor .editor-block-list__block .editor-block-list__block-edit  {
     margin-left: 0;
