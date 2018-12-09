@@ -528,8 +528,8 @@ if (!function_exists('madeit_colors_css_wrap')) {
         if ('custom' !== get_theme_mod('colorscheme')) {
             return;
         }
-        
-        if ( is_admin() ) {
+
+        if (is_admin()) {
             return;
         }
 
@@ -553,8 +553,8 @@ if (!function_exists('madeit_blocks_colors_inline')) {
         }
 
         require_once get_parent_theme_file_path('/inc/color-patterns.php');
-        wp_enqueue_style( 'madeit-color-gutenberg', get_theme_file_uri() . 'style.css');
-        wp_add_inline_style( 'madeit-color-gutenberg', madeit_custom_colors_css() );
+        wp_enqueue_style('madeit-color-gutenberg', get_theme_file_uri().'style.css');
+        wp_add_inline_style('madeit-color-gutenberg', madeit_custom_colors_css());
     }
     add_action('enqueue_block_editor_assets', 'madeit_colors_css_wrap');
 }
