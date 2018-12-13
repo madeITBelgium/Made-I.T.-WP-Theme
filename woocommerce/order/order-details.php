@@ -14,7 +14,7 @@
  *
  * @author  WooThemes
  *
- * @version 3.2.0
+ * @version 3.5.2
  */
 if (!defined('ABSPATH')) {
     exit;
@@ -22,18 +22,18 @@ if (!defined('ABSPATH')) {
 if (!$order = wc_get_order($order_id)) {
     return;
 }
-
 $order_items = $order->get_items(apply_filters('woocommerce_purchase_order_item_types', 'line_item'));
 $show_purchase_note = $order->has_status(apply_filters('woocommerce_purchase_note_order_statuses', ['completed', 'processing']));
 $show_customer_details = is_user_logged_in() && $order->get_user_id() === get_current_user_id();
 $downloads = $order->get_downloadable_items();
 $show_downloads = $order->has_downloadable_item() && $order->is_download_permitted();
-
 if ($show_downloads) {
     wc_get_template('order/order-downloads.php', ['downloads' => $downloads, 'show_title' => true]);
 }
 ?>
 <section class="woocommerce-order-details">
+	<?php do_action('woocommerce_order_details_before_order_table', $order); ?>
+
 	<h2 class="woocommerce-order-details__title"><?php _e('Order details', 'woocommerce'); ?></h2>
 
 	<table class="woocommerce-table woocommerce-table--order-details shop_table order_details">
@@ -47,20 +47,20 @@ if ($show_downloads) {
 
 		<tbody>
 			<?php
-                foreach ($order_items as $item_id => $item) {
-                    $product = apply_filters('woocommerce_order_item_product', $item->get_product(), $item);
-
-                    wc_get_template('order/order-details-item.php', [
-                        'order'			           => $order,
-                        'item_id'		          => $item_id,
-                        'item'			            => $item,
-                        'show_purchase_note' => $show_purchase_note,
-                        'purchase_note'	     => $product ? $product->get_purchase_note() : '',
-                        'product'	           => $product,
-                    ]);
-                }
+            do_action('woocommerce_order_details_before_order_table_items', $order);
+            foreach ($order_items as $item_id => $item) {
+                $product = $item->get_product();
+                wc_get_template('order/order-details-item.php', [
+                    'order'			           => $order,
+                    'item_id'		          => $item_id,
+                    'item'			            => $item,
+                    'show_purchase_note' => $show_purchase_note,
+                    'purchase_note'	     => $product ? $product->get_purchase_note() : '',
+                    'product'	           => $product,
+                ]);
+            }
+            do_action('woocommerce_order_details_after_order_table_items', $order);
             ?>
-			<?php do_action('woocommerce_order_items_table', $order); ?>
 		</tbody>
 
 		<tfoot>
@@ -69,7 +69,7 @@ if ($show_downloads) {
                     ?>
 					<tr>
 						<th scope="row"><?php echo $total['label']; ?></th>
-						<td><?php echo $total['value']; ?></td>
+						<td><?php echo ('payment_method' === $key) ? esc_html($total['value']) : $total['value']; ?></td>
 					</tr>
 					<?php
                 }

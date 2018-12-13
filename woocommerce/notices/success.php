@@ -6,18 +6,20 @@
  *
  * @author      Made I.T.
  *
- * @version     1.6.4
+ * @version     3.5.0
  */
 if (!defined('ABSPATH')) {
-    exit; // Exit if accessed directly
+    exit;
 }
-
 if (!$messages) {
     return;
 }
-
 ?>
 
 <?php foreach ($messages as $message) : ?>
-	<div class="alert alert-success"><?php echo wp_kses_post($message); ?></div>
+	<div class="alert alert-success" role="alert">
+		<?php
+            echo wc_kses_notice($message);
+        ?>
+	</div>
 <?php endforeach; ?>

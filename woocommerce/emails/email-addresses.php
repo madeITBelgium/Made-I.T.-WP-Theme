@@ -19,9 +19,7 @@
 if (!defined('ABSPATH')) {
     exit;
 }
-
 $text_align = is_rtl() ? 'right' : 'left';
-
 ?><table id="addresses" cellspacing="0" cellpadding="0" style="width: 100%; vertical-align: top; margin-bottom: 40px; padding:0;" border="0">
 	<tr>
 		<td style="text-align:<?php echo $text_align; ?>; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif; border:0; padding:0;" valign="top" width="50%">
@@ -32,7 +30,7 @@ $text_align = is_rtl() ? 'right' : 'left';
 				<?php if ($order->get_billing_phone()) : ?>
 					<br/><?php echo esc_html($order->get_billing_phone()); ?>
 				<?php endif; ?>
-				<?php if ($order->get_billing_email()): ?>
+				<?php if ($order->get_billing_email()) : ?>
 					<p><?php echo esc_html($order->get_billing_email()); ?></p>
 				<?php endif; ?>
 			</address>

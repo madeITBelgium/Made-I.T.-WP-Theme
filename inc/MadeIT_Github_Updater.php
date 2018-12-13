@@ -1,6 +1,6 @@
 <?php
 
-class MadeIT_Updater
+class MadeIT_Github_Updater
 {
     private $slug; // plugin slug
     private $themeData; // plugin data
@@ -9,8 +9,9 @@ class MadeIT_Updater
     private $themeFile; // __FILE__ of our plugin
     private $githubAPIResult; // holds data from GitHub
     private $accessToken; // GitHub private repo token
+    private $childTheme = false;
 
-    public function __construct($themeFile, $gitHubUsername, $gitHubProjectName, $accessToken = '')
+    public function __construct($themeFile, $gitHubUsername, $gitHubProjectName, $accessToken = '', $child = false)
     {
         add_filter('pre_set_site_transient_update_themes', [$this, 'setTransitent']);
         add_filter('themes_api', [$this, 'setThemeInfo'], 10, 3);
@@ -20,12 +21,13 @@ class MadeIT_Updater
         $this->username = $gitHubUsername;
         $this->repo = $gitHubProjectName;
         $this->accessToken = $accessToken;
+        $this->childTheme = $child;
     }
 
     // Get information regarding our plugin from WordPress
     private function initThemeData()
     {
-        $this->slug = get_template();
+        $this->slug = $this->childTheme ? get_option('stylesheet') : get_template();
         $theme = wp_get_theme($this->slug);
         $this->themeData = [];
         $this->themeData['ThemeURI'] = esc_html($theme->get('ThemeURI'));
@@ -81,7 +83,7 @@ class MadeIT_Updater
 
             $theme_array = [];
             $theme_array['new_version'] = $this->githubAPIResult->tag_name;
-            $theme_array['url'] = $this->initThemeData['ThemeURI'];
+            $theme_array['url'] = $this->themeData['ThemeURI'];
             $theme_array['package'] = $package;
             $transient->response[$this->slug] = $theme_array;
         }

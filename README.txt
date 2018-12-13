@@ -1,8 +1,8 @@
 === Made I.T. ===
 Contributors: madeit
 Requires at least: WordPress 4.7
-Tested up to: 4.9
-Version: 1.0.6
+Tested up to: 5.0
+Version: 2.0.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: madeit, bootstrap, bootstrap4, made i.t., Made I.T.

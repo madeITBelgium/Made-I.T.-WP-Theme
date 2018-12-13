@@ -61,6 +61,8 @@ function madeit_body_classes($classes)
     // Get the colorscheme or the default if there isn't one.
     $colors = madeit_sanitize_colorscheme(get_theme_mod('colorscheme', 'light'));
     $classes[] = 'colors-'.$colors;
+    $classes[] = 'flex-column';
+    $classes[] = 'd-flex';
 
     return $classes;
 }
@@ -160,4 +162,102 @@ function madeit_comment($comment, $args, $depth)
 
 	<?php
     endif;
+}
+
+function madeit_page_pagination($pages = '', $range = 2)
+{
+    $showitems = ($range * 2) + 1;
+    global $paged;
+    if (empty($paged)) {
+        $paged = 1;
+    }
+    if ($pages == '') {
+        global $wp_query;
+        $pages = $wp_query->max_num_pages;
+
+        if (!$pages) {
+            $pages = 1;
+        }
+    }
+
+    if (1 != $pages) {
+        echo '<nav aria-label="Page navigation" role="navigation">';
+        echo '<span class="sr-only">Page navigation</span>';
+        echo '<ul class="pagination justify-content-center ft-wpbs">';
+
+        echo '<li class="page-item disabled hidden-md-down d-none d-lg-block"><span class="page-link">Page '.$paged.' of '.$pages.'</span></li>';
+
+        if ($paged > 2 && $paged > $range + 1 && $showitems < $pages) {
+            echo '<li class="page-item"><a class="page-link" href="'.get_pagenum_link(1).'" aria-label="First Page">&laquo;<span class="hidden-sm-down d-none d-md-block"> First</span></a></li>';
+        }
+
+        if ($paged > 1 && $showitems < $pages) {
+            echo '<li class="page-item"><a class="page-link" href="'.get_pagenum_link($paged - 1).'" aria-label="Previous Page">&lsaquo;<span class="hidden-sm-down d-none d-md-block"> Previous</span></a></li>';
+        }
+
+        for ($i = 1; $i <= $pages; $i++) {
+            if (1 != $pages && (!($i >= $paged + $range + 1 || $i <= $paged - $range - 1) || $pages <= $showitems)) {
+                echo ($paged == $i) ? '<li class="page-item active"><span class="page-link"><span class="sr-only">Current Page </span>'.$i.'</span></li>' : '<li class="page-item"><a class="page-link" href="'.get_pagenum_link($i).'"><span class="sr-only">Page </span>'.$i.'</a></li>';
+            }
+        }
+
+        if ($paged < $pages && $showitems < $pages) {
+            echo '<li class="page-item"><a class="page-link" href="'.get_pagenum_link($paged + 1).'" aria-label="Next Page"><span class="hidden-sm-down d-none d-md-block">Next </span>&rsaquo;</a></li>';
+        }
+
+        if ($paged < $pages - 1 && $paged + $range - 1 < $pages && $showitems < $pages) {
+            echo '<li class="page-item"><a class="page-link" href="'.get_pagenum_link($pages).'" aria-label="Last Page"><span class="hidden-sm-down d-none d-md-block">Last </span>&raquo;</a></li>';
+        }
+
+        echo '</ul>';
+        echo '</nav>';
+        //echo '<div class="pagination-info mb-5 text-center">[ <span class="text-muted">Page</span> '.$paged.' <span class="text-muted">of</span> '.$pages.' ]</div>';
+    }
+}
+
+if (!function_exists('madeit_show_title_metabox')) {
+    function madeit_show_title_metabox($post_type)
+    {
+        if ('page' == $post_type) {
+            add_meta_box(
+                'madeit-pagetitle-meta-box',
+                'page' == $post_type ? __('Page Attributes') : __('Attributes'),
+                'madeit_pagetitle_meta_box_cb',
+                'page',
+                'side',
+                'low'
+            );
+        }
+    }
+    add_action('add_meta_boxes', 'madeit_show_title_metabox');
+}
+
+if (!function_exists('madeit_pagetitle_meta_box_cb')) {
+    function madeit_pagetitle_meta_box_cb($post)
+    {
+        $hidetitle = get_post_meta($post->ID, 'hide_title', true); ?>
+        <input name="hide_title" type="checkbox" id="hide_title" value="1" style="float: right; margin-top: 2px;" <?php if (!empty($hidetitle)) {
+            echo 'CHECKED';
+        } ?> />
+        <p class="post-attributes-label-wrapper"><label class="post-attributes-label" for="hide_title"><?php _e('Hide page title', 'madeit'); ?></label></p>
+        <?php
+    }
+    //add_action('page_attributes_misc_attributes', 'madeit_pagetitle_meta_box_cb');
+}
+
+if (!function_exists('madeit_pagetitle_meta_box_save')) {
+    function madeit_pagetitle_meta_box_save($post_id, $post)
+    {
+        if (current_user_can('edit_post', $post_id) && $post->post_type == 'page') {
+            remove_action('save_post', 'madeit_pagetitle_meta_box_save', 99, 2);
+            if (isset($_POST['hide_title'])) {
+                update_post_meta($post_id, 'hide_title', 1);
+            } else {
+                update_post_meta($post_id, 'hide_title', 0);
+            }
+
+            add_action('save_post', 'madeit_pagetitle_meta_box_save', 99, 2);
+        }
+    }
+    add_action('save_post', 'madeit_pagetitle_meta_box_save', 99, 2);
 }

@@ -9,7 +9,7 @@
  */
 get_header(); ?>
 
-<div class="container voffset6">
+<div class="container mt-7">
     <div class="row">
         <div class="col" id="primary" role="main">
             <?php
@@ -24,8 +24,8 @@ get_header(); ?>
                 endif;
 
                 the_post_navigation([
-                    'prev_text' => '<span class="screen-reader-text">'.__('Previous Post', 'madeit').'</span><span aria-hidden="true" class="nav-subtitle">'.__('Previous', 'madeit').'</span> <span class="nav-title"><span class="nav-title-icon-wrapper">'.madeit_get_svg(['icon' => 'arrow-left']).'</span>%title</span>',
-                    'next_text' => '<span class="screen-reader-text">'.__('Next Post', 'madeit').'</span><span aria-hidden="true" class="nav-subtitle">'.__('Next', 'madeit').'</span> <span class="nav-title">%title<span class="nav-title-icon-wrapper">'.madeit_get_svg(['icon' => 'arrow-right']).'</span></span>',
+                    'prev_text' => '<span class="sr-only">'.__('Previous Post', 'madeit').'</span><span class="nav-title"><span class="nav-title-icon-wrapper">'.madeit_get_svg(['icon' => 'arrow-left']).'</span> %title</span>',
+                    'next_text' => '<span class="sr-only">'.__('Next Post', 'madeit').'</span><span class="nav-title">%title <span class="nav-title-icon-wrapper">'.madeit_get_svg(['icon' => 'arrow-right']).'</span></span>',
                 ]);
 
             endwhile;

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Made I.T.\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-03-10 20:28+0000\n"
-"PO-Revision-Date: 2018-03-10 20:28+0000\n"
+"PO-Revision-Date: 2018-03-10 20:33+0000\n"
 "Last-Translator: tjebbeke <tjebbe.lievens@madeit.be>\n"
 "Language-Team: Dutch (Belgium)\n"
 "Language: nl_BE\n"
@@ -135,11 +135,11 @@ msgstr "Footer 2"
 
 #: functions.php:330
 msgid "Below index blog"
-msgstr ""
+msgstr "Onder blog berichten."
 
 #: functions.php:332
 msgid "Add widgets here to appear below your blog/news list."
-msgstr ""
+msgstr "Voeg widgets toe onder je blog of nieuws berichten."
 
 #. translators: %s: Name of current post
 #: functions.php:360 template-parts/page/content-page.php:29
@@ -173,14 +173,16 @@ msgid ""
 "By using our website you are consenting to our use of cookies in accordance "
 "with our <a href=\"%s\">cookie policy</a>."
 msgstr ""
+"Door gebruiken te maken van onze website stemt u in met gebruik van cookies "
+"in overeenstemming met ons <a href=\"%s\">cookiebeleid</a>."
 
 #: functions.php:801 functions.php:819
 msgid "Close"
-msgstr ""
+msgstr "Sluiten"
 
 #. Name of the template
 msgid "Page with sidebar"
-msgstr ""
+msgstr "Pagina met zijbalk"
 
 #. translators: %s: post title
 #: comments.php:31
@@ -216,11 +218,11 @@ msgstr "Zoeken"
 
 #: inc/MadeIT_Updater.php:210
 msgid "Rename successful"
-msgstr ""
+msgstr "Hernoemen succesvol"
 
 #: inc/MadeIT_Updater.php:217
 msgid "Unable to rename downloaded repository."
-msgstr ""
+msgstr "Het was niet mogelijk om de download te hernoemen."
 
 #: inc/template-functions.php:118
 msgid "Pingback:"
@@ -417,39 +419,39 @@ msgstr ""
 
 #: inc/customizer.php:249
 msgid "Cookie warning"
-msgstr ""
+msgstr "Cookie melding"
 
 #: inc/customizer.php:260
 msgid "Cookie warning position"
-msgstr ""
+msgstr "Cookie melding positie"
 
 #: inc/customizer.php:263
 msgid "Choose the position to place the cookie warning notice."
-msgstr ""
+msgstr "Kies de positie om de cookie melding te plaatsen."
 
 #: inc/customizer.php:265 inc/customizer.php:425
 msgid "Do not show"
-msgstr ""
+msgstr "Toon niet"
 
 #: inc/customizer.php:266 inc/customizer.php:426
 msgid "Popup"
-msgstr ""
+msgstr "Popup"
 
 #: inc/customizer.php:267 inc/customizer.php:427
 msgid "Static top notice"
-msgstr ""
+msgstr "Statisch bovenaan je website"
 
 #: inc/customizer.php:268 inc/customizer.php:428
 msgid "Static bottom notice"
-msgstr ""
+msgstr "Statisch onderaan op je website"
 
 #: inc/customizer.php:280
 msgid "Page of your cookie policy"
-msgstr ""
+msgstr "Pagina van je cookiebeleid"
 
 #: inc/customizer.php:281
 msgid "Select pages to link at in the cookie policy."
-msgstr ""
+msgstr "Selecteer de pagina die je wil linken in de cookie melding."
 
 #: inc/back-compat.php:39 inc/back-compat.php:52 inc/back-compat.php:68
 #, php-format
@@ -519,12 +521,12 @@ msgstr "Lees meer <span class=\"screen-reader-text\">\"%s\"</span>"
 #. Name of the theme
 #. Author of the theme
 msgid "Made I.T."
-msgstr ""
+msgstr "Made I.T."
 
 #. URI of the theme
 msgid "https://www.madeit.be"
-msgstr ""
+msgstr "https://www.madeit.be"
 
 #. Author URI of the theme
 msgid "https://wordpress.org/"
-msgstr ""
+msgstr "https://wordpress.org/"

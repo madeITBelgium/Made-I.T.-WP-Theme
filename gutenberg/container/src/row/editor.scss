@@ -1,0 +1,34 @@
+/**
+ * #.# Editor Styles
+ *
+ * CSS for just Backend enqueued after style.scss
+ * which makes it higher in priority.
+ */
+
+.wp-block-madeit-block-row  {
+    /*display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+    */
+    
+    .editor-block-list__layout {
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+        margin-right: -15px;
+        margin-left: -15px;
+    }
+    
+    .editor-inner-blocks {
+        width: 100%;
+    }
+}
+
+.edit-post-visual-editor .editor-block-list__block[data-row=row] {
+    width: 100%;
+    max-width: 100%;
+}

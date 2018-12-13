@@ -270,19 +270,21 @@ function madeit_customize_register($wp_customize)
         //'active_callback' => 'madeit_is_view_with_layout_option',
     ]);
 
-    $wp_customize->add_setting('cookie_url', [
-            'default'           => false,
-            'sanitize_callback' => 'absint',
-            'transport'         => 'refresh',
-        ]);
+    if (!function_exists('get_privacy_policy_url')) {
+        $wp_customize->add_setting('cookie_url', [
+                'default'           => false,
+                'sanitize_callback' => 'absint',
+                'transport'         => 'refresh',
+            ]);
 
-    $wp_customize->add_control('cookie_url', [
-        'label'           => __('Page of your cookie policy', 'madeit'),
-        'description'     => __('Select pages to link at in the cookie policy.', 'madeit'),
-        'section'         => 'cookie_warning',
-        'type'            => 'dropdown-pages',
-        'allow_addition'  => true,
-    ]);
+        $wp_customize->add_control('cookie_url', [
+            'label'           => __('Page of your cookie policy', 'madeit'),
+            'description'     => __('Select pages to link at in the cookie policy.', 'madeit'),
+            'section'         => 'cookie_warning',
+            'type'            => 'dropdown-pages',
+            'allow_addition'  => true,
+        ]);
+    }
 }
 add_action('customize_register', 'madeit_customize_register');
 

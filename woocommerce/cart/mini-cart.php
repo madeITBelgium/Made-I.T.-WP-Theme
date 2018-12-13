@@ -16,7 +16,7 @@
  *
  * @author  WooThemes
  *
- * @version 3.2.0
+ * @version 3.5.0
  */
 if (!defined('ABSPATH')) {
     exit;
@@ -49,15 +49,14 @@ do_action('woocommerce_before_mini_cart'); ?>
                             esc_attr($cart_item_key),
                             esc_attr($_product->get_sku())
                         ), $cart_item_key); ?>
-						<?php if (!$_product->is_visible()) : ?>
-							<?php echo str_replace(['http:', 'https:'], '', $thumbnail).$product_name.'&nbsp;'; ?>
+						<?php if (empty($product_permalink)) : ?>
+							<?php echo $thumbnail.$product_name; ?>
 						<?php else : ?>
 							<a href="<?php echo esc_url($product_permalink); ?>">
-								<?php echo str_replace(['http:', 'https:'], '', $thumbnail).$product_name.'&nbsp;'; ?>
+								<?php echo $thumbnail.$product_name; ?>
 							</a>
 						<?php endif; ?>
-						<?php echo WC()->cart->get_item_data($cart_item); ?>
-
+						<?php echo wc_get_formatted_cart_item_data($cart_item); ?>
 						<?php echo apply_filters('woocommerce_widget_cart_item_quantity', '<span class="quantity">'.sprintf('%s &times; %s', $cart_item['quantity'], $product_price).'</span>', $cart_item, $cart_item_key); ?>
 					</li>
 					<?php

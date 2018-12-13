@@ -36,7 +36,7 @@ if (!defined('ABSPATH')) {
                 if (isset($field['country_field'], $fields[$field['country_field']])) {
                     $field['country'] = $checkout->get_value($field['country_field']);
                 }
-                woocommerce_form_field($key, $field, $checkout->get_value($key));
+                madeit_woocommerce_form_field($key, $field, $checkout->get_value($key));
             }
         ?>
 	</div>
@@ -62,7 +62,7 @@ if (!defined('ABSPATH')) {
 
 			<div class="create-account">
 				<?php foreach ($checkout->get_checkout_fields('account') as $key => $field) : ?>
-					<?php woocommerce_form_field($key, $field, $checkout->get_value($key)); ?>
+					<?php madeit_woocommerce_form_field($key, $field, $checkout->get_value($key)); ?>
 				<?php endforeach; ?>
 				<div class="clear"></div>
 			</div>

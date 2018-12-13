@@ -1,0 +1,38 @@
+/**
+ * #.# Editor Styles
+ *
+ * CSS for just Backend enqueued after style.scss
+ * which makes it higher in priority.
+ */
+
+.wp-block-madeit-tabs  {
+
+}
+
+[data-tab-titles]  > div > div > div > .editor-block-list__layout {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+}
+.editor-block-list__block[data-tab-title] {
+  position: relative;
+  width: 100%;
+  min-height: 1px;
+  padding-right: 15px;
+  padding-left: 15px;
+    .editor-block-list__block {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+}
+
+.editor-block-list__block[data-tab-title] {
+  -ms-flex-preferred-size: 0 !important;
+  flex-basis: 0 !important;
+  -ms-flex-positive: 1 !important;
+  flex-grow: 1 !important;
+  max-width: 100% !important;
+}

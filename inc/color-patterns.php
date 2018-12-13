@@ -10,14 +10,14 @@
  */
 function madeit_custom_colors_css()
 {
-    $text_color = get_theme_mod('text_color_rgb', '#212529');
-    $background_color = get_theme_mod('background_color_rgb', '#ffffff');
-    $primary_color = get_theme_mod('primary_color_rgb', '#007bff');
-    $secondary_color = get_theme_mod('secondary_color_rgb', '#868e96');
-    $success_color = get_theme_mod('success_color_rgb', '#28a745');
-    $info_color = get_theme_mod('info_color_rgb', '#17a2b8');
-    $warning_color = get_theme_mod('warning_color_rgb', '#ffc107');
-    $danger_color = get_theme_mod('danger_color_rgb', '#dc3545');
+    $text_color = get_theme_mod('text_color_rgb', MADEIT_TEXT_COLOR);
+    $background_color = get_theme_mod('background_color_rgb', MADEIT_BACKGROUND_COLOR);
+    $primary_color = get_theme_mod('primary_color_rgb', MADEIT_PRIMARY_COLOR);
+    $secondary_color = get_theme_mod('secondary_color_rgb', MADEIT_SECONDARY_COLOR);
+    $success_color = get_theme_mod('success_color_rgb', MADEIT_SUCCESS_COLOR);
+    $info_color = get_theme_mod('info_color_rgb', MADEIT_INFO_COLOR);
+    $warning_color = get_theme_mod('warning_color_rgb', MADEIT_WARNING_COLOR);
+    $danger_color = get_theme_mod('danger_color_rgb', MADEIT_DANGER_COLOR);
 
     $colors = [
         'text'       => $text_color,
@@ -49,8 +49,14 @@ a:hover {
   color: '.madeit_color_luminance($primary_color, 0, 0, -0.15).';
 }
 
-
-
+.page-link {
+    color: '.$primary_color.';
+}
+.page-item.active .page-link {
+    color: '.madeit_contrast_color(madeit_color_luminance($primary_color, 0, 0, 0)).';
+    background-color: '.$primary_color.';
+    border-color: '.$primary_color.';
+}
 
 a.list-group-item-primary:focus, a.list-group-item-primary:hover, button.list-group-item-primary:focus, button.list-group-item-primary:hover {
     background-color: '.madeit_color_luminance($primary_color, 0, 0, 0.31).';
@@ -541,7 +547,7 @@ a.text-secondary:focus, a.text-secondary:hover {
 }
 
 .text-success {
-    color: '.$secondary_color.' !important;
+    color: '.$success_color.' !important;
 }
 
 a.text-success:focus, a.text-success:hover {
@@ -870,7 +876,31 @@ a.text-dark:focus, a.text-dark:hover {
 
 .btn-link:hover {
   color: '.madeit_color_luminance($primary_color, 0, 0, -0.15).';
-}';
+}
+';
+    $gutenbergColors = [
+        'default-text'       => $text_color,
+        'default-background' => $background_color,
+        'primary'            => $primary_color,
+        'secondary'          => $secondary_color,
+        'success'            => $success_color,
+        'info'               => $info_color,
+        'warning'            => $warning_color,
+        'danger'             => $danger_color,
+        'black'              => '#FFFFFF',
+        'white'              => '#000000',
+    ];
+
+    foreach ($gutenbergColors as $class => $color) {
+        $css .= '
+.has-'.$class.'-background-color {
+	background-color: '.$color.';
+}
+
+.has-'.$class.'-color {
+	color: '.$color.";
+}\n";
+    }
 
     /*
      * Filters Made I.T. custom colors CSS.

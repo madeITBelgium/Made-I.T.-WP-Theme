@@ -1,6 +1,6 @@
 <?php
 /**
- * Template Name: Page with sidebar
+ * Template Name: Page with right sidebar
  * The template for displaying all pages with a sidebar.
  *
  * @version 1.0

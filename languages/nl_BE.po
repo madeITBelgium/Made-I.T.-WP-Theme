@@ -2,10 +2,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Made I.T.\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-10 20:28+0000\n"
-"PO-Revision-Date: 2018-03-10 20:33+0000\n"
+"POT-Creation-Date: 2018-07-11 14:13+0000\n"
+"PO-Revision-Date: 2018-07-11 14:13+0000\n"
 "Last-Translator: tjebbeke <tjebbe.lievens@madeit.be>\n"
-"Language-Team: Dutch (Belgium)\n"
+"Language-Team: Nederlands (België)\n"
 "Language: nl_BE\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "MIME-Version: 1.0\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco https://localise.biz/"
 
-#: footer.php:25
+#: footer.php:25 footer-landing.php:20
 msgid "Footer Social Links Menu"
 msgstr "Footer sociale links menu"
 
@@ -75,30 +75,34 @@ msgstr "Volgend bericht"
 msgid "Next"
 msgstr "Volgende"
 
-#: functions.php:61 functions.php:181
+#. Name of the template
+msgid "Landingpage"
+msgstr ""
+
+#: functions.php:62 functions.php:182
 msgid "Top Menu"
 msgstr "Topmenu"
 
-#: functions.php:62 functions.php:192
+#: functions.php:63 functions.php:193
 msgid "Social Links Menu"
 msgstr "Sociale links menu"
 
-#: functions.php:145
+#: functions.php:146
 msgctxt "Theme starter content"
 msgid "Koffie Machien"
 msgstr "Koffiemachine"
 
-#: functions.php:149
+#: functions.php:150
 msgctxt "Theme starter content"
 msgid "Outside"
 msgstr "Exterieur"
 
-#: functions.php:153
+#: functions.php:154
 msgctxt "Theme starter content"
 msgid "Inside"
 msgstr "Interieur"
 
-#: functions.php:157
+#: functions.php:158
 msgctxt "Theme starter content"
 msgid "Price table"
 msgstr "Prijs tabel"
@@ -106,77 +110,77 @@ msgstr "Prijs tabel"
 #. Translators: If there are characters in your language that are not supported
 #. by Libre Franklin, translate this to 'off'. Do not translate into your own
 #. language.
-#: functions.php:251
+#: functions.php:256
 msgctxt "Libre Franklin font: on or off"
 msgid "on"
 msgstr "aan"
 
-#: functions.php:300 sidebar.php:15
+#: functions.php:309 sidebar.php:15
 msgid "Blog Sidebar"
 msgstr "Blog Sidebar"
 
-#: functions.php:302
+#: functions.php:311
 msgid ""
 "Add widgets here to appear in your sidebar on blog posts and archive pages."
 msgstr ""
 "Voeg hier widgets toe in de sidebar op blog berichten en archiefpagina's."
 
-#: functions.php:310
+#: functions.php:319
 msgid "Footer 1"
 msgstr "Footer 1"
 
-#: functions.php:312 functions.php:322
+#: functions.php:321 functions.php:331
 msgid "Add widgets here to appear in your footer."
 msgstr "Voeg hier widgets toe om in de footer te tonen."
 
-#: functions.php:320
+#: functions.php:329
 msgid "Footer 2"
 msgstr "Footer 2"
 
-#: functions.php:330
+#: functions.php:339
 msgid "Below index blog"
 msgstr "Onder blog berichten."
 
-#: functions.php:332
+#: functions.php:341
 msgid "Add widgets here to appear below your blog/news list."
 msgstr "Voeg widgets toe onder je blog of nieuws berichten."
 
 #. translators: %s: Name of current post
-#: functions.php:360 template-parts/page/content-page.php:29
+#: functions.php:371 template-parts/page/content-page.php:29
 #: template-parts/page/content-front-page.php:41
 #, php-format
 msgid "Continue reading<span class=\"screen-reader-text\"> \"%s\"</span>"
 msgstr "<span class=\"screen-reader-text\">\"%s\" </span>verder lezen"
 
-#: functions.php:620
+#: functions.php:659
 msgid "Continue reading"
 msgstr "Meer lezen"
 
-#: functions.php:764
+#: functions.php:813
 msgid "Start shopping"
 msgstr "Winkelen"
 
-#: functions.php:768
+#: functions.php:817
 msgid "View your shopping cart"
 msgstr "Toon je winkelmand"
 
-#: functions.php:772
+#: functions.php:821
 #, php-format
 msgid "%d item"
 msgid_plural "%d items"
 msgstr[0] "%d item"
 msgstr[1] "%d items"
 
-#: functions.php:784
+#: functions.php:842
 #, php-format
 msgid ""
 "By using our website you are consenting to our use of cookies in accordance "
-"with our <a href=\"%s\">cookie policy</a>."
+"with our <a href=\"%s\">cookie & privacy policy</a>."
 msgstr ""
 "Door gebruiken te maken van onze website stemt u in met gebruik van cookies "
-"in overeenstemming met ons <a href=\"%s\">cookiebeleid</a>."
+"in overeenstemming met ons <a href=\"%s\">cookie- en privacybeleid</a>."
 
-#: functions.php:801 functions.php:819
+#: functions.php:859 functions.php:877
 msgid "Close"
 msgstr "Sluiten"
 
@@ -365,11 +369,11 @@ msgstr ""
 "Wanneer de lay-out op twee kolommen gezet wordt, bevindt de titel van de "
 "pagina zich in de ene kolom en de inhoud in de andere."
 
-#: inc/customizer.php:166 inc/customizer.php:297
+#: inc/customizer.php:166 inc/customizer.php:299
 msgid "One Column"
 msgstr "Eén kolom"
 
-#: inc/customizer.php:167 inc/customizer.php:298
+#: inc/customizer.php:167 inc/customizer.php:300
 msgid "Two Column"
 msgstr "Twee kolommen"
 
@@ -381,11 +385,11 @@ msgstr "Page breedte"
 msgid "Choose the screen width of your content."
 msgstr "Selecteer de schermbreedte van de content."
 
-#: inc/customizer.php:187 inc/customizer.php:316
+#: inc/customizer.php:187 inc/customizer.php:318
 msgid "Normal screen width"
 msgstr "Normale scherm breedte"
 
-#: inc/customizer.php:188 inc/customizer.php:317
+#: inc/customizer.php:188 inc/customizer.php:319
 msgid "Full screen width"
 msgstr "Volledige scherm breedte"
 
@@ -429,27 +433,27 @@ msgstr "Cookie melding positie"
 msgid "Choose the position to place the cookie warning notice."
 msgstr "Kies de positie om de cookie melding te plaatsen."
 
-#: inc/customizer.php:265 inc/customizer.php:425
+#: inc/customizer.php:265 inc/customizer.php:427
 msgid "Do not show"
 msgstr "Toon niet"
 
-#: inc/customizer.php:266 inc/customizer.php:426
+#: inc/customizer.php:266 inc/customizer.php:428
 msgid "Popup"
 msgstr "Popup"
 
-#: inc/customizer.php:267 inc/customizer.php:427
+#: inc/customizer.php:267 inc/customizer.php:429
 msgid "Static top notice"
 msgstr "Statisch bovenaan je website"
 
-#: inc/customizer.php:268 inc/customizer.php:428
+#: inc/customizer.php:268 inc/customizer.php:430
 msgid "Static bottom notice"
 msgstr "Statisch onderaan op je website"
 
-#: inc/customizer.php:280
+#: inc/customizer.php:281
 msgid "Page of your cookie policy"
 msgstr "Pagina van je cookiebeleid"
 
-#: inc/customizer.php:281
+#: inc/customizer.php:282
 msgid "Select pages to link at in the cookie policy."
 msgstr "Selecteer de pagina die je wil linken in de cookie melding."
 
