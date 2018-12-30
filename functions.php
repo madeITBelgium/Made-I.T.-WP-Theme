@@ -777,10 +777,9 @@ if (!function_exists('madeit_wp_bootstrap_head')) {
         if (is_admin_bar_showing()) {
             ?>
             <style>
-            body{ padding-top: 52px !important; }
-            /*body.logged-in .navbar.fixed-top{ top: 46px !important; }*/
+            body.logged-in .navbar.fixed-top{ top: 46px !important; }
             @media only screen and (min-width: 783px) {
-                body{ padding-top: 52px !important; }
+                body{ padding-top: 0px !important; }
                 body.logged-in .navbar.fixed-top{ top: 28px !important; }
             }
             </style>
