@@ -897,7 +897,7 @@ if (!function_exists('madeit_add_image_popup_class')) {
                 }
             }
             $html = $document->saveHTML();
-            
+
             $html = preg_replace('/(<!DOCTYPE.*>)|<html>|<body>|<\/body>|<\/html>/', '', $html);
 
             return $html;
