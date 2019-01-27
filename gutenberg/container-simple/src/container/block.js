@@ -15,6 +15,7 @@ export const {
     RangeControl,
     SelectControl,
     TextControl,
+    ToggleControl
 } = wp.components
 
 export const { Fragment, PanelBody } = wp.element;
@@ -46,7 +47,8 @@ export const edit = ( props ) => {
         size,
         margin,
         padding,
-        rows
+        rows,
+        boxed
     } = props.attributes
 
     const containerSizes = [
@@ -73,6 +75,15 @@ export const edit = ( props ) => {
                     } ) ) }
                     onChange={ ( newSize ) => { setAttributes( { size: newSize } ) } }
                 />
+                {
+                    size === 'container-fluid' &&
+                    <ToggleControl
+                        label="Boxed"
+                        help={ boxed ? 'Boxed content' : 'No boxed content' } 
+                        checked={ boxed }
+                        onChange={ (value) => { setAttributes({boxed: value}) } }
+                        />
+                }
                 <SelectControl
                     label={ __( 'Rows' ) }
                     value={ rows }
@@ -147,12 +158,35 @@ export const save = ( props ) => {
         color,
         size,
         margin,
-        padding
+        padding,
+        boxed
     } = props.attributes;
     
     const {
         className
     } = props
+    
+    if(boxed) {
+        return (<div
+            className={ size + ' ' + className }
+            style = {{
+                    color: textColor,
+                    backgroundColor: color,
+                    paddingTop: padding + 'px',
+                    paddingBottom: padding + 'px',
+                    marginTop: margin + 'px',
+                    marginBottom: margin + 'px',
+                }}
+            >
+                <div class="row">
+                    <div class="col">
+                        <div class="container">
+                            <InnerBlocks.Content />
+                        </div>
+                    </div>
+                </div>
+        </div>)
+    }
     
     return (
         <div
@@ -203,6 +237,10 @@ registerBlockType( 'madeit/block-container-simple', {
         padding: {
             type: 'number',
             default: 30,
+        },
+        boxed: {
+            type: 'boolean',
+            default: false
         }
     },
     
