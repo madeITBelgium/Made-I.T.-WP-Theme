@@ -28,120 +28,122 @@ function madeit_customize_register($wp_customize)
     /*
      * Custom colors.
      */
-    $wp_customize->add_setting('colorscheme', [
-        'default'           => 'light',
-        'transport'         => 'postMessage',
-        'sanitize_callback' => 'madeit_sanitize_colorscheme',
-    ]);
+    if(!MADEIT_CUSTOM_COLOR) {
+        $wp_customize->add_setting('colorscheme', [
+            'default'           => 'light',
+            'transport'         => 'postMessage',
+            'sanitize_callback' => 'madeit_sanitize_colorscheme',
+        ]);
 
-    $wp_customize->add_control('colorscheme', [
-        'type'     => 'radio',
-        'label'    => __('Color Scheme', 'madeit'),
-        'choices'  => [
-            'light'  => __('Light', 'madeit'),
-            'dark'   => __('Dark', 'madeit'),
-            'custom' => __('Custom', 'madeit'),
-        ],
-        'section'  => 'colors',
-        'priority' => 5,
-    ]);
+        $wp_customize->add_control('colorscheme', [
+            'type'     => 'radio',
+            'label'    => __('Color Scheme', 'madeit'),
+            'choices'  => [
+                'light'  => __('Light', 'madeit'),
+                'dark'   => __('Dark', 'madeit'),
+                'custom' => __('Custom', 'madeit'),
+            ],
+            'section'  => 'colors',
+            'priority' => 5,
+        ]);
 
-    $wp_customize->add_setting('text_color_rgb', [
-        'default'           => '#212529',
-        'transport'         => 'refresh',
-        'sanitize_callback' => 'madeit_check_rgb',
-    ]);
-    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'text_color_rgb', [
-        'mode'       => 'rgb',
-        'label'      => __('Text Color', 'madeit'),
-        'section'    => 'colors',
-        'settings'   => 'text_color_rgb',
-    ]));
+        $wp_customize->add_setting('text_color_rgb', [
+            'default'           => '#212529',
+            'transport'         => 'refresh',
+            'sanitize_callback' => 'madeit_check_rgb',
+        ]);
+        $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'text_color_rgb', [
+            'mode'       => 'rgb',
+            'label'      => __('Text Color', 'madeit'),
+            'section'    => 'colors',
+            'settings'   => 'text_color_rgb',
+        ]));
 
-    $wp_customize->add_setting('background_color_rgb', [
-        'default'           => '#ffffff',
-        'transport'         => 'refresh',
-        'sanitize_callback' => 'madeit_check_rgb',
-    ]);
-    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'background_color_rgb', [
-        'mode'       => 'rgb',
-        'label'      => __('Background Color', 'madeit'),
-        'section'    => 'colors',
-        'settings'   => 'background_color_rgb',
-    ]));
+        $wp_customize->add_setting('background_color_rgb', [
+            'default'           => '#ffffff',
+            'transport'         => 'refresh',
+            'sanitize_callback' => 'madeit_check_rgb',
+        ]);
+        $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'background_color_rgb', [
+            'mode'       => 'rgb',
+            'label'      => __('Background Color', 'madeit'),
+            'section'    => 'colors',
+            'settings'   => 'background_color_rgb',
+        ]));
 
-    $wp_customize->add_setting('primary_color_rgb', [
-        'default'           => '#007bff',
-        'transport'         => 'refresh',
-        'sanitize_callback' => 'madeit_check_rgb',
-    ]);
-    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'primary_color_rgb', [
-        'mode'       => 'rgb',
-        'label'      => __('Primary Color', 'madeit'),
-        'section'    => 'colors',
-        'settings'   => 'primary_color_rgb',
-    ]));
+        $wp_customize->add_setting('primary_color_rgb', [
+            'default'           => '#007bff',
+            'transport'         => 'refresh',
+            'sanitize_callback' => 'madeit_check_rgb',
+        ]);
+        $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'primary_color_rgb', [
+            'mode'       => 'rgb',
+            'label'      => __('Primary Color', 'madeit'),
+            'section'    => 'colors',
+            'settings'   => 'primary_color_rgb',
+        ]));
 
-    $wp_customize->add_setting('secondary_color_rgb', [
-        'default'           => '#868e96',
-        'transport'         => 'refresh',
-        'sanitize_callback' => 'madeit_check_rgb',
-    ]);
-    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'secondary_color_rgb', [
-        'mode'       => 'rgb',
-        'label'      => __('Secondary Color', 'madeit'),
-        'section'    => 'colors',
-        'settings'   => 'secondary_color_rgb',
-        'default'    => '#868e96',
-    ]));
+        $wp_customize->add_setting('secondary_color_rgb', [
+            'default'           => '#868e96',
+            'transport'         => 'refresh',
+            'sanitize_callback' => 'madeit_check_rgb',
+        ]);
+        $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'secondary_color_rgb', [
+            'mode'       => 'rgb',
+            'label'      => __('Secondary Color', 'madeit'),
+            'section'    => 'colors',
+            'settings'   => 'secondary_color_rgb',
+            'default'    => '#868e96',
+        ]));
 
-    $wp_customize->add_setting('success_color_rgb', [
-        'default'           => '#28a745',
-        'transport'         => 'refresh',
-        'sanitize_callback' => 'madeit_check_rgb',
-    ]);
-    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'success_color_rgb', [
-        'mode'       => 'rgb',
-        'label'      => __('Success Color', 'madeit'),
-        'section'    => 'colors',
-        'settings'   => 'success_color_rgb',
-    ]));
+        $wp_customize->add_setting('success_color_rgb', [
+            'default'           => '#28a745',
+            'transport'         => 'refresh',
+            'sanitize_callback' => 'madeit_check_rgb',
+        ]);
+        $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'success_color_rgb', [
+            'mode'       => 'rgb',
+            'label'      => __('Success Color', 'madeit'),
+            'section'    => 'colors',
+            'settings'   => 'success_color_rgb',
+        ]));
 
-    $wp_customize->add_setting('info_color_rgb', [
-        'default'           => '#17a2b8',
-        'transport'         => 'refresh',
-        'sanitize_callback' => 'madeit_check_rgb',
-    ]);
-    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'info_color_rgb', [
-        'mode'       => 'rgb',
-        'label'      => __('Info Color', 'madeit'),
-        'section'    => 'colors',
-        'settings'   => 'info_color_rgb',
-    ]));
+        $wp_customize->add_setting('info_color_rgb', [
+            'default'           => '#17a2b8',
+            'transport'         => 'refresh',
+            'sanitize_callback' => 'madeit_check_rgb',
+        ]);
+        $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'info_color_rgb', [
+            'mode'       => 'rgb',
+            'label'      => __('Info Color', 'madeit'),
+            'section'    => 'colors',
+            'settings'   => 'info_color_rgb',
+        ]));
 
-    $wp_customize->add_setting('warning_color_rgb', [
-        'default'           => '#ffc107',
-        'transport'         => 'refresh',
-        'sanitize_callback' => 'madeit_check_rgb',
-    ]);
-    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'warning_color_rgb', [
-        'mode'       => 'rgb',
-        'label'      => __('Warning Color', 'madeit'),
-        'section'    => 'colors',
-        'settings'   => 'warning_color_rgb',
-    ]));
+        $wp_customize->add_setting('warning_color_rgb', [
+            'default'           => '#ffc107',
+            'transport'         => 'refresh',
+            'sanitize_callback' => 'madeit_check_rgb',
+        ]);
+        $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'warning_color_rgb', [
+            'mode'       => 'rgb',
+            'label'      => __('Warning Color', 'madeit'),
+            'section'    => 'colors',
+            'settings'   => 'warning_color_rgb',
+        ]));
 
-    $wp_customize->add_setting('danger_color_rgb', [
-        'default'           => '#dc3545',
-        'transport'         => 'refresh',
-        'sanitize_callback' => 'madeit_check_rgb',
-    ]);
-    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'danger_color_rgb', [
-        'mode'       => 'rgb',
-        'label'      => __('Danger Color', 'madeit'),
-        'section'    => 'colors',
-        'settings'   => 'danger_color_rgb',
-    ]));
+        $wp_customize->add_setting('danger_color_rgb', [
+            'default'           => '#dc3545',
+            'transport'         => 'refresh',
+            'sanitize_callback' => 'madeit_check_rgb',
+        ]);
+        $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'danger_color_rgb', [
+            'mode'       => 'rgb',
+            'label'      => __('Danger Color', 'madeit'),
+            'section'    => 'colors',
+            'settings'   => 'danger_color_rgb',
+        ]));
+    }
 
     /*
      * Theme options.

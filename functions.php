@@ -12,6 +12,9 @@
 define('MADEIT_VERSION', '2.0.2');
 
 /* Default colors */
+if (!defined('MADEIT_CUSTOM_COLOR')) {
+    define('MADEIT_CUSTOM_COLOR', false);
+}
 if (!defined('MADEIT_TEXT_COLOR')) {
     define('MADEIT_TEXT_COLOR', '#212529');
 }
@@ -84,7 +87,7 @@ if (!function_exists('madeit_setup')) {
         update_option('shop_single_image_size', $single); 		// Single product image
         update_option('shop_thumbnail_image_size', $thumbnail); 	// Image gallery thumbs
 
-        $GLOBALS['content_width'] = 525;
+        $GLOBALS['content_width'] = 740;
 
         register_nav_menus([
             'top'    => __('Top Menu', 'madeit'),
@@ -243,47 +246,47 @@ if (!function_exists('madeit_gutenberg_support')) {
         //Gutenberg
         add_theme_support('align-wide');
 
-        if ('custom' === get_theme_mod('colorscheme')) {
+        if (MADEIT_CUSTOM_COLOR || 'custom' === get_theme_mod('colorscheme')) {
             add_theme_support('editor-color-palette', [
                 [
                     'name'  => __('Text Color', 'madeit'),
                     'slug'  => 'default-text',
-                    'color' => get_theme_mod('text_color_rgb', '#212529'),
+                    'color' => get_theme_mod('text_color_rgb', MADEIT_TEXT_COLOR),
                 ],
                 [
                     'name'  => __('Background Color', 'madeit'),
                     'slug'  => 'default-background',
-                    'color' => get_theme_mod('background_color_rgb', '#ffffff'),
+                    'color' => get_theme_mod('background_color_rgb', MADEIT_BACKGROUND_COLOR),
                 ],
                 [
                     'name'  => __('Primary Color', 'madeit'),
                     'slug'  => 'primary',
-                    'color' => get_theme_mod('primary_color_rgb', '#007bff'),
+                    'color' => get_theme_mod('primary_color_rgb', MADEIT_PRIMARY_COLOR),
                 ],
                 [
                     'name'  => __('Secondary Color', 'madeit'),
                     'slug'  => 'secondary',
-                    'color' => get_theme_mod('secondary_color_rgb', '#868e96'),
+                    'color' => get_theme_mod('secondary_color_rgb', MADEIT_SECONDARY_COLOR),
                 ],
                 [
                     'name'  => __('Success Color', 'madeit'),
                     'slug'  => 'success',
-                    'color' => get_theme_mod('success_color_rgb', '#28a745'),
+                    'color' => get_theme_mod('success_color_rgb', MADEIT_SUCCESS_COLOR),
                 ],
                 [
                     'name'  => __('Info Color', 'madeit'),
                     'slug'  => 'info',
-                    'color' => get_theme_mod('info_color_rgb', '#17a2b8'),
+                    'color' => get_theme_mod('info_color_rgb', MADEIT_INFO_COLOR),
                 ],
                 [
                     'name'  => __('Warning Color', 'madeit'),
                     'slug'  => 'warning',
-                    'color' => get_theme_mod('warning_color_rgb', '#ffc107'),
+                    'color' => get_theme_mod('warning_color_rgb', MADEIT_WARNING_COLOR),
                 ],
                 [
                     'name'  => __('Danger Color', 'madeit'),
                     'slug'  => 'danger',
-                    'color' => get_theme_mod('danger_color_rgb', '#dc3545'),
+                    'color' => get_theme_mod('danger_color_rgb', MADEIT_DANGER_COLOR),
                 ],
                 [
                     'name'  => __('White Color', 'madeit'),
@@ -330,7 +333,7 @@ if (!function_exists('madeit_content_width')) {
         // Check if layout is one column.
         if ('one-column' === $page_layout) {
             if (madeit_is_frontpage()) {
-                $content_width = 644;
+                $content_width = 740;
             } elseif (is_page()) {
                 $content_width = 740;
             }
@@ -525,7 +528,7 @@ if (!function_exists('madeit_pingback_header')) {
 if (!function_exists('madeit_colors_css_wrap')) {
     function madeit_colors_css_wrap()
     {
-        if ('custom' !== get_theme_mod('colorscheme')) {
+        if (!MADEIT_CUSTOM_COLOR && 'custom' !== get_theme_mod('colorscheme')) {
             return;
         }
 
@@ -548,7 +551,7 @@ if (!function_exists('madeit_colors_css_wrap')) {
 if (!function_exists('madeit_blocks_colors_inline')) {
     function madeit_blocks_colors_inline()
     {
-        if ('custom' !== get_theme_mod('colorscheme')) {
+        if (!MADEIT_CUSTOM_COLOR && 'custom' !== get_theme_mod('colorscheme')) {
             return;
         }
 
