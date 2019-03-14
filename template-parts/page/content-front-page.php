@@ -27,8 +27,6 @@
                 <header class="entry-header">
                     <?php the_title('<h2 class="entry-title">', '</h2>'); ?>
 
-                    <?php madeit_edit_link(get_the_ID()); ?>
-
                 </header><!-- .entry-header -->
             </div>
             <div class="col-sm two-column-row <?php if ((is_page() || is_archive()) && 'one-column' === get_theme_mod('page_layout')) {

@@ -37,9 +37,5 @@
     <?php
     }
     the_content();
-
-    if (!(empty($hidetitle) || $hidetitle == 0)) {
-        madeit_edit_link(get_the_ID());
-    }
     ?>
 </div><!-- #post-## -->

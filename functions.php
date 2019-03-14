@@ -782,6 +782,11 @@ if (!function_exists('madeit_wp_bootstrap_head')) {
                 body{ padding-top: 0px !important; }
                 body.logged-in .navbar.fixed-top{ top: 28px !important; }
             }
+            @media screen and (max-width: 600px) {
+                #wpadminbar {
+                    position: fixed;
+                }
+            }
             </style>
             <?php
         }
