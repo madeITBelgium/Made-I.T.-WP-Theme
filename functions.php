@@ -15,6 +15,9 @@ define('MADEIT_VERSION', '2.0.2');
 if (!defined('MADEIT_CUSTOM_COLOR')) {
     define('MADEIT_CUSTOM_COLOR', false);
 }
+if (!defined('MADEIT_ADVANCED_BLOCKS')) {
+    define('MADEIT_ADVANCED_BLOCKS', false);
+}
 if (!defined('MADEIT_TEXT_COLOR')) {
     define('MADEIT_TEXT_COLOR', '#212529');
 }

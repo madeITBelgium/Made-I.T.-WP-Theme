@@ -158,8 +158,11 @@ function madeit_front_page_section($partial = null, $id = 0)
         $post = get_post(get_theme_mod('panel_'.$id));
         setup_postdata($post);
         set_query_var('panel', $id);
-
-        get_template_part('template-parts/page/content', 'front-page-panels');
+        if (false !== strpos($post->post_content, '<!-- wp:')) {
+            get_template_part('template-parts/page/content', 'front-page-guten-panels');
+        } else {
+            get_template_part('template-parts/page/content', 'front-page-panels');
+        }
 
         wp_reset_postdata();
     } elseif (is_customize_preview()) {

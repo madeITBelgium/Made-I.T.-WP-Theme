@@ -8,15 +8,10 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-//require get_parent_theme_file_path('/gutenberg/basic/plugin.php');
-require get_parent_theme_file_path('/gutenberg/container/plugin.php');
-//require get_parent_theme_file_path('/gutenberg/row/plugin.php');
-//require get_parent_theme_file_path('/gutenberg/column/plugin.php');
-
+if(MADEIT_ADVANCED_BLOCKS) {
+    require get_parent_theme_file_path('/gutenberg/container/plugin.php');
+}
 require get_parent_theme_file_path('/gutenberg/container-simple/plugin.php');
-//require get_parent_theme_file_path('/gutenberg/row-simple/plugin.php');
-//require get_parent_theme_file_path('/gutenberg/column-simple/plugin.php');
-
 require get_parent_theme_file_path('/gutenberg/tabs/plugin.php');
-
 require get_parent_theme_file_path('/gutenberg/carousel/plugin.php');
+require get_parent_theme_file_path('/gutenberg/color-image-block/plugin.php');
