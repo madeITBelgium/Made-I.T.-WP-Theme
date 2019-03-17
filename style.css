@@ -163,6 +163,9 @@ body {
 .site-header.no-front-page img {
 	margin-top: -40vh;
 }
+.wp-custom-header {
+    width: 100%;
+}
 
 /* Social style */
 .social-navigation {
