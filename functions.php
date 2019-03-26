@@ -248,6 +248,7 @@ if (!function_exists('madeit_gutenberg_support')) {
     {
         //Gutenberg
         add_theme_support('align-wide');
+        add_theme_support('responsive-embeds');
 
         if (MADEIT_CUSTOM_COLOR || 'custom' === get_theme_mod('colorscheme')) {
             add_theme_support('editor-color-palette', [
