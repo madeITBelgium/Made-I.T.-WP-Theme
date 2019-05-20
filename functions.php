@@ -15,6 +15,9 @@ define('MADEIT_VERSION', '2.0.2');
 if (!defined('MADEIT_CUSTOM_COLOR')) {
     define('MADEIT_CUSTOM_COLOR', false);
 }
+if (!defined('MADEIT_ADVANCED_BLOCKS')) {
+    define('MADEIT_ADVANCED_BLOCKS', false);
+}
 if (!defined('MADEIT_TEXT_COLOR')) {
     define('MADEIT_TEXT_COLOR', '#212529');
 }
@@ -245,6 +248,7 @@ if (!function_exists('madeit_gutenberg_support')) {
     {
         //Gutenberg
         add_theme_support('align-wide');
+        add_theme_support('responsive-embeds');
 
         if (MADEIT_CUSTOM_COLOR || 'custom' === get_theme_mod('colorscheme')) {
             add_theme_support('editor-color-palette', [
