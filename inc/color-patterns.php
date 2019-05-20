@@ -894,11 +894,11 @@ a.text-dark:focus, a.text-dark:hover {
     foreach ($gutenbergColors as $class => $color) {
         $css .= '
 .has-'.$class.'-background-color {
-	background-color: '.$color.';
+	background-color: '.$color.' !important;
 }
 
 .has-'.$class.'-color {
-	color: '.$color.";
+	color: '.$color." !important;
 }\n";
     }
 
