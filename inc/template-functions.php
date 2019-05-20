@@ -46,7 +46,7 @@ function madeit_body_classes($classes)
 
     // Add class for one or two column page layouts.
     if (is_page() || is_archive()) {
-        if(!is_front_page()) {
+        if (!is_front_page()) {
             $classes[] = 'single-page';
         }
         if ('one-column' === get_theme_mod('page_layout')) {
