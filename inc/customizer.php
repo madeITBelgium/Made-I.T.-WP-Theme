@@ -28,7 +28,7 @@ function madeit_customize_register($wp_customize)
     /*
      * Custom colors.
      */
-    if(!MADEIT_CUSTOM_COLOR) {
+    if (!MADEIT_CUSTOM_COLOR) {
         $wp_customize->add_setting('colorscheme', [
             'default'           => 'light',
             'transport'         => 'postMessage',
