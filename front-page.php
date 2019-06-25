@@ -13,10 +13,9 @@ get_header(); ?>
 <?php // Show the selected frontpage content.
 if (have_posts()) :
     while (have_posts()) : the_post();
-        if(false !== strpos($post->post_content, '<!-- wp:madeit/block-container')) {
+        if (false !== strpos($post->post_content, '<!-- wp:madeit/block-container')) {
             get_template_part('template-parts/page/content', 'front-page-gutenberg');
-        }
-        else if (false !== strpos($post->post_content, '<!-- wp:')) {
+        } elseif (false !== strpos($post->post_content, '<!-- wp:')) {
             get_template_part('template-parts/page/content', 'front-page-gutenberg-container');
         } else {
             get_template_part('template-parts/page/content', 'front-page');

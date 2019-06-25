@@ -40,7 +40,7 @@
     <div class="container">
         <div class="row">
             <div class="col">
-                <?php 
+                <?php
                 the_content();
                 ?>
             </div>
