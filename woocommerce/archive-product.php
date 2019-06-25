@@ -41,7 +41,7 @@ get_header('shop'); ?>
                 do_action('woocommerce_archive_description');
             ?>
         </header>
-        <?php 
+        <?php
         if (woocommerce_product_loop()) {
             ?>
             <div class="row">
