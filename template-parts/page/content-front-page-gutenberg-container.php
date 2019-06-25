@@ -36,6 +36,14 @@
         </div>
     <?php
     }
-    the_content();
     ?>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <?php 
+                the_content();
+                ?>
+            </div>
+        </div>
+    </div>
 </div><!-- #post-## -->

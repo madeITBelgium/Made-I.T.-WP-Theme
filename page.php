@@ -15,8 +15,11 @@
 get_header();
 
 while (have_posts()) : the_post();
-    if (false !== strpos($post->post_content, '<!-- wp:')) {
+    if(false !== strpos($post->post_content, '<!-- wp:madeit/block-container')) {
         get_template_part('template-parts/page/content', 'front-page-gutenberg');
+    }
+    else if (false !== strpos($post->post_content, '<!-- wp:')) {
+        get_template_part('template-parts/page/content', 'front-page-gutenberg-container');
     } else {
         ?>
         <div class="container-fluid">
