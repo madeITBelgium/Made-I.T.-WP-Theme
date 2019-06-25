@@ -63,6 +63,12 @@ export const edit = ( props ) => {
     for(var i = 0; i < 100; i++) {
         rowValues.push({value: i, label: i});
     }
+    
+    var fixedPadding = padding;
+    
+    if(fixedPadding === 0) {
+        fixedPadding = 1;
+    }
 
     return [
             <InspectorControls>
@@ -139,8 +145,8 @@ export const edit = ( props ) => {
                 style = {{
                     color: textColor,
                     backgroundColor: color,
-                    paddingTop: padding + 'px',
-                    paddingBottom: padding + 'px',
+                    paddingTop: fixedPadding + 'px',
+                    paddingBottom: fixedPadding + 'px',
                     marginTop: margin + 'px',
                     marginBottom: margin + 'px',
                 }}>
