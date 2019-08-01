@@ -1,0 +1,105 @@
+/**
+ * #.# Styles
+ *
+ * CSS for both Frontend+Backend.
+ */
+// Most used breakpoints
+$break-huge: 1440px;
+$break-wide: 1280px;
+$break-xlarge: 1080px;
+$break-large: 960px;	// admin sidebar auto folds
+$break-medium: 782px;	// adminbar goes big
+$break-small: 600px;
+$break-mobile: 480px;
+$break-zoomed-in: 280px;
+
+$default-block-margin: 28px;
+$break-small: 600px;
+
+// Grid size
+$grid-size-small: 4px;
+$grid-size: 8px;
+$grid-size-large: 16px;
+
+@mixin break-huge() {
+	@media (min-width: #{ ($break-huge) }) {
+		@content;
+	}
+}
+
+@mixin break-wide() {
+	@media (min-width: #{ ($break-wide) }) {
+		@content;
+	}
+}
+
+@mixin break-xlarge() {
+	@media (min-width: #{ ($break-xlarge) }) {
+		@content;
+	}
+}
+
+@mixin break-large() {
+	@media (min-width: #{ ($break-large) }) {
+		@content;
+	}
+}
+
+@mixin break-medium() {
+	@media (min-width: #{ ($break-medium) }) {
+		@content;
+	}
+}
+
+@mixin break-small() {
+	@media (min-width: #{ ($break-small) }) {
+		@content;
+	}
+}
+
+@mixin break-mobile() {
+	@media (min-width: #{ ($break-mobile) }) {
+		@content;
+	}
+}
+
+@mixin break-zoomed-in() {
+	@media (min-width: #{ ($break-zoomed-in) }) {
+		@content;
+	}
+}
+
+/**
+ * All Columns Alignment
+ */
+.wp-block-madeit-block-content {
+	&.are-vertically-aligned-top {
+		align-items: flex-start;
+	}
+
+	&.are-vertically-aligned-center {
+		align-items: center;
+	}
+
+	&.are-vertically-aligned-bottom {
+		align-items: flex-end;
+	}
+}
+
+/**
+ * Individual Column Alignment
+ */
+.wp-block-madeit-block-content-column {
+	&.is-vertically-aligned-top {
+		align-self: flex-start;
+	}
+
+	&.is-vertically-aligned-center {
+		align-self: center;
+	}
+
+	&.is-vertically-aligned-bottom {
+		align-self: flex-end;
+	}
+}
+

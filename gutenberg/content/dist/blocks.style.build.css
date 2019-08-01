@@ -1,0 +1,40 @@
+/**
+ * #.# Common SCSS
+ *
+ * Can include things like variables and mixins
+ * that are used across the project.
+*/
+/**
+ * #.# Styles
+ *
+ * CSS for both Frontend+Backend.
+ */
+/**
+ * All Columns Alignment
+ */
+.wp-block-madeit-block-content.are-vertically-aligned-top {
+  -ms-flex-align: start;
+      align-items: flex-start; }
+
+.wp-block-madeit-block-content.are-vertically-aligned-center {
+  -ms-flex-align: center;
+      align-items: center; }
+
+.wp-block-madeit-block-content.are-vertically-aligned-bottom {
+  -ms-flex-align: end;
+      align-items: flex-end; }
+
+/**
+ * Individual Column Alignment
+ */
+.wp-block-madeit-block-content-column.is-vertically-aligned-top {
+  -ms-flex-item-align: start;
+      align-self: flex-start; }
+
+.wp-block-madeit-block-content-column.is-vertically-aligned-center {
+  -ms-flex-item-align: center;
+      align-self: center; }
+
+.wp-block-madeit-block-content-column.is-vertically-aligned-bottom {
+  -ms-flex-item-align: end;
+      align-self: flex-end; }
