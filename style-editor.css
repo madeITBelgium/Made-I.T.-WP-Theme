@@ -4,8 +4,10 @@ body.gutenberg-editor-page {
 }
 
 /* Main column width */
-.wp-block {
-    max-width: 1080px;
+@media (min-width: 1500px) {
+    .wp-block {
+        max-width: 1080px;
+    }
 }
 
 /* Width of "wide" blocks */

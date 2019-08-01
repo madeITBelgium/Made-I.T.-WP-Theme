@@ -15,7 +15,7 @@
 get_header();
 
 while (have_posts()) : the_post();
-    if (false !== strpos($post->post_content, '<!-- wp:madeit/block-container')) {
+    if (false !== strpos($post->post_content, '<!-- wp:madeit/block-container') || false !== strpos($post->post_content, '<!-- wp:madeit/block-content')) {
         get_template_part('template-parts/page/content', 'front-page-gutenberg');
     } elseif (false !== strpos($post->post_content, '<!-- wp:')) {
         get_template_part('template-parts/page/content', 'front-page-gutenberg-container');

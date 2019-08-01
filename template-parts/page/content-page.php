@@ -13,7 +13,7 @@
     <div class="row">
         <div class="col-sm">
             <header class="entry-header">
-                <?php the_title('<h2 class="entry-title">', '</h2>'); ?>
+                <?php the_title('<h1 class="entry-title">', '</h1>'); ?>
             </header><!-- .entry-header -->
         </div>
     </div>

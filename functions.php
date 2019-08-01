@@ -244,6 +244,13 @@ if (!function_exists('madeit_setup')) {
     add_action('after_setup_theme', 'madeit_setup');
 }
 
+function madeit_get_theme_color($type, $default) {
+    if(MADEIT_CUSTOM_COLOR) {
+        return $default;
+    }
+    return get_theme_mod($type, $default);
+}
+
 if (!function_exists('madeit_gutenberg_support')) {
     function madeit_gutenberg_support()
     {
@@ -254,46 +261,6 @@ if (!function_exists('madeit_gutenberg_support')) {
         if (MADEIT_CUSTOM_COLOR || 'custom' === get_theme_mod('colorscheme')) {
             add_theme_support('editor-color-palette', [
                 [
-                    'name'  => __('Text Color', 'madeit'),
-                    'slug'  => 'default-text',
-                    'color' => get_theme_mod('text_color_rgb', MADEIT_TEXT_COLOR),
-                ],
-                [
-                    'name'  => __('Background Color', 'madeit'),
-                    'slug'  => 'default-background',
-                    'color' => get_theme_mod('background_color_rgb', MADEIT_BACKGROUND_COLOR),
-                ],
-                [
-                    'name'  => __('Primary Color', 'madeit'),
-                    'slug'  => 'primary',
-                    'color' => get_theme_mod('primary_color_rgb', MADEIT_PRIMARY_COLOR),
-                ],
-                [
-                    'name'  => __('Secondary Color', 'madeit'),
-                    'slug'  => 'secondary',
-                    'color' => get_theme_mod('secondary_color_rgb', MADEIT_SECONDARY_COLOR),
-                ],
-                [
-                    'name'  => __('Success Color', 'madeit'),
-                    'slug'  => 'success',
-                    'color' => get_theme_mod('success_color_rgb', MADEIT_SUCCESS_COLOR),
-                ],
-                [
-                    'name'  => __('Info Color', 'madeit'),
-                    'slug'  => 'info',
-                    'color' => get_theme_mod('info_color_rgb', MADEIT_INFO_COLOR),
-                ],
-                [
-                    'name'  => __('Warning Color', 'madeit'),
-                    'slug'  => 'warning',
-                    'color' => get_theme_mod('warning_color_rgb', MADEIT_WARNING_COLOR),
-                ],
-                [
-                    'name'  => __('Danger Color', 'madeit'),
-                    'slug'  => 'danger',
-                    'color' => get_theme_mod('danger_color_rgb', MADEIT_DANGER_COLOR),
-                ],
-                [
                     'name'  => __('White Color', 'madeit'),
                     'slug'  => 'white',
                     'color' => '#FFFFFF',
@@ -302,6 +269,46 @@ if (!function_exists('madeit_gutenberg_support')) {
                     'name'  => __('Black Color', 'madeit'),
                     'slug'  => 'black',
                     'color' => '#000000',
+                ],
+                [
+                    'name'  => __('Text Color', 'madeit'),
+                    'slug'  => 'default-text',
+                    'color' => madeit_get_theme_color('text_color_rgb', MADEIT_TEXT_COLOR),
+                ],
+                [
+                    'name'  => __('Background Color', 'madeit'),
+                    'slug'  => 'default-bg',
+                    'color' => madeit_get_theme_color('background_color_rgb', MADEIT_BACKGROUND_COLOR),
+                ],
+                [
+                    'name'  => __('Primary Color', 'madeit'),
+                    'slug'  => 'primary',
+                    'color' => madeit_get_theme_color('primary_color_rgb', MADEIT_PRIMARY_COLOR),
+                ],
+                [
+                    'name'  => __('Secondary Color', 'madeit'),
+                    'slug'  => 'secondary',
+                    'color' => madeit_get_theme_color('secondary_color_rgb', MADEIT_SECONDARY_COLOR),
+                ],
+                [
+                    'name'  => __('Success Color', 'madeit'),
+                    'slug'  => 'success',
+                    'color' => madeit_get_theme_color('success_color_rgb', MADEIT_SUCCESS_COLOR),
+                ],
+                [
+                    'name'  => __('Info Color', 'madeit'),
+                    'slug'  => 'info',
+                    'color' => madeit_get_theme_color('info_color_rgb', MADEIT_INFO_COLOR),
+                ],
+                [
+                    'name'  => __('Warning Color', 'madeit'),
+                    'slug'  => 'warning',
+                    'color' => madeit_get_theme_color('warning_color_rgb', MADEIT_WARNING_COLOR),
+                ],
+                [
+                    'name'  => __('Danger Color', 'madeit'),
+                    'slug'  => 'danger',
+                    'color' => madeit_get_theme_color('danger_color_rgb', MADEIT_DANGER_COLOR),
                 ],
             ]);
         }

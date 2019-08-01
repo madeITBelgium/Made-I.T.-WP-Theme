@@ -887,8 +887,8 @@ a.text-dark:focus, a.text-dark:hover {
         'info'               => $info_color,
         'warning'            => $warning_color,
         'danger'             => $danger_color,
-        'black'              => '#FFFFFF',
-        'white'              => '#000000',
+        'black'              => '#000000',
+        'white'              => '#FFFFFF',
     ];
 
     foreach ($gutenbergColors as $class => $color) {
