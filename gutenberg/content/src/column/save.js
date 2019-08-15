@@ -11,18 +11,13 @@ const { InnerBlocks } = wp.blockEditor;
 export default function save( { attributes } ) {
     const { verticalAlignment, width } = attributes;
 
-    var wrapperClasses = classnames( 'col', {
+    var wrapperClasses = classnames( 'col-12', {
         [ `is-vertically-aligned-${ verticalAlignment }` ]: verticalAlignment,
-        [ `col-md-${width}` ]: width,
+        [ `col-lg-${width}` ]: width,
     } );
     
-    let style;
-    /*if ( Number.isFinite( width ) ) {
-        style = { flexBasis: width + '%' };
-    }*/
-
     return (
-        <div className={ wrapperClasses } style={ style }>
+        <div className={ wrapperClasses }>
             <InnerBlocks.Content />
         </div>
     );

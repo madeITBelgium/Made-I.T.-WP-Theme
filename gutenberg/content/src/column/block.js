@@ -68,4 +68,28 @@ registerBlockType( 'madeit/block-content-column', {
 
     // The "save" property must be  valid function.
     save: save,
+    
+    deprecated: [
+        {
+            save: function( { attributes } ) {
+                const { verticalAlignment, width } = attributes;
+
+                var wrapperClasses = classnames( 'col', {
+                    [ `is-vertically-aligned-${ verticalAlignment }` ]: verticalAlignment,
+                    [ `col-md-${width}` ]: width,
+                } );
+
+                let style;
+                /*if ( Number.isFinite( width ) ) {
+                    style = { flexBasis: width + '%' };
+                }*/
+
+                return (
+                    <div className={ wrapperClasses } style={ style }>
+                        <InnerBlocks.Content />
+                    </div>
+                );
+            },
+        },
+    ]
 } );
