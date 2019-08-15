@@ -8,12 +8,17 @@ import classnames from 'classnames';
  */
 const { InnerBlocks } = wp.blockEditor;
 
-export default function save( { attributes } ) {
-    const { verticalAlignment, width } = attributes;
+export default function save( props ) {
+    const { verticalAlignment, width } = props.attributes;
+    
+    const {
+        className
+    } = props
 
-    var wrapperClasses = classnames( 'col', {
+    var wrapperClasses = classnames( className, {
         [ `is-vertically-aligned-${ verticalAlignment }` ]: verticalAlignment,
-        [ `col-md-${width}` ]: width,
+        [ `col-12` ]: true,
+        [ `col-lg-${width}` ]: width,
     } );
     
     let style;
