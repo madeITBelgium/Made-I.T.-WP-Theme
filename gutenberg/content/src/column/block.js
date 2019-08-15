@@ -8,9 +8,11 @@
 import edit from './edit';
 import save from './save';
 import icon from './icon';
+import classnames from 'classnames';
 
 const { __ } = wp.i18n;
 const { registerBlockType } = wp.blocks;
+const { InnerBlocks } = wp.blockEditor;
 
 /**
  * Register: aa Gutenberg Block.
