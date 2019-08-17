@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-11 14:13+0000\n"
+"POT-Creation-Date: 2019-08-17 17:15+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -27,22 +27,14 @@ msgstr ""
 msgid "Nothing Found"
 msgstr ""
 
-#: search.php:38 index.php:47 archive.php:35
-msgid "Previous page"
-msgstr ""
-
-#: search.php:39 index.php:48 archive.php:36
-msgid "Next page"
-msgstr ""
-
-#: search.php:40 index.php:49 archive.php:37
-msgid "Page"
-msgstr ""
-
-#: search.php:45
+#: search.php:41
 msgid ""
 "Sorry, but nothing matched your search terms. Please try again with some "
 "different keywords."
+msgstr ""
+
+#: sidebar-left.php:15 functions.php:439
+msgid "Left Sidebar"
 msgstr ""
 
 #: index.php:24
@@ -61,128 +53,168 @@ msgstr ""
 msgid "Previous Post"
 msgstr ""
 
-#: single.php:27 comments.php:66
-msgid "Previous"
-msgstr ""
-
 #: single.php:28
 msgid "Next Post"
-msgstr ""
-
-#: single.php:28 comments.php:67
-msgid "Next"
 msgstr ""
 
 #. Name of the template
 msgid "Landingpage"
 msgstr ""
 
-#: functions.php:62 functions.php:182
+#: functions.php:97 functions.php:217
 msgid "Top Menu"
 msgstr ""
 
-#: functions.php:63 functions.php:193
+#: functions.php:98 functions.php:228
 msgid "Social Links Menu"
 msgstr ""
 
-#: functions.php:146
+#: functions.php:181
 msgctxt "Theme starter content"
 msgid "Koffie Machien"
 msgstr ""
 
-#: functions.php:150
+#: functions.php:185
 msgctxt "Theme starter content"
 msgid "Outside"
 msgstr ""
 
-#: functions.php:154
+#: functions.php:189
 msgctxt "Theme starter content"
 msgid "Inside"
 msgstr ""
 
-#: functions.php:158
+#: functions.php:193
 msgctxt "Theme starter content"
 msgid "Price table"
+msgstr ""
+
+#: functions.php:264
+msgid "White Color"
+msgstr ""
+
+#: functions.php:269
+msgid "Black Color"
+msgstr ""
+
+#: functions.php:274 inc/customizer.php:57
+msgid "Text Color"
+msgstr ""
+
+#: functions.php:279 inc/customizer.php:69
+msgid "Background Color"
+msgstr ""
+
+#: functions.php:284 inc/customizer.php:81
+msgid "Primary Color"
+msgstr ""
+
+#: functions.php:289 inc/customizer.php:93
+msgid "Secondary Color"
+msgstr ""
+
+#: functions.php:294 inc/customizer.php:106
+msgid "Success Color"
+msgstr ""
+
+#: functions.php:299 inc/customizer.php:118
+msgid "Info Color"
+msgstr ""
+
+#: functions.php:304 inc/customizer.php:130
+msgid "Warning Color"
+msgstr ""
+
+#: functions.php:309 inc/customizer.php:142
+msgid "Danger Color"
 msgstr ""
 
 #. If there are characters in your language that are not
 #. supported by Libre Franklin, translate this to 'off'. Do not translate
 #. into your own language.
-#: functions.php:256
+#: functions.php:376
 msgctxt "Libre Franklin font: on or off"
 msgid "on"
 msgstr ""
 
-#: functions.php:309 sidebar.php:15
-msgid "Blog Sidebar"
+#: functions.php:429
+msgid "Right Sidebar"
 msgstr ""
 
-#: functions.php:311
+#: functions.php:431
 msgid ""
 "Add widgets here to appear in your sidebar on blog posts and archive pages."
 msgstr ""
 
-#: functions.php:319
+#: functions.php:441
+msgid "Add widgets here to appear in your left sidebar."
+msgstr ""
+
+#: functions.php:449
 msgid "Footer 1"
 msgstr ""
 
-#: functions.php:321 functions.php:331
+#: functions.php:451 functions.php:461
 msgid "Add widgets here to appear in your footer."
 msgstr ""
 
-#: functions.php:329
+#: functions.php:459
 msgid "Footer 2"
 msgstr ""
 
-#: functions.php:339
+#: functions.php:469
 msgid "Below index blog"
 msgstr ""
 
-#: functions.php:341
+#: functions.php:471
 msgid "Add widgets here to appear below your blog/news list."
 msgstr ""
 
 #. %s: Name of current post
 #. %s: Name of current post
 #. %s: Name of current post
-#: functions.php:371 template-parts/page/content-page.php:29
-#: template-parts/page/content-front-page.php:41
+#: functions.php:501 template-parts/page/content-page.php:26
+#: template-parts/page/content-front-page.php:39
 #, php-format
 msgid "Continue reading<span class=\"screen-reader-text\"> \"%s\"</span>"
 msgstr ""
 
-#: functions.php:659
+#: functions.php:816
 msgid "Continue reading"
 msgstr ""
 
-#: functions.php:813
+#: functions.php:1259
 msgid "Start shopping"
 msgstr ""
 
-#: functions.php:817
+#: functions.php:1263
 msgid "View your shopping cart"
 msgstr ""
 
-#: functions.php:821
+#: functions.php:1267
 #, php-format
 msgid "%d item"
 msgid_plural "%d items"
 msgstr[0] ""
 msgstr[1] ""
 
-#: functions.php:842
+#: functions.php:1288
 #, php-format
 msgid ""
 "By using our website you are consenting to our use of cookies in accordance "
 "with our <a href=\"%s\">cookie & privacy policy</a>."
 msgstr ""
 
-#: functions.php:859 functions.php:877
+#: functions.php:1305 functions.php:1323
 msgid "Close"
 msgstr ""
 
 #. Name of the template
-msgid "Page with sidebar"
+msgid "Page with right sidebar"
+msgstr ""
+
+#: sidebar.php:15
+msgid "Blog Sidebar"
 msgstr ""
 
 #. %s: post title
@@ -201,11 +233,19 @@ msgid_plural "%1$s Replies to &ldquo;%2$s&rdquo;"
 msgstr[0] ""
 msgstr[1] ""
 
+#: comments.php:66
+msgid "Previous"
+msgstr ""
+
+#: comments.php:67
+msgid "Next"
+msgstr ""
+
 #: comments.php:73
 msgid "Comments are closed."
 msgstr ""
 
-#: comments.php:88
+#: comments.php:91
 msgid "Comment"
 msgstr ""
 
@@ -213,39 +253,55 @@ msgstr ""
 msgid "Search..."
 msgstr ""
 
-#: searchform.php:18
+#: searchform.php:16 searchform.php:18 searchform.php:18
 msgid "Search"
 msgstr ""
 
-#: inc/MadeIT_Updater.php:210
-msgid "Rename successful"
+#. Name of the template
+msgid "Page with left sidebar"
 msgstr ""
 
-#: inc/MadeIT_Updater.php:217
-msgid "Unable to rename downloaded repository."
-msgstr ""
-
-#: inc/template-functions.php:118
+#: inc/template-functions.php:123
 msgid "Pingback:"
 msgstr ""
 
-#: inc/template-functions.php:118 inc/template-functions.php:139
+#: inc/template-functions.php:123 inc/template-functions.php:144
 msgid "Edit"
 msgstr ""
 
-#: inc/template-functions.php:130
+#: inc/template-functions.php:135
 #, php-format
 msgid "%s <span class=\"says\">:</span>"
 msgstr ""
 
-#: inc/template-functions.php:136
+#: inc/template-functions.php:141
 #, php-format
 msgctxt "1: date, 2: time"
 msgid "%1$s om %2$s"
 msgstr ""
 
-#: inc/template-functions.php:143
+#: inc/template-functions.php:148
 msgid "Je comentaar wacht op een review van de beheerder."
+msgstr ""
+
+#: inc/template-functions.php:245
+msgid "Hide page title"
+msgstr ""
+
+#: inc/template-widgets.php:9
+msgid "Child pages menu"
+msgstr ""
+
+#: inc/template-widgets.php:10
+msgid "Add side menu with child pages"
+msgstr ""
+
+#: inc/MadeIT_Github_Updater.php:212 inc/MadeIT_Gitlab_Updater.php:210
+msgid "Rename successful"
+msgstr ""
+
+#: inc/MadeIT_Github_Updater.php:219 inc/MadeIT_Gitlab_Updater.php:217
+msgid "Unable to rename downloaded repository."
 msgstr ""
 
 #. %s: post author
@@ -289,161 +345,129 @@ msgstr ""
 msgid "Edit<span class=\"screen-reader-text\"> \"%s\"</span>"
 msgstr ""
 
-#: inc/template-tags.php:167
+#: inc/template-tags.php:170
 #, php-format
 msgid "Front Page Section %1$s Placeholder"
 msgstr ""
 
-#: inc/icon-functions.php:40
+#: inc/icon-functions.php:42
 msgid "Please define default parameters in the form of an array."
 msgstr ""
 
-#: inc/icon-functions.php:45
+#: inc/icon-functions.php:47
 msgid "Please define an SVG icon filename."
 msgstr ""
 
-#: inc/customizer.php:39
+#: inc/customizer.php:40
 msgid "Color Scheme"
 msgstr ""
 
-#: inc/customizer.php:41
+#: inc/customizer.php:42
 msgid "Light"
 msgstr ""
 
-#: inc/customizer.php:42
+#: inc/customizer.php:43
 msgid "Dark"
 msgstr ""
 
-#: inc/customizer.php:43
+#: inc/customizer.php:44
 msgid "Custom"
 msgstr ""
 
-#: inc/customizer.php:56
-msgid "Text Color"
-msgstr ""
-
-#: inc/customizer.php:68
-msgid "Background Color"
-msgstr ""
-
-#: inc/customizer.php:80
-msgid "Primary Color"
-msgstr ""
-
-#: inc/customizer.php:92
-msgid "Secondary Color"
-msgstr ""
-
-#: inc/customizer.php:105
-msgid "Success Color"
-msgstr ""
-
-#: inc/customizer.php:117
-msgid "Info Color"
-msgstr ""
-
-#: inc/customizer.php:129
-msgid "Warning Color"
-msgstr ""
-
-#: inc/customizer.php:141
-msgid "Danger Color"
-msgstr ""
-
-#: inc/customizer.php:150
+#: inc/customizer.php:152
 msgid "Theme Options"
 msgstr ""
 
-#: inc/customizer.php:161
+#: inc/customizer.php:163
 msgid "Page Layout"
 msgstr ""
 
-#: inc/customizer.php:164
+#: inc/customizer.php:166
 msgid ""
 "When the two-column layout is assigned, the page title is in one column and "
 "content is in the other."
 msgstr ""
 
-#: inc/customizer.php:166 inc/customizer.php:299
+#: inc/customizer.php:168 inc/customizer.php:301
 msgid "One Column"
 msgstr ""
 
-#: inc/customizer.php:167 inc/customizer.php:300
+#: inc/customizer.php:169 inc/customizer.php:302
 msgid "Two Column"
 msgstr ""
 
-#: inc/customizer.php:182
+#: inc/customizer.php:184
 msgid "Page Width"
 msgstr ""
 
-#: inc/customizer.php:185
+#: inc/customizer.php:187
 msgid "Choose the screen width of your content."
 msgstr ""
 
-#: inc/customizer.php:187 inc/customizer.php:318
+#: inc/customizer.php:189 inc/customizer.php:320
 msgid "Normal screen width"
 msgstr ""
 
-#: inc/customizer.php:188 inc/customizer.php:319
+#: inc/customizer.php:190 inc/customizer.php:321
 msgid "Full screen width"
 msgstr ""
 
-#: inc/customizer.php:203
+#: inc/customizer.php:205
 msgid "Show header image"
 msgstr ""
 
-#: inc/customizer.php:206
+#: inc/customizer.php:208
 msgid ""
 "Show the homepage header image on sub pages when there is no post featured "
 "image."
 msgstr ""
 
 #. %d is the front page section number
-#: inc/customizer.php:229
+#: inc/customizer.php:231
 #, php-format
 msgid "Front Page Section %d Content"
 msgstr ""
 
-#: inc/customizer.php:230
+#: inc/customizer.php:232
 msgid ""
 "Select pages to feature in each area from the dropdowns. Add an image to a "
 "section by setting a featured image in the page editor. Empty sections will "
 "not be displayed."
 msgstr ""
 
-#: inc/customizer.php:249
+#: inc/customizer.php:251
 msgid "Cookie warning"
 msgstr ""
 
-#: inc/customizer.php:260
+#: inc/customizer.php:262
 msgid "Cookie warning position"
 msgstr ""
 
-#: inc/customizer.php:263
+#: inc/customizer.php:265
 msgid "Choose the position to place the cookie warning notice."
 msgstr ""
 
-#: inc/customizer.php:265 inc/customizer.php:427
+#: inc/customizer.php:267 inc/customizer.php:429
 msgid "Do not show"
 msgstr ""
 
-#: inc/customizer.php:266 inc/customizer.php:428
+#: inc/customizer.php:268 inc/customizer.php:430
 msgid "Popup"
 msgstr ""
 
-#: inc/customizer.php:267 inc/customizer.php:429
+#: inc/customizer.php:269 inc/customizer.php:431
 msgid "Static top notice"
 msgstr ""
 
-#: inc/customizer.php:268 inc/customizer.php:430
+#: inc/customizer.php:270 inc/customizer.php:432
 msgid "Static bottom notice"
 msgstr ""
 
-#: inc/customizer.php:281
+#: inc/customizer.php:283
 msgid "Page of your cookie policy"
 msgstr ""
 
-#: inc/customizer.php:282
+#: inc/customizer.php:284
 msgid "Select pages to link at in the cookie policy."
 msgstr ""
 

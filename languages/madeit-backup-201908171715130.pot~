@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-10 20:28+0000\n"
+"POT-Creation-Date: 2018-07-11 14:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco https://localise.biz/"
 
-#: footer.php:25
+#: footer.php:25 footer-landing.php:20
 msgid "Footer Social Links Menu"
 msgstr ""
 
@@ -73,30 +73,34 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-#: functions.php:61 functions.php:181
+#. Name of the template
+msgid "Landingpage"
+msgstr ""
+
+#: functions.php:62 functions.php:182
 msgid "Top Menu"
 msgstr ""
 
-#: functions.php:62 functions.php:192
+#: functions.php:63 functions.php:193
 msgid "Social Links Menu"
 msgstr ""
 
-#: functions.php:145
+#: functions.php:146
 msgctxt "Theme starter content"
 msgid "Koffie Machien"
 msgstr ""
 
-#: functions.php:149
+#: functions.php:150
 msgctxt "Theme starter content"
 msgid "Outside"
 msgstr ""
 
-#: functions.php:153
+#: functions.php:154
 msgctxt "Theme starter content"
 msgid "Inside"
 msgstr ""
 
-#: functions.php:157
+#: functions.php:158
 msgctxt "Theme starter content"
 msgid "Price table"
 msgstr ""
@@ -104,76 +108,76 @@ msgstr ""
 #. If there are characters in your language that are not
 #. supported by Libre Franklin, translate this to 'off'. Do not translate
 #. into your own language.
-#: functions.php:251
+#: functions.php:256
 msgctxt "Libre Franklin font: on or off"
 msgid "on"
 msgstr ""
 
-#: functions.php:300 sidebar.php:15
+#: functions.php:309 sidebar.php:15
 msgid "Blog Sidebar"
 msgstr ""
 
-#: functions.php:302
+#: functions.php:311
 msgid ""
 "Add widgets here to appear in your sidebar on blog posts and archive pages."
 msgstr ""
 
-#: functions.php:310
+#: functions.php:319
 msgid "Footer 1"
 msgstr ""
 
-#: functions.php:312 functions.php:322
+#: functions.php:321 functions.php:331
 msgid "Add widgets here to appear in your footer."
 msgstr ""
 
-#: functions.php:320
+#: functions.php:329
 msgid "Footer 2"
 msgstr ""
 
-#: functions.php:330
+#: functions.php:339
 msgid "Below index blog"
 msgstr ""
 
-#: functions.php:332
+#: functions.php:341
 msgid "Add widgets here to appear below your blog/news list."
 msgstr ""
 
 #. %s: Name of current post
 #. %s: Name of current post
 #. %s: Name of current post
-#: functions.php:360 template-parts/page/content-page.php:29
+#: functions.php:371 template-parts/page/content-page.php:29
 #: template-parts/page/content-front-page.php:41
 #, php-format
 msgid "Continue reading<span class=\"screen-reader-text\"> \"%s\"</span>"
 msgstr ""
 
-#: functions.php:620
+#: functions.php:659
 msgid "Continue reading"
 msgstr ""
 
-#: functions.php:764
+#: functions.php:813
 msgid "Start shopping"
 msgstr ""
 
-#: functions.php:768
+#: functions.php:817
 msgid "View your shopping cart"
 msgstr ""
 
-#: functions.php:772
+#: functions.php:821
 #, php-format
 msgid "%d item"
 msgid_plural "%d items"
 msgstr[0] ""
 msgstr[1] ""
 
-#: functions.php:784
+#: functions.php:842
 #, php-format
 msgid ""
 "By using our website you are consenting to our use of cookies in accordance "
-"with our <a href=\"%s\">cookie policy</a>."
+"with our <a href=\"%s\">cookie & privacy policy</a>."
 msgstr ""
 
-#: functions.php:801 functions.php:819
+#: functions.php:859 functions.php:877
 msgid "Close"
 msgstr ""
 
@@ -360,11 +364,11 @@ msgid ""
 "content is in the other."
 msgstr ""
 
-#: inc/customizer.php:166 inc/customizer.php:297
+#: inc/customizer.php:166 inc/customizer.php:299
 msgid "One Column"
 msgstr ""
 
-#: inc/customizer.php:167 inc/customizer.php:298
+#: inc/customizer.php:167 inc/customizer.php:300
 msgid "Two Column"
 msgstr ""
 
@@ -376,11 +380,11 @@ msgstr ""
 msgid "Choose the screen width of your content."
 msgstr ""
 
-#: inc/customizer.php:187 inc/customizer.php:316
+#: inc/customizer.php:187 inc/customizer.php:318
 msgid "Normal screen width"
 msgstr ""
 
-#: inc/customizer.php:188 inc/customizer.php:317
+#: inc/customizer.php:188 inc/customizer.php:319
 msgid "Full screen width"
 msgstr ""
 
@@ -419,27 +423,27 @@ msgstr ""
 msgid "Choose the position to place the cookie warning notice."
 msgstr ""
 
-#: inc/customizer.php:265 inc/customizer.php:425
+#: inc/customizer.php:265 inc/customizer.php:427
 msgid "Do not show"
 msgstr ""
 
-#: inc/customizer.php:266 inc/customizer.php:426
+#: inc/customizer.php:266 inc/customizer.php:428
 msgid "Popup"
 msgstr ""
 
-#: inc/customizer.php:267 inc/customizer.php:427
+#: inc/customizer.php:267 inc/customizer.php:429
 msgid "Static top notice"
 msgstr ""
 
-#: inc/customizer.php:268 inc/customizer.php:428
+#: inc/customizer.php:268 inc/customizer.php:430
 msgid "Static bottom notice"
 msgstr ""
 
-#: inc/customizer.php:280
+#: inc/customizer.php:281
 msgid "Page of your cookie policy"
 msgstr ""
 
-#: inc/customizer.php:281
+#: inc/customizer.php:282
 msgid "Select pages to link at in the cookie policy."
 msgstr ""
 
