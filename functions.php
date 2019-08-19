@@ -244,10 +244,12 @@ if (!function_exists('madeit_setup')) {
     add_action('after_setup_theme', 'madeit_setup');
 }
 
-function madeit_get_theme_color($type, $default) {
-    if(MADEIT_CUSTOM_COLOR) {
+function madeit_get_theme_color($type, $default)
+{
+    if (MADEIT_CUSTOM_COLOR) {
         return $default;
     }
+
     return get_theme_mod($type, $default);
 }
 
