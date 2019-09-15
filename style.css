@@ -319,6 +319,16 @@ img {
 .navbar-toggler .icon-bar+.icon-bar {
     margin-top: 4px;
 }
+.dropdown-menu {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+@media (max-width: 990px) {
+    .navbar.fixed-top {
+        overflow-y: auto;
+        max-height: 100vh;
+    }
+}
 
 /* Footer */
 .site-footer {
