@@ -43,6 +43,9 @@ if (!defined('MADEIT_WARNING_COLOR')) {
 if (!defined('MADEIT_DANGER_COLOR')) {
     define('MADEIT_DANGER_COLOR', '#dc3545');
 }
+if (!defined('SHOW_LOGIN_IN_FOOTER')) {
+    define('SHOW_LOGIN_IN_FOOTER', false);
+}
 
 if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
     require get_template_directory().'/inc/back-compat.php';
