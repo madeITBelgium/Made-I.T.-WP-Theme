@@ -16,7 +16,7 @@ function madeit_css_cache_filename()
         madeit_get_theme_color('warning_color_rgb', MADEIT_WARNING_COLOR).
         madeit_get_theme_color('danger_color_rgb', MADEIT_DANGER_COLOR);
 
-    return md5($colorString).'css';
+    return md5($colorString).'.css';
 }
 
 function madeit_css_cachePath()
