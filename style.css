@@ -332,6 +332,11 @@ img {
 #lightbox-modal .modal-content {
     background-color: transparent !important;
 }
+#lightbox-modal .modal-header {
+    padding: 0 !important;
+    height: 0 !important;
+    border: none;
+}
 #lightbox-modal img {
     margin-left: auto;
     margin-right: auto;
@@ -344,6 +349,9 @@ img {
 }
 #lightbox-modal .modal-dialog {
     display: inline-block;
+}
+.admin-bar #lightbox-modal .modal-dialog {
+    margin-top: 4rem;   
 }
 .lightbox-nav-overlay {
 	z-index: 1;
@@ -392,8 +400,8 @@ img {
     padding: 0;
 }
 #lightbox-modal .close {
-    top: 16px;
-    right: -16px;
+    top: -14px;
+    right: 0;
     line-height: 25px;
     width: 30px;
     cursor: pointer;
