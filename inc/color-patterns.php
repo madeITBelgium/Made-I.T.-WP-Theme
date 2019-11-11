@@ -10,14 +10,14 @@
  */
 function madeit_custom_colors_css()
 {
-    $text_color = get_theme_mod('text_color_rgb', MADEIT_TEXT_COLOR);
-    $background_color = get_theme_mod('background_color_rgb', MADEIT_BACKGROUND_COLOR);
-    $primary_color = get_theme_mod('primary_color_rgb', MADEIT_PRIMARY_COLOR);
-    $secondary_color = get_theme_mod('secondary_color_rgb', MADEIT_SECONDARY_COLOR);
-    $success_color = get_theme_mod('success_color_rgb', MADEIT_SUCCESS_COLOR);
-    $info_color = get_theme_mod('info_color_rgb', MADEIT_INFO_COLOR);
-    $warning_color = get_theme_mod('warning_color_rgb', MADEIT_WARNING_COLOR);
-    $danger_color = get_theme_mod('danger_color_rgb', MADEIT_DANGER_COLOR);
+    $text_color = MADEIT_CUSTOM_COLOR ? MADEIT_TEXT_COLOR : get_theme_mod('text_color_rgb', MADEIT_TEXT_COLOR);
+    $background_color = MADEIT_CUSTOM_COLOR ? MADEIT_BACKGROUND_COLOR : get_theme_mod('background_color_rgb', MADEIT_BACKGROUND_COLOR);
+    $primary_color = MADEIT_CUSTOM_COLOR ? MADEIT_PRIMARY_COLOR : get_theme_mod('primary_color_rgb', MADEIT_PRIMARY_COLOR);
+    $secondary_color = MADEIT_CUSTOM_COLOR ? MADEIT_SECONDARY_COLOR : get_theme_mod('secondary_color_rgb', MADEIT_SECONDARY_COLOR);
+    $success_color = MADEIT_CUSTOM_COLOR ? MADEIT_SUCCESS_COLOR : get_theme_mod('success_color_rgb', MADEIT_SUCCESS_COLOR);
+    $info_color = MADEIT_CUSTOM_COLOR ? MADEIT_INFO_COLOR : get_theme_mod('info_color_rgb', MADEIT_INFO_COLOR);
+    $warning_color = MADEIT_CUSTOM_COLOR ? MADEIT_WARNING_COLOR : get_theme_mod('warning_color_rgb', MADEIT_WARNING_COLOR);
+    $danger_color = MADEIT_CUSTOM_COLOR ? MADEIT_DANGER_COLOR : get_theme_mod('danger_color_rgb', MADEIT_DANGER_COLOR);
 
     $colors = [
         'text'       => $text_color,
