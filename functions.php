@@ -568,8 +568,8 @@ if (!function_exists('madeit_blocks_colors_inline')) {
         if (!MADEIT_CUSTOM_COLOR && 'custom' !== get_theme_mod('colorscheme')) {
             return;
         }
-        
-        if(!madeit_css_cacheExists()) {
+
+        if (!madeit_css_cacheExists()) {
             require_once get_parent_theme_file_path('/inc/color-patterns.php');
             wp_enqueue_style('madeit-color-gutenberg', get_theme_file_uri().'style.css');
             wp_add_inline_style('madeit-color-gutenberg', madeit_custom_colors_css());
@@ -596,11 +596,11 @@ if (!function_exists('madeit_scripts')) {
         if ('dark' === get_theme_mod('colorscheme', 'light') || is_customize_preview()) {
             wp_enqueue_style('madeit-colors-dark', get_theme_file_uri('/assets/css/colors-dark.css'), ['madeit-style'], MADEIT_VERSION);
         }
-        
-        if(!madeit_css_cacheExists() || !madeit_css_isCacheUpToDate()) {
+
+        if (!madeit_css_cacheExists() || !madeit_css_isCacheUpToDate()) {
             madeit_css_generateCache();
         }
-        if(madeit_css_cacheExists()) {
+        if (madeit_css_cacheExists()) {
             wp_enqueue_style('madeit-custom-css', madeit_css_cacheUrl(), ['madeit-style'], wp_get_theme()->get('Version'));
         }
 
@@ -1347,7 +1347,7 @@ if (!function_exists('madeit_cookie_notice')) {
 }
 
 /**
- * CSS Cache mechanisme
+ * CSS Cache mechanisme.
  */
 require get_parent_theme_file_path('/inc/cache-theme-style.php');
 
