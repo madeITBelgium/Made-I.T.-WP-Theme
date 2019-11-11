@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-17 17:15+0000\n"
+"POT-Creation-Date: 2019-11-11 19:19+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -33,7 +33,7 @@ msgid ""
 "different keywords."
 msgstr ""
 
-#: sidebar-left.php:15 functions.php:439
+#: sidebar-left.php:15 functions.php:444
 msgid "Left Sidebar"
 msgstr ""
 
@@ -61,151 +61,151 @@ msgstr ""
 msgid "Landingpage"
 msgstr ""
 
-#: functions.php:97 functions.php:217
+#: functions.php:100 functions.php:220
 msgid "Top Menu"
 msgstr ""
 
-#: functions.php:98 functions.php:228
+#: functions.php:101 functions.php:231
 msgid "Social Links Menu"
 msgstr ""
 
-#: functions.php:181
+#: functions.php:184
 msgctxt "Theme starter content"
 msgid "Koffie Machien"
 msgstr ""
 
-#: functions.php:185
+#: functions.php:188
 msgctxt "Theme starter content"
 msgid "Outside"
 msgstr ""
 
-#: functions.php:189
+#: functions.php:192
 msgctxt "Theme starter content"
 msgid "Inside"
 msgstr ""
 
-#: functions.php:193
+#: functions.php:196
 msgctxt "Theme starter content"
 msgid "Price table"
 msgstr ""
 
-#: functions.php:264
+#: functions.php:269
 msgid "White Color"
 msgstr ""
 
-#: functions.php:269
+#: functions.php:274
 msgid "Black Color"
 msgstr ""
 
-#: functions.php:274 inc/customizer.php:57
+#: functions.php:279 inc/customizer.php:57
 msgid "Text Color"
 msgstr ""
 
-#: functions.php:279 inc/customizer.php:69
+#: functions.php:284 inc/customizer.php:69
 msgid "Background Color"
 msgstr ""
 
-#: functions.php:284 inc/customizer.php:81
+#: functions.php:289 inc/customizer.php:81
 msgid "Primary Color"
 msgstr ""
 
-#: functions.php:289 inc/customizer.php:93
+#: functions.php:294 inc/customizer.php:93
 msgid "Secondary Color"
 msgstr ""
 
-#: functions.php:294 inc/customizer.php:106
+#: functions.php:299 inc/customizer.php:106
 msgid "Success Color"
 msgstr ""
 
-#: functions.php:299 inc/customizer.php:118
+#: functions.php:304 inc/customizer.php:118
 msgid "Info Color"
 msgstr ""
 
-#: functions.php:304 inc/customizer.php:130
+#: functions.php:309 inc/customizer.php:130
 msgid "Warning Color"
 msgstr ""
 
-#: functions.php:309 inc/customizer.php:142
+#: functions.php:314 inc/customizer.php:142
 msgid "Danger Color"
 msgstr ""
 
 #. If there are characters in your language that are not
 #. supported by Libre Franklin, translate this to 'off'. Do not translate
 #. into your own language.
-#: functions.php:376
+#: functions.php:381
 msgctxt "Libre Franklin font: on or off"
 msgid "on"
 msgstr ""
 
-#: functions.php:429
+#: functions.php:434
 msgid "Right Sidebar"
 msgstr ""
 
-#: functions.php:431
+#: functions.php:436
 msgid ""
 "Add widgets here to appear in your sidebar on blog posts and archive pages."
 msgstr ""
 
-#: functions.php:441
+#: functions.php:446
 msgid "Add widgets here to appear in your left sidebar."
 msgstr ""
 
-#: functions.php:449
+#: functions.php:454
 msgid "Footer 1"
 msgstr ""
 
-#: functions.php:451 functions.php:461
+#: functions.php:456 functions.php:466
 msgid "Add widgets here to appear in your footer."
 msgstr ""
 
-#: functions.php:459
+#: functions.php:464
 msgid "Footer 2"
 msgstr ""
 
-#: functions.php:469
+#: functions.php:474
 msgid "Below index blog"
 msgstr ""
 
-#: functions.php:471
+#: functions.php:476
 msgid "Add widgets here to appear below your blog/news list."
 msgstr ""
 
 #. %s: Name of current post
 #. %s: Name of current post
 #. %s: Name of current post
-#: functions.php:501 template-parts/page/content-page.php:26
+#: functions.php:506 template-parts/page/content-page.php:26
 #: template-parts/page/content-front-page.php:39
 #, php-format
 msgid "Continue reading<span class=\"screen-reader-text\"> \"%s\"</span>"
 msgstr ""
 
-#: functions.php:816
+#: functions.php:830
 msgid "Continue reading"
 msgstr ""
 
-#: functions.php:1259
+#: functions.php:1273
 msgid "Start shopping"
 msgstr ""
 
-#: functions.php:1263
+#: functions.php:1277
 msgid "View your shopping cart"
 msgstr ""
 
-#: functions.php:1267
+#: functions.php:1281
 #, php-format
 msgid "%d item"
 msgid_plural "%d items"
 msgstr[0] ""
 msgstr[1] ""
 
-#: functions.php:1288
+#: functions.php:1302
 #, php-format
 msgid ""
 "By using our website you are consenting to our use of cookies in accordance "
 "with our <a href=\"%s\">cookie & privacy policy</a>."
 msgstr ""
 
-#: functions.php:1305 functions.php:1323
+#: functions.php:1319 functions.php:1337
 msgid "Close"
 msgstr ""
 
@@ -492,6 +492,14 @@ msgstr ""
 
 #: template-parts/footer/footer-widgets.php:15
 msgid "Footer"
+msgstr ""
+
+#: template-parts/footer/site-info.php:10
+msgid "Privacy policy"
+msgstr ""
+
+#: template-parts/footer/site-info.php:10
+msgid "Login"
 msgstr ""
 
 #: template-parts/footer/site-info.php:10
