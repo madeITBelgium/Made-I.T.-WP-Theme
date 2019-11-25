@@ -463,7 +463,7 @@ a.bg-secondary:focus, a.bg-secondary:hover {
 }
 
 .bg-success {
-    background-color: '.$secondary_color.' !important;
+    background-color: '.$success_color.' !important;
 }
 
 a.bg-success:focus, a.bg-success:hover {
