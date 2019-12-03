@@ -206,3 +206,18 @@ jQuery( document ).ready( function( $ ) {
         return text;
     }
 });
+
+jQuery(document).ready( function( $ ) {
+    $('.wp-block-madeit-block-tabs').each(function() {
+        var i = 0;
+        var elm = $(this);
+        $(this).find('.nav-tabs a').each(function() {
+            var href = $(this).attr('href').substr(1, $(this).attr('href').length);
+            var id = Math.random().toString(36).substr(2, 9);
+            $(this).attr('href', '#' + id);
+            console.log('.wp-block-madeit-block-tabs-content[aria-labelledby=\'' + href + '-tab\']');
+            elm.find('.wp-block-madeit-block-tabs-content[aria-labelledby=\'' + href + '-tab\']').prop('id', id);
+            i++;
+        });
+    });
+});
