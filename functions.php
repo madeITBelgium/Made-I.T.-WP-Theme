@@ -43,6 +43,9 @@ if (!defined('MADEIT_WARNING_COLOR')) {
 if (!defined('MADEIT_DANGER_COLOR')) {
     define('MADEIT_DANGER_COLOR', '#dc3545');
 }
+if (!defined('SHOW_LOGIN_IN_FOOTER')) {
+    define('SHOW_LOGIN_IN_FOOTER', false);
+}
 
 if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
     require get_template_directory().'/inc/back-compat.php';
@@ -569,9 +572,11 @@ if (!function_exists('madeit_blocks_colors_inline')) {
             return;
         }
 
-        require_once get_parent_theme_file_path('/inc/color-patterns.php');
-        wp_enqueue_style('madeit-color-gutenberg', get_theme_file_uri().'style.css');
-        wp_add_inline_style('madeit-color-gutenberg', madeit_custom_colors_css());
+        if (!madeit_css_cacheExists()) {
+            require_once get_parent_theme_file_path('/inc/color-patterns.php');
+            wp_enqueue_style('madeit-color-gutenberg', get_theme_file_uri().'style.css');
+            wp_add_inline_style('madeit-color-gutenberg', madeit_custom_colors_css());
+        }
     }
     add_action('enqueue_block_editor_assets', 'madeit_colors_css_wrap');
 }
@@ -593,6 +598,13 @@ if (!function_exists('madeit_scripts')) {
         // Load the dark colorscheme.
         if ('dark' === get_theme_mod('colorscheme', 'light') || is_customize_preview()) {
             wp_enqueue_style('madeit-colors-dark', get_theme_file_uri('/assets/css/colors-dark.css'), ['madeit-style'], MADEIT_VERSION);
+        }
+
+        if (!madeit_css_cacheExists() || !madeit_css_isCacheUpToDate()) {
+            madeit_css_generateCache();
+        }
+        if (madeit_css_cacheExists()) {
+            wp_enqueue_style('madeit-custom-css', madeit_css_cacheUrl(), ['madeit-style'], wp_get_theme()->get('Version'));
         }
 
         // Load the html5 shiv.
@@ -1336,6 +1348,11 @@ if (!function_exists('madeit_cookie_notice')) {
     }
     add_action('wp_footer', 'madeit_cookie_notice');
 }
+
+/**
+ * CSS Cache mechanisme.
+ */
+require get_parent_theme_file_path('/inc/cache-theme-style.php');
 
 /**
  * Implement the Custom Header feature.

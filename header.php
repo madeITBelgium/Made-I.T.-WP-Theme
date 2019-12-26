@@ -24,16 +24,10 @@
     <?php if (has_nav_menu('top')) : ?>
         <?php get_template_part('template-parts/navigation/navigation', 'top'); ?>
     <?php endif; ?>
-    <?php if (is_front_page() || (!has_post_thumbnail() && get_theme_mod('show_header_on_sub_pages') == 1) || is_customize_preview()) : ?>
-        <?php
-        $style = 'display: none;';
-        if (is_front_page() || (!has_post_thumbnail() && get_theme_mod('show_header_on_sub_pages') == 1)) {
-            $style = '';
-        }
-        ?>
+    <?php if ((has_post_thumbnail() || has_custom_header()) && (get_theme_mod('show_header_on_sub_pages') == 1 || is_front_page())) : ?>
         <header id="masthead" class="container-fluid site-header <?php if (!is_front_page()) {
-            echo 'no-front-page';
-        } ?>" role="banner" style="<?php echo $style; ?>">
+    echo 'no-front-page';
+} ?>" role="banner">
             <div class="row">
                 <?php get_template_part('template-parts/header/header', 'image'); ?>
             </div>

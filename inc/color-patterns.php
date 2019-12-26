@@ -10,14 +10,14 @@
  */
 function madeit_custom_colors_css()
 {
-    $text_color = get_theme_mod('text_color_rgb', MADEIT_TEXT_COLOR);
-    $background_color = get_theme_mod('background_color_rgb', MADEIT_BACKGROUND_COLOR);
-    $primary_color = get_theme_mod('primary_color_rgb', MADEIT_PRIMARY_COLOR);
-    $secondary_color = get_theme_mod('secondary_color_rgb', MADEIT_SECONDARY_COLOR);
-    $success_color = get_theme_mod('success_color_rgb', MADEIT_SUCCESS_COLOR);
-    $info_color = get_theme_mod('info_color_rgb', MADEIT_INFO_COLOR);
-    $warning_color = get_theme_mod('warning_color_rgb', MADEIT_WARNING_COLOR);
-    $danger_color = get_theme_mod('danger_color_rgb', MADEIT_DANGER_COLOR);
+    $text_color = madeit_get_theme_color('text_color_rgb', MADEIT_TEXT_COLOR);
+    $background_color = madeit_get_theme_color('background_color_rgb', MADEIT_BACKGROUND_COLOR);
+    $primary_color = madeit_get_theme_color('primary_color_rgb', MADEIT_PRIMARY_COLOR);
+    $secondary_color = madeit_get_theme_color('secondary_color_rgb', MADEIT_SECONDARY_COLOR);
+    $success_color = madeit_get_theme_color('success_color_rgb', MADEIT_SUCCESS_COLOR);
+    $info_color = madeit_get_theme_color('info_color_rgb', MADEIT_INFO_COLOR);
+    $warning_color = madeit_get_theme_color('warning_color_rgb', MADEIT_WARNING_COLOR);
+    $danger_color = madeit_get_theme_color('danger_color_rgb', MADEIT_DANGER_COLOR);
 
     $colors = [
         'text'       => $text_color,
@@ -463,7 +463,7 @@ a.bg-secondary:focus, a.bg-secondary:hover {
 }
 
 .bg-success {
-    background-color: '.$secondary_color.' !important;
+    background-color: '.$success_color.' !important;
 }
 
 a.bg-success:focus, a.bg-success:hover {
