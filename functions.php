@@ -10,7 +10,7 @@
  * Made I.T. Theme only works in WordPress 4.7 or later.
  */
 if (!defined('MADEIT_VERSION')) {
-    define('MADEIT_VERSION', '2.1.0');
+    define('MADEIT_VERSION', '2.2.0');
 }
 /* Default colors */
 if (!defined('MADEIT_CUSTOM_COLOR')) {
@@ -592,6 +592,7 @@ if (!function_exists('madeit_scripts')) {
 
         // Theme stylesheet.
         wp_enqueue_style('madeit-style', get_stylesheet_uri(), [], wp_get_theme()->get('Version'));
+        wp_enqueue_style('madeit-gutenberg-style', get_theme_file_uri('/assets/css/gutenfront.css'), ['madeit-style', 'wp-editor'], wp_get_theme()->get('Version'));
 
         //wp_enqueue_style('font-awesome', get_theme_file_uri('/assets/css/font-awesome.min.css'), ['madeit-style'], '4.7.0');
 
@@ -1347,6 +1348,21 @@ if (!function_exists('madeit_cookie_notice')) {
         }
     }
     add_action('wp_footer', 'madeit_cookie_notice');
+}
+
+
+if(!function_exists('madeit_extend_gutenberg')) {
+    function madeit_extend_gutenberg() {
+        wp_enqueue_script( 'madeit-guten-script', get_theme_file_uri('/assets/js/gutenberg.js'), array( 'wp-blocks' ) );
+    }
+    add_action( 'enqueue_block_editor_assets', 'madeit_extend_gutenberg' );    
+}
+
+if(false && !function_exists('madeit_extend_gutenberg_css')) {
+    function madeit_extend_gutenberg_css() {
+        wp_enqueue_style( 'madeit-guten-style', get_theme_file_uri('/assets/css/gutenfront.css') );
+    }
+    add_action( 'enqueue_block_assets', 'madeit_extend_gutenberg_css' );
 }
 
 /**

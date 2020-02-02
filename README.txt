@@ -55,6 +55,10 @@ License: CC0 1.0 Universal (CC0 1.0)
 Source: https://unsplash.com/@englr?photo=bIhpiQA009k
 
 == Changelog ==
+= 2.2.0 =
+* Extra afbeelding stijl
+* Verbeterde popup
+
 = 2.1.1 =
 * Fix header image
 

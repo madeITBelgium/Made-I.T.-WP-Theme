@@ -5,3 +5,130 @@
 	font-weight: 400;
 	line-height: 1.66;
 }
+
+
+
+
+/* Gallery grid */
+.is-style-grid .blocks-gallery-grid {
+    -webkit-column-count: 3;
+    -moz-column-count: 3;
+    column-count: 3;
+    -webkit-column-gap: 0.5rem;
+    -moz-column-gap: 0.5rem;
+    column-gap: 0.5rem;
+    orphans: 1;
+    widows: 1;
+    display: block;
+}
+
+.is-style-grid.columns-1 .blocks-gallery-grid {
+    -webkit-column-count: 1;
+    -moz-column-count: 1;
+    column-count: 1;
+}
+
+.is-style-grid.columns-2 .blocks-gallery-grid {
+    -webkit-column-count: 2;
+    -moz-column-count: 2;
+    column-count: 2;
+}
+
+.is-style-grid.columns-3 .blocks-gallery-grid {
+    -webkit-column-count: 3;
+    -moz-column-count: 3;
+    column-count: 3;
+}
+
+.is-style-grid.columns-4 .blocks-gallery-grid {
+    -webkit-column-count: 4;
+    -moz-column-count: 4;
+    column-count: 4;
+}
+
+.is-style-grid.columns-5 .blocks-gallery-grid {
+    -webkit-column-count: 5;
+    -moz-column-count: 5;
+    column-count: 5;
+}
+
+.is-style-grid .blocks-gallery-item {
+    display: inline-block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.wp-block-gallery.is-style-grid.is-cropped .blocks-gallery-item img {
+    display: block !important;
+    max-width: 100% !important;
+    height: auto !important;
+    width: 100% !important;
+    object-fit: none !important;
+    -o-object-fit: none !important;
+}
+
+
+.is-style-eq-height {
+    
+}
+.is-style-eq-height .blocks-gallery-grid {
+    display: block;
+}
+
+.is-style-eq-height .blocks-gallery-item {
+    display: inline-block;
+    width: auto !important;
+    height: 100px;
+    position: relative;
+    margin: 0 6px 6px 0 !important;
+}
+
+.is-style-eq-height .blocks-gallery-item figure {
+    display: block;
+    height: auto;
+    width: auto;
+    position: relative;
+    margin-right: 6px !important;
+}
+.is-style-eq-height .blocks-gallery-item figure img {
+    height: 100px;
+}
+
+@media (min-width: 600px) {
+    .is-style-eq-height .blocks-gallery-item {
+    margin: 0 10px 10px 0;
+    }
+
+    .is-style-eq-height .blocks-gallery-item figure {
+        margin-right: 10px !important;
+    }
+}
+
+/* Square image */
+/*.wp-block-image.is-style-square {
+    position: relative;
+    overflow: hidden;
+}
+
+.wp-block-image.is-style-square figure {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+.wp-block-image.is-style-square a {
+    display: block;
+    height: 100%;
+    width: 100%;
+}
+
+.wp-block-image.is-style-square img {
+    object-fit: cover;
+    height: 100%;
+}
+
+.wp-block-image.is-style-square:after {
+  content: "";
+  display: block;
+  padding-bottom: 100%;
+}*/
