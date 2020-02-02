@@ -9,8 +9,8 @@
 ?>
 
 <?php
-if (is_active_sidebar('below-index-1')) :
-?>
+if (is_active_sidebar('below-index-1')) {
+    ?>
 <div class="container">
     <div class="row">
         <?php
@@ -20,8 +20,8 @@ if (is_active_sidebar('below-index-1')) :
                 <?php dynamic_sidebar('below-index-1'); ?>
             </div>
         <?php
-        }
-        ?>
+        } ?>
     </div>
 </div>
-<?php endif; ?>
+<?php
+} ?>

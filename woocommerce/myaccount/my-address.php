@@ -31,7 +31,7 @@ if (!wc_ship_to_billing_address_only() && wc_shipping_enabled()) {
 </p>
 
 <div class="row woocommerce-Addresses col2-set addresses">
-    <?php foreach ($get_addresses as $name => $title) : ?>
+    <?php foreach ($get_addresses as $name => $title) { ?>
 
         <div class="col-sm-3 woocommerce-Address">
             <header class="woocommerce-Address-title title">
@@ -44,5 +44,5 @@ if (!wc_ship_to_billing_address_only() && wc_shipping_enabled()) {
             ?></address>
         </div>
 
-    <?php endforeach; ?>
+    <?php } ?>
 </div>

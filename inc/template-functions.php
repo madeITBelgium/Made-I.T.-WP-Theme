@@ -116,14 +116,14 @@ function madeit_comment($comment, $args, $depth)
 {
     $GLOBALS['comment'] = $comment;
 
-    if ('pingback' == $comment->comment_type || 'trackback' == $comment->comment_type) : ?>
+    if ('pingback' == $comment->comment_type || 'trackback' == $comment->comment_type) { ?>
 
 	<li id="comment-<?php comment_ID(); ?>" <?php comment_class(); ?>>
 		<div class="comment-body">
 			<?php _e('Pingback:', 'madeit'); ?> <?php comment_author_link(); ?> <?php edit_comment_link(__('Edit', 'madeit'), '<span class="edit-link">', '</span>'); ?>
 		</div>
 
-	<?php else : ?>
+	<?php } else { ?>
 
 	<li id="comment-<?php comment_ID(); ?>" <?php comment_class(empty($args['has_children']) ? '' : 'parent'); ?>>
 		<article id="div-comment-<?php comment_ID(); ?>" class="comment-body">
@@ -144,9 +144,9 @@ function madeit_comment($comment, $args, $depth)
 					<?php edit_comment_link(__('Edit', 'madeit'), '<span class="edit-link">', '</span>'); ?>
 				</div><!-- .comment-metadata -->
 
-				<?php if ('0' == $comment->comment_approved) : ?>
+				<?php if ('0' == $comment->comment_approved) { ?>
 				<p class="comment-awaiting-moderation"><?php _e('Je comentaar wacht op een review van de beheerder.', 'madeit'); ?></p>
-				<?php endif; ?>
+				<?php } ?>
 			</footer><!-- .comment-meta -->
 
 			<div class="comment-content">
@@ -164,7 +164,7 @@ function madeit_comment($comment, $args, $depth)
 		</article><!-- .comment-body -->
 
 	<?php
-    endif;
+    }
 }
 
 function madeit_page_pagination($pages = '', $range = 2)

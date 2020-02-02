@@ -41,7 +41,7 @@ if (false === strpos($content, 'wp-playlist-script')) {
             }
             echo '</div><!-- .entry-meta -->';
         }
-        if ('' !== get_the_post_thumbnail()) :
+        if ('' !== get_the_post_thumbnail()) {
             ?>
             <div class="post-thumbnail">
                 <a href="<?php the_permalink(); ?>">
@@ -49,7 +49,7 @@ if (false === strpos($content, 'wp-playlist-script')) {
                 </a>
             </div>
             <?php
-        endif; ?>
+        } ?>
     </header>
     <div class="content">
         <?php

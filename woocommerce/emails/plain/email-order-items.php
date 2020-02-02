@@ -19,7 +19,7 @@
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
-foreach ($items as $item_id => $item) :
+foreach ($items as $item_id => $item) {
     if (apply_filters('woocommerce_order_item_visible', true, $item)) {
         $product = $item->get_product();
         echo apply_filters('woocommerce_order_item_name', $item->get_name(), $item, false);
@@ -45,4 +45,4 @@ foreach ($items as $item_id => $item) :
         echo "\n".do_shortcode(wp_kses_post($purchase_note));
     }
     echo "\n\n";
-endforeach;
+}

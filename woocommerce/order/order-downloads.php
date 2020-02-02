@@ -21,22 +21,22 @@ if (!defined('ABSPATH')) {
 }
 ?>
 <section class="woocommerce-order-downloads">
-	<?php if (isset($show_title)) : ?>
+	<?php if (isset($show_title)) { ?>
 		<h2 class="woocommerce-order-downloads__title"><?php esc_html_e('Downloads', 'woocommerce'); ?></h2>
-	<?php endif; ?>
+	<?php } ?>
 
 	<table class="woocommerce-table woocommerce-table--order-downloads shop_table shop_table_responsive order_details">
 		<thead>
 			<tr>
-				<?php foreach (wc_get_account_downloads_columns() as $column_id => $column_name) : ?>
+				<?php foreach (wc_get_account_downloads_columns() as $column_id => $column_name) { ?>
 				<th class="<?php echo esc_attr($column_id); ?>"><span class="nobr"><?php echo esc_html($column_name); ?></span></th>
-				<?php endforeach; ?>
+				<?php } ?>
 			</tr>
 		</thead>
 
-		<?php foreach ($downloads as $download) : ?>
+		<?php foreach ($downloads as $download) { ?>
 			<tr>
-				<?php foreach (wc_get_account_downloads_columns() as $column_id => $column_name) : ?>
+				<?php foreach (wc_get_account_downloads_columns() as $column_id => $column_name) { ?>
 					<td class="<?php echo esc_attr($column_id); ?>" data-title="<?php echo esc_attr($column_name); ?>">
 						<?php
                         if (has_action('woocommerce_account_downloads_column_'.$column_id)) {
@@ -67,8 +67,8 @@ if (!defined('ABSPATH')) {
                         }
                         ?>
 					</td>
-				<?php endforeach; ?>
+				<?php } ?>
 			</tr>
-		<?php endforeach; ?>
+		<?php } ?>
 	</table>
 </section>

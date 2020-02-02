@@ -25,9 +25,10 @@ do_action('woocommerce_before_main_content');
     <div class="row">
         <div class="col">
             <?php
-            while (have_posts()) : the_post();
+            while (have_posts()) {
+                the_post();
                 wc_get_template_part('content', 'single-product');
-            endwhile; // end of the loop.
+            } // end of the loop.
             ?>
         </div>
         <?php
