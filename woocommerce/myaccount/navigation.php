@@ -25,9 +25,9 @@ do_action('woocommerce_before_account_navigation');
 
 <nav class="woocommerce-MyAccount-navigation">
 	<div class="list-group">
-		<?php foreach (wc_get_account_menu_items() as $endpoint => $label) : ?>
+		<?php foreach (wc_get_account_menu_items() as $endpoint => $label) { ?>
 			<a href="<?php echo esc_url(wc_get_account_endpoint_url($endpoint)); ?>" class="list-group-item-action list-group-item <?php echo wc_get_account_menu_item_classes($endpoint); ?>"><?php echo esc_html($label); ?></a>
-		<?php endforeach; ?>
+		<?php } ?>
 	</div>
 </nav>
 

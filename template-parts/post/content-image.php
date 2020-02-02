@@ -35,7 +35,7 @@
             }
             echo '</div><!-- .entry-meta -->';
         }
-        if ('' !== get_the_post_thumbnail()) :
+        if ('' !== get_the_post_thumbnail()) {
             ?>
             <div class="post-thumbnail">
                 <a href="<?php the_permalink(); ?>">
@@ -43,7 +43,7 @@
                 </a>
             </div>
             <?php
-        endif; ?>
+        } ?>
     </header><!-- .entry-header -->
     <div class="content">
         <?php if (is_single() || '' === get_the_post_thumbnail()) {

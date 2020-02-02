@@ -23,15 +23,15 @@ $text_align = is_rtl() ? 'right' : 'left';
 <table class="td" cellspacing="0" cellpadding="6" style="width: 100%; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif; margin-bottom: 40px;" border="1">
 	<thead>
 		<tr>
-			<?php foreach ($columns as $column_id => $column_name) : ?>
+			<?php foreach ($columns as $column_id => $column_name) { ?>
 				<th class="td" scope="col" style="text-align:<?php echo esc_attr($text_align); ?>;"><?php echo esc_html($column_name); ?></th>
-			<?php endforeach; ?>
+			<?php } ?>
 		</tr>
 	</thead>
 
-	<?php foreach ($downloads as $download) : ?>
+	<?php foreach ($downloads as $download) { ?>
 		<tr>
-			<?php foreach ($columns as $column_id => $column_name) : ?>
+			<?php foreach ($columns as $column_id => $column_name) { ?>
 				<td class="td" style="text-align:<?php echo esc_attr($text_align); ?>;">
 					<?php
                     if (has_action('woocommerce_email_downloads_column_'.$column_id)) {
@@ -61,7 +61,7 @@ $text_align = is_rtl() ? 'right' : 'left';
                     }
                     ?>
 				</td>
-			<?php endforeach; ?>
+			<?php } ?>
 		</tr>
-	<?php endforeach; ?>
+	<?php } ?>
 </table>

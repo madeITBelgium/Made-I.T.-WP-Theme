@@ -74,12 +74,12 @@ if ($show_downloads) {
 					<?php
                 }
             ?>
-			<?php if ($order->get_customer_note()) : ?>
+			<?php if ($order->get_customer_note()) { ?>
 				<tr>
 					<th><?php _e('Note:', 'woocommerce'); ?></th>
 					<td><?php echo wptexturize($order->get_customer_note()); ?></td>
 				</tr>
-			<?php endif; ?>
+			<?php } ?>
 		</tfoot>
 	</table>
 

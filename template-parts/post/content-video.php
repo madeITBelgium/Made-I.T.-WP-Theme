@@ -44,13 +44,13 @@ if (false === strpos($content, 'wp-playlist-script')) {
         }
         ?>
         
-        <?php if ('' !== get_the_post_thumbnail() && !is_single() && empty($video)) : ?>
+        <?php if ('' !== get_the_post_thumbnail() && !is_single() && empty($video)) { ?>
             <div class="post-thumbnail">
                 <a href="<?php the_permalink(); ?>">
                     <?php the_post_thumbnail('madeit-featured-blog-image'); ?>
                 </a>
             </div>
-        <?php endif; ?>
+        <?php } ?>
     </header>
     <div class="content">
         <?php
