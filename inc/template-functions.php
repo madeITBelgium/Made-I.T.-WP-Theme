@@ -188,7 +188,7 @@ function madeit_page_pagination($pages = '', $range = 2)
         echo '<span class="sr-only">Page navigation</span>';
         echo '<ul class="pagination justify-content-center ft-wpbs">';
 
-        echo '<li class="page-item disabled hidden-md-down d-none d-lg-block"><span class="page-link">Page '.$paged.' of '.$pages.'</span></li>';
+        echo '<li class="page-item disabled d-none d-lg-block"><span class="page-link">' . __('Page', 'madeit') . ' '.$paged.' ' . __('of', 'madeit') . ' '.$pages.'</span></li>';
 
         if ($paged > 2 && $paged > $range + 1 && $showitems < $pages) {
             echo '<li class="page-item"><a class="page-link" href="'.get_pagenum_link(1).'" aria-label="First Page">&laquo;<span class="hidden-sm-down d-none d-md-inline-block mr-l"> ' . __('First', 'madeit') . '</span></a></li>';
