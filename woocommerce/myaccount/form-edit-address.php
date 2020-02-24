@@ -12,9 +12,9 @@ defined('ABSPATH') || exit;
 $page_title = ('billing' === $load_address) ? __('Billing address', 'woocommerce') : __('Shipping address', 'woocommerce');
 do_action('woocommerce_before_edit_account_address_form'); ?>
 
-<?php if (!$load_address) : ?>
+<?php if (!$load_address) { ?>
 	<?php wc_get_template('myaccount/my-address.php'); ?>
-<?php else : ?>
+<?php } else { ?>
 
 	<form method="post">
 
@@ -45,6 +45,6 @@ do_action('woocommerce_before_edit_account_address_form'); ?>
 
 	</form>
 
-<?php endif; ?>
+<?php } ?>
 
 <?php do_action('woocommerce_after_edit_account_address_form'); ?>s

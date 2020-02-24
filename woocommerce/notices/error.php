@@ -16,11 +16,11 @@ if (!$messages) {
 }
 ?>
 <ul class="alert alert-danger" role="alert">
-	<?php foreach ($messages as $message) : ?>
+	<?php foreach ($messages as $message) { ?>
 		<li>
 			<?php
                 echo wc_kses_notice($message);
             ?>
 		</li>
-	<?php endforeach; ?>
+	<?php } ?>
 </ul>

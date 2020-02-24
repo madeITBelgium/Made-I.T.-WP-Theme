@@ -26,8 +26,8 @@ $heading = esc_html(apply_filters('woocommerce_product_additional_information_he
 
 ?>
 
-<?php if ($heading) : ?>
+<?php if ($heading) { ?>
 	<h2><?php echo $heading; ?></h2>
-<?php endif; ?>
+<?php } ?>
 
 <?php do_action('woocommerce_product_additional_information', $product); ?>

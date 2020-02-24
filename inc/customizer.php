@@ -274,10 +274,10 @@ function madeit_customize_register($wp_customize)
 
     if (!function_exists('get_privacy_policy_url')) {
         $wp_customize->add_setting('cookie_url', [
-                'default'           => false,
-                'sanitize_callback' => 'absint',
-                'transport'         => 'refresh',
-            ]);
+            'default'           => false,
+            'sanitize_callback' => 'absint',
+            'transport'         => 'refresh',
+        ]);
 
         $wp_customize->add_control('cookie_url', [
             'label'           => __('Page of your cookie policy', 'madeit'),
