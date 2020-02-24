@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-if ($related_products) : ?>
+if ($related_products) { ?>
 
 	<section class="related products">
 
@@ -28,7 +28,7 @@ if ($related_products) : ?>
 
 		<?php woocommerce_product_loop_start(); ?>
 
-			<?php foreach ($related_products as $related_product) : ?>
+			<?php foreach ($related_products as $related_product) { ?>
 
 				<?php
                     $post_object = get_post($related_product->get_id());
@@ -37,12 +37,12 @@ if ($related_products) : ?>
 
                     wc_get_template_part('content', 'product'); ?>
 
-			<?php endforeach; ?>
+			<?php } ?>
 
 		<?php woocommerce_product_loop_end(); ?>
 
 	</section>
 
-<?php endif;
+<?php }
 
 wp_reset_postdata();

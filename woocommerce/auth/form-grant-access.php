@@ -30,9 +30,9 @@ if (!defined('ABSPATH')) {
 <p><?php printf(__('This will give "%1$s" %2$s access which will allow it to:', 'woocommerce'), '<strong>'.esc_html($app_name).'</strong>', '<strong>'.esc_html($scope).'</strong>'); ?></p>
 
 <ul class="wc-auth-permissions">
-	<?php foreach ($permissions as $permission) : ?>
+	<?php foreach ($permissions as $permission) { ?>
 		<li><?php echo esc_html($permission); ?></li>
-	<?php endforeach; ?>
+	<?php } ?>
 </ul>
 
 <div class="wc-auth-logged-in-as">

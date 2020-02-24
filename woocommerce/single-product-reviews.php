@@ -35,30 +35,30 @@ if (!comments_open()) {
             }
         ?></h2>
 
-		<?php if (have_comments()) : ?>
+		<?php if (have_comments()) { ?>
 
 			<ol class="commentlist">
 				<?php wp_list_comments(apply_filters('woocommerce_product_review_list_args', ['callback' => 'woocommerce_comments'])); ?>
 			</ol>
 
-			<?php if (get_comment_pages_count() > 1 && get_option('page_comments')) :
-                echo '<nav class="woocommerce-pagination">';
-                paginate_comments_links(apply_filters('woocommerce_comment_pagination_args', [
-                    'prev_text' => '&larr;',
-                    'next_text' => '&rarr;',
-                    'type'      => 'list',
-                ]));
-                echo '</nav>';
-            endif; ?>
+			<?php if (get_comment_pages_count() > 1 && get_option('page_comments')) {
+            echo '<nav class="woocommerce-pagination">';
+            paginate_comments_links(apply_filters('woocommerce_comment_pagination_args', [
+                'prev_text' => '&larr;',
+                'next_text' => '&rarr;',
+                'type'      => 'list',
+            ]));
+            echo '</nav>';
+        } ?>
 
-		<?php else : ?>
+		<?php } else { ?>
 
 			<p class="woocommerce-noreviews"><?php _e('There are no reviews yet.', 'woocommerce'); ?></p>
 
-		<?php endif; ?>
+		<?php } ?>
 	</div>
 
-	<?php if (get_option('woocommerce_review_rating_verification_required') === 'no' || wc_customer_bought_product('', get_current_user_id(), $product->get_id())) : ?>
+	<?php if (get_option('woocommerce_review_rating_verification_required') === 'no' || wc_customer_bought_product('', get_current_user_id(), $product->get_id())) { ?>
 
 		<div id="review_form_wrapper">
 			<div id="review_form">
@@ -99,11 +99,11 @@ if (!comments_open()) {
 			</div>
 		</div>
 
-	<?php else : ?>
+	<?php } else { ?>
 
 		<p class="woocommerce-verification-required"><?php _e('Only logged in customers who have purchased this product may leave a review.', 'woocommerce'); ?></p>
 
-	<?php endif; ?>
+	<?php } ?>
 
 	<div class="clear"></div>
 </div>

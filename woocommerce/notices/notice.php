@@ -16,10 +16,10 @@ if (!$messages) {
 }
 ?>
 
-<?php foreach ($messages as $message) : ?>
+<?php foreach ($messages as $message) { ?>
 	<div class="alert alert-info">
 		<?php
             echo wc_kses_notice($message);
         ?>
 	</div>
-<?php endforeach; ?>
+<?php } ?>

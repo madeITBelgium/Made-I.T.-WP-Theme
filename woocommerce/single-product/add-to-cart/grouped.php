@@ -76,7 +76,7 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 
 	<input type="hidden" name="add-to-cart" value="<?php echo esc_attr($product->get_id()); ?>" />
 
-	<?php if ($quantites_required) : ?>
+	<?php if ($quantites_required) { ?>
 
 		<?php do_action('woocommerce_before_add_to_cart_button'); ?>
 
@@ -84,7 +84,7 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 
 		<?php do_action('woocommerce_after_add_to_cart_button'); ?>
 
-	<?php endif; ?>
+	<?php } ?>
 </form>
 
 <?php do_action('woocommerce_after_add_to_cart_form'); ?>

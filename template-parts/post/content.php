@@ -30,7 +30,7 @@
             }
             echo '</div><!-- .entry-meta -->';
         }
-        if ('' !== get_the_post_thumbnail()) :
+        if ('' !== get_the_post_thumbnail()) {
             ?>
             <div class="post-thumbnail">
                 <a href="<?php the_permalink(); ?>">
@@ -38,7 +38,7 @@
                 </a>
             </div>
             <?php
-        endif; ?>
+        } ?>
 
     </header>
     <div class="content">

@@ -20,7 +20,7 @@ defined('ABSPATH') || exit;
 
 $available_gateways = WC()->payment_gateways->get_available_payment_gateways();
 
-if ($available_gateways) : ?>
+if ($available_gateways) { ?>
 	<form id="add_payment_method" method="post">
 		<div id="payment" class="woocommerce-Payment">
 			<ul class="woocommerce-PaymentMethods payment_methods methods">
@@ -53,6 +53,6 @@ if ($available_gateways) : ?>
 			</div>
 		</div>
 	</form>
-<?php else : ?>
+<?php } else { ?>
 	<p class="woocommerce-notice woocommerce-notice--info woocommerce-info"><?php esc_html_e('New payment methods can only be added during checkout. Please contact us if you require assistance.', 'woocommerce'); ?></p>
-<?php endif; ?>
+<?php } ?>
