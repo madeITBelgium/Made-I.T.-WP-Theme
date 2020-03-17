@@ -34,12 +34,12 @@ if (!defined('ABSPATH')) {
 		<?php esc_html_e('Total:', 'woocommerce'); ?>
 		<strong><?php echo wp_kses_post($order->get_formatted_order_total()); ?></strong>
 	</li>
-	<?php if ($order->get_payment_method_title()) : ?>
+	<?php if ($order->get_payment_method_title()) { ?>
 	<li class="method">
 		<?php esc_html_e('Payment method:', 'woocommerce'); ?>
 		<strong><?php echo wp_kses_post($order->get_payment_method_title()); ?></strong>
 	</li>
-	<?php endif; ?>
+	<?php } ?>
 </ul>
 
 <?php do_action('woocommerce_receipt_'.$order->get_payment_method(), $order->get_id()); ?>

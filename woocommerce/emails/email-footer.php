@@ -1,6 +1,6 @@
 <?php
 /**
- * Email Footer
+ * Email Footer.
  *
  * This template can be overridden by copying it to yourtheme/woocommerce/emails/email-footer.php.
  *
@@ -11,11 +11,10 @@
  * the readme will list any important changes.
  *
  * @see https://docs.woocommerce.com/document/template-structure/
- * @package WooCommerce/Templates/Emails
+ *
  * @version 3.7.0
  */
-
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 ?>
 															</div>
 														</td>
@@ -40,7 +39,7 @@ defined( 'ABSPATH' ) || exit;
 									<table border="0" cellpadding="10" cellspacing="0" width="100%">
 										<tr>
 											<td colspan="2" valign="middle" id="credit">
-												<?php echo wp_kses_post( wpautop( wptexturize( apply_filters( 'woocommerce_email_footer_text', get_option( 'woocommerce_email_footer_text' ) ) ) ) ); ?>
+												<?php echo wp_kses_post(wpautop(wptexturize(apply_filters('woocommerce_email_footer_text', get_option('woocommerce_email_footer_text'))))); ?>
 											</td>
 										</tr>
 									</table>

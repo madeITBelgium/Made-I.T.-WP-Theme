@@ -5,7 +5,7 @@ class MadeITChildPageMenu extends WP_Widget
     public function __construct()
     {
         parent::__construct(
-             'madeit_child_pages',
+            'madeit_child_pages',
             __('Child pages menu', 'madeit'),
             ['description' => __('Add side menu with child pages', 'madeit')]
         );

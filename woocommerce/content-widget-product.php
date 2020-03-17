@@ -35,9 +35,9 @@ if (!is_a($product, 'WC_Product')) {
 		<span class="product-title"><?php echo wp_kses_post($product->get_name()); ?></span>
 	</a>
 
-	<?php if (!empty($show_rating)) : ?>
+	<?php if (!empty($show_rating)) { ?>
 		<?php echo wc_get_rating_html($product->get_average_rating()); ?>
-	<?php endif; ?>
+	<?php } ?>
 
 	<?php echo $product->get_price_html(); ?>
 
