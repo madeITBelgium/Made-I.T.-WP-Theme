@@ -6,21 +6,21 @@
  *
  * @author      Made I.T.
  *
- * @version     3.5.0
+ * @version 3.9.0
  */
-if (!defined('ABSPATH')) {
-    exit;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
-if (!$messages) {
-    return;
+
+if ( ! $notices ) {
+	return;
 }
 ?>
 <ul class="alert alert-danger" role="alert">
-	<?php foreach ($messages as $message) : ?>
-		<li>
-			<?php
-                echo wc_kses_notice($message);
-            ?>
+	<?php foreach ( $notices as $notice ) : ?>
+		<li<?php echo wc_get_notice_data_attr( $notice ); ?>>
+			<?php echo wc_kses_notice( $notice['notice'] ); ?>
 		</li>
 	<?php endforeach; ?>
 </ul>

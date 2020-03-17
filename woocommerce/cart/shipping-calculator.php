@@ -14,7 +14,7 @@
  *
  * @author 		WooThemes
  *
- * @version     3.5.0
+ * @version     4.0.0
  */
 defined('ABSPATH') || exit;
 
@@ -30,7 +30,7 @@ do_action('woocommerce_before_shipping_calculator'); ?>
         
  			<p class="form-row form-row-wide" id="calc_shipping_country_field">
 				<select name="calc_shipping_country" id="calc_shipping_country" class="country_to_state country_select" rel="calc_shipping_state">
-					<option value=""><?php esc_html_e('Select a country&hellip;', 'woocommerce'); ?></option>
+					<option value=""><?php esc_html_e('Select a country / region&hellip;', 'woocommerce'); ?></option>
 					<?php
                     foreach (WC()->countries->get_shipping_countries() as $key => $value) {
                         echo '<option value="'.esc_attr($key).'"'.selected(WC()->customer->get_shipping_country(), esc_attr($key), false).'>'.esc_html($value).'</option>';
@@ -53,8 +53,8 @@ do_action('woocommerce_before_shipping_calculator'); ?>
                         <?php
                     } elseif (is_array($states)) {
                         ?><span>
-                            <select name="calc_shipping_state" class="state_select" id="calc_shipping_state" placeholder="<?php esc_attr_e('State / County', 'woocommerce'); ?>">
-                                <option value=""><?php esc_html_e('Select a state&hellip;', 'woocommerce'); ?></option>
+                            <select name="calc_shipping_state" class="state_select" id="calc_shipping_state" data-placeholder="<?php esc_attr_e('State / County', 'woocommerce'); ?>">
+                                <option value=""><?php esc_html_e('Select an option&hellip;', 'woocommerce'); ?></option>
                                 <?php
                                 foreach ($states as $ckey => $cvalue) {
                                     echo '<option value="'.esc_attr($ckey).'" '.selected($current_r, $ckey, false).'>'.esc_html($cvalue).'</option>';

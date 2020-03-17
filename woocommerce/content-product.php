@@ -6,7 +6,7 @@
  *
  * @author  Made I.T.
  *
- * @version 3.4.0
+ * @version 3.6.0
  */
 defined('ABSPATH') || exit;
 
@@ -17,7 +17,7 @@ if (empty($product) || !$product->is_visible()) {
     return;
 }
 ?>
-<div <?php wc_product_class('col-lg-4 col-md-6 mb-4'); ?>>
+<div <?php wc_product_class('col-lg-4 col-md-6 mb-4', $product); ?>>
     <div class="card h-100">
         <a href="<?php echo get_the_permalink(); ?>">
             <?php

@@ -16,7 +16,7 @@
  *
  * @author 		WooThemes
  *
- * @version     3.5.0
+ * @version     3.6.0
  */
 defined('ABSPATH') || exit;
 
@@ -59,7 +59,11 @@ $calculator_text = '';
 			<?php endif; ?>
 		<?php
         elseif (!$has_calculated_shipping || !$formatted_destination) :
-            esc_html_e('Enter your address to view shipping options.', 'woocommerce');
+            if ( is_cart() && 'no' === get_option( 'woocommerce_enable_shipping_calc' ) ) {
+				echo wp_kses_post( apply_filters( 'woocommerce_shipping_not_enabled_on_cart_html', __( 'Shipping costs are calculated during checkout.', 'woocommerce' ) ) );
+			} else {
+				echo wp_kses_post( apply_filters( 'woocommerce_shipping_may_be_available_html', __( 'Enter your address to view shipping options.', 'woocommerce' ) ) );
+			}
         elseif (!is_cart()) :
             echo wp_kses_post(apply_filters('woocommerce_no_shipping_available_html', __('There are no shipping methods available. Please ensure that your address has been entered correctly, or contact us if you need any help.', 'woocommerce')));
         else :

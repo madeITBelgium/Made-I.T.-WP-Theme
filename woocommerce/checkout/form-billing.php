@@ -6,11 +6,9 @@
  *
  * @author  Made I.T.
  *
- * @version 3.0.9
+ * @version 3.6.0
  */
-if (!defined('ABSPATH')) {
-    exit; // Exit if accessed directly
-}
+defined( 'ABSPATH' ) || exit;
 
 /* @global WC_Checkout $checkout */
 
@@ -18,11 +16,11 @@ if (!defined('ABSPATH')) {
 <div class="woocommerce-billing-fields">
 	<?php if (wc_ship_to_billing_address_only() && WC()->cart->needs_shipping()) : ?>
 
-		<h3><?php _e('Billing &amp; Shipping', 'woocommerce'); ?></h3>
+		<h3><?php esc_html_e('Billing &amp; Shipping', 'woocommerce'); ?></h3>
 
 	<?php else : ?>
 
-		<h3><?php _e('Billing details', 'woocommerce'); ?></h3>
+		<h3><?php esc_html_e('Billing details', 'woocommerce'); ?></h3>
 
 	<?php endif; ?>
 
@@ -30,12 +28,10 @@ if (!defined('ABSPATH')) {
 
 	<div class="woocommerce-billing-fields__field-wrapper">
 		<?php
-            $fields = $checkout->get_checkout_fields('billing');
+            $fields = $checkout->get_checkout_fields( 'billing' );
 
-            foreach ($fields as $key => $field) {
-                if (isset($field['country_field'], $fields[$field['country_field']])) {
-                    $field['country'] = $checkout->get_value($field['country_field']);
-                }
+            foreach ( $fields as $key => $field ) {
+                //woocommerce_form_field( $key, $field, $checkout->get_value( $key ) );
                 madeit_woocommerce_form_field($key, $field, $checkout->get_value($key));
             }
         ?>
@@ -50,7 +46,7 @@ if (!defined('ABSPATH')) {
 
 			<p class="form-row form-row-wide create-account">
 				<label class="woocommerce-form__label woocommerce-form__label-for-checkbox checkbox">
-					<input class="woocommerce-form__input woocommerce-form__input-checkbox input-checkbox" id="createaccount" <?php checked((true === $checkout->get_value('createaccount') || (true === apply_filters('woocommerce_create_account_default_checked', false))), true) ?> type="checkbox" name="createaccount" value="1" /> <span><?php _e('Create an account?', 'woocommerce'); ?></span>
+					<input class="woocommerce-form__input woocommerce-form__input-checkbox input-checkbox" id="createaccount" <?php checked((true === $checkout->get_value('createaccount') || (true === apply_filters('woocommerce_create_account_default_checked', false))), true); ?> type="checkbox" name="createaccount" value="1" /> <span><?php esc_html_e('Create an account?', 'woocommerce'); ?></span>
 				</label>
 			</p>
 
