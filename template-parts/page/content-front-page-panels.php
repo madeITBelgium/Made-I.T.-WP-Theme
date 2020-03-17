@@ -14,18 +14,18 @@ if (function_exists('is_cart')) {
 }
 ?>
 <article id="panel<?php echo $madeitcounter; ?>" <?php post_class('madeit-panel '); ?> >
-    <?php if (has_post_thumbnail()) :
-        $thumbnail = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID), 'madeit-featured-image');
+    <?php if (has_post_thumbnail()) {
+    $thumbnail = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID), 'madeit-featured-image');
 
-        // Calculate aspect ratio: h / w * 100%.
-        $ratio = $thumbnail[2] / $thumbnail[1] * 100;
-        ?>
+    // Calculate aspect ratio: h / w * 100%.
+    $ratio = $thumbnail[2] / $thumbnail[1] * 100; ?>
 
         <div class="panel-image" style="background-image: url(<?php echo esc_url($thumbnail[0]); ?>);">
             <div class="panel-image-prop" style="padding-top: <?php echo esc_attr($ratio); ?>%"></div>
         </div><!-- .panel-image -->
 
-    <?php endif; ?>
+    <?php
+} ?>
 
     <div class="<?php echo get_theme_mod('container_type'); ?> changable-container">
         <div class="row voffset8 vbottom8">
@@ -38,8 +38,8 @@ if (function_exists('is_cart')) {
                 </header><!-- .entry-header -->
             </div>
             <div class="col-sm two-column-row <?php if ((is_page() || is_archive()) && 'one-column' === get_theme_mod('page_layout') || $onlyOneColumn) {
-            echo 'row';
-        } ?>">
+        echo 'row';
+    } ?>">
                 <div class="entry-content">
                     <?php
                         /* translators: %s: Name of current post */
@@ -52,7 +52,7 @@ if (function_exists('is_cart')) {
 
                 <?php
                 // Show recent blog posts if is blog posts page (Note that get_option returns a string, so we're casting the result as an int).
-                if (get_the_ID() === (int) get_option('page_for_posts')) : ?>
+                if (get_the_ID() === (int) get_option('page_for_posts')) { ?>
 
                     <?php // Show four most recent posts.
                     $recent_posts = new WP_Query([
@@ -63,19 +63,20 @@ if (function_exists('is_cart')) {
                     ]);
                     ?>
 
-                    <?php if ($recent_posts->have_posts()) : ?>
+                    <?php if ($recent_posts->have_posts()) { ?>
 
                         <div class="recent-posts">
 
                             <?php
-                            while ($recent_posts->have_posts()) : $recent_posts->the_post();
+                            while ($recent_posts->have_posts()) {
+                                $recent_posts->the_post();
                                 get_template_part('template-parts/post/content', 'excerpt');
-                            endwhile;
+                            }
                             wp_reset_postdata();
                             ?>
                         </div><!-- .recent-posts -->
-                    <?php endif; ?>
-                <?php endif; ?>
+                    <?php } ?>
+                <?php } ?>
             </div>
 
         </div><!-- .wrap -->

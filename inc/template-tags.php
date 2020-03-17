@@ -48,7 +48,8 @@ if (!function_exists('madeit_time_link')) {
         if (get_the_time('U') !== get_the_modified_time('U')) {
             $time_string = '<time class="updated" datetime="%1$s">%2$s</time>';
 
-            $time_string = sprintf($time_string,
+            $time_string = sprintf(
+                $time_string,
                 get_the_modified_date(DATE_W3C),
                 get_the_modified_date()
             );

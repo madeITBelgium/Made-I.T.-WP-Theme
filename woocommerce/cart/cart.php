@@ -43,12 +43,12 @@ do_action('woocommerce_before_cart'); ?>
 						<td class="product-remove">
 							<?php
                                 echo apply_filters('woocommerce_cart_item_remove_link', sprintf(
-                                    '<a href="%s" class="remove" aria-label="%s" data-product_id="%s" data-product_sku="%s">&times;</a>',
-                                    esc_url(wc_get_cart_remove_url($cart_item_key)),
-                                    esc_html__('Remove this item', 'woocommerce'),
-                                    esc_attr($product_id),
-                                    esc_attr($_product->get_sku())
-                                ), $cart_item_key); ?>
+                        '<a href="%s" class="remove" aria-label="%s" data-product_id="%s" data-product_sku="%s">&times;</a>',
+                        esc_url(wc_get_cart_remove_url($cart_item_key)),
+                        esc_html__('Remove this item', 'woocommerce'),
+                        esc_attr($product_id),
+                        esc_attr($_product->get_sku())
+                    ), $cart_item_key); ?>
 						</td>
 
 						<td class="product-thumbnail">
@@ -140,7 +140,7 @@ do_action('woocommerce_before_cart'); ?>
 	<?php do_action('woocommerce_after_cart_table'); ?>
 </form>
 
-<?php do_action( 'woocommerce_before_cart_collaterals' ); ?>
+<?php do_action('woocommerce_before_cart_collaterals'); ?>
 
 <div class="cart-collaterals">
 	<?php

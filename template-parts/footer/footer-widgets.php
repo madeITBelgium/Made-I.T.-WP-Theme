@@ -9,8 +9,8 @@
 ?>
 
 <?php
-if (is_active_sidebar('sidebar-2') || is_active_sidebar('sidebar-3')) :
-?>
+if (is_active_sidebar('sidebar-2') || is_active_sidebar('sidebar-3')) {
+    ?>
 <div class="container">
     <div class="row" role="complementary" aria-label="<?php esc_attr_e('Footer', 'madeit'); ?>">
         <?php
@@ -21,13 +21,14 @@ if (is_active_sidebar('sidebar-2') || is_active_sidebar('sidebar-3')) :
             </div>
         <?php
         }
-        if (is_active_sidebar('sidebar-3')) {
-            ?>
+    if (is_active_sidebar('sidebar-3')) {
+        ?>
             <div class="col-sm footer-widget-2">
                 <?php dynamic_sidebar('sidebar-3'); ?>
             </div>
         <?php
-        } ?>
+    } ?>
     </div>
 </div>
-<?php endif; ?>
+<?php
+} ?>

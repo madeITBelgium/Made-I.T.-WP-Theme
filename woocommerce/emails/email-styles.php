@@ -1,6 +1,6 @@
 <?php
 /**
- * Email Styles
+ * Email Styles.
  *
  * This template can be overridden by copying it to yourtheme/woocommerce/emails/email-styles.php.
  *
@@ -11,34 +11,33 @@
  * the readme will list any important changes.
  *
  * @see     https://docs.woocommerce.com/document/template-structure/
- * @package WooCommerce/Templates/Emails
+ *
  * @version 4.0.0
  */
-
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+if (!defined('ABSPATH')) {
+    exit;
 }
 
 // Load colors.
-$bg        = get_option( 'woocommerce_email_background_color' );
-$body      = get_option( 'woocommerce_email_body_background_color' );
-$base      = get_option( 'woocommerce_email_base_color' );
-$base_text = wc_light_or_dark( $base, '#202020', '#ffffff' );
-$text      = get_option( 'woocommerce_email_text_color' );
+$bg = get_option('woocommerce_email_background_color');
+$body = get_option('woocommerce_email_body_background_color');
+$base = get_option('woocommerce_email_base_color');
+$base_text = wc_light_or_dark($base, '#202020', '#ffffff');
+$text = get_option('woocommerce_email_text_color');
 
 // Pick a contrasting color for links.
-$link_color = wc_hex_is_light( $base ) ? $base : $base_text;
+$link_color = wc_hex_is_light($base) ? $base : $base_text;
 
-if ( wc_hex_is_light( $body ) ) {
-	$link_color = wc_hex_is_light( $base ) ? $base_text : $base;
+if (wc_hex_is_light($body)) {
+    $link_color = wc_hex_is_light($base) ? $base_text : $base;
 }
 
-$bg_darker_10    = wc_hex_darker( $bg, 10 );
-$body_darker_10  = wc_hex_darker( $body, 10 );
-$base_lighter_20 = wc_hex_lighter( $base, 20 );
-$base_lighter_40 = wc_hex_lighter( $base, 40 );
-$text_lighter_20 = wc_hex_lighter( $text, 20 );
-$text_lighter_40 = wc_hex_lighter( $text, 40 );
+$bg_darker_10 = wc_hex_darker($bg, 10);
+$body_darker_10 = wc_hex_darker($body, 10);
+$base_lighter_20 = wc_hex_lighter($base, 20);
+$base_lighter_40 = wc_hex_lighter($base, 40);
+$text_lighter_20 = wc_hex_lighter($text, 20);
+$text_lighter_40 = wc_hex_lighter($text, 40);
 
 // !important; is a gmail hack to prevent styles being stripped if it doesn't like something.
 // body{padding: 0;} ensures proper scale/positioning of the email in the iOS native email app.
@@ -48,7 +47,7 @@ body {
 }
 
 #wrapper {
-	background-color: <?php echo esc_attr( $bg ); ?>;
+	background-color: <?php echo esc_attr($bg); ?>;
 	margin: 0;
 	padding: 70px 0;
 	-webkit-text-size-adjust: none !important;
@@ -57,15 +56,15 @@ body {
 
 #template_container {
 	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1) !important;
-	background-color: <?php echo esc_attr( $body ); ?>;
-	border: 1px solid <?php echo esc_attr( $bg_darker_10 ); ?>;
+	background-color: <?php echo esc_attr($body); ?>;
+	border: 1px solid <?php echo esc_attr($bg_darker_10); ?>;
 	border-radius: 3px !important;
 }
 
 #template_header {
-	background-color: <?php echo esc_attr( $base ); ?>;
+	background-color: <?php echo esc_attr($base); ?>;
 	border-radius: 3px 3px 0 0 !important;
-	color: <?php echo esc_attr( $base_text ); ?>;
+	color: <?php echo esc_attr($base_text); ?>;
 	border-bottom: 0;
 	font-weight: bold;
 	line-height: 100%;
@@ -75,7 +74,7 @@ body {
 
 #template_header h1,
 #template_header h1 a {
-	color: <?php echo esc_attr( $base_text ); ?>;
+	color: <?php echo esc_attr($base_text); ?>;
 }
 
 #template_header_image img {
@@ -90,7 +89,7 @@ body {
 
 #template_footer #credit {
 	border: 0;
-	color: <?php echo esc_attr( $text_lighter_40 ); ?>;
+	color: <?php echo esc_attr($text_lighter_40); ?>;
 	font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
 	font-size: 12px;
 	line-height: 150%;
@@ -103,7 +102,7 @@ body {
 }
 
 #body_content {
-	background-color: <?php echo esc_attr( $body ); ?>;
+	background-color: <?php echo esc_attr($body); ?>;
 }
 
 #body_content table td {
@@ -139,7 +138,7 @@ body {
 }
 
 #body_content_inner {
-	color: <?php echo esc_attr( $text_lighter_20 ); ?>;
+	color: <?php echo esc_attr($text_lighter_20); ?>;
 	font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
 	font-size: 14px;
 	line-height: 150%;
@@ -147,24 +146,24 @@ body {
 }
 
 .td {
-	color: <?php echo esc_attr( $text_lighter_20 ); ?>;
-	border: 1px solid <?php echo esc_attr( $body_darker_10 ); ?>;
+	color: <?php echo esc_attr($text_lighter_20); ?>;
+	border: 1px solid <?php echo esc_attr($body_darker_10); ?>;
 	vertical-align: middle;
 }
 
 .address {
 	padding: 12px;
-	color: <?php echo esc_attr( $text_lighter_20 ); ?>;
-	border: 1px solid <?php echo esc_attr( $body_darker_10 ); ?>;
+	color: <?php echo esc_attr($text_lighter_20); ?>;
+	border: 1px solid <?php echo esc_attr($body_darker_10); ?>;
 }
 
 .text {
-	color: <?php echo esc_attr( $text ); ?>;
+	color: <?php echo esc_attr($text); ?>;
 	font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
 }
 
 .link {
-	color: <?php echo esc_attr( $base ); ?>;
+	color: <?php echo esc_attr($base); ?>;
 }
 
 #header_wrapper {
@@ -173,18 +172,18 @@ body {
 }
 
 h1 {
-	color: <?php echo esc_attr( $base ); ?>;
+	color: <?php echo esc_attr($base); ?>;
 	font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
 	font-size: 30px;
 	font-weight: 300;
 	line-height: 150%;
 	margin: 0;
 	text-align: <?php echo is_rtl() ? 'right' : 'left'; ?>;
-	text-shadow: 0 1px 0 <?php echo esc_attr( $base_lighter_20 ); ?>;
+	text-shadow: 0 1px 0 <?php echo esc_attr($base_lighter_20); ?>;
 }
 
 h2 {
-	color: <?php echo esc_attr( $base ); ?>;
+	color: <?php echo esc_attr($base); ?>;
 	display: block;
 	font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
 	font-size: 18px;
@@ -195,7 +194,7 @@ h2 {
 }
 
 h3 {
-	color: <?php echo esc_attr( $base ); ?>;
+	color: <?php echo esc_attr($base); ?>;
 	display: block;
 	font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
 	font-size: 16px;
@@ -206,7 +205,7 @@ h3 {
 }
 
 a {
-	color: <?php echo esc_attr( $link_color ); ?>;
+	color: <?php echo esc_attr($link_color); ?>;
 	font-weight: normal;
 	text-decoration: underline;
 }
