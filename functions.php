@@ -552,12 +552,14 @@ if (!function_exists('madeit_colors_css_wrap')) {
         if (is_admin()) {
             return;
         }
-
-        require_once get_parent_theme_file_path('/inc/color-patterns.php'); ?>
-        <style type="text/css" id="custom-theme-colors">
-            <?php echo madeit_custom_colors_css(); ?>
-        </style>
-    <?php
+        
+        if (!madeit_css_cacheExists()) {
+            require_once get_parent_theme_file_path('/inc/color-patterns.php'); ?>
+            <style type="text/css" id="custom-theme-colors">
+                <?php echo madeit_custom_colors_css(); ?>
+            </style>
+            <?php
+        }
     }
     add_action('wp_head', 'madeit_colors_css_wrap');
 }
