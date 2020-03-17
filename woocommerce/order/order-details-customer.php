@@ -22,11 +22,10 @@ if (!defined('ABSPATH')) {
 $show_shipping = !wc_ship_to_billing_address_only() && $order->needs_shipping_address();
 ?>
 <section class="woocommerce-customer-details">
-
 	<?php if ($show_shipping) : ?>
 
-	<section class="woocommerce-columns woocommerce-columns--2 woocommerce-columns--addresses col2-set addresses">
-		<div class="woocommerce-column woocommerce-column--1 woocommerce-column--billing-address col-1">
+	<section class="row addresses">
+		<div class="woocommerce-column--billing-address col col-md-6">
 
 	<?php endif; ?>
 
@@ -48,7 +47,7 @@ $show_shipping = !wc_ship_to_billing_address_only() && $order->needs_shipping_ad
 
 		</div><!-- /.col-1 -->
 
-		<div class="woocommerce-column woocommerce-column--2 woocommerce-column--shipping-address col-2">
+		<div class="woocommerce-column--shipping-address col col-md-6">
 			<h2 class="woocommerce-column__title"><?php esc_html_e('Shipping address', 'woocommerce'); ?></h2>
 			<address>
 				<?php echo wp_kses_post($order->get_formatted_shipping_address(__('N/A', 'woocommerce'))); ?>

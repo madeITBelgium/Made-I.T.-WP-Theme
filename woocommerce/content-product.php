@@ -30,16 +30,16 @@ if (empty($product) || !$product->is_visible()) {
             do_action('woocommerce_before_shop_loop_item_title');
             ?>
         </a>
-        <div class="card-body">
+        <div class="card-body text-center">
             <h4 class="card-title">
                 <a href="<?php echo get_the_permalink(); ?>"><?php echo get_the_title(); ?></a>
             </h4>
             <div class="h5"><?php wc_get_template('loop/price.php'); ?></div>
             <?php woocommerce_template_loop_add_to_cart(['class' => 'btn btn-success']); ?>
         </div>
-        <div class="card-footer">
+        <div class="card-footer d-none">
             <?php wc_get_template('loop/rating.php'); ?>
-            <small class="text-muted">★ ★ ★ ★ ☆</small>
+            <?php /* <small class="text-muted">★ ★ ★ ★ ☆</small> */ ?>
         </div>
     </div>
 </div>
