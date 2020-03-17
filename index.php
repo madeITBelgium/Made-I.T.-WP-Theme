@@ -15,24 +15,25 @@
 get_header(); ?>
 
 <div class="container voffset6">
-    <?php if (is_home() && !is_front_page()) : ?>
+    <?php if (is_home() && !is_front_page()) { ?>
         <header class="page-header">
             <h1 class="page-title"><?php single_post_title(); ?></h1>
         </header>
-    <?php else : ?>
+    <?php } else { ?>
         <header class="page-header">
             <h2 class="page-title"><?php _e('Posts', 'madeit'); ?></h2>
         </header>
-    <?php endif; ?>
+    <?php } ?>
 
     <div class="row">
         <div id="primary" class="col" id="main" role="main">
 
             <?php
-            if (have_posts()) :
+            if (have_posts()) {
 
                 /* Start the Loop */
-                while (have_posts()) : the_post();
+                while (have_posts()) {
+                    the_post();
 
                     /*
                      * Include the Post-Format-specific template for the content.
@@ -40,15 +41,12 @@ get_header(); ?>
                      * called content-___.php (where ___ is the Post Format name) and that will be used instead.
                      */
                     get_template_part('template-parts/post/content', get_post_format());
-
-                endwhile;
+                }
 
                 madeit_page_pagination();
-            else :
-
+            } else {
                 get_template_part('template-parts/post/content', 'none');
-
-            endif;
+            }
 
             get_template_part('template-parts/post/below-index', 'widgets');
             ?>

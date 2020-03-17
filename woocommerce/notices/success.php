@@ -12,13 +12,13 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-if ( ! $notices ) {
-	return;
+if (!$notices) {
+    return;
 }
 ?>
 
-<?php foreach ($notices as $notice) : ?>
-	<div class="alert alert-success"<?php echo wc_get_notice_data_attr( $notice ); ?> role="alert">
-		<?php echo wc_kses_notice( $notice['notice'] ); ?>
+<?php foreach ($notices as $notice) { ?>
+	<div class="alert alert-success"<?php echo wc_get_notice_data_attr($notice); ?> role="alert">
+		<?php echo wc_kses_notice($notice['notice']); ?>
 	</div>
-<?php endforeach; ?>
+<?php } ?>

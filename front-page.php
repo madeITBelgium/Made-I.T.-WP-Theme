@@ -11,8 +11,9 @@
 get_header(); ?>
 
 <?php // Show the selected frontpage content.
-if (have_posts()) :
-    while (have_posts()) : the_post();
+if (have_posts()) {
+    while (have_posts()) {
+        the_post();
         if (false !== strpos($post->post_content, '<!-- wp:madeit/block-container') || false !== strpos($post->post_content, '<!-- wp:madeit/block-content')) {
             get_template_part('template-parts/page/content', 'front-page-gutenberg');
         } elseif (false !== strpos($post->post_content, '<!-- wp:')) {
@@ -20,15 +21,15 @@ if (have_posts()) :
         } else {
             get_template_part('template-parts/page/content', 'front-page');
         }
-    endwhile;
-else : // I'm not sure it's possible to have no posts when this page is shown, but WTH.
+    }
+} else { // I'm not sure it's possible to have no posts when this page is shown, but WTH.
     get_template_part('template-parts/post/content', 'none');
-endif;
+}
 ?>
 
 <?php
 // Get each of our panels and show the post data.
-if (0 !== madeit_panel_count() || is_customize_preview()) : // If we have pages to show.
+if (0 !== madeit_panel_count() || is_customize_preview()) { // If we have pages to show.
     ?>
     <div class="container-fluid">
         <div class="row">
@@ -52,7 +53,7 @@ if (0 !== madeit_panel_count() || is_customize_preview()) : // If we have pages 
         </div>
     </div>
     <?php
-endif; // The if ( 0 !== madeit_panel_count() ) ends here.
+} // The if ( 0 !== madeit_panel_count() ) ends here.
 ?>
 
 <?php get_footer();

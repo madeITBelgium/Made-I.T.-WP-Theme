@@ -48,8 +48,8 @@ do_action('woocommerce_email_customer_details', $order, $sent_to_admin, $plain_t
 /*
  * Show user-defined additonal content - this is set in each email's settings.
 */
-if ( $additional_content ) {
-	echo wp_kses_post( wpautop( wptexturize( $additional_content ) ) );
+if ($additional_content) {
+    echo wp_kses_post(wpautop(wptexturize($additional_content)));
 }
 
 /*
