@@ -22,7 +22,7 @@ if (post_password_required()) {
 ?>
 
 <div id="comments" class="comments-area">
-    <?php if (have_comments()) : ?>
+    <?php if (have_comments()) { ?>
         <h3 class="comments-title">
             <?php
             $comments_number = get_comments_number();
@@ -53,25 +53,26 @@ if (post_password_required()) {
                  * define tpweb_comment() and that will be used instead.
                  * See tpweb_comment() in inc/template-tags.php for more.
                  */
-                wp_list_comments([
-                    'callback'    => 'madeit_comment',
-                    'avatar_size' => 60,
+                wp_list_comments(
+                    [
+                        'callback'    => 'madeit_comment',
+                        'avatar_size' => 60,
                     ]
                 );
             ?>
         </ol><!-- .comment-list -->
 
-        <?php if (get_comment_pages_count() > 1 && get_option('page_comments')) : // are there comments to navigate through?>
+        <?php if (get_comment_pages_count() > 1 && get_option('page_comments')) { // are there comments to navigate through?>
             <nav id="comment-nav-below" class="comment-navigation" role="navigation">
                 <div class="nav-previous"><?php previous_comments_link(esc_html__('Previous', 'madeit')); ?></div>
                 <div class="nav-next"><?php next_comments_link(esc_html__('Next', 'madeit')); ?></div>
             </nav><!-- #comment-nav-below -->
-        <?php endif; ?>
-    <?php endif; ?>
+        <?php } ?>
+    <?php } ?>
 
-    <?php if (!comments_open() && '0' != get_comments_number() && post_type_supports(get_post_type(), 'comments')) : ?>
+    <?php if (!comments_open() && '0' != get_comments_number() && post_type_supports(get_post_type(), 'comments')) { ?>
             <p class="no-comments"><?php _e('Comments are closed.', 'madeit'); ?></p>
-    <?php endif; ?>
+    <?php } ?>
 
     <?php
     $commenter = wp_get_current_commenter();
@@ -80,14 +81,16 @@ if (post_password_required()) {
         'form' => [
             'class' => 'form-horizontal',
         ],
-        'fields' => apply_filters('comment_form_default_fields', [
+        'fields' => apply_filters(
+            'comment_form_default_fields',
+            [
                 'autor'   => '<div class="form-group required"><label for="author">'.__('Name').'</label><input id="author" name="author" class="form-control" type="text" value="'.esc_attr($commenter['comment_author']).'" size="30" maxlength="245" aria-required="true" /><p id="d1" class="text-danger"></p></div>',
                 'email'   => '<div class="form-group required"><label for="email">'.__('Email').'</label><input id="email" name="email" class="form-control" type="text" value="'.esc_attr($commenter['comment_author_email']).'" size="30" maxlength="100" aria-required="true" /><p id="d2" class="text-danger"></p></div>',
                 'url'     => '<div class="form-group"><label for="url">'.__('Website').'</label><input id="url" name="url" class="form-control" type="text" value="'.esc_attr($commenter['comment_author_url']).'" maxlength="200" size="30" /><p id="d3" class="text-danger"></p></div>',
                 'cookies' => '<div class="form-group"><input id="wp-comment-cookies-consent" name="wp-comment-cookies-consent" type="checkbox" value="yes"'.$consent.' />'.
                              '<label for="wp-comment-cookies-consent">'.__('Save my name, email, and website in this browser for the next time I comment.').'</label></div>',
             ]
-         ),
+        ),
         'comment_field'       => '<div class="form-group required"><label for="comment">'.__('Comment', 'madeit').'</label><textarea id="comment" class="form-control" name="comment" rows="3" maxlength="65525" aria-required="true"></textarea><p id="d4" class="text-danger"></p></div>',
         'comment_notes_after' => '',
         'class_submit'        => 'btn btn-outline-primary pull-right vbottom2',

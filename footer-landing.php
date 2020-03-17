@@ -16,7 +16,7 @@
         <div class="row">
             <div class="col-sm">
                 <?php
-                if (has_nav_menu('social')) : ?>
+                if (has_nav_menu('social')) { ?>
                     <nav class="social-navigation" role="navigation" aria-label="<?php esc_attr_e('Footer Social Links Menu', 'madeit'); ?>">
                         <?php
                             wp_nav_menu([
@@ -28,7 +28,7 @@
                             ]);
                         ?>
                     </nav><!-- .social-navigation -->
-                <?php endif; ?>
+                <?php } ?>
             </div>
             <div class="col-sm site-info text-center">
                 <?php get_template_part('template-parts/footer/site', 'info'); ?>

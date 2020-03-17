@@ -386,9 +386,9 @@ if (!function_exists('madeit_fonts_url')) {
             $font_families[] = 'Libre Franklin:300,300i,400,400i,600,600i,800,800i';
 
             $query_args = [
-            'family' => urlencode(implode('|', $font_families)),
-            'subset' => urlencode('latin,latin-ext'),
-        ];
+                'family' => urlencode(implode('|', $font_families)),
+                'subset' => urlencode('latin,latin-ext'),
+            ];
 
             $fonts_url = add_query_arg($query_args, 'https://fonts.googleapis.com/css');
         }
@@ -500,7 +500,8 @@ if (!function_exists('madeit_excerpt_more')) {
             return $link;
         }
 
-        $link = sprintf('<p class="link-more"><a href="%1$s" class="more-link">%2$s</a></p>',
+        $link = sprintf(
+            '<p class="link-more"><a href="%1$s" class="more-link">%2$s</a></p>',
             esc_url(get_permalink(get_the_ID())),
             /* translators: %s: Name of current post */
             sprintf(__('Continue reading<span class="screen-reader-text"> "%s"</span>', 'madeit'), get_the_title(get_the_ID()))
@@ -1350,19 +1351,20 @@ if (!function_exists('madeit_cookie_notice')) {
     add_action('wp_footer', 'madeit_cookie_notice');
 }
 
-
-if(!function_exists('madeit_extend_gutenberg')) {
-    function madeit_extend_gutenberg() {
-        wp_enqueue_script( 'madeit-guten-script', get_theme_file_uri('/assets/js/gutenberg.js'), array( 'wp-blocks' ) );
+if (!function_exists('madeit_extend_gutenberg')) {
+    function madeit_extend_gutenberg()
+    {
+        wp_enqueue_script('madeit-guten-script', get_theme_file_uri('/assets/js/gutenberg.js'), ['wp-blocks']);
     }
-    add_action( 'enqueue_block_editor_assets', 'madeit_extend_gutenberg' );    
+    add_action('enqueue_block_editor_assets', 'madeit_extend_gutenberg');
 }
 
-if(false && !function_exists('madeit_extend_gutenberg_css')) {
-    function madeit_extend_gutenberg_css() {
-        wp_enqueue_style( 'madeit-guten-style', get_theme_file_uri('/assets/css/gutenfront.css') );
+if (false && !function_exists('madeit_extend_gutenberg_css')) {
+    function madeit_extend_gutenberg_css()
+    {
+        wp_enqueue_style('madeit-guten-style', get_theme_file_uri('/assets/css/gutenfront.css'));
     }
-    add_action( 'enqueue_block_assets', 'madeit_extend_gutenberg_css' );
+    add_action('enqueue_block_assets', 'madeit_extend_gutenberg_css');
 }
 
 /**

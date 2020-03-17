@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-if ($upsells) : ?>
+if ($upsells) { ?>
 
 	<section class="up-sells upsells products">
 
@@ -28,7 +28,7 @@ if ($upsells) : ?>
 
 		<?php woocommerce_product_loop_start(); ?>
 
-			<?php foreach ($upsells as $upsell) : ?>
+			<?php foreach ($upsells as $upsell) { ?>
 
 				<?php
                     $post_object = get_post($upsell->get_id());
@@ -37,12 +37,12 @@ if ($upsells) : ?>
 
                     wc_get_template_part('content', 'product'); ?>
 
-			<?php endforeach; ?>
+			<?php } ?>
 
 		<?php woocommerce_product_loop_end(); ?>
 
 	</section>
 
-<?php endif;
+<?php }
 
 wp_reset_postdata();

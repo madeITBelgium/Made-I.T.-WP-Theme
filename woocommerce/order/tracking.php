@@ -31,10 +31,10 @@ if (!defined('ABSPATH')) {
     )));
 ?></p>
 
-<?php if ($notes = $order->get_customer_order_notes()) : ?>
+<?php if ($notes = $order->get_customer_order_notes()) { ?>
 	<h2><?php _e('Order updates', 'woocommerce'); ?></h2>
 	<ol class="commentlist notes">
-		<?php foreach ($notes as $note) : ?>
+		<?php foreach ($notes as $note) { ?>
 		<li class="comment note">
 			<div class="comment_container">
 				<div class="comment-text">
@@ -47,8 +47,8 @@ if (!defined('ABSPATH')) {
 				<div class="clear"></div>
 			</div>
 		</li>
-		<?php endforeach; ?>
+		<?php } ?>
 	</ol>
-<?php endif; ?>
+<?php } ?>
 
 <?php do_action('woocommerce_view_order', $order->get_id()); ?>
