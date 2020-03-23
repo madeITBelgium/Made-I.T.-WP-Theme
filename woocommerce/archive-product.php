@@ -26,6 +26,14 @@ get_header('shop'); ?>
     do_action('woocommerce_before_main_content');
 ?>
 <div class="row">
+    <?php
+        /**
+         * woocommerce_sidebar hook.
+         *
+         * @hooked woocommerce_get_sidebar - 10
+         */
+        do_action('woocommerce_sidebar');
+    ?>
     <div class="col">
         <header class="woocommerce-products-header">
             <?php if (apply_filters('woocommerce_show_page_title', true)) { ?>
@@ -91,14 +99,6 @@ get_header('shop'); ?>
             do_action('woocommerce_no_products_found');
         } ?>
     </div>
-    <?php
-        /**
-         * woocommerce_sidebar hook.
-         *
-         * @hooked woocommerce_get_sidebar - 10
-         */
-        do_action('woocommerce_sidebar');
-    ?>
 </div>
 <?php
 /**
