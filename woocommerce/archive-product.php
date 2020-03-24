@@ -70,17 +70,30 @@ get_header('shop'); ?>
             woocommerce_product_loop_start();
 
             if (wc_get_loop_prop('total')) {
-                while (have_posts()) {
-                    the_post();
-                    /*
-                     * woocommerce_shop_loop hook.
-                     *
-                     * @hooked WC_Structured_Data::generate_product_data() - 10
-                     */
-                    do_action('woocommerce_shop_loop');
+                ?>
+                <div class="row" id="product-list">
+                    <?php
+                    while (have_posts()) {
+                        ?>
+                        <div class="col col-md-6 col-lg-4">
+                            <?php
+                            the_post();
+                            /*
+                             * woocommerce_shop_loop hook.
+                             *
+                             * @hooked WC_Structured_Data::generate_product_data() - 10
+                             */
+                            do_action('woocommerce_shop_loop');
 
-                    wc_get_template_part('content', 'product');
-                } // end of the loop.
+
+                            wc_get_template_part('content', 'product');
+                            ?>
+                        </div>
+                        <?php
+                    } // end of the loop.
+                    ?>
+                </div>
+                <?php
             }
 
             woocommerce_product_loop_end();
