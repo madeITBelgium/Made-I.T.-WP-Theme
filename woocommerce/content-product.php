@@ -17,7 +17,7 @@ if (empty($product) || !$product->is_visible()) {
     return;
 }
 ?>
-<div <?php wc_product_class('col-lg-4 col-md-6 mb-4', $product); ?>>
+<div <?php wc_product_class('mb-4', $product); ?>>
     <div class="card h-100">
         <a href="<?php echo get_the_permalink(); ?>">
             <?php
