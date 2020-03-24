@@ -78,16 +78,14 @@ get_header('shop'); ?>
                         <div class="col col-md-6 col-lg-4">
                             <?php
                             the_post();
-                            /*
-                             * woocommerce_shop_loop hook.
-                             *
-                             * @hooked WC_Structured_Data::generate_product_data() - 10
-                             */
-                            do_action('woocommerce_shop_loop');
+                        /*
+                         * woocommerce_shop_loop hook.
+                         *
+                         * @hooked WC_Structured_Data::generate_product_data() - 10
+                         */
+                        do_action('woocommerce_shop_loop');
 
-
-                            wc_get_template_part('content', 'product');
-                            ?>
+                        wc_get_template_part('content', 'product'); ?>
                         </div>
                         <?php
                     } // end of the loop.
