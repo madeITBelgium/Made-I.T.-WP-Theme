@@ -1439,3 +1439,8 @@ require get_parent_theme_file_path('/inc/wp-members.php');
  * Gutenberg blocks.
  */
 require get_parent_theme_file_path('/gutenberg/gutenberg.php');
+
+/**
+ * WooCommerce
+ */
+require get_parent_theme_file_path('/inc/woocommerce.php');
