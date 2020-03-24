@@ -70,7 +70,7 @@ jQuery( document ).ready( function( $ ) {
         }
     });
 
-    $( '.wp-block-gallery' ).each( function( ) {
+    $( '.wp-block-gallery, .woocommerce-product-gallery__wrapper' ).each( function( ) {
         var id;
         if ( $( this ).find( 'a' ).length > 0 && ! $( this ).hasClass( 'no-lightbox' ) ) {
             id = makeid( );
@@ -122,6 +122,48 @@ jQuery( document ).ready( function( $ ) {
                     <a href="` + leftUrl + `" data-index="` + leftIndex + `"><span>❮</span></a>
                     <a href="` + rightUrl + `" data-index="` + rightIndex + `"><span>❯</span></a>
                 </div><img src="` + url + `" alt="" style="width: 100%">` + descHtml );
+        } else {
+            $( '#lightbox-modal .modal-content' ).html( `<div class="modal-header">
+                    <button type="button" aria-label="Close" data-dismiss="modal" class="close"><span aria-hidden="true">×</span></button>
+                </div>
+                <img src="` + url + `" alt="" style="width: 100%">` );
+        }
+        $( '#lightbox-modal' ).modal( 'show' );
+    });
+    
+    $( '.woocommerce-product-gallery__wrapper[data-galary-id] a' ).click( function( e ) {
+        var url = $( this ).attr( 'href' );
+        var group, index, total, leftIndex, rightIndex, leftUrl, rightUrl;
+        var hasDescription = false;
+        var description = '';
+        var descHtml = '';
+        e.preventDefault();
+        if ( ! url.endsWith( '.jpg' ) && ! url.endsWith( '.png' ) ) {
+            url = $( this ).find( 'img:eq(0)' ).attr( 'src' );
+        }
+
+        if ( $( this ).parents( '.woocommerce-product-gallery__wrapper' ).length ) {
+            group = $( this ).parents( '.woocommerce-product-gallery__wrapper' )[0];
+            lightboxGroup = group;
+            gutenbergGallery = true;
+
+            index = $( group ).find( 'a' ).index( this );
+            total = $( group ).find( 'a' ).length - 1;
+
+            leftIndex = index > 0 ? index - 1 : total;
+            rightIndex = index < total ? index + 1 : 0;
+
+            leftUrl = $( group ).find( 'a:eq(' + leftIndex + ')' ).attr( 'href' );
+            rightUrl = $( group ) .find( 'a:eq(' + rightIndex + ')' ).attr( 'href' );
+            
+            $( '#lightbox-modal .modal-content' ).html( `
+                <div class="modal-header">
+                    <button type="button" aria-label="Close" data-dismiss="modal" class="close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="lightbox-nav-overlay">
+                    <a href="` + leftUrl + `" data-index="` + leftIndex + `"><span>❮</span></a>
+                    <a href="` + rightUrl + `" data-index="` + rightIndex + `"><span>❯</span></a>
+                </div><img src="` + url + `" alt="" style="width: 100%">`);
         } else {
             $( '#lightbox-modal .modal-content' ).html( `<div class="modal-header">
                     <button type="button" aria-label="Close" data-dismiss="modal" class="close"><span aria-hidden="true">×</span></button>
