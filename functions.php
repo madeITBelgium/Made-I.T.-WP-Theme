@@ -1441,6 +1441,6 @@ require get_parent_theme_file_path('/inc/wp-members.php');
 require get_parent_theme_file_path('/gutenberg/gutenberg.php');
 
 /**
- * WooCommerce
+ * WooCommerce.
  */
 require get_parent_theme_file_path('/inc/woocommerce.php');
