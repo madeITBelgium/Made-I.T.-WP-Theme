@@ -20,29 +20,31 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-if ($cross_sells) { ?>
+if ($cross_sells) : ?>
 
-	<div class="cross-sells">
+    <div class="cross-sells">
 
-		<h2><?php _e('You may be interested in&hellip;', 'woocommerce') ?></h2>
+        <h2><?php _e('You may be interested in&hellip;', 'woocommerce') ?></h2>
 
-		<?php woocommerce_product_loop_start(); ?>
+        <?php woocommerce_product_loop_start(); ?>
+            <div class="row">
+                <?php foreach ($cross_sells as $cross_sell) : ?>
+                    <div class="col col-md-6 col-lg-3">
+                        <?php
+                            $post_object = get_post($cross_sell->get_id());
 
-			<?php foreach ($cross_sells as $cross_sell) { ?>
+                            setup_postdata($GLOBALS['post'] = &$post_object);
 
-				<?php
-                    $post_object = get_post($cross_sell->get_id());
+                            wc_get_template_part('content', 'product'); ?>
 
-                    setup_postdata($GLOBALS['post'] = &$post_object);
+                    </div>
+                <?php endforeach; ?>
+            </div>
 
-                    wc_get_template_part('content', 'product'); ?>
+        <?php woocommerce_product_loop_end(); ?>
 
-			<?php } ?>
+    </div>
 
-		<?php woocommerce_product_loop_end(); ?>
-
-	</div>
-
-<?php }
+<?php endif;
 
 wp_reset_postdata();
