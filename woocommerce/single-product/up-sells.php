@@ -20,29 +20,32 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-if ($upsells) { ?>
+if ($upsells) : ?>
 
 	<section class="up-sells upsells products">
 
 		<h2><?php esc_html_e('You may also like&hellip;', 'woocommerce') ?></h2>
 
 		<?php woocommerce_product_loop_start(); ?>
+            <div class="row">
+                <?php foreach ($upsells as $upsell) : ?>
+                    <div class="col col-md-6 col-lg-3">
 
-			<?php foreach ($upsells as $upsell) { ?>
+                        <?php
+                        $post_object = get_post($upsell->get_id());
 
-				<?php
-                    $post_object = get_post($upsell->get_id());
+                        setup_postdata($GLOBALS['post'] = &$post_object);
 
-                    setup_postdata($GLOBALS['post'] = &$post_object);
+                        wc_get_template_part('content', 'product'); ?>
 
-                    wc_get_template_part('content', 'product'); ?>
-
-			<?php } ?>
+                    </div>
+                <?php endforeach; ?>
+            </div>
 
 		<?php woocommerce_product_loop_end(); ?>
 
 	</section>
 
-<?php }
+<?php endif;
 
 wp_reset_postdata();
