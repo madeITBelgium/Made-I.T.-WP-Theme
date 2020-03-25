@@ -32,21 +32,20 @@ if ( $related_products ) : ?>
         <?php endif; ?>
 
         <?php woocommerce_product_loop_start(); ?>
-            <div class="row">
-                <?php foreach ( $related_products as $related_product ) : ?>
-                    <div class="col col-md-6 col-lg-3">
+        
+            <?php foreach ( $related_products as $related_product ) : ?>
+                <div class="col col-md-6 col-lg-3">
 
-                        <?php
-                        $post_object = get_post( $related_product->get_id() );
+                    <?php
+                    $post_object = get_post( $related_product->get_id() );
 
-                        setup_postdata( $GLOBALS['post'] =& $post_object ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited, Squiz.PHP.DisallowMultipleAssignments.Found
+                    setup_postdata( $GLOBALS['post'] =& $post_object ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited, Squiz.PHP.DisallowMultipleAssignments.Found
 
-                        wc_get_template_part( 'content', 'product' );
-                        ?>
-                    </div>
+                    wc_get_template_part( 'content', 'product' );
+                    ?>
+                </div>
 
-                <?php endforeach; ?>
-            </div>
+            <?php endforeach; ?>
 
         <?php woocommerce_product_loop_end(); ?>
 
