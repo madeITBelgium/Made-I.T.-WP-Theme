@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-if ($cross_sells) : ?>
+if ($cross_sells) { ?>
 
     <div class="cross-sells">
 
@@ -28,7 +28,7 @@ if ($cross_sells) : ?>
 
         <?php woocommerce_product_loop_start(); ?>
         
-            <?php foreach ($cross_sells as $cross_sell) : ?>
+            <?php foreach ($cross_sells as $cross_sell) { ?>
                 <div class="col col-md-6 col-lg-3">
                     <?php
                         $post_object = get_post($cross_sell->get_id());
@@ -38,12 +38,12 @@ if ($cross_sells) : ?>
                         wc_get_template_part('content', 'product'); ?>
 
                 </div>
-            <?php endforeach; ?>
+            <?php } ?>
 
         <?php woocommerce_product_loop_end(); ?>
 
     </div>
 
-<?php endif;
+<?php }
 
 wp_reset_postdata();
