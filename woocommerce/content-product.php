@@ -17,7 +17,7 @@ if (empty($product) || !$product->is_visible()) {
     return;
 }
 ?>
-<div <?php wc_product_class('mb-4', $product); ?>>
+<div <?php wc_product_class('mb-4 h-100 pb-4', $product); ?>>
     <div class="card h-100">
         <a href="<?php echo get_the_permalink(); ?>">
             <?php
@@ -30,7 +30,7 @@ if (empty($product) || !$product->is_visible()) {
             do_action('woocommerce_before_shop_loop_item_title');
             ?>
         </a>
-        <div class="card-body text-center">
+        <div class="card-body text-center  d-flex justify-content-between flex-column">
             <h4 class="card-title">
                 <a href="<?php echo get_the_permalink(); ?>"><?php echo get_the_title(); ?></a>
             </h4>
