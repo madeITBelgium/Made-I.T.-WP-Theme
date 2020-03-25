@@ -27,19 +27,18 @@ if ($cross_sells) : ?>
         <h2><?php _e('You may be interested in&hellip;', 'woocommerce') ?></h2>
 
         <?php woocommerce_product_loop_start(); ?>
-            <div class="row">
-                <?php foreach ($cross_sells as $cross_sell) : ?>
-                    <div class="col col-md-6 col-lg-3">
-                        <?php
-                            $post_object = get_post($cross_sell->get_id());
+        
+            <?php foreach ($cross_sells as $cross_sell) : ?>
+                <div class="col col-md-6 col-lg-3">
+                    <?php
+                        $post_object = get_post($cross_sell->get_id());
 
-                            setup_postdata($GLOBALS['post'] = &$post_object);
+                        setup_postdata($GLOBALS['post'] = &$post_object);
 
-                            wc_get_template_part('content', 'product'); ?>
+                        wc_get_template_part('content', 'product'); ?>
 
-                    </div>
-                <?php endforeach; ?>
-            </div>
+                </div>
+            <?php endforeach; ?>
 
         <?php woocommerce_product_loop_end(); ?>
 
