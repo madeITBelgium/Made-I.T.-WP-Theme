@@ -43,12 +43,12 @@
                             <td class="product-remove">
                                 <?php
                                     echo apply_filters('woocommerce_cart_item_remove_link', sprintf(
-                                        '<a href="%s" class="remove" aria-label="%s" data-product_id="%s" data-product_sku="%s">&times;</a>',
-                                        esc_url(wc_get_cart_remove_url($cart_item_key)),
-                                        esc_html__('Remove this item', 'woocommerce'),
-                                        esc_attr($product_id),
-                                        esc_attr($_product->get_sku())
-                                    ), $cart_item_key); ?>
+                            '<a href="%s" class="remove" aria-label="%s" data-product_id="%s" data-product_sku="%s">&times;</a>',
+                            esc_url(wc_get_cart_remove_url($cart_item_key)),
+                            esc_html__('Remove this item', 'woocommerce'),
+                            esc_attr($product_id),
+                            esc_attr($_product->get_sku())
+                        ), $cart_item_key); ?>
                             </td>
 
                             <td class="product-thumbnail">
@@ -125,7 +125,7 @@
                             </div>
                         <?php
                 } ?>
-                        <a href="<?php echo get_permalink( wc_get_page_id( 'shop' ) ); ?>" class="button"><?php _e('Verder winkelen', 'madeit'); ?></a>
+                        <a href="<?php echo get_permalink(wc_get_page_id('shop')); ?>" class="button"><?php _e('Verder winkelen', 'madeit'); ?></a>
 
                         <button type="submit" class="button" name="update_cart" value="<?php esc_attr_e('Update cart', 'woocommerce'); ?>"><?php esc_attr_e('Update cart', 'woocommerce'); ?></button>
 
@@ -141,7 +141,7 @@
         <?php do_action('woocommerce_after_cart_table'); ?>
     </form>
 
-    <?php do_action( 'woocommerce_before_cart_collaterals' ); ?>
+    <?php do_action('woocommerce_before_cart_collaterals'); ?>
 
     <div class="cart-collaterals">
         <?php
