@@ -2,7 +2,7 @@
 Contributors: madeit
 Requires at least: WordPress 5.0
 Tested up to: 5.3
-Version: 2.2.0
+Version: 2.3.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: madeit, bootstrap, bootstrap4, made i.t., Made I.T.
@@ -55,6 +55,9 @@ License: CC0 1.0 Universal (CC0 1.0)
 Source: https://unsplash.com/@englr?photo=bIhpiQA009k
 
 == Changelog ==
+= 2.3.0 =
+* WordPress 5.4 support
+
 = 2.2.0 =
 * Extra afbeelding stijl
 * Verbeterde popup
