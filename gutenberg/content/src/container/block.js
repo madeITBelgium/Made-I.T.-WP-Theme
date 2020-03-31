@@ -11,6 +11,7 @@ import './editor.scss';
 import edit from './edit';
 import save from './save';
 import icon from './icon';
+import variations from './variations';
 
 const { __ } = wp.i18n;
 const { registerBlockType } = wp.blocks;
@@ -38,6 +39,7 @@ registerBlockType( 'madeit/block-content', {
 		__( 'columns' ),
 		__( 'Made I.T.' ),
 	],
+    variations,
     
     supports: {
         html: false,
