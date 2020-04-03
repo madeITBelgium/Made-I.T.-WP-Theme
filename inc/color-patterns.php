@@ -158,11 +158,11 @@ a.list-group-item-danger:focus, a.list-group-item-danger:hover, button.list-grou
     border-color: '.$success_color.';
 }
 
-.btn-success:hover {
+.btn-success:hover, .woocommerce button.button.alt:hover {
     background-color: '.madeit_color_luminance($success_color, 0, 0, -0.07).';
 }
 
-.btn-success:hover {
+.btn-success:hover, .woocommerce button.button.alt:hover {
     border-color: '.madeit_color_luminance($success_color, 0, 0, -0.1).';
 }
 
@@ -652,7 +652,7 @@ a.text-dark:focus, a.text-dark:hover {
   border-color: '.madeit_color_luminance($secondary_color, 0, 0, -0.13).';
 }
 
-.btn-success {
+.btn-success, .woocommerce button.button.alt {
   color: '.madeit_contrast_color($success_color).';
   background-color: '.$success_color.';
   border-color: '.$success_color.';

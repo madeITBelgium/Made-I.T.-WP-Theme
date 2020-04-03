@@ -20,7 +20,7 @@
     <div class="container">
         <div class="row">
             <?php
-            if (has_nav_menu('social')) : ?>
+            if (has_nav_menu('social')) { ?>
                 <div class="col-sm">
                     <nav class="social-navigation" role="navigation" aria-label="<?php esc_attr_e('Footer Social Links Menu', 'madeit'); ?>">
                         <?php
@@ -34,7 +34,7 @@
                         ?>
                     </nav><!-- .social-navigation -->
                 </div>
-            <?php endif; ?>
+            <?php } ?>
             <div class="col-sm site-info text-center">
                 <?php get_template_part('template-parts/footer/site', 'info'); ?>
             </div>

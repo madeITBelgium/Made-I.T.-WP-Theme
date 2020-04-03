@@ -10,7 +10,7 @@
  * Made I.T. Theme only works in WordPress 4.7 or later.
  */
 if (!defined('MADEIT_VERSION')) {
-    define('MADEIT_VERSION', '2.1.0');
+    define('MADEIT_VERSION', '2.2.0');
 }
 /* Default colors */
 if (!defined('MADEIT_CUSTOM_COLOR')) {
@@ -45,6 +45,10 @@ if (!defined('MADEIT_DANGER_COLOR')) {
 }
 if (!defined('SHOW_LOGIN_IN_FOOTER')) {
     define('SHOW_LOGIN_IN_FOOTER', false);
+}
+
+if (!defined('WOO_SHOPING_CART_MENU_STYLE')) {
+    define('WOO_SHOPING_CART_MENU_STYLE', 2);
 }
 
 if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
@@ -386,9 +390,9 @@ if (!function_exists('madeit_fonts_url')) {
             $font_families[] = 'Libre Franklin:300,300i,400,400i,600,600i,800,800i';
 
             $query_args = [
-            'family' => urlencode(implode('|', $font_families)),
-            'subset' => urlencode('latin,latin-ext'),
-        ];
+                'family' => urlencode(implode('|', $font_families)),
+                'subset' => urlencode('latin,latin-ext'),
+            ];
 
             $fonts_url = add_query_arg($query_args, 'https://fonts.googleapis.com/css');
         }
@@ -500,7 +504,8 @@ if (!function_exists('madeit_excerpt_more')) {
             return $link;
         }
 
-        $link = sprintf('<p class="link-more"><a href="%1$s" class="more-link">%2$s</a></p>',
+        $link = sprintf(
+            '<p class="link-more"><a href="%1$s" class="more-link">%2$s</a></p>',
             esc_url(get_permalink(get_the_ID())),
             /* translators: %s: Name of current post */
             sprintf(__('Continue reading<span class="screen-reader-text"> "%s"</span>', 'madeit'), get_the_title(get_the_ID()))
@@ -553,11 +558,13 @@ if (!function_exists('madeit_colors_css_wrap')) {
             return;
         }
 
-        require_once get_parent_theme_file_path('/inc/color-patterns.php'); ?>
-        <style type="text/css" id="custom-theme-colors">
-            <?php echo madeit_custom_colors_css(); ?>
-        </style>
-    <?php
+        if (!madeit_css_cacheExists()) {
+            require_once get_parent_theme_file_path('/inc/color-patterns.php'); ?>
+            <style type="text/css" id="custom-theme-colors">
+                <?php echo madeit_custom_colors_css(); ?>
+            </style>
+            <?php
+        }
     }
     add_action('wp_head', 'madeit_colors_css_wrap');
 }
@@ -592,6 +599,7 @@ if (!function_exists('madeit_scripts')) {
 
         // Theme stylesheet.
         wp_enqueue_style('madeit-style', get_stylesheet_uri(), [], wp_get_theme()->get('Version'));
+        wp_enqueue_style('madeit-gutenberg-style', get_theme_file_uri('/assets/css/gutenfront.css'), ['madeit-style', 'wp-editor'], wp_get_theme()->get('Version'));
 
         //wp_enqueue_style('font-awesome', get_theme_file_uri('/assets/css/font-awesome.min.css'), ['madeit-style'], '4.7.0');
 
@@ -1268,19 +1276,36 @@ if (!function_exists('madeit_woocommerce_shopping_cart_in_menu')) {
         global $woocommerce;
         ob_start();
         $cart_contents_count = $woocommerce->cart->cart_contents_count;
-        if ($cart_contents_count == 0) {
-            ?>
-            <li class="menu-item nav-item"><a class="wc-menu-cart nav-link" href="<?php echo get_permalink(wc_get_page_id('shop')); ?>" title="<?php echo  __('Start shopping', 'madeit'); ?>">
+
+        if (WOO_SHOPING_CART_MENU_STYLE == 1) {
+            if ($cart_contents_count == 0) {
+                ?>
+                <li class="menu-item nav-item"><a class="wc-menu-cart nav-link" href="<?php echo get_permalink(wc_get_page_id('shop')); ?>" title="<?php echo  __('Start shopping', 'madeit'); ?>">
+                <?php
+            } else {
+                ?>
+                <li class="menu-item nav-item"><a class="wc-menu-cart nav-link" href="<?php echo wc_get_cart_url(); ?>" title="<?php __('View your shopping cart', 'madeit'); ?>">
+                <?php
+            } ?>
+            <i class="fa fa-shopping-cart"></i>
+            <?php echo sprintf(_n('%d item', '%d items', $cart_contents_count, 'madeit'), $cart_contents_count).' - '.$woocommerce->cart->get_cart_total(); ?>
+            </a></li>
             <?php
-        } else {
-            ?>
-            <li class="menu-item nav-item"><a class="wc-menu-cart nav-link" href="<?php echo wc_get_cart_url(); ?>" title="<?php __('View your shopping cart', 'madeit'); ?>">
+        } elseif (WOO_SHOPING_CART_MENU_STYLE == 2) {
+            if ($cart_contents_count == 0) {
+                ?>
+                <li class="menu-item nav-item"><a class="wc-menu-cart nav-link" href="<?php echo get_permalink(wc_get_page_id('shop')); ?>" title="<?php echo  __('Start shopping', 'madeit'); ?>">
+                <?php
+            } else {
+                ?>
+                <li class="menu-item nav-item"><a class="wc-menu-cart nav-link" href="<?php echo wc_get_cart_url(); ?>" title="<?php __('View your shopping cart', 'madeit'); ?>">
+                <?php
+            } ?>
+            <span class="shopping-cart-count"><?php echo $cart_contents_count; ?></span>
+            <i class="fa fa-shopping-cart"></i>
+            </a></li>
             <?php
-        } ?>
-        <i class="fa fa-shopping-cart"></i>
-        <?php echo sprintf(_n('%d item', '%d items', $cart_contents_count, 'madeit'), $cart_contents_count).' - '.$woocommerce->cart->get_cart_total(); ?>
-        </a></li>
-        <?php
+        }
         $social = ob_get_clean();
 
         return $menu.$social;
@@ -1349,6 +1374,22 @@ if (!function_exists('madeit_cookie_notice')) {
     add_action('wp_footer', 'madeit_cookie_notice');
 }
 
+if (!function_exists('madeit_extend_gutenberg')) {
+    function madeit_extend_gutenberg()
+    {
+        wp_enqueue_script('madeit-guten-script', get_theme_file_uri('/assets/js/gutenberg.js'), ['wp-blocks']);
+    }
+    add_action('enqueue_block_editor_assets', 'madeit_extend_gutenberg');
+}
+
+if (false && !function_exists('madeit_extend_gutenberg_css')) {
+    function madeit_extend_gutenberg_css()
+    {
+        wp_enqueue_style('madeit-guten-style', get_theme_file_uri('/assets/css/gutenfront.css'));
+    }
+    add_action('enqueue_block_assets', 'madeit_extend_gutenberg_css');
+}
+
 /**
  * CSS Cache mechanisme.
  */
@@ -1398,3 +1439,8 @@ require get_parent_theme_file_path('/inc/wp-members.php');
  * Gutenberg blocks.
  */
 require get_parent_theme_file_path('/gutenberg/gutenberg.php');
+
+/**
+ * WooCommerce.
+ */
+require get_parent_theme_file_path('/inc/woocommerce.php');

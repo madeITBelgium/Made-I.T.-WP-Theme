@@ -14,7 +14,7 @@
  *
  * @author  WooThemes
  *
- * @version 3.5.2
+ * @version 3.5.5
  */
 
 // Exit if accessed directly
@@ -35,9 +35,9 @@ if (!is_a($product, 'WC_Product')) {
 		<span class="product-title"><?php echo wp_kses_post($product->get_name()); ?></span>
 	</a>
 
-	<?php if (!empty($show_rating)) : ?>
-		<?php echo wp_kses_post(wc_get_rating_html($product->get_average_rating())); ?>
-	<?php endif; ?>
+	<?php if (!empty($show_rating)) { ?>
+		<?php echo wc_get_rating_html($product->get_average_rating()); ?>
+	<?php } ?>
 
 	<?php echo $product->get_price_html(); ?>
 

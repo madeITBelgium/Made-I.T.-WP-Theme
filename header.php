@@ -21,16 +21,17 @@
 
 <body <?php body_class(); ?>>
     <?php wp_body_open(); ?>
-    <?php if (has_nav_menu('top')) : ?>
+    <?php if (has_nav_menu('top')) { ?>
         <?php get_template_part('template-parts/navigation/navigation', 'top'); ?>
-    <?php endif; ?>
-    <?php if ((has_post_thumbnail() || has_custom_header()) && (get_theme_mod('show_header_on_sub_pages') == 1 || is_front_page())) : ?>
+    <?php } ?>
+    <?php
+    if ((has_post_thumbnail() || has_custom_header()) && (get_theme_mod('show_header_on_sub_pages') == 1 || (is_front_page() && get_theme_mod('header_textcolor') === 'blank'))) { ?>
         <header id="masthead" class="container-fluid site-header <?php if (!is_front_page()) {
-    echo 'no-front-page';
-} ?>" role="banner">
+        echo 'no-front-page';
+    } ?>" role="banner">
             <div class="row">
                 <?php get_template_part('template-parts/header/header', 'image'); ?>
             </div>
         </header><!-- #masthead -->
-    <?php endif; ?>
+    <?php } ?>
     <div class="flex-grow">

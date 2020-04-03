@@ -2,19 +2,27 @@
 /**
  * Edit address form.
  *
- * @see     https://docs.woocommerce.com/document/template-structure/
+ * This template can be overridden by copying it to yourtheme/woocommerce/myaccount/form-edit-address.php.
  *
- * @author  Made I.T.
+ * HOWEVER, on occasion WooCommerce will need to update template files and you
+ * (the theme developer) will need to copy the new files to your theme to
+ * maintain compatibility. We try to do this as little as possible, but it does
+ * happen. When this occurs the version of the template file will be bumped and
+ * the readme will list any important changes.
  *
- * @version 3.4.0
+ * @see https://docs.woocommerce.com/document/template-structure/
+ *
+ * @version 3.6.0
  */
 defined('ABSPATH') || exit;
-$page_title = ('billing' === $load_address) ? __('Billing address', 'woocommerce') : __('Shipping address', 'woocommerce');
+
+$page_title = ('billing' === $load_address) ? esc_html__('Billing address', 'woocommerce') : esc_html__('Shipping address', 'woocommerce');
+
 do_action('woocommerce_before_edit_account_address_form'); ?>
 
-<?php if (!$load_address) : ?>
+<?php if (!$load_address) { ?>
 	<?php wc_get_template('myaccount/my-address.php'); ?>
-<?php else : ?>
+<?php } else { ?>
 
 	<form method="post">
 
@@ -26,9 +34,6 @@ do_action('woocommerce_before_edit_account_address_form'); ?>
 			<div class="woocommerce-address-fields__field-wrapper">
 				<?php
                 foreach ($address as $key => $field) {
-                    if (isset($field['country_field'], $address[$field['country_field']])) {
-                        $field['country'] = wc_get_post_data_by_key($field['country_field'], $address[$field['country_field']]['value']);
-                    }
                     woocommerce_form_field($key, $field, wc_get_post_data_by_key($key, $field['value']));
                 }
                 ?>
@@ -45,6 +50,6 @@ do_action('woocommerce_before_edit_account_address_form'); ?>
 
 	</form>
 
-<?php endif; ?>
+<?php } ?>
 
-<?php do_action('woocommerce_after_edit_account_address_form'); ?>s
+<?php do_action('woocommerce_after_edit_account_address_form'); ?>

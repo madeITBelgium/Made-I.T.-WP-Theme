@@ -2,13 +2,21 @@
 /**
  * Lost password reset form.
  *
- * @see     https://docs.woocommerce.com/document/template-structure/
+ * This template can be overridden by copying it to yourtheme/woocommerce/myaccount/form-reset-password.php.
  *
- * @author  Made I.T.
+ * HOWEVER, on occasion WooCommerce will need to update template files and you
+ * (the theme developer) will need to copy the new files to your theme to
+ * maintain compatibility. We try to do this as little as possible, but it does
+ * happen. When this occurs the version of the template file will be bumped and
+ * the readme will list any important changes.
  *
- * @version 3.5.0
+ * @see https://docs.woocommerce.com/document/template-structure/
+ *
+ * @version 3.5.5
  */
 defined('ABSPATH') || exit;
+
+do_action('woocommerce_before_reset_password_form');
 ?>
 
 <form method="post" class="woocommerce-ResetPassword lost_reset_password">
@@ -39,3 +47,5 @@ defined('ABSPATH') || exit;
 	<?php wp_nonce_field('reset_password', 'woocommerce-reset-password-nonce'); ?>
 
 </form>
+<?php
+do_action('woocommerce_after_reset_password_form');

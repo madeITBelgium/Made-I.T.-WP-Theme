@@ -15,19 +15,20 @@
         
         <div class="single-featured-image-header">
             <div class="site-branding-text">
-                <?php if (is_front_page()) : ?>
+                <?php if (is_front_page()) { ?>
                     <h1 class="site-title"><?php bloginfo('name'); ?></h1>
-                <?php else : ?>
+                <?php } else { ?>
                     <p class="site-title h1"><?php bloginfo('name'); ?></p>
-                <?php endif; ?>
+                <?php } ?>
 
                 <?php
                 $description = get_bloginfo('description', 'display');
 
-                if ($description || is_customize_preview()) :
-                ?>
+                if ($description || is_customize_preview()) {
+                    ?>
                     <p class="site-description"><?php echo $description; ?></p>
-                <?php endif; ?>
+                <?php
+                } ?>
             </div><!-- .site-branding-text -->
         
             <?php the_custom_header_markup(); ?>

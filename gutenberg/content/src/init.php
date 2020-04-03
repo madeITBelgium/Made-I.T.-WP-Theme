@@ -65,7 +65,8 @@ function content_cgb_block_assets()
      * @since 1.16.0
      */
     register_block_type(
-        'cgb/block-content', [
+        'cgb/block-content',
+        [
             // Enqueue blocks.style.build.css on both frontend & backend.
             'style'         => 'content-cgb-style-css',
             // Enqueue blocks.build.js in the editor only.

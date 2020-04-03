@@ -6,9 +6,11 @@
  *
  * @author 		Made I.T.
  *
- * @version     3.4.0
+ * @version     3.6.0
  */
 defined('ABSPATH') || exit;
+
+global $product;
 
 ?>
 
@@ -27,7 +29,7 @@ defined('ABSPATH') || exit;
      }
 ?>
 
-<div id="product-<?php the_ID(); ?>" <?php wc_product_class(''); ?>>
+<div id="product-<?php the_ID(); ?>" <?php wc_product_class('', $product); ?>>
     <div class="row">
         <div class="col-md">
             <?php

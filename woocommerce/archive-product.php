@@ -26,11 +26,19 @@ get_header('shop'); ?>
     do_action('woocommerce_before_main_content');
 ?>
 <div class="row">
+    <?php
+        /**
+         * woocommerce_sidebar hook.
+         *
+         * @hooked woocommerce_get_sidebar - 10
+         */
+        do_action('woocommerce_sidebar');
+    ?>
     <div class="col">
         <header class="woocommerce-products-header">
-            <?php if (apply_filters('woocommerce_show_page_title', true)) : ?>
+            <?php if (apply_filters('woocommerce_show_page_title', true)) { ?>
                 <h1 class="woocommerce-products-header__title page-title"><?php woocommerce_page_title(); ?></h1>
-            <?php endif; ?>
+            <?php } ?>
             <?php
                 /**
                  * woocommerce_archive_description hook.
@@ -45,22 +53,28 @@ get_header('shop'); ?>
         if (woocommerce_product_loop()) {
             ?>
             <div class="row">
-                <?php
-                /**
-                 * woocommerce_before_shop_loop hook.
-                 *
-                 * @hooked wc_print_notices - 10
-                 * @hooked woocommerce_result_count - 20
-                 * @hooked woocommerce_catalog_ordering - 30
-                 */
-                do_action('woocommerce_before_shop_loop'); ?>
+                <div class="col">
+                    <?php
+                    /**
+                     * woocommerce_before_shop_loop hook.
+                     *
+                     * @hooked wc_print_notices - 10
+                     * @hooked woocommerce_result_count - 20
+                     * @hooked woocommerce_catalog_ordering - 30
+                     */
+                    do_action('woocommerce_before_shop_loop'); ?>
+                    
+                </div>
             </div>
             <?php
             woocommerce_product_loop_start();
 
             if (wc_get_loop_prop('total')) {
                 while (have_posts()) {
-                    the_post();
+                    ?>
+                    <div class="col col-md-6 col-lg-4">
+                        <?php
+                        the_post();
                     /*
                      * woocommerce_shop_loop hook.
                      *
@@ -68,7 +82,9 @@ get_header('shop'); ?>
                      */
                     do_action('woocommerce_shop_loop');
 
-                    wc_get_template_part('content', 'product');
+                    wc_get_template_part('content', 'product'); ?>
+                    </div>
+                    <?php
                 } // end of the loop.
             }
 
@@ -88,14 +104,6 @@ get_header('shop'); ?>
             do_action('woocommerce_no_products_found');
         } ?>
     </div>
-    <?php
-        /**
-         * woocommerce_sidebar hook.
-         *
-         * @hooked woocommerce_get_sidebar - 10
-         */
-        do_action('woocommerce_sidebar');
-    ?>
 </div>
 <?php
 /**

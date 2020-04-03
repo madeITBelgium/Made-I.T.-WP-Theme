@@ -10,17 +10,16 @@
  * happen. When this occurs the version of the template file will be bumped and
  * the readme will list any important changes.
  *
- * @see 	https://docs.woocommerce.com/document/template-structure/
+ * @see https://docs.woocommerce.com/document/template-structure/
  *
- * @author  WooThemes
- *
- * @version 3.4.0
+ * @version 3.6.0
  */
 defined('ABSPATH') || exit;
+
 global $post;
 ?>
 
-<form action="<?php echo esc_url(get_permalink($post->ID)); ?>" method="post" class="track_order">
+<form action="<?php echo esc_url(get_permalink($post->ID)); ?>" method="post" class="woocommerce-form woocommerce-form-track-order track_order">
 
 	<p><?php esc_html_e('To track your order please enter your Order ID in the box below and press the "Track" button. This was given to you on your receipt and in the confirmation email you should have received.', 'woocommerce'); ?></p>
 

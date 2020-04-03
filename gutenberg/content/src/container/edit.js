@@ -2,7 +2,7 @@
  * External dependencies
  */
 import classnames from 'classnames';
-import { dropRight, times } from 'lodash';
+import { dropRight, get, map, times } from 'lodash';
 
 /**
  * WordPress dependencies
@@ -29,11 +29,14 @@ export const {
     BlockVerticalAlignmentToolbar,
     ContrastChecker,
     PanelColorSettings,
-    withColors
+    withColors,
+	__experimentalBlockVariationPicker,
 } = wp.blockEditor
 
 export const {
-    withDispatch, useSelect
+	withDispatch,
+	useDispatch,
+	useSelect,
 } = wp.data
 
 /**
@@ -58,73 +61,7 @@ import {
 */
 const ALLOWED_BLOCKS = [ 'madeit/block-content-column' ];
 
-/**
- * Template option choices for predefined columns layouts.
- *
- * @constant
- * @type {Array}
- */
-const TEMPLATE_OPTIONS = [
-    {
-        title: __( 'One columns' ),
-        icon: <SVG width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><Path fillRule="evenodd" clipRule="evenodd" d="M39 12C40.1046 12 41 12.8954 41 14V34C41 35.1046 40.1046 36 39 36H9C7.89543 36 7 35.1046 7 34V14C7 12.8954 7.89543 12 9 12H39ZM39 34V14H20V34H39ZM18 34H9V14H20V34Z" /></SVG>,
-        template: [
-            [ 'madeit/block-content-column', { width: 12 } ],
-        ],
-    },
-    {
-        title: __( 'Two columns; equal split' ),
-        icon: <SVG width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><Path fillRule="evenodd" clipRule="evenodd" d="M39 12C40.1046 12 41 12.8954 41 14V34C41 35.1046 40.1046 36 39 36H9C7.89543 36 7 35.1046 7 34V14C7 12.8954 7.89543 12 9 12H39ZM39 34V14H25V34H39ZM23 34H9V14H23V34Z" /></SVG>,
-        template: [
-            [ 'madeit/block-content-column', { width: 6 } ],
-            [ 'madeit/block-content-column', { width: 6 } ],
-        ],
-    },
-    {
-        title: __( 'Two columns; one-third, two-thirds split' ),
-        icon: <SVG width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><Path fillRule="evenodd" clipRule="evenodd" d="M39 12C40.1046 12 41 12.8954 41 14V34C41 35.1046 40.1046 36 39 36H9C7.89543 36 7 35.1046 7 34V14C7 12.8954 7.89543 12 9 12H39ZM39 34V14H20V34H39ZM18 34H9V14H18V34Z" /></SVG>,
-        template: [
-            [ 'madeit/block-content-column', { width: 4 } ],
-            [ 'madeit/block-content-column', { width: 8 } ],
-        ],
-    },
-    {
-        title: __( 'Two columns; two-thirds, one-third split' ),
-        icon: <SVG width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><Path fillRule="evenodd" clipRule="evenodd" d="M39 12C40.1046 12 41 12.8954 41 14V34C41 35.1046 40.1046 36 39 36H9C7.89543 36 7 35.1046 7 34V14C7 12.8954 7.89543 12 9 12H39ZM39 34V14H30V34H39ZM28 34H9V14H28V34Z" /></SVG>,
-        template: [
-            [ 'madeit/block-content-column', { width: 8 } ],
-            [ 'madeit/block-content-column', { width: 4 } ],
-        ],
-    },
-    {
-        title: __( 'Three columns; equal split' ),
-        icon: <SVG width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><Path fillRule="evenodd" d="M41 14a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h30a2 2 0 0 0 2-2V14zM28.5 34h-9V14h9v20zm2 0V14H39v20h-8.5zm-13 0H9V14h8.5v20z" /></SVG>,
-        template: [
-            [ 'madeit/block-content-column', { width: 4 } ],
-            [ 'madeit/block-content-column', { width: 4 } ],
-            [ 'madeit/block-content-column', { width: 4 } ],
-        ],
-    },
-    {
-        title: __( 'Three columns; wide center column' ),
-        icon: <SVG width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><Path fillRule="evenodd" d="M41 14a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h30a2 2 0 0 0 2-2V14zM31 34H17V14h14v20zm2 0V14h6v20h-6zm-18 0H9V14h6v20z" /></SVG>,
-        template: [
-            [ 'madeit/block-content-column', { width: 3 } ],
-            [ 'madeit/block-content-column', { width: 6 } ],
-            [ 'madeit/block-content-column', { width: 3 } ],
-        ],
-    },
-];
-
-/**
- * Number of columns to assume for template in case the user opts to skip
- * template option selection.
- *
- * @type {Number}
- */
-const DEFAULT_COLUMNS = 2;
-
-export function ColumnsEdit( props ) {
+export function ColumnsEditContainer( props ) {
     const {
         attributes,
         setAttributes,
@@ -171,27 +108,11 @@ export function ColumnsEdit( props ) {
             count: select( 'core/block-editor' ).getBlockCount( clientId ),
         };
     } );
-    const [ template, setTemplate ] = useState( getColumnsTemplate( count ) );
-    const [ forceUseTemplate, setForceUseTemplate ] = useState( false );
-
-    // This is used to force the usage of the template even if the count doesn't match the template
-    // The count doesn't match the template once you use undo/redo (this is used to reset to the placeholder state).
-    useEffect( () => {
-        // Once the template is applied, reset it.
-        if ( forceUseTemplate ) {
-            setForceUseTemplate( false );
-        }
-    }, [ forceUseTemplate ] );
-
+    
     var classes = classnames( className, {
         [ `are-vertically-aligned-${ verticalAlignment }` ]: verticalAlignment,
     } );
 
-    // The template selector is shown when we first insert the columns block (count === 0).
-    // or if there's no template available.
-    // The count === 0 trick is useful when you use undo/redo.
-    const showTemplateSelector = ( count === 0 && ! forceUseTemplate ) || ! template;
-    
     classes = classnames( classes, {
         [ `container` ]: 'container' === size,
         [ `container-fluid` ]: 'container-fluid' === size || 'container-content-boxed' === size,
@@ -498,25 +419,14 @@ export function ColumnsEdit( props ) {
             <div className={ classesChild }
             style = { styleChild }>
                 <InnerBlocks
-                    __experimentalTemplateOptions={ TEMPLATE_OPTIONS }
-                    __experimentalOnSelectTemplateOption={ ( nextTemplate ) => {
-                        if ( nextTemplate === undefined ) {
-                            nextTemplate = getColumnsTemplate( DEFAULT_COLUMNS );
-                        }
-
-                        setTemplate( nextTemplate );
-                        setForceUseTemplate( true );
-                    } }
-                    __experimentalAllowTemplateOptionSkip
-                    template={ showTemplateSelector ? null : template }
-                    templateLock="all"
+                    __experimentalMoverDirection="horizontal"
                     allowedBlocks={ ALLOWED_BLOCKS } />
             </div>
         </div>
     ];
 }
 
-const withDisp = withDispatch( ( dispatch, ownProps, registry ) => ( {
+const ColumnsEditContainerWrapper = withDispatch( ( dispatch, ownProps, registry ) => ( {
     /**
      * Update all child Column blocks with a new vertical alignment setting
      * based on whatever alignment is passed in. This allows change to parent
@@ -554,11 +464,11 @@ const withDisp = withDispatch( ( dispatch, ownProps, registry ) => ( {
         const { getBlocks } = registry.select( 'core/block-editor' );
 
         let innerBlocks = getBlocks( clientId );
-
+        
         // Redistribute available width for existing inner blocks.
         const isAddingColumn = newColumns > previousColumns;
 
-        if ( isAddingColumn ) {
+        if ( isAddingColumn) {
             // If adding a new column, assign width to the new column equal to
             // as if it were `1 / columns` of the total available space.
             const newColumnWidth = toWidthPrecision( 12 / newColumns );
@@ -596,9 +506,78 @@ const withDisp = withDispatch( ( dispatch, ownProps, registry ) => ( {
 
         replaceInnerBlocks( clientId, innerBlocks, false );
     },
-} ) );
+} ) )( ColumnsEditContainer );
+
+const createBlocksFromInnerBlocksTemplate = ( innerBlocksTemplate ) => {
+    return map(
+        innerBlocksTemplate,
+        ( [ name, attributes, innerBlocks = [] ] ) =>
+            createBlock(
+                name,
+                attributes,
+                createBlocksFromInnerBlocksTemplate( innerBlocks )
+            )
+    );
+};
+
+const ColumnsEdit = ( props ) => {
+    const { clientId, name } = props;
+    const {
+        blockType,
+        defaultVariation,
+        hasInnerBlocks,
+        variations,
+    } = useSelect(
+        ( select ) => {
+            const {
+                getBlockVariations,
+                getBlockType,
+                getDefaultBlockVariation,
+            } = select( 'core/blocks' );
+
+            return {
+                blockType: getBlockType( name ),
+                defaultVariation: getDefaultBlockVariation( name, 'block' ),
+                hasInnerBlocks:
+                    select( 'core/block-editor' ).getBlocks( clientId ).length >
+                    0,
+                variations: getBlockVariations( name, 'block' ),
+            };
+        },
+        [ clientId, name ]
+    );
+
+    const { replaceInnerBlocks } = useDispatch( 'core/block-editor' );
+
+    if ( hasInnerBlocks ) {
+        return <ColumnsEditContainerWrapper { ...props } />;
+    }
+
+    return (
+        <div>
+            <__experimentalBlockVariationPicker
+                icon={ get( blockType, [ 'icon', 'src' ] ) }
+                label={ get( blockType, [ 'title' ] ) }
+                variations={ variations }
+                onSelect={ ( nextVariation = defaultVariation ) => {
+                    if ( nextVariation.attributes ) {
+                        props.setAttributes( nextVariation.attributes );
+                    }
+                    if ( nextVariation.innerBlocks ) {
+                        replaceInnerBlocks(
+                            props.clientId,
+                            createBlocksFromInnerBlocksTemplate(
+                                nextVariation.innerBlocks
+                            )
+                        );
+                    }
+                } }
+                allowSkip
+            />
+        </div>
+    );
+};
 
 export default compose([
-    withColors('containerBackgroundColor', 'rowTextColor', 'rowBackgroundColor'),
-    withDisp
+    withColors('containerBackgroundColor', 'rowTextColor', 'rowBackgroundColor')
 ])( ColumnsEdit );

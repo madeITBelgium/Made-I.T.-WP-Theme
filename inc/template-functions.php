@@ -116,14 +116,14 @@ function madeit_comment($comment, $args, $depth)
 {
     $GLOBALS['comment'] = $comment;
 
-    if ('pingback' == $comment->comment_type || 'trackback' == $comment->comment_type) : ?>
+    if ('pingback' == $comment->comment_type || 'trackback' == $comment->comment_type) { ?>
 
 	<li id="comment-<?php comment_ID(); ?>" <?php comment_class(); ?>>
 		<div class="comment-body">
 			<?php _e('Pingback:', 'madeit'); ?> <?php comment_author_link(); ?> <?php edit_comment_link(__('Edit', 'madeit'), '<span class="edit-link">', '</span>'); ?>
 		</div>
 
-	<?php else : ?>
+	<?php } else { ?>
 
 	<li id="comment-<?php comment_ID(); ?>" <?php comment_class(empty($args['has_children']) ? '' : 'parent'); ?>>
 		<article id="div-comment-<?php comment_ID(); ?>" class="comment-body">
@@ -144,9 +144,9 @@ function madeit_comment($comment, $args, $depth)
 					<?php edit_comment_link(__('Edit', 'madeit'), '<span class="edit-link">', '</span>'); ?>
 				</div><!-- .comment-metadata -->
 
-				<?php if ('0' == $comment->comment_approved) : ?>
+				<?php if ('0' == $comment->comment_approved) { ?>
 				<p class="comment-awaiting-moderation"><?php _e('Je comentaar wacht op een review van de beheerder.', 'madeit'); ?></p>
-				<?php endif; ?>
+				<?php } ?>
 			</footer><!-- .comment-meta -->
 
 			<div class="comment-content">
@@ -164,7 +164,7 @@ function madeit_comment($comment, $args, $depth)
 		</article><!-- .comment-body -->
 
 	<?php
-    endif;
+    }
 }
 
 function madeit_page_pagination($pages = '', $range = 2)
@@ -188,14 +188,14 @@ function madeit_page_pagination($pages = '', $range = 2)
         echo '<span class="sr-only">Page navigation</span>';
         echo '<ul class="pagination justify-content-center ft-wpbs">';
 
-        echo '<li class="page-item disabled hidden-md-down d-none d-lg-block"><span class="page-link">Page '.$paged.' of '.$pages.'</span></li>';
+        echo '<li class="page-item disabled d-none d-lg-block"><span class="page-link">'.__('Page', 'madeit').' '.$paged.' '.__('of', 'madeit').' '.$pages.'</span></li>';
 
         if ($paged > 2 && $paged > $range + 1 && $showitems < $pages) {
-            echo '<li class="page-item"><a class="page-link" href="'.get_pagenum_link(1).'" aria-label="First Page">&laquo;<span class="hidden-sm-down d-none d-md-block"> First</span></a></li>';
+            echo '<li class="page-item"><a class="page-link" href="'.get_pagenum_link(1).'" aria-label="First Page">&laquo;<span class="hidden-sm-down d-none d-md-inline-block mr-l"> '.__('First', 'madeit').'</span></a></li>';
         }
 
         if ($paged > 1 && $showitems < $pages) {
-            echo '<li class="page-item"><a class="page-link" href="'.get_pagenum_link($paged - 1).'" aria-label="Previous Page">&lsaquo;<span class="hidden-sm-down d-none d-md-block"> Previous</span></a></li>';
+            echo '<li class="page-item"><a class="page-link" href="'.get_pagenum_link($paged - 1).'" aria-label="Previous Page">&lsaquo;<span class="hidden-sm-down d-none d-md-inline-block ml-1"> '.__('Previous', 'madeit').'</span></a></li>';
         }
 
         for ($i = 1; $i <= $pages; $i++) {
@@ -205,11 +205,11 @@ function madeit_page_pagination($pages = '', $range = 2)
         }
 
         if ($paged < $pages && $showitems < $pages) {
-            echo '<li class="page-item"><a class="page-link" href="'.get_pagenum_link($paged + 1).'" aria-label="Next Page"><span class="hidden-sm-down d-none d-md-block">Next </span>&rsaquo;</a></li>';
+            echo '<li class="page-item"><a class="page-link" href="'.get_pagenum_link($paged + 1).'" aria-label="Next Page"><span class="hidden-sm-down d-none d-md-inline-block mr-1">'.__('Next', 'madeit').'</span>&rsaquo;</a></li>';
         }
 
         if ($paged < $pages - 1 && $paged + $range - 1 < $pages && $showitems < $pages) {
-            echo '<li class="page-item"><a class="page-link" href="'.get_pagenum_link($pages).'" aria-label="Last Page"><span class="hidden-sm-down d-none d-md-block">Last </span>&raquo;</a></li>';
+            echo '<li class="page-item"><a class="page-link" href="'.get_pagenum_link($pages).'" aria-label="Last Page"><span class="hidden-sm-down d-none d-md-inline-block mr-1">'.__('Last', 'madeit').'</span>&raquo;</a></li>';
         }
 
         echo '</ul>';

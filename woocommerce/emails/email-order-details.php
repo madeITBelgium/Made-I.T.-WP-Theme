@@ -10,16 +10,14 @@
  * happen. When this occurs the version of the template file will be bumped and
  * the readme will list any important changes.
  *
- * @see 	    https://docs.woocommerce.com/document/template-structure/
+ * @see https://docs.woocommerce.com/document/template-structure/
  *
- * @author 		WooThemes
- *
- * @version 3.3.1
+ * @version 3.7.0
  */
-if (!defined('ABSPATH')) {
-    exit;
-}
+defined('ABSPATH') || exit;
+
 $text_align = is_rtl() ? 'right' : 'left';
+
 do_action('woocommerce_email_before_order_table', $order, $sent_to_admin, $plain_text, $email); ?>
 
 <h2>
@@ -47,21 +45,25 @@ do_action('woocommerce_email_before_order_table', $order, $sent_to_admin, $plain
 		</thead>
 		<tbody>
 			<?php
-            echo wc_get_email_order_items($order, [ // WPCS: XSS ok.
-                'show_sku'      => $sent_to_admin,
-                'show_image'    => false,
-                'image_size'    => [32, 32],
-                'plain_text'    => $plain_text,
-                'sent_to_admin' => $sent_to_admin,
-            ]);
+            echo wc_get_email_order_items( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                $order,
+        [
+            'show_sku'      => $sent_to_admin,
+            'show_image'    => false,
+            'image_size'    => [32, 32],
+            'plain_text'    => $plain_text,
+            'sent_to_admin' => $sent_to_admin,
+        ]
+    );
             ?>
 		</tbody>
 		<tfoot>
 			<?php
-            $totals = $order->get_order_item_totals();
-            if ($totals) {
+            $item_totals = $order->get_order_item_totals();
+
+            if ($item_totals) {
                 $i = 0;
-                foreach ($totals as $total) {
+                foreach ($item_totals as $total) {
                     $i++; ?>
 					<tr>
 						<th class="td" scope="row" colspan="2" style="text-align:<?php echo esc_attr($text_align); ?>; <?php echo (1 === $i) ? 'border-top-width: 4px;' : ''; ?>"><?php echo wp_kses_post($total['label']); ?></th>
@@ -74,7 +76,7 @@ do_action('woocommerce_email_before_order_table', $order, $sent_to_admin, $plain
                 ?>
 				<tr>
 					<th class="td" scope="row" colspan="2" style="text-align:<?php echo esc_attr($text_align); ?>;"><?php esc_html_e('Note:', 'woocommerce'); ?></th>
-					<td class="td" style="text-align:<?php echo esc_attr($text_align); ?>;"><?php echo wp_kses_post(wptexturize($order->get_customer_note())); ?></td>
+					<td class="td" style="text-align:<?php echo esc_attr($text_align); ?>;"><?php echo wp_kses_post(nl2br(wptexturize($order->get_customer_note()))); ?></td>
 				</tr>
 				<?php
             }

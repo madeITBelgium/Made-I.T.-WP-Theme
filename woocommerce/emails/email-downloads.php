@@ -10,28 +10,28 @@
  * happen. When this occurs the version of the template file will be bumped and
  * the readme will list any important changes.
  *
- * @see 	https://docs.woocommerce.com/document/template-structure/
- *
- * @author  WooThemes
+ * @see https://docs.woocommerce.com/document/template-structure/
  *
  * @version 3.4.0
  */
 defined('ABSPATH') || exit;
+
 $text_align = is_rtl() ? 'right' : 'left';
+
 ?><h2 class="woocommerce-order-downloads__title"><?php esc_html_e('Downloads', 'woocommerce'); ?></h2>
 
 <table class="td" cellspacing="0" cellpadding="6" style="width: 100%; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif; margin-bottom: 40px;" border="1">
 	<thead>
 		<tr>
-			<?php foreach ($columns as $column_id => $column_name) : ?>
+			<?php foreach ($columns as $column_id => $column_name) { ?>
 				<th class="td" scope="col" style="text-align:<?php echo esc_attr($text_align); ?>;"><?php echo esc_html($column_name); ?></th>
-			<?php endforeach; ?>
+			<?php } ?>
 		</tr>
 	</thead>
 
-	<?php foreach ($downloads as $download) : ?>
+	<?php foreach ($downloads as $download) { ?>
 		<tr>
-			<?php foreach ($columns as $column_id => $column_name) : ?>
+			<?php foreach ($columns as $column_id => $column_name) { ?>
 				<td class="td" style="text-align:<?php echo esc_attr($text_align); ?>;">
 					<?php
                     if (has_action('woocommerce_email_downloads_column_'.$column_id)) {
@@ -61,7 +61,7 @@ $text_align = is_rtl() ? 'right' : 'left';
                     }
                     ?>
 				</td>
-			<?php endforeach; ?>
+			<?php } ?>
 		</tr>
-	<?php endforeach; ?>
+	<?php } ?>
 </table>
