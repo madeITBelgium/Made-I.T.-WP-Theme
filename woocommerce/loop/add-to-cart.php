@@ -22,16 +22,17 @@ if (!defined('ABSPATH')) {
 
 global $product;
 
-echo apply_filters(
-    'woocommerce_loop_add_to_cart_link', // WPCS: XSS ok.
-    sprintf(
-        '<a href="%s" data-quantity="%s" class="%s" %s>%s</a>',
-        esc_url($product->add_to_cart_url()),
+$prefix = "";
+if(strpos($_SERVER['REQUEST_URI'], '/?s=') !== false) {
+    $prefix = get_permalink( wc_get_page_id( 'shop' ) );
+}
+
+echo apply_filters('woocommerce_loop_add_to_cart_link', // WPCS: XSS ok.
+    sprintf('<a href="%s" data-quantity="%s" class="%s" %s>%s</a>',
+        $prefix . esc_url($product->add_to_cart_url()),
         esc_attr(isset($args['quantity']) ? $args['quantity'] : 1),
         esc_attr(isset($args['class']) ? $args['class'] : 'button'),
         isset($args['attributes']) ? wc_implode_html_attributes($args['attributes']) : '',
         esc_html($product->add_to_cart_text())
     ),
-    $product,
-    $args
-);
+$product, $args);
