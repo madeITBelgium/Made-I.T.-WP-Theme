@@ -50,7 +50,7 @@ class MadeIT_Github_Updater
         // We need the access token for private repos
         $headers = [];
         if (!empty($this->accessToken)) {
-            $headers = ['headers' => ['Authorization' => 'token ' . $this->accessToken]];
+            $headers = ['headers' => ['Authorization' => 'token '.$this->accessToken]];
         }
         // Get the results
         $this->githubAPIResult = wp_remote_retrieve_body(wp_remote_get($url, $headers));
@@ -214,21 +214,23 @@ class MadeIT_Github_Updater
 
         return new \WP_Error();
     }
-    
-    public function beforeDownload($options) {
+
+    public function beforeDownload($options)
+    {
         $this->initThemeData();
         $this->getRepoReleaseInfo();
-        
-        if($options['package'] === $this->githubAPIResult->zipball_url) {
+
+        if ($options['package'] === $this->githubAPIResult->zipball_url) {
             add_filter('http_request_args', [$this, 'addAuthHeader'], 10, 2);
         }
     }
-    
-    public function addAuthHeader($parsed_args, $url) {
-        if($url === $this->githubAPIResult->zipball_url) {
-            $parsed_args['headers']['Authorization'] = 'token ' . $this->accessToken;
+
+    public function addAuthHeader($parsed_args, $url)
+    {
+        if ($url === $this->githubAPIResult->zipball_url) {
+            $parsed_args['headers']['Authorization'] = 'token '.$this->accessToken;
         }
+
         return $parsed_args;
     }
-    
 }
