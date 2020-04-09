@@ -16,8 +16,8 @@ class MadeIT_Github_Updater
         add_filter('pre_set_site_transient_update_themes', [$this, 'setTransitent']);
         add_filter('themes_api', [$this, 'setThemeInfo'], 10, 3);
         add_filter('upgrader_source_selection', [$this, 'themeUpgraderSourceSelection'], 10, 4);
+        add_filter('upgrader_pre_install', [$this, 'preInstall'], 10, 2);
         add_filter('upgrader_post_install', [$this, 'postInstall'], 10, 3);
-        add_filter('upgrader_package_options', [$this, 'beforeDownload'], 10, 1);
         $this->themeFile = $themeFile;
         $this->username = $gitHubUsername;
         $this->repo = $gitHubProjectName;
@@ -215,11 +215,11 @@ class MadeIT_Github_Updater
         return new \WP_Error();
     }
     
-    public function beforeDownload($options) {
+    public function preInstall($return, $theme)
+    {
         $this->initThemeData();
         $this->getRepoReleaseInfo();
-        
-        if($options['package'] === $this->githubAPIResult->zipball_url) {
+        if($theme['theme'] === $this->slug) {
             add_filter('http_request_args', [$this, 'addAuthHeader'], 10, 2);
         }
     }
@@ -229,6 +229,5 @@ class MadeIT_Github_Updater
             $parsed_args['headers']['Authorization'] = 'token ' . $this->accessToken;
         }
         return $parsed_args;
-    }
-    
+    }    
 }
