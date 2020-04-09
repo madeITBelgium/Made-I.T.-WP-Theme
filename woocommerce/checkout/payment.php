@@ -13,7 +13,7 @@ if (!is_ajax()) {
     do_action('woocommerce_review_order_before_payment');
 }
 ?>
-<div id="payment" class="woocommerce-checkout-payment col col-md-6">
+<div id="payment" class="woocommerce-checkout-payment col-12">
     <?php if (WC()->cart->needs_payment()) { ?>
         <ul class="wc_payment_methods payment_methods methods">
             <?php

@@ -18,7 +18,7 @@
  */
 defined('ABSPATH') || exit;
 ?>
-<div class="col col-md-6 woocommerce-checkout-review-order-table">
+<div class="col-12 woocommerce-checkout-review-order-table">
     <table class="shop_table">
         <thead>
             <tr>
