@@ -17,6 +17,7 @@ class MadeIT_Github_Updater
         add_filter('themes_api', [$this, 'setThemeInfo'], 10, 3);
         add_filter('upgrader_source_selection', [$this, 'themeUpgraderSourceSelection'], 10, 4);
         add_filter('upgrader_post_install', [$this, 'postInstall'], 10, 3);
+        add_filter('upgrader_package_options', [$this, 'beforeDownload'], 10, 1);
         $this->themeFile = $themeFile;
         $this->username = $gitHubUsername;
         $this->repo = $gitHubProjectName;
@@ -47,11 +48,13 @@ class MadeIT_Github_Updater
         // Query the GitHub API
         $url = "https://api.github.com/repos/{$this->username}/{$this->repo}/releases";
         // We need the access token for private repos
+        $headers = [];
         if (!empty($this->accessToken)) {
-            $url = add_query_arg(['access_token' => $this->accessToken], $url);
+            $headers = ['headers' => ['Authorization' => 'token ' . $this->accessToken]];
         }
         // Get the results
-        $this->githubAPIResult = wp_remote_retrieve_body(wp_remote_get($url));
+        $this->githubAPIResult = wp_remote_retrieve_body(wp_remote_get($url, $headers));
+
         if (!empty($this->githubAPIResult)) {
             $this->githubAPIResult = @json_decode($this->githubAPIResult);
         }
@@ -77,9 +80,6 @@ class MadeIT_Github_Updater
         if ($doUpdate == 1) {
             $package = $this->githubAPIResult->zipball_url;
             // Include the access token for private GitHub repos
-            if (!empty($this->accessToken)) {
-                $package = add_query_arg(['access_token' => $this->accessToken], $package);
-            }
 
             $theme_array = [];
             $theme_array['new_version'] = $this->githubAPIResult->tag_name;
@@ -111,12 +111,6 @@ class MadeIT_Github_Updater
         // This is our release download zip file
         $downloadLink = $this->githubAPIResult->zipball_url;
         // Include the access token for private GitHub repos
-        if (!empty($this->accessToken)) {
-            $downloadLink = add_query_arg(
-                ['access_token' => $this->accessToken],
-                $downloadLink
-            );
-        }
         $response->download_link = $downloadLink;
         // We're going to parse the GitHub markdown release notes, include the parser
         require_once dirname(__FILE__).'/MadeIT_Parsedown.php';
@@ -220,4 +214,21 @@ class MadeIT_Github_Updater
 
         return new \WP_Error();
     }
+    
+    public function beforeDownload($options) {
+        $this->initThemeData();
+        $this->getRepoReleaseInfo();
+        
+        if($options['package'] === $this->githubAPIResult->zipball_url) {
+            add_filter('http_request_args', [$this, 'addAuthHeader'], 10, 2);
+        }
+    }
+    
+    public function addAuthHeader($parsed_args, $url) {
+        if($url === $this->githubAPIResult->zipball_url) {
+            $parsed_args['headers']['Authorization'] = 'token ' . $this->accessToken;
+        }
+        return $parsed_args;
+    }
+    
 }
