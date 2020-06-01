@@ -13,6 +13,28 @@ const { __ } = wp.i18n;
  */
 const variations = [
     {
+        name: 'one-column-equal',
+        title: __( '100' ),
+        description: __( 'One column' ),
+        icon: (
+            <SVG
+                width="48"
+                height="48"
+                viewBox="0 0 48 48"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <Path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M39 12C40.1046 12 41 12.8954 41 14V34C41 35.1046 40.1046 36 39 36H9C7.89543 36 7 35.1046 7 34V14C7 12.8954 7.89543 12 9 12H39ZM39 34V14H9V34H39ZM23"
+                />
+            </SVG>
+        ),
+        isDefault: true,
+        innerBlocks: [ [ 'madeit/block-content-column', { width: 12 } ] ],
+        scope: [ 'block' ],
+    },
+    {
         name: 'two-columns-equal',
         title: __( '50 / 50' ),
         description: __( 'Two columns; equal split' ),
@@ -30,7 +52,6 @@ const variations = [
                 />
             </SVG>
         ),
-        isDefault: true,
         innerBlocks: [ [ 'madeit/block-content-column' ], [ 'madeit/block-content-column' ] ],
         scope: [ 'block' ],
     },
