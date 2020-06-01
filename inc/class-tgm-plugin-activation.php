@@ -749,6 +749,7 @@ if (!class_exists('TGM_Plugin_Activation')) {
 
                 if (!WP_Filesystem($creds)) {
                     request_filesystem_credentials(esc_url_raw($url), $method, true, false, []); // Setup WP_Filesystem.
+
                     return true;
                 }
 
