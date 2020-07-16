@@ -50,11 +50,9 @@ $content = strip_tags(apply_filters('the_content', get_the_content()));
         <?php
         if (!is_single()) {
             // If not a single post, highlight the video file.
-            
         }
 
         if (is_single()) {
-
             ?>
             <a href="<?php echo $content; ?>" target="_blank"><?php echo $content; ?></a>
             <?php
