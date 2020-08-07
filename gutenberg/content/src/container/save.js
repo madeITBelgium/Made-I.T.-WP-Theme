@@ -15,6 +15,7 @@ export default function save( props ) {
     const {
         verticalAlignment,
         containerBackgroundColor,
+        customContainerBackgroundColor,
         size,
         containerMarginTop,
         containerMarginBottom,
@@ -30,6 +31,8 @@ export default function save( props ) {
         rowPaddingRight,
         rowBackgroundColor,
         rowTextColor,
+        customRowBackgroundColor,
+        customRowTextColor,
     } = props.attributes;
     
     const {
@@ -68,7 +71,7 @@ export default function save( props ) {
     } );
     
     var style = {
-        backgroundColor: containerBackgroundColorClass ? undefined : containerBackgroundColor,
+        backgroundColor: containerBackgroundColorClass ? undefined : customContainerBackgroundColor,
     };
     
     if(containerMarginTop > 0) {

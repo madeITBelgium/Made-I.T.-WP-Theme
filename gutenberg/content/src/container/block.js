@@ -52,6 +52,9 @@ registerBlockType( 'madeit/block-content', {
         containerBackgroundColor: {
             type: 'string',
         },
+        customContainerBackgroundColor: {
+            type: 'string',
+        },
         size: {
             type: 'string',
             default: 'container',
@@ -83,7 +86,17 @@ registerBlockType( 'madeit/block-content', {
         rowBackgroundColor: {
             type: 'string',
         },
+        containerPaddingRight: {
+            type: 'number',
+            default: 0
+        },
+        customRowBackgroundColor: {
+            type: 'string',
+        },
         rowTextColor: {
+            type: 'string',
+        },
+        customRowTextColor: {
             type: 'string',
         },
         rowMarginBottom: {
