@@ -1,7 +1,7 @@
 === Made I.T. ===
 Contributors: madeit
 Requires at least: WordPress 5.0
-Tested up to: 5.3
+Tested up to: 5.5
 Version: 2.4.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -55,6 +55,10 @@ License: CC0 1.0 Universal (CC0 1.0)
 Source: https://unsplash.com/@englr?photo=bIhpiQA009k
 
 == Changelog ==
+= 2.4.0 =
+* Fix woocommerce
+* WordPress 5.5 support
+
 = 2.3.1 =
 * Fix woocommerce
 

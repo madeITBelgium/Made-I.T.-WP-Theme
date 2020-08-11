@@ -4,8 +4,10 @@
  *
  * @since 1.0
  */
+
+$navBarClass = apply_filters('madeit_navbar_class', ['navbar', 'navbar-expand-md', 'bg-white', 'fixed-top']);
 ?>
-<nav class="navbar navbar-expand-md bg-white fixed-top">
+<nav class="<?php echo is_array($navBarClass) ? implode(" ",  $navBarClass) : $navBarClass; ?>">
     <div class="container">
         <?php get_template_part('template-parts/header/site', 'branding'); ?>
 

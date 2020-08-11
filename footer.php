@@ -9,10 +9,12 @@
  *
  * @version 1.2
  */
+
+$footerClass = apply_filters('madeit_footer_class', ['container-fluid', 'site-footer']);
 ?>
 </div>
-<footer id="colophon" class="container-fluid site-footer" role="contentinfo">
-    <div class="row voffset5 vbottom5">
+<footer id="colophon" class="<?php echo is_array($footerClass) ? implode(" ",  $footerClass) : $footerClass; ?>" role="contentinfo">
+    <div class="row mt-5 mb-5">
         <div class="col-sm">
             <?php get_template_part('template-parts/footer/footer', 'widgets'); ?>
         </div>

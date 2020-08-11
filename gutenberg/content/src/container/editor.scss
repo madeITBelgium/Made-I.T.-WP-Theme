@@ -121,6 +121,10 @@ $default-block-margin: 28px; // This value provides a consistent, contiguous spa
     > .container-fluid {
         max-width: 100%;
         width: 100%;
+        
+        > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="madeit/block-content-column"] {
+            max-width: none;
+        }
     }
 
 	> div {

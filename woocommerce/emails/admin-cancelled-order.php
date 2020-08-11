@@ -1,6 +1,6 @@
 <?php
 /**
- * Admin cancelled order email.
+ * Admin cancelled order email
  *
  * This template can be overridden by copying it to yourtheme/woocommerce/emails/admin-cancelled-order.php.
  *
@@ -10,22 +10,22 @@
  * happen. When this occurs the version of the template file will be bumped and
  * the readme will list any important changes.
  *
- * @see 	    https://docs.woocommerce.com/document/template-structure/
- *
- * @author  WooThemes
- *
- * @version 3.7.0
+ * @see https://docs.woocommerce.com/document/template-structure/
+ * @package WooCommerce\Templates\Emails
+ * @version 4.1.0
  */
-if (!defined('ABSPATH')) {
-    exit;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
+
 /*
  * @hooked WC_Emails::email_header() Output the email header
 */
 do_action('woocommerce_email_header', $email_heading, $email); ?>
 
 <?php /* translators: %1$s: Order number, %2$s: Customer full name.  */ ?>
-<p><?php printf(esc_html__('Alas. Just to let you know &mdash; order #%1$s belonging to %2$s has been cancelled:', 'woocommerce'), esc_html($order->get_order_number()), esc_html($order->get_formatted_billing_full_name())); ?></p>
+<p><?php printf( esc_html__( 'Notification to let you know &mdash; order #%1$s belonging to %2$s has been cancelled:', 'woocommerce' ), esc_html( $order->get_order_number() ), esc_html( $order->get_formatted_billing_full_name() ) ); ?></p>
 
 <?php
 /*
