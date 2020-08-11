@@ -52,7 +52,7 @@ const variations = [
                 />
             </SVG>
         ),
-        innerBlocks: [ [ 'madeit/block-content-column' ], [ 'madeit/block-content-column' ] ],
+        innerBlocks: [ [ 'madeit/block-content-column', {width: 6} ], [ 'madeit/block-content-column', {width: 6} ] ],
         scope: [ 'block' ],
     },
     {
