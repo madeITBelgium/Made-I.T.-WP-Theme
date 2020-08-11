@@ -1383,14 +1383,15 @@ if (false && !function_exists('madeit_extend_gutenberg_css')) {
     add_action('enqueue_block_assets', 'madeit_extend_gutenberg_css');
 }
 
-if(!function_exists('madeit_powered_by_text')) {
+if (!function_exists('madeit_powered_by_text')) {
     function madeit_powered_by_text($data)
     {
         global $wp;
-        $currentPage = str_replace(home_url(), '', home_url(add_query_arg(array($_GET), $wp->request)));
-        if($currentPage == '/' || empty($currentPage)) {
+        $currentPage = str_replace(home_url(), '', home_url(add_query_arg([$_GET], $wp->request)));
+        if ($currentPage == '/' || empty($currentPage)) {
             return 'Webdesign door Made I.T.';
         }
+
         return 'Website door Made I.T. Geel';
     }
     add_filter('madeit_powered_by_text', 'madeit_powered_by_text');
