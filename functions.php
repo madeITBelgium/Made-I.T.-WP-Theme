@@ -1314,7 +1314,7 @@ if (!function_exists('madeit_woocommerce_shopping_cart_in_menu')) {
 if (!function_exists('madeit_cookie_notice')) {
     function madeit_cookie_notice()
     {
-        if ( is_plugin_active('cookie-law-info/cookie-law-info.php') ) {
+        if (is_plugin_active('cookie-law-info/cookie-law-info.php')) {
             return;
         }
         $cookieUrl = '';
@@ -1406,12 +1406,13 @@ if (!function_exists('madeit_powered_by_text')) {
 }
 
 /* Cookie law default settings */
-if(!function_exists('madeit_cookie_law_default_settings')) {
-    function madeit_cookie_law_default_settings($settings) {
+if (!function_exists('madeit_cookie_law_default_settings')) {
+    function madeit_cookie_law_default_settings($settings)
+    {
         $settings['background'] = '#FFF';
         $settings['border'] = '#b1a6a6c2';
         $settings['border_on'] = true;
-        $settings['bar_style'] = array();
+        $settings['bar_style'] = [];
         $settings['button_1_text'] = __('Accept', 'madeit');
         $settings['button_1_link_colour'] = '#fff';
         $settings['button_1_button_colour'] = madeit_get_theme_color('success_color_rgb', MADEIT_SUCCESS_COLOR);
@@ -1425,13 +1426,13 @@ if(!function_exists('madeit_cookie_law_default_settings')) {
         $settings['button_4_text'] = __('Cookie settings', 'madeit');
         $settings['button_4_link_colour'] = '#333333';
         $settings['button_4_button_colour'] = '#000';
-        $settings['notify_message'] = addslashes ( '<div class="cli-bar-container cli-style-v2"><div class="cli-bar-message">' . __('We use cookies on our website to give you the most relevant experience by remembering your preferences and repeat visits. By clicking “Accept”, you consent to the use of ALL the cookies.', 'madeit') . '</div><div class="cli-bar-btn_container">[cookie_settings margin="0px 10px 0px 5px"][cookie_button]</div></div>');
+        $settings['notify_message'] = addslashes('<div class="cli-bar-container cli-style-v2"><div class="cli-bar-message">'.__('We use cookies on our website to give you the most relevant experience by remembering your preferences and repeat visits. By clicking “Accept”, you consent to the use of ALL the cookies.', 'madeit').'</div><div class="cli-bar-btn_container">[cookie_settings margin="0px 10px 0px 5px"][cookie_button]</div></div>');
         $settings['showagain_background'] = '#fff';
         $settings['showagain_border'] = '#000';
         $settings['showagain_text'] = addslashes(__('Privacy & Cookies Policy', 'madeit'));
         $settings['text'] = '#333333';
         $settings['showagain_tab'] = false;
-        
+
         return apply_filters('madeit_cookie_law_default_settings', $settings);
     }
     add_filter('wt_cli_plugin_settings', 'madeit_cookie_law_default_settings');
