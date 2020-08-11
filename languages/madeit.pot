@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-11 19:19+0000\n"
+"POT-Creation-Date: 2020-08-11 18:54+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco https://localise.biz/"
 
-#: footer.php:25 footer-landing.php:20
+#: footer.php:26 footer-landing.php:20
 msgid "Footer Social Links Menu"
 msgstr ""
 
@@ -27,13 +27,13 @@ msgstr ""
 msgid "Nothing Found"
 msgstr ""
 
-#: search.php:41
+#: search.php:40
 msgid ""
 "Sorry, but nothing matched your search terms. Please try again with some "
 "different keywords."
 msgstr ""
 
-#: sidebar-left.php:15 functions.php:444
+#: sidebar-left.php:15 functions.php:451
 msgid "Left Sidebar"
 msgstr ""
 
@@ -49,11 +49,11 @@ msgstr ""
 msgid "It looks like nothing was found at this location. Maybe try a search?"
 msgstr ""
 
-#: single.php:27
+#: single.php:28
 msgid "Previous Post"
 msgstr ""
 
-#: single.php:28
+#: single.php:29
 msgid "Next Post"
 msgstr ""
 
@@ -61,152 +61,177 @@ msgstr ""
 msgid "Landingpage"
 msgstr ""
 
-#: functions.php:100 functions.php:220
+#: functions.php:107 functions.php:227
 msgid "Top Menu"
 msgstr ""
 
-#: functions.php:101 functions.php:231
+#: functions.php:108 functions.php:238
 msgid "Social Links Menu"
 msgstr ""
 
-#: functions.php:184
+#: functions.php:191
 msgctxt "Theme starter content"
 msgid "Koffie Machien"
 msgstr ""
 
-#: functions.php:188
+#: functions.php:195
 msgctxt "Theme starter content"
 msgid "Outside"
 msgstr ""
 
-#: functions.php:192
+#: functions.php:199
 msgctxt "Theme starter content"
 msgid "Inside"
 msgstr ""
 
-#: functions.php:196
+#: functions.php:203
 msgctxt "Theme starter content"
 msgid "Price table"
 msgstr ""
 
-#: functions.php:269
+#: functions.php:276
 msgid "White Color"
 msgstr ""
 
-#: functions.php:274
+#: functions.php:281
 msgid "Black Color"
 msgstr ""
 
-#: functions.php:279 inc/customizer.php:57
+#: functions.php:286 inc/customizer.php:57
 msgid "Text Color"
 msgstr ""
 
-#: functions.php:284 inc/customizer.php:69
+#: functions.php:291 inc/customizer.php:69
 msgid "Background Color"
 msgstr ""
 
-#: functions.php:289 inc/customizer.php:81
+#: functions.php:296 inc/customizer.php:81
 msgid "Primary Color"
 msgstr ""
 
-#: functions.php:294 inc/customizer.php:93
+#: functions.php:301 inc/customizer.php:93
 msgid "Secondary Color"
 msgstr ""
 
-#: functions.php:299 inc/customizer.php:106
+#: functions.php:306 inc/customizer.php:106
 msgid "Success Color"
 msgstr ""
 
-#: functions.php:304 inc/customizer.php:118
+#: functions.php:311 inc/customizer.php:118
 msgid "Info Color"
 msgstr ""
 
-#: functions.php:309 inc/customizer.php:130
+#: functions.php:316 inc/customizer.php:130
 msgid "Warning Color"
 msgstr ""
 
-#: functions.php:314 inc/customizer.php:142
+#: functions.php:321 inc/customizer.php:142
 msgid "Danger Color"
 msgstr ""
 
 #. If there are characters in your language that are not
 #. supported by Libre Franklin, translate this to 'off'. Do not translate
 #. into your own language.
-#: functions.php:381
+#: functions.php:388
 msgctxt "Libre Franklin font: on or off"
 msgid "on"
 msgstr ""
 
-#: functions.php:434
+#: functions.php:441
 msgid "Right Sidebar"
 msgstr ""
 
-#: functions.php:436
+#: functions.php:443
 msgid ""
 "Add widgets here to appear in your sidebar on blog posts and archive pages."
 msgstr ""
 
-#: functions.php:446
+#: functions.php:453
 msgid "Add widgets here to appear in your left sidebar."
 msgstr ""
 
-#: functions.php:454
+#: functions.php:461
 msgid "Footer 1"
 msgstr ""
 
-#: functions.php:456 functions.php:466
+#: functions.php:463 functions.php:473
 msgid "Add widgets here to appear in your footer."
 msgstr ""
 
-#: functions.php:464
+#: functions.php:471
 msgid "Footer 2"
 msgstr ""
 
-#: functions.php:474
+#: functions.php:481
 msgid "Below index blog"
 msgstr ""
 
-#: functions.php:476
+#: functions.php:483
 msgid "Add widgets here to appear below your blog/news list."
 msgstr ""
 
 #. %s: Name of current post
-#. %s: Name of current post
-#. %s: Name of current post
-#: functions.php:506 template-parts/page/content-page.php:26
+#: functions.php:514 template-parts/page/content-page.php:26
 #: template-parts/page/content-front-page.php:39
 #, php-format
 msgid "Continue reading<span class=\"screen-reader-text\"> \"%s\"</span>"
 msgstr ""
 
-#: functions.php:830
+#: functions.php:841
 msgid "Continue reading"
 msgstr ""
 
-#: functions.php:1273
+#: functions.php:1281 functions.php:1295
 msgid "Start shopping"
 msgstr ""
 
-#: functions.php:1277
+#: functions.php:1285 functions.php:1299
 msgid "View your shopping cart"
 msgstr ""
 
-#: functions.php:1281
+#: functions.php:1289
 #, php-format
 msgid "%d item"
 msgid_plural "%d items"
 msgstr[0] ""
 msgstr[1] ""
 
-#: functions.php:1302
+#: functions.php:1325
 #, php-format
 msgid ""
 "By using our website you are consenting to our use of cookies in accordance "
 "with our <a href=\"%s\">cookie & privacy policy</a>."
 msgstr ""
 
-#: functions.php:1319 functions.php:1337
+#: functions.php:1342 functions.php:1360
 msgid "Close"
+msgstr ""
+
+#: functions.php:1412
+msgid "Accept"
+msgstr ""
+
+#: functions.php:1415
+msgid "Read More"
+msgstr ""
+
+#: functions.php:1419
+msgid "Reject"
+msgstr ""
+
+#: functions.php:1422
+msgid "Cookie settings"
+msgstr ""
+
+#: functions.php:1425
+msgid ""
+"We use cookies on our website to give you the most relevant experience by "
+"remembering your preferences and repeat visits. By clicking “Accept”, you "
+"consent to the use of ALL the cookies."
+msgstr ""
+
+#: functions.php:1428
+msgid "Privacy & Cookies Policy"
 msgstr ""
 
 #. Name of the template
@@ -233,19 +258,19 @@ msgid_plural "%1$s Replies to &ldquo;%2$s&rdquo;"
 msgstr[0] ""
 msgstr[1] ""
 
-#: comments.php:66
+#: comments.php:67 inc/template-functions.php:198
 msgid "Previous"
 msgstr ""
 
-#: comments.php:67
+#: comments.php:68 inc/template-functions.php:208
 msgid "Next"
 msgstr ""
 
-#: comments.php:73
+#: comments.php:74
 msgid "Comments are closed."
 msgstr ""
 
-#: comments.php:91
+#: comments.php:94
 msgid "Comment"
 msgstr ""
 
@@ -259,6 +284,10 @@ msgstr ""
 
 #. Name of the template
 msgid "Page with left sidebar"
+msgstr ""
+
+#. Name of the template
+msgid "Elementor"
 msgstr ""
 
 #: inc/template-functions.php:123
@@ -284,6 +313,22 @@ msgstr ""
 msgid "Je comentaar wacht op een review van de beheerder."
 msgstr ""
 
+#: inc/template-functions.php:191
+msgid "Page"
+msgstr ""
+
+#: inc/template-functions.php:191
+msgid "of"
+msgstr ""
+
+#: inc/template-functions.php:194
+msgid "First"
+msgstr ""
+
+#: inc/template-functions.php:212
+msgid "Last"
+msgstr ""
+
 #: inc/template-functions.php:245
 msgid "Hide page title"
 msgstr ""
@@ -296,11 +341,11 @@ msgstr ""
 msgid "Add side menu with child pages"
 msgstr ""
 
-#: inc/MadeIT_Github_Updater.php:212 inc/MadeIT_Gitlab_Updater.php:210
+#: inc/MadeIT_Github_Updater.php:206 inc/MadeIT_Gitlab_Updater.php:210
 msgid "Rename successful"
 msgstr ""
 
-#: inc/MadeIT_Github_Updater.php:219 inc/MadeIT_Gitlab_Updater.php:217
+#: inc/MadeIT_Github_Updater.php:213 inc/MadeIT_Gitlab_Updater.php:217
 msgid "Unable to rename downloaded repository."
 msgstr ""
 
@@ -317,35 +362,35 @@ msgid "<span>Posted on</span> %s"
 msgstr ""
 
 #. %s: post date
-#: inc/template-tags.php:59
+#: inc/template-tags.php:60
 #, php-format
 msgid "<span>Updated on</span> %s"
 msgstr ""
 
 #. used between list items, there is a space after the comma
-#: inc/template-tags.php:75
+#: inc/template-tags.php:76
 msgid ", "
 msgstr ""
 
-#: inc/template-tags.php:93
+#: inc/template-tags.php:94
 msgid "Categories"
 msgstr ""
 
-#: inc/template-tags.php:97
+#: inc/template-tags.php:98
 msgid "Tags"
 msgstr ""
 
-#: inc/template-tags.php:104
+#: inc/template-tags.php:105
 msgid "Pages:"
 msgstr ""
 
 #. %s: Name of current post
-#: inc/template-tags.php:132
+#: inc/template-tags.php:133
 #, php-format
 msgid "Edit<span class=\"screen-reader-text\"> \"%s\"</span>"
 msgstr ""
 
-#: inc/template-tags.php:170
+#: inc/template-tags.php:171
 #, php-format
 msgid "Front Page Section %1$s Placeholder"
 msgstr ""
@@ -482,36 +527,40 @@ msgstr ""
 msgid "Default Header Image"
 msgstr ""
 
-#: inc/custom-header.php:120
+#: inc/custom-header.php:121
 msgid "Play background video"
 msgstr ""
 
-#: inc/custom-header.php:121
+#: inc/custom-header.php:122
 msgid "Pause background video"
+msgstr ""
+
+#: woocommerce/cart/cart.php:128
+msgid "Verder winkelen"
 msgstr ""
 
 #: template-parts/footer/footer-widgets.php:15
 msgid "Footer"
 msgstr ""
 
-#: template-parts/footer/site-info.php:10
+#: template-parts/footer/site-info.php:11
 msgid "Privacy policy"
 msgstr ""
 
-#: template-parts/footer/site-info.php:10
+#: template-parts/footer/site-info.php:12
 msgid "Login"
 msgstr ""
 
-#: template-parts/footer/site-info.php:10
+#: template-parts/footer/site-info.php:14
 msgid "https://www.madeit.be/"
 msgstr ""
 
-#: template-parts/footer/site-info.php:10
+#: template-parts/footer/site-info.php:14
 #, php-format
 msgid "Webdesign door %s uit Geel"
 msgstr ""
 
-#: template-parts/footer/site-info.php:10
+#: template-parts/footer/site-info.php:14
 #, php-format
 msgid "Proudly powered by %s"
 msgstr ""
@@ -528,8 +577,8 @@ msgid ""
 "searching can help."
 msgstr ""
 
-#: template-parts/navigation/navigation-top.php:12
 #: template-parts/navigation/navigation-top.php:13
+#: template-parts/navigation/navigation-top.php:14
 msgid "Menu"
 msgstr ""
 
