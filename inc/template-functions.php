@@ -66,6 +66,10 @@ function madeit_body_classes($classes)
     $classes[] = 'colors-'.$colors;
     $classes[] = 'flex-column';
     $classes[] = 'd-flex';
+    
+    if(HEADER_UPPER_TOP) {
+        $classes[] = 'has-upper-top-navbar';
+    }
 
     return $classes;
 }

@@ -49,6 +49,9 @@ if (!defined('SHOW_LOGIN_IN_FOOTER')) {
 if (!defined('SHOW_MADEIT_IN_FOOTER')) {
     define('SHOW_MADEIT_IN_FOOTER', true);
 }
+if (!defined('HEADER_UPPER_TOP')) {
+    define('HEADER_UPPER_TOP', true);
+}
 
 if (!defined('WOO_SHOPING_CART_MENU_STYLE')) {
     define('WOO_SHOPING_CART_MENU_STYLE', 2);
@@ -105,6 +108,7 @@ if (!function_exists('madeit_setup')) {
 
         register_nav_menus([
             'top'    => __('Top Menu', 'madeit'),
+            'upper-top'    => __('Upper top Menu', 'madeit'),
             'social' => __('Social Links Menu', 'madeit'),
         ]);
 
@@ -1314,6 +1318,7 @@ if (!function_exists('madeit_woocommerce_shopping_cart_in_menu')) {
 if (!function_exists('madeit_cookie_notice')) {
     function madeit_cookie_notice()
     {
+        include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
         if (is_plugin_active('cookie-law-info/cookie-law-info.php')) {
             return;
         }
