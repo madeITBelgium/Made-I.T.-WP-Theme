@@ -50,7 +50,7 @@ if (!defined('SHOW_MADEIT_IN_FOOTER')) {
     define('SHOW_MADEIT_IN_FOOTER', true);
 }
 if (!defined('HEADER_UPPER_TOP')) {
-    define('HEADER_UPPER_TOP', true);
+    define('HEADER_UPPER_TOP', false);
 }
 
 if (!defined('WOO_SHOPING_CART_MENU_STYLE')) {
