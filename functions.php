@@ -107,9 +107,9 @@ if (!function_exists('madeit_setup')) {
         $GLOBALS['content_width'] = 740;
 
         register_nav_menus([
-            'top'    => __('Top Menu', 'madeit'),
+            'top'          => __('Top Menu', 'madeit'),
             'upper-top'    => __('Upper top Menu', 'madeit'),
-            'social' => __('Social Links Menu', 'madeit'),
+            'social'       => __('Social Links Menu', 'madeit'),
         ]);
 
         add_theme_support('html5', [
@@ -1318,7 +1318,7 @@ if (!function_exists('madeit_woocommerce_shopping_cart_in_menu')) {
 if (!function_exists('madeit_cookie_notice')) {
     function madeit_cookie_notice()
     {
-        include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+        include_once ABSPATH.'wp-admin/includes/plugin.php';
         if (is_plugin_active('cookie-law-info/cookie-law-info.php')) {
             return;
         }
