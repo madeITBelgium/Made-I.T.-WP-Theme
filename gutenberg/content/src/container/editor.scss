@@ -276,3 +276,7 @@ div.block-core-columns.is-vertically-aligned-bottom {
 [data-type="madeit/block-content-column"].block-editor-block-list__block.has-child-selected:before {
     border: 1px solid rgba(66,88,99,.4);
 }
+
+.wp-block[data-align="wide"] .wp-block-madeit-block-content .wp-block {
+    max-width: 100%;
+}

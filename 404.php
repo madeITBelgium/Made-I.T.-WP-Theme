@@ -10,8 +10,8 @@
 get_header(); ?>
 
 <div class="container">
-    <div id="primary" class="row">
-        <div id="main" class="col" role="main">
+    <div id="primary" class="row my-5 py-5">
+        <div id="main" class="col my-5 py-5" role="main">
             <section class="error-404 not-found">
                 <header class="page-header">
                     <h1 class="page-title"><?php _e('Oops! That page can&rsquo;t be found.', 'madeit'); ?></h1>
