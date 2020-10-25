@@ -10,8 +10,8 @@ $menuClass = apply_filters('madeit_navbar_menu_class', ['menu', 'nav', 'navbar-n
 ?>
 <nav class="<?php echo is_array($navBarClass) ? implode(' ', $navBarClass) : $navBarClass; ?>">
     
-    <?php 
-    if(HEADER_UPPER_TOP) {
+    <?php
+    if (HEADER_UPPER_TOP) {
         get_template_part('template-parts/navigation/navigation', 'upper-top');
     }
     ?>

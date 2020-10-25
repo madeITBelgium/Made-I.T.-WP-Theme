@@ -9,7 +9,7 @@ $containerClass = apply_filters('madeit_upper_navbar_container_class', ['contain
 ?>
 
 <div class="<?php echo is_array($navBarClass) ? implode(' ', $navBarClass) : $navBarClass; ?>">
-    <?php if(!in_array('container', $navBarClass)) { ?>
+    <?php if (!in_array('container', $navBarClass)) { ?>
     <div class="row">
         <div class="col">
             <div class="<?php echo is_array($containerClass) ? implode(' ', $containerClass) : $containerClass; ?>">
@@ -43,7 +43,7 @@ $containerClass = apply_filters('madeit_upper_navbar_container_class', ['contain
                         </nav><!-- .social-navigation -->
                     </div>
                 </div>
-    <?php if(!in_array('container', $navBarClass)) { ?>
+    <?php if (!in_array('container', $navBarClass)) { ?>
             </div>
         </div>
     </div>
