@@ -50,3 +50,7 @@ body.gutenberg-editor-page {
     margin-bottom: 15px !important;
 }
 */
+
+.block-library-gallery-item__inline-menu .components-button.has-icon:not(:focus) {
+    color: black;
+}
