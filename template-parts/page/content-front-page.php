@@ -26,7 +26,6 @@
             <div class="col-sm">
                 <header class="entry-header">
                     <?php the_title('<h2 class="entry-title">', '</h2>'); ?>
-
                 </header><!-- .entry-header -->
             </div>
             <div class="col-sm two-column-row <?php if ((is_page() || is_archive()) && 'one-column' === get_theme_mod('page_layout')) {
