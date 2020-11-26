@@ -146,7 +146,7 @@ jQuery( document ).ready( function( $ ) {
         var descHtml = '';
         e.preventDefault();
         if ( ! url.endsWith( '.jpg' ) && ! url.endsWith( '.png' ) ) {
-            url = $( this ).find( 'img:eq(0)' ).attr( 'src' );
+            url = $( this ).find( 'img:eq(0)' ).attr( 'data-large_image' );
         }
 
         if ( $( this ).parents( '.woocommerce-product-gallery__wrapper' ).length ) {

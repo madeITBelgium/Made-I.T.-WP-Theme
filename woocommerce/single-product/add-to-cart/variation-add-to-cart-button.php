@@ -22,9 +22,11 @@ global $product;
         'input_value' => isset($_POST['quantity']) ? wc_stock_amount(wp_unslash($_POST['quantity'])) : $product->get_min_purchase_quantity(), // WPCS: CSRF ok, input var ok.
     ]);
     do_action('woocommerce_after_add_to_cart_quantity');
+    
+    $wooButtonClass = apply_filters('madeit_woo_btn_class', ['btn', 'btn-success']);
     ?>
 
-	<button type="submit" class="single_add_to_cart_button button alt"><?php echo esc_html($product->single_add_to_cart_text()); ?></button>
+	<button type="submit" class="single_add_to_cart_button <?php echo is_array($wooButtonClass) ? implode(' ', $wooButtonClass) : $wooButtonClass; ?>"><?php echo esc_html($product->single_add_to_cart_text()); ?></button>
 
 	<?php do_action('woocommerce_after_add_to_cart_button'); ?>
 

@@ -109,8 +109,8 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 	<?php if ($quantites_required) { ?>
 
 		<?php do_action('woocommerce_before_add_to_cart_button'); ?>
-
-		<button type="submit" class="single_add_to_cart_button button alt"><?php echo esc_html($product->single_add_to_cart_text()); ?></button>
+        <?php $wooButtonClass = apply_filters('madeit_woo_btn_class', ['btn', 'btn-success']); ?>
+		<button type="submit" class="single_add_to_cart_button <?php echo is_array($wooButtonClass) ? implode(' ', $wooButtonClass) : $wooButtonClass; ?>"><?php echo esc_html($product->single_add_to_cart_text()); ?></button>
 
 		<?php do_action('woocommerce_after_add_to_cart_button'); ?>
 

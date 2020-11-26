@@ -35,7 +35,10 @@ if (empty($product) || !$product->is_visible()) {
                 <a href="<?php echo get_the_permalink(); ?>"><?php echo get_the_title(); ?></a>
             </h4>
             <div class="h5"><?php wc_get_template('loop/price.php'); ?></div>
-            <?php woocommerce_template_loop_add_to_cart(['class' => 'btn btn-success']); ?>
+            <?php
+            $wooButtonClass = apply_filters('madeit_woo_btn_class', ['btn', 'btn-success']);
+            woocommerce_template_loop_add_to_cart(['class' => is_array($wooButtonClass) ? implode(' ', $wooButtonClass) : $wooButtonClass]);
+            ?>
         </div>
         <div class="card-footer d-none">
             <?php wc_get_template('loop/rating.php'); ?>
