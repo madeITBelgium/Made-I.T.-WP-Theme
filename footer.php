@@ -10,15 +10,17 @@
  * @version 1.2
  */
 $footerClass = apply_filters('madeit_footer_class', ['container-fluid', 'site-footer']);
+$footerWidgetRow = apply_filters('madeit_footer_widget_row_class', ['row', 'mt-5', 'mb-5']);
+$footerContainerClass = apply_filters('madeit_footer_container_class', ['container']);
 ?>
 </div>
 <footer id="colophon" class="<?php echo is_array($footerClass) ? implode(' ', $footerClass) : $footerClass; ?>" role="contentinfo">
-    <div class="row mt-5 mb-5">
+    <div class="<?php echo is_array($footerWidgetRow) ? implode(' ', $footerWidgetRow) : $footerWidgetRow; ?>">
         <div class="col">
             <?php get_template_part('template-parts/footer/footer', 'widgets'); ?>
         </div>
     </div>
-    <div class="container">
+    <div class="<?php echo is_array($footerContainerClass) ? implode(' ', $footerContainerClass) : $footerContainerClass; ?>">
         <div class="row">
             <?php
             if (has_nav_menu('social')) { ?>
