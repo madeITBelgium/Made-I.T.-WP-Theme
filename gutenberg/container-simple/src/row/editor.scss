@@ -14,7 +14,8 @@
     margin-left: -15px;
     */
     
-    .editor-block-list__layout {
+    .editor-block-list__layout,
+    > .block-editor-block-list__layout {
         display: -ms-flexbox;
         display: flex;
         -ms-flex-wrap: wrap;
@@ -23,7 +24,7 @@
         margin-left: -15px;
     }
     
-    .editor-inner-blocks {
+    .editor-inner-blocks, .block-editor-inner-blocks {
         width: 100%;
     }
 }
