@@ -4,12 +4,13 @@
 import './style.scss';
 import './editor.scss';
 
-import times from 'lodash/times';
 import memoize from 'memize';
+import { times, merge } from 'lodash';
 
-export const { registerBlockType } = wp.blocks
+export const { registerBlockType, createBlock } = wp.blocks
 export const { __ } = wp.i18n
 export const { TextControl } = wp.components
+const { useDispatch, useSelect } = wp.data;
 
 export const {
     InspectorControls,
@@ -34,12 +35,19 @@ export const edit = ( props ) => {
         className,
         focus,
         setFocus,
+        clientId
     } = props
 
     const {
         aantaltabs
     } = props.attributes
     
+    const { replaceInnerBlocks } = useDispatch("core/block-editor");
+    const { inner_blocks } = useSelect(select => ({
+            inner_blocks: select("core/block-editor").getBlocks(clientId)
+    }));
+    let innerBlocks = inner_blocks;
+
     return [
         <div>
             <wp.editor.InnerBlocks
@@ -53,7 +61,17 @@ export const edit = ( props ) => {
                         label={ __( 'Aantal tabs' ) }
                         value={ aantaltabs }
                         type='number'
-                        onChange={ ( value ) => setAttributes( { aantaltabs: parseInt(value) } ) }
+                        onChange={ ( value ) => {
+                            let countNewTabs = parseInt(value);
+                            setAttributes( { aantaltabs: countNewTabs } );
+    
+                            innerBlocks.forEach((i) => {
+                                i.attributes.aantaltabs = countNewTabs;
+                                let iInnerBlocks = i.innerBlocks;
+                                
+                                replaceInnerBlocks(i.clientId, iInnerBlocks, false);
+                            });
+                        } }
                     />
                 </InspectorControls>
             }
