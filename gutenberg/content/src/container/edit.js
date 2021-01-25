@@ -419,7 +419,7 @@ export function ColumnsEditContainer( props ) {
             <div className={ classesChild }
             style = { styleChild }>
                 <InnerBlocks
-                    __experimentalMoverDirection="horizontal"
+                    orientation="horizontal"
                     allowedBlocks={ ALLOWED_BLOCKS } />
             </div>
         </div>
