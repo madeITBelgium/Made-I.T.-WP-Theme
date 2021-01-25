@@ -11,9 +11,8 @@
 <?php
 
 if (is_active_sidebar('sidebar-2') || is_active_sidebar('sidebar-3') || is_active_sidebar('sidebar-4') || is_active_sidebar('sidebar-5')) {
-    
     $footerWidgetContainerClass = apply_filters('madeit_footer_widget_container_class', ['container']);
-    
+
     $cols = 0;
     if (is_active_sidebar('sidebar-2')) {
         $cols++;
