@@ -33,8 +33,19 @@ if ($related_products) { ?>
 
         <?php woocommerce_product_loop_start(); ?>
         
-            <?php foreach ($related_products as $related_product) { ?>
-                <div class="col col-md-6 col-lg-3">
+            <?php
+            $relatedProductColClass = "col-md-6";
+            if(count($related_products) >= 4) {
+                $relatedProductColClass .= " col-lg-3";
+            } else if(count($related_products) >= 3) {
+                $relatedProductColClass .= " col-lg-4";
+            } else if(count($related_products) >= 1) {
+                $relatedProductColClass .= " col-lg-6";
+            }
+            foreach ($related_products as $related_product) {
+                    
+                ?>
+                <div class="col <?php echo $relatedProductColClass; ?>">
 
                     <?php
                     $post_object = get_post($related_product->get_id());

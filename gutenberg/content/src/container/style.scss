@@ -103,3 +103,8 @@ $grid-size-large: 16px;
 	}
 }
 
+.justify-content-center > .row {
+    -ms-flex-pack: center !important;
+    justify-content: center !important;
+}
+
