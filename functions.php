@@ -138,6 +138,7 @@ if (!function_exists('madeit_setup')) {
         add_theme_support('custom-logo', [
             'width'       => 260,
             'height'      => 89,
+            'flex-height' => true,
             'flex-width'  => true,
         ]);
 
@@ -926,6 +927,11 @@ if (!function_exists('madeit_register_required_plugins')) {
                 'slug'     => 'cookie-law-info',
                 'required' => false,
             ],
+            [
+                'name'     => 'Safe SVG',
+                'slug'     => 'safe-svg',
+                'required' => false,
+            ]
         ];
 
         $config = [
