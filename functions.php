@@ -931,7 +931,7 @@ if (!function_exists('madeit_register_required_plugins')) {
                 'name'     => 'Safe SVG',
                 'slug'     => 'safe-svg',
                 'required' => false,
-            ]
+            ],
         ];
 
         $config = [
