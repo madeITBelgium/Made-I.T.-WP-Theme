@@ -23,8 +23,7 @@ get_header(); ?>
         if (have_posts()) { ?>
             <?php
             while (have_posts()) {
-                the_post();
-                ?>
+                the_post(); ?>
                 <div id="post-<?php the_ID(); ?>" <?php post_class('col-12 col-md-6 col-lg-4 mb-3 border-0'); ?>>
                     <article id="post-<?php the_ID(); ?>" <?php post_class(' blog-post border-0'); ?>>
                         <div class="text-center p-2 border-shadow">
@@ -36,9 +35,7 @@ get_header(); ?>
                                 </div>
                                 <?php
                             }
-                            the_title('<h2 class="entry-title h4 mb-3">', '</h2>');
-
-                            ?>
+                the_title('<h2 class="entry-title h4 mb-3">', '</h2>'); ?>
                             <a href="<?php the_permalink(); ?>" class="stretched-link btn btn-success">Bekijk cursus</a>
                         </div>
                     </article>
@@ -52,8 +49,7 @@ get_header(); ?>
             ?>
             <div class="col-12">
                 <?php
-                get_template_part('template-parts/post/content', 'none');
-                ?>
+                get_template_part('template-parts/post/content', 'none'); ?>
             </div>
             <?php
         } ?>

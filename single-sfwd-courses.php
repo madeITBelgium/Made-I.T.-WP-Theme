@@ -19,13 +19,11 @@ get_header(); ?>
                         /* Start the Loop */
                         while (have_posts()) {
                             the_post();
-                            
-                            the_title('<h1 class="entry-title text-center mb-4">', '</h1>');
-                            ?>
+
+                            the_title('<h1 class="entry-title text-center mb-4">', '</h1>'); ?>
                             <div class="content">
                                 <?php
-                                the_content();
-                                ?>
+                                the_content(); ?>
                             </div>
                             <?php
                         }
