@@ -931,7 +931,7 @@ if (!function_exists('madeit_register_required_plugins')) {
                 'name'     => 'Safe SVG',
                 'slug'     => 'safe-svg',
                 'required' => false,
-            ]
+            ],
         ];
 
         $config = [
@@ -1524,6 +1524,6 @@ require get_parent_theme_file_path('/gutenberg/gutenberg.php');
 require get_parent_theme_file_path('/inc/woocommerce.php');
 
 $activePlugins = apply_filters('active_plugins', get_option('active_plugins'));
-if(in_array('woocommerce/woocommerce.php', $activePlugins) && in_array('sfwd-lms/sfwd_lms.php', $activePlugins)) {
+if (in_array('woocommerce/woocommerce.php', $activePlugins) && in_array('sfwd-lms/sfwd_lms.php', $activePlugins)) {
     require get_parent_theme_file_path('/inc/sfwd-lms.php');
 }
