@@ -803,6 +803,16 @@ ul.media-gallery li {
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
+/*
+LearnDash
+*/
+.learndash-wrapper .ld-item-list .ld-item-list-item .ld-item-name {
+    align-items: center;   
+}
+.learndash-wrapper .ld-item-list .ld-item-list-item .ld-item-list-item-preview .ld-status-icon {
+    margin-top: 0;
+}
+
 /*!
  * Bootstrap v4.5.2 (https://getbootstrap.com/)
  * Copyright 2011-2020 The Bootstrap Authors
