@@ -52,9 +52,25 @@ if (!defined('SHOW_MADEIT_IN_FOOTER')) {
 if (!defined('HEADER_UPPER_TOP')) {
     define('HEADER_UPPER_TOP', false);
 }
+if (!defined('HEADER_UPPER_BOTTOM')) {
+    define('HEADER_UPPER_BOTTOM', false);
+}
+if (!defined('POST_AUTHOR')) {
+    define('POST_AUTHOR', true);
+}
+if (!defined('POST_EDIT_TIME')) {
+    define('POST_EDIT_TIME', true);
+}
+if (!defined('POST_TIME_FORMAT')) {
+    define('POST_TIME_FORMAT', 'long');
+}
 
 if (!defined('WOO_SHOPING_CART_MENU_STYLE')) {
     define('WOO_SHOPING_CART_MENU_STYLE', 2);
+}
+
+if(!defined('SHOW_SINGLE_SIDEBAR')) {
+    define('SHOW_SINGLE_SIDEBAR', true);
 }
 
 if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
@@ -107,8 +123,9 @@ if (!function_exists('madeit_setup')) {
         $GLOBALS['content_width'] = 740;
 
         register_nav_menus([
-            'top'          => __('Top Menu', 'madeit'),
-            'upper-top'    => __('Upper top Menu', 'madeit'),
+            'top'          => __('Main Menu', 'madeit'),
+            'upper-top'    => __('Top of main menu', 'madeit'),
+            'upper-bottom' => __('Bottom of main menu', 'madeit'),
             'social'       => __('Social Links Menu', 'madeit'),
         ]);
 
@@ -930,6 +947,16 @@ if (!function_exists('madeit_register_required_plugins')) {
             [
                 'name'     => 'Safe SVG',
                 'slug'     => 'safe-svg',
+                'required' => false,
+            ],
+            [
+                'name'     => 'Redirection',
+                'slug'     => 'redirection',
+                'required' => false,
+            ],
+            [
+                'name'     => 'Antispam Bee',
+                'slug'     => 'antispam-bee',
                 'required' => false,
             ],
         ];

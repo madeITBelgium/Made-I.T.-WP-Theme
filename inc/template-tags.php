@@ -21,7 +21,7 @@ if (!function_exists('madeit_posted_on')) {
         );
 
         // Finally, let's write all of this to the page.
-        echo '<span class="posted-on">'.madeit_time_link().'</span> <span class="byline"> '.$byline.'</span>';
+        echo '<span class="posted-on">'.madeit_time_link().'</span>' . (POST_AUTHOR ? ' <span class="byline"> '.$byline.'</span>' : '');
     }
 }
 
@@ -41,11 +41,11 @@ if (!function_exists('madeit_time_link')) {
         // Wrap the time string in a link, and preface it with 'Posted on'.
         $result = '<span class="published-on">'.sprintf(
             /* translators: %s: post date */
-            __('<span>Posted on</span> %s', 'madeit'),
+            (POST_TIME_FORMAT === 'long' ? __('<span>Posted on</span> %s', 'madeit') : '%s'),
             '<a href="'.esc_url(get_permalink()).'" rel="bookmark">'.$time_string.'</a>'
         ).'</span> ';
 
-        if (get_the_time('U') !== get_the_modified_time('U')) {
+        if (POST_EDIT_TIME && get_the_time('U') !== get_the_modified_time('U')) {
             $time_string = '<time class="updated" datetime="%1$s">%2$s</time>';
 
             $time_string = sprintf(

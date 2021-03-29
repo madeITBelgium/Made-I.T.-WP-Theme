@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) {
 ?>
 <div class="col-12 col-md-6 col-lg-4">
     <div <?php wc_product_cat_class('mb-4 h-100 pb-4', $category); ?>>
-        <div class="card h-100">
+        <div class="card h-100 p-4 border-0">
             <?php
             /**
              * The woocommerce_before_subcategory hook.
@@ -43,16 +43,13 @@ if (!defined('ABSPATH')) {
 
             ?>
             <div class="card-body text-center d-flex justify-content-between flex-column">
-                <h4 class="card-title">
-                    <a href="<?php echo get_term_link($category, 'product_cat'); ?>">
-                        <?php                         /**
-                         * The woocommerce_shop_loop_subcategory_title hook.
-                         *
-                         * @hooked woocommerce_template_loop_category_title - 10
-                         */
-                        do_action('woocommerce_shop_loop_subcategory_title', $category); ?>
-                    </a>
-                </h4>
+                <?php
+                /**
+                 * The woocommerce_shop_loop_subcategory_title hook.
+                 *
+                 * @hooked woocommerce_template_loop_category_title - 10
+                 */
+                do_action('woocommerce_shop_loop_subcategory_title', $category); ?>
             </div>
         </div>
     </div>

@@ -31,7 +31,11 @@ get_header(); ?>
             }
             ?>
         </div>
-        <?php get_sidebar(); ?>
+        <?php
+        if(SHOW_SINGLE_SIDEBAR) {
+            get_sidebar();
+        }
+        ?>
     </div>
 </div>
 
