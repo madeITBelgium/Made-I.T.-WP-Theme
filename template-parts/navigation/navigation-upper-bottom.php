@@ -4,7 +4,7 @@
  *
  * @since 1.0
  */
-$navBarClass = apply_filters('madeit_upper_bottom_navbar_class', ['container-fluid', 'd-none', 'd-lg-block', 'mb-2', 'pb-1', 'font-weight-light', 'upper-bottom-navbar', ' navbar', 'navbar-expand', 'border-bottom', 'border-dark']);
+$navBarClass = apply_filters('madeit_upper_bottom_navbar_class', ['container-fluid', 'd-none', 'd-lg-block', 'pb-1', 'font-weight-light', 'upper-bottom-navbar', ' navbar', 'navbar-expand', 'border-bottom', 'border-dark']);
 $containerClass = apply_filters('madeit_upper_bottom_navbar_container_class', ['container']);
 ?>
 
