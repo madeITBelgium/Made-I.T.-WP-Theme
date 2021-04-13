@@ -807,6 +807,11 @@ ul.media-gallery li {
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
+.form-row-wide.address-field strong {
+    line-height: 2rem;
+    margin-left: 5px;
+}
+
 /*
 LearnDash
 */
