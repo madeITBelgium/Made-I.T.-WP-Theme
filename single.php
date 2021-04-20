@@ -32,7 +32,7 @@ get_header(); ?>
             ?>
         </div>
         <?php
-        if(SHOW_SINGLE_SIDEBAR) {
+        if (SHOW_SINGLE_SIDEBAR) {
             get_sidebar();
         }
         ?>
