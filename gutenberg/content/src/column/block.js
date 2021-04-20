@@ -62,7 +62,19 @@ registerBlockType( 'madeit/block-content-column', {
             "type": "number",
             "min": 0,
             "max": 12
-        }
+        },
+        backgroundColor: {
+            type: 'string',
+        },
+        customBackgroundColor: {
+            type: 'string',
+        },
+        textColor: {
+            type: 'string',
+        },
+        customTextColor: {
+            type: 'string',
+        },
     },
     
     // The "edit" property must be a valid function.

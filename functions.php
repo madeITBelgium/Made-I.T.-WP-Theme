@@ -942,12 +942,12 @@ if (!function_exists('madeit_register_required_plugins')) {
             [
                 'name'     => 'GDPR Cookie Consent (CCPA Ready)',
                 'slug'     => 'cookie-law-info',
-                'required' => false,
+                'required' => true,
             ],
             [
                 'name'     => 'Safe SVG',
                 'slug'     => 'safe-svg',
-                'required' => false,
+                'required' => true,
             ],
             [
                 'name'     => 'Redirection',
@@ -957,6 +957,16 @@ if (!function_exists('madeit_register_required_plugins')) {
             [
                 'name'     => 'Antispam Bee',
                 'slug'     => 'antispam-bee',
+                'required' => false,
+            ],
+            [
+                'name'     => 'Advanced Custom Fields',
+                'slug'     => 'advanced-custom-fields',
+                'required' => false,
+            ],
+            [
+                'name'     => 'Custom Post Type UI',
+                'slug'     => 'custom-post-type-ui',
                 'required' => false,
             ],
         ];

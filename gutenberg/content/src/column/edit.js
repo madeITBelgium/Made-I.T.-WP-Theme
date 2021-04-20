@@ -12,6 +12,9 @@ const {
     BlockControls,
     BlockVerticalAlignmentToolbar,
     InspectorControls,
+    ContrastChecker,
+    PanelColorSettings,
+    withColors,
 } = wp.blockEditor;
 const { PanelBody, RangeControl } = wp.components;
 const { withDispatch, withSelect } = wp.data;
@@ -29,20 +32,34 @@ import {
     getRedistributedColumnWidths,
 } from '../container/utils';
 
-function ColumnEdit( {
-    attributes,
-    updateAlignment,
-    updateWidth,
-    hasChildBlocks,
-} ) {
+function ColumnEdit( props ) {
+    const {
+        attributes,
+        updateAlignment,
+        updateWidth,
+        hasChildBlocks,
+        backgroundColor,
+        setBackgroundColor,
+        textColor,
+        setTextColor
+    } = props;
+    
     const { verticalAlignment, width } = attributes;
 
     const classes = classnames( 'block-core-columns', {
         [ `is-vertically-aligned-${ verticalAlignment }` ]: verticalAlignment,
     } );
-
+    
+    const fallbackTextColor = '#FFFFFF';
+    const fallbackBackgroundColor = '#000000';
+    
+    var style = {
+        backgroundColor: backgroundColor.color,
+        color: textColor.color
+    };
+    
     return (
-        <div className={ classes }>
+        <div className={ classes } style = { style }>
             <BlockControls>
                 <BlockVerticalAlignmentToolbar
                     onChange={ updateAlignment }
@@ -61,8 +78,34 @@ function ColumnEdit( {
                         allowReset
                     />
                 </PanelBody>
+                <PanelColorSettings
+                    title={ __( 'Column Color Settings' ) }
+                    initialOpen={ false }
+                    colorSettings={ [
+                        {
+                            value: backgroundColor.color,
+                            onChange: ( value ) => setBackgroundColor(value),
+                            label: __( 'Background Color' ),
+                        },
+                        {
+                            value: textColor.color,
+                            onChange: ( value ) => setTextColor(value),
+                            label: __( 'Text Color' ),
+                        },
+                    ] }
+                    >
+                    <ContrastChecker
+                        { ...{
+                            textColor: textColor.color,
+                            backgroundColor: backgroundColor.color,
+                            fallbackTextColor,
+                            fallbackBackgroundColor,
+                        } }
+                    />
+                </PanelColorSettings>
             </InspectorControls>
             <InnerBlocks
+                orientation="horizontal"
                 templateLock={ false }
                 renderAppender={ (
                     hasChildBlocks ?
@@ -75,6 +118,7 @@ function ColumnEdit( {
 }
 
 export default compose(
+    withColors('backgroundColor', 'textColor'),
     withSelect( ( select, ownProps ) => {
         const { clientId } = ownProps;
         const { getBlockOrder } = select( 'core/block-editor' );
