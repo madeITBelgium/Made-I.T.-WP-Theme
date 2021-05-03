@@ -37,3 +37,14 @@ function add_discout_to_checkout()
         WC()->session->__unset('coupon_code'); // remove coupon code from session
     }
 }
+
+
+function madeit_update_berocket_aapf_listener_br_options($options) {
+    $options['products_holder_id'] = 'div.row.columns-3';
+    $options['woocommerce_result_count_class'] = '.woocommerce-result-count';
+    $options['woocommerce_ordering_class'] = 'form.woocommerce-ordering';
+    $options['woocommerce_pagination_class'] = 'nav.woocommerce-pagination';
+    return $options;
+}
+add_filter('berocket_aapf_listener_br_options', 'madeit_update_berocket_aapf_listener_br_options');
+add_filter('brfr_get_option_ajax_filters', 'madeit_update_berocket_aapf_listener_br_options');

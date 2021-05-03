@@ -106,6 +106,49 @@ footer {
     width: 100%;
 }
 
+.woocommerce.columns-3 > .row.columns-3 > .product {
+    position: relative;
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+@media (min-width: 768px) {
+    .woocommerce.columns-3 > .row.columns-3 > .product {
+        -ms-flex: 0 0 33.333333%;
+        flex: 0 0 33.333333%;
+        max-width: 33.333333%;
+    }
+}
+
+.woocommerce .product img {
+    width: 100%;
+}
+
+.woocommerce .product-onsale {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 0 100px 100px;
+    border-color: transparent transparent transparent #608A32;
+    left: 0;
+    top: 0;
+    position: absolute;
+    display: block;
+    z-index: 1;
+}
+
+.woocommerce .product-onsale span {
+    position: absolute;
+    transform: rotate(-45deg);
+    left: -104px;
+    top: 28px;
+    color: white;
+}
+
+.woocommerce .col-md > .product-onsale {
+    left: 15px;
+}
+
 /* Gutenberg */
 .aligncenter {
 	

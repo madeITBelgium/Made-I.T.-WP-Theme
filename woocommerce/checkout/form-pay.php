@@ -1,12 +1,18 @@
 <?php
 /**
- * Pay for order form.
+ * Pay for order form
  *
- * @see      https://docs.woocommerce.com/document/template-structure/
+ * This template can be overridden by copying it to yourtheme/woocommerce/checkout/form-pay.php.
  *
- * @author   Made I.T.
+ * HOWEVER, on occasion WooCommerce will need to update template files and you
+ * (the theme developer) will need to copy the new files to your theme to
+ * maintain compatibility. We try to do this as little as possible, but it does
+ * happen. When this occurs the version of the template file will be bumped and
+ * the readme will list any important changes.
  *
- * @version  3.4.0
+ * @see https://docs.woocommerce.com/document/template-structure/
+ * @package WooCommerce\Templates
+ * @version 5.2.0
  */
 defined('ABSPATH') || exit;
 
@@ -33,7 +39,7 @@ $totals = $order->get_order_item_totals();
 					<tr class="<?php echo esc_attr(apply_filters('woocommerce_order_item_class', 'order_item', $item, $order)); ?>">
 						<td class="product-name">
 							<?php
-                                echo apply_filters('woocommerce_order_item_name', esc_html($item->get_name()), $item, false);
+                                echo wp_kses_post( apply_filters( 'woocommerce_order_item_name', $item->get_name(), $item, false ) );
 
                                 do_action('woocommerce_order_item_meta_start', $item_id, $item, $order, false);
 
