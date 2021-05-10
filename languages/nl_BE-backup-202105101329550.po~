@@ -1,0 +1,622 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Made I.T.\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-08-11 18:54+0000\n"
+"PO-Revision-Date: 2020-08-11 19:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: Nederlands (België)\n"
+"Language: nl_BE\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.4.2; wp-5.5-RC3-48781"
+
+#: footer.php:26 footer-landing.php:20
+msgid "Footer Social Links Menu"
+msgstr "Footer sociale links menu"
+
+#: search.php:17
+#, php-format
+msgid "Search Results for: %s"
+msgstr "Zoekresultaten voor: %s"
+
+#: search.php:19 template-parts/post/content-none.php:14
+msgid "Nothing Found"
+msgstr "Niets gevonden"
+
+#: search.php:40
+msgid ""
+"Sorry, but nothing matched your search terms. Please try again with some "
+"different keywords."
+msgstr ""
+"Helaas, niets komt overeen met uw zoektermen. Probeer opnieuw met andere "
+"zoektermen."
+
+#: sidebar-left.php:15 functions.php:451
+msgid "Left Sidebar"
+msgstr "Linkerzijbalk"
+
+#: index.php:24
+msgid "Posts"
+msgstr "Berichten"
+
+#: 404.php:17
+msgid "Oops! That page can&rsquo;t be found."
+msgstr "Oeps! Die pagina werd niet gevonden."
+
+#: 404.php:20
+msgid "It looks like nothing was found at this location. Maybe try a search?"
+msgstr ""
+"Het lijkt dat hier niets gevonden wordt. Probeer eens met een zoekopdracht?"
+
+#: single.php:28
+msgid "Previous Post"
+msgstr "Vorig bericht"
+
+#: single.php:29
+msgid "Next Post"
+msgstr "Volgend bericht"
+
+#. Name of the template
+msgid "Landingpage"
+msgstr "Landings pagina"
+
+#: functions.php:107 functions.php:227
+msgid "Top Menu"
+msgstr "Topmenu"
+
+#: functions.php:108 functions.php:238
+msgid "Social Links Menu"
+msgstr "Sociale links menu"
+
+#: functions.php:191
+msgctxt "Theme starter content"
+msgid "Koffie Machien"
+msgstr "Koffiemachine"
+
+#: functions.php:195
+msgctxt "Theme starter content"
+msgid "Outside"
+msgstr "Exterieur"
+
+#: functions.php:199
+msgctxt "Theme starter content"
+msgid "Inside"
+msgstr "Interieur"
+
+#: functions.php:203
+msgctxt "Theme starter content"
+msgid "Price table"
+msgstr "Prijs tabel"
+
+#: functions.php:276
+msgid "White Color"
+msgstr "Witte kleur"
+
+#: functions.php:281
+msgid "Black Color"
+msgstr "Zwarte kleur"
+
+#: functions.php:286 inc/customizer.php:57
+msgid "Text Color"
+msgstr "Tekst kleur"
+
+#: functions.php:291 inc/customizer.php:69
+msgid "Background Color"
+msgstr "Achtergrond kleur"
+
+#: functions.php:296 inc/customizer.php:81
+msgid "Primary Color"
+msgstr "Primaire kleur"
+
+#: functions.php:301 inc/customizer.php:93
+msgid "Secondary Color"
+msgstr "Secundaire kleur"
+
+#: functions.php:306 inc/customizer.php:106
+msgid "Success Color"
+msgstr "Succes kleur"
+
+#: functions.php:311 inc/customizer.php:118
+msgid "Info Color"
+msgstr "Info kleur"
+
+#: functions.php:316 inc/customizer.php:130
+msgid "Warning Color"
+msgstr "Waarschuwings kleur"
+
+#: functions.php:321 inc/customizer.php:142
+msgid "Danger Color"
+msgstr "Probleem kleur"
+
+#. If there are characters in your language that are not
+#. supported by Libre Franklin, translate this to 'off'. Do not translate
+#. into your own language.
+#: functions.php:388
+msgctxt "Libre Franklin font: on or off"
+msgid "on"
+msgstr "aan"
+
+#: functions.php:441
+msgid "Right Sidebar"
+msgstr "Rechterzijbalk"
+
+#: functions.php:443
+msgid ""
+"Add widgets here to appear in your sidebar on blog posts and archive pages."
+msgstr ""
+"Voeg hier widgets toe in de sidebar op blog berichten en archiefpagina's."
+
+#: functions.php:453
+msgid "Add widgets here to appear in your left sidebar."
+msgstr "Voeg hier je widget toe in de linkerzijbalk."
+
+#: functions.php:461
+msgid "Footer 1"
+msgstr "Footer 1"
+
+#: functions.php:463 functions.php:473
+msgid "Add widgets here to appear in your footer."
+msgstr "Voeg hier widgets toe om in de footer te tonen."
+
+#: functions.php:471
+msgid "Footer 2"
+msgstr "Footer 2"
+
+#: functions.php:481
+msgid "Below index blog"
+msgstr "Onder blog berichten."
+
+#: functions.php:483
+msgid "Add widgets here to appear below your blog/news list."
+msgstr "Voeg widgets toe onder je blog of nieuws berichten."
+
+#. %s: Name of current post
+#: functions.php:514 template-parts/page/content-page.php:26
+#: template-parts/page/content-front-page.php:39
+#, php-format
+msgid "Continue reading<span class=\"screen-reader-text\"> \"%s\"</span>"
+msgstr "<span class=\"screen-reader-text\">\"%s\" </span>verder lezen"
+
+#: functions.php:841
+msgid "Continue reading"
+msgstr "Meer lezen"
+
+#: functions.php:1281 functions.php:1295
+msgid "Start shopping"
+msgstr "Winkelen"
+
+#: functions.php:1285 functions.php:1299
+msgid "View your shopping cart"
+msgstr "Toon je winkelmand"
+
+#: functions.php:1289
+#, php-format
+msgid "%d item"
+msgid_plural "%d items"
+msgstr[0] "%d item"
+msgstr[1] "%d items"
+
+#: functions.php:1325
+#, php-format
+msgid ""
+"By using our website you are consenting to our use of cookies in accordance "
+"with our <a href=\"%s\">cookie & privacy policy</a>."
+msgstr ""
+"Door gebruik te maken van onze website stemt u in met gebruik van cookies in "
+"overeenstemming met ons <a href=\"%s\">cookie- en privacybeleid</a>."
+
+#: functions.php:1342 functions.php:1360
+msgid "Close"
+msgstr "Sluiten"
+
+#: functions.php:1412
+msgid "Accept"
+msgstr "Accepteer"
+
+#: functions.php:1415
+msgid "Read More"
+msgstr "Lees meer"
+
+#: functions.php:1419
+msgid "Reject"
+msgstr "Weiger"
+
+#: functions.php:1422
+msgid "Cookie settings"
+msgstr "Cookie instellingen"
+
+#: functions.php:1425
+msgid ""
+"We use cookies on our website to give you the most relevant experience by "
+"remembering your preferences and repeat visits. By clicking “Accept”, you "
+"consent to the use of ALL the cookies."
+msgstr ""
+"Door op 'Accepteer' te klikken stemt u in met gebruik van cookies, zo bieden "
+"wij u de beste ervaring op onze website."
+
+#: functions.php:1428
+msgid "Privacy & Cookies Policy"
+msgstr "cookie- en privacybeleid"
+
+#. Name of the template
+msgid "Page with right sidebar"
+msgstr "Pagina met rechterzijbalk"
+
+#: sidebar.php:15
+msgid "Blog Sidebar"
+msgstr "Blog Sidebar"
+
+#. %s: post title
+#: comments.php:31
+#, php-format
+msgctxt "comments title"
+msgid "One Reply to &ldquo;%s&rdquo;"
+msgstr "Een antwoord op &ldquo;%s&rdquo;"
+
+#. 1: number of comments, 2: post title
+#: comments.php:35
+#, php-format
+msgctxt "comments title"
+msgid "%1$s Reply to &ldquo;%2$s&rdquo;"
+msgid_plural "%1$s Replies to &ldquo;%2$s&rdquo;"
+msgstr[0] "%1$s Antwoord op &ldquo;%2$s&rdquo;"
+msgstr[1] "%1$s Antwoorden op &ldquo;%2$s&rdquo;"
+
+#: comments.php:67 inc/template-functions.php:198
+msgid "Previous"
+msgstr "Vorige"
+
+#: comments.php:68 inc/template-functions.php:208
+msgid "Next"
+msgstr "Volgende"
+
+#: comments.php:74
+msgid "Comments are closed."
+msgstr "Reacties zijn gesloten."
+
+#: comments.php:94
+msgid "Comment"
+msgstr "Reactie"
+
+#: searchform.php:16
+msgid "Search..."
+msgstr "Zoeken..."
+
+#: searchform.php:16 searchform.php:18 searchform.php:18
+msgid "Search"
+msgstr "Zoeken"
+
+#. Name of the template
+msgid "Page with left sidebar"
+msgstr "Pagina met linkerzijbalk"
+
+#. Name of the template
+msgid "Elementor"
+msgstr "Elementor"
+
+#: inc/template-functions.php:123
+msgid "Pingback:"
+msgstr "Pingback:"
+
+#: inc/template-functions.php:123 inc/template-functions.php:144
+msgid "Edit"
+msgstr "Wijzig"
+
+#: inc/template-functions.php:135
+#, php-format
+msgid "%s <span class=\"says\">:</span>"
+msgstr "%s <span class=\"says\">:</span>"
+
+#: inc/template-functions.php:141
+#, php-format
+msgctxt "1: date, 2: time"
+msgid "%1$s om %2$s"
+msgstr "%1$s om %2$s"
+
+#: inc/template-functions.php:148
+msgid "Je comentaar wacht op een review van de beheerder."
+msgstr "Je comentaar wacht op een review van de beheerder."
+
+#: inc/template-functions.php:191
+msgid "Page"
+msgstr "Pagina"
+
+#: inc/template-functions.php:191
+msgid "of"
+msgstr "van"
+
+#: inc/template-functions.php:194
+msgid "First"
+msgstr "Eerste"
+
+#: inc/template-functions.php:212
+msgid "Last"
+msgstr "Laatste"
+
+#: inc/template-functions.php:245
+msgid "Hide page title"
+msgstr "Verberg pagina titel"
+
+#: inc/template-widgets.php:9
+msgid "Child pages menu"
+msgstr "Subpagina menu"
+
+#: inc/template-widgets.php:10
+msgid "Add side menu with child pages"
+msgstr "Voeg een menu met subpagina's toe"
+
+#: inc/MadeIT_Github_Updater.php:206 inc/MadeIT_Gitlab_Updater.php:210
+msgid "Rename successful"
+msgstr "Hernoemen succesvol"
+
+#: inc/MadeIT_Github_Updater.php:213 inc/MadeIT_Gitlab_Updater.php:217
+msgid "Unable to rename downloaded repository."
+msgstr "Het was niet mogelijk om de download te hernoemen."
+
+#. %s: post author
+#: inc/template-tags.php:19
+#, php-format
+msgid "by %s"
+msgstr "door %s"
+
+#. %s: post date
+#: inc/template-tags.php:44
+#, php-format
+msgid "<span>Posted on</span> %s"
+msgstr "Geplaatst op %s"
+
+#. %s: post date
+#: inc/template-tags.php:60
+#, php-format
+msgid "<span>Updated on</span> %s"
+msgstr "Gewijzigd op %s"
+
+#. used between list items, there is a space after the comma
+#: inc/template-tags.php:76
+msgid ", "
+msgstr ", "
+
+#: inc/template-tags.php:94
+msgid "Categories"
+msgstr "Categorieën"
+
+#: inc/template-tags.php:98
+msgid "Tags"
+msgstr "Tags"
+
+#: inc/template-tags.php:105
+msgid "Pages:"
+msgstr "Pagina's:"
+
+#. %s: Name of current post
+#: inc/template-tags.php:133
+#, php-format
+msgid "Edit<span class=\"screen-reader-text\"> \"%s\"</span>"
+msgstr "Bewerk<span class=\"screen-reader-text\"> \"%s\"</span>"
+
+#: inc/template-tags.php:171
+#, php-format
+msgid "Front Page Section %1$s Placeholder"
+msgstr "Voorpagina sectie %1$s placeholder"
+
+#: inc/icon-functions.php:42
+msgid "Please define default parameters in the form of an array."
+msgstr "Gelieve standaard parameters te definiëren in de vorm van een array."
+
+#: inc/icon-functions.php:47
+msgid "Please define an SVG icon filename."
+msgstr "Gelieve een bestandsnaam voor een SVG icoon te geven."
+
+#: inc/customizer.php:40
+msgid "Color Scheme"
+msgstr "Kleurschema"
+
+#: inc/customizer.php:42
+msgid "Light"
+msgstr "Licht"
+
+#: inc/customizer.php:43
+msgid "Dark"
+msgstr "Donker"
+
+#: inc/customizer.php:44
+msgid "Custom"
+msgstr "Aangepast"
+
+#: inc/customizer.php:152
+msgid "Theme Options"
+msgstr "Thema opties"
+
+#: inc/customizer.php:163
+msgid "Page Layout"
+msgstr "Pagina lay-out"
+
+#: inc/customizer.php:166
+msgid ""
+"When the two-column layout is assigned, the page title is in one column and "
+"content is in the other."
+msgstr ""
+"Wanneer de lay-out op twee kolommen gezet wordt, bevindt de titel van de "
+"pagina zich in de ene kolom en de inhoud in de andere."
+
+#: inc/customizer.php:168 inc/customizer.php:301
+msgid "One Column"
+msgstr "Eén kolom"
+
+#: inc/customizer.php:169 inc/customizer.php:302
+msgid "Two Column"
+msgstr "Twee kolommen"
+
+#: inc/customizer.php:184
+msgid "Page Width"
+msgstr "Page breedte"
+
+#: inc/customizer.php:187
+msgid "Choose the screen width of your content."
+msgstr "Selecteer de schermbreedte van de content."
+
+#: inc/customizer.php:189 inc/customizer.php:320
+msgid "Normal screen width"
+msgstr "Normale scherm breedte"
+
+#: inc/customizer.php:190 inc/customizer.php:321
+msgid "Full screen width"
+msgstr "Volledige scherm breedte"
+
+#: inc/customizer.php:205
+msgid "Show header image"
+msgstr "Toon header foto"
+
+#: inc/customizer.php:208
+msgid ""
+"Show the homepage header image on sub pages when there is no post featured "
+"image."
+msgstr ""
+"Toon de homepagina header foto op sub pagina's als er geen featured post "
+"foto is ingesteld."
+
+#. %d is the front page section number
+#: inc/customizer.php:231
+#, php-format
+msgid "Front Page Section %d Content"
+msgstr "Startpagina sectie %d inhoud"
+
+#: inc/customizer.php:232
+msgid ""
+"Select pages to feature in each area from the dropdowns. Add an image to a "
+"section by setting a featured image in the page editor. Empty sections will "
+"not be displayed."
+msgstr ""
+"Selecteer voor elk gebied een pagina uit het dropdown menu. Voeg een "
+"afbeelding toe aan een gebied door een uitgelichte afbeelding in te stellen "
+"in de pagina editor. Lege gebieden worden niet getoond."
+
+#: inc/customizer.php:251
+msgid "Cookie warning"
+msgstr "Cookie melding"
+
+#: inc/customizer.php:262
+msgid "Cookie warning position"
+msgstr "Cookie melding positie"
+
+#: inc/customizer.php:265
+msgid "Choose the position to place the cookie warning notice."
+msgstr "Kies de positie om de cookie melding te plaatsen."
+
+#: inc/customizer.php:267 inc/customizer.php:429
+msgid "Do not show"
+msgstr "Toon niet"
+
+#: inc/customizer.php:268 inc/customizer.php:430
+msgid "Popup"
+msgstr "Popup"
+
+#: inc/customizer.php:269 inc/customizer.php:431
+msgid "Static top notice"
+msgstr "Statisch bovenaan je website"
+
+#: inc/customizer.php:270 inc/customizer.php:432
+msgid "Static bottom notice"
+msgstr "Statisch onderaan op je website"
+
+#: inc/customizer.php:283
+msgid "Page of your cookie policy"
+msgstr "Pagina van je cookiebeleid"
+
+#: inc/customizer.php:284
+msgid "Select pages to link at in the cookie policy."
+msgstr "Selecteer de pagina die je wil linken in de cookie melding."
+
+#: inc/back-compat.php:39 inc/back-compat.php:52 inc/back-compat.php:68
+#, php-format
+msgid ""
+"Made I.T. requires at least WordPress version 4.7. You are running version "
+"%s. Please upgrade and try again."
+msgstr ""
+"Made I.T. vereist minstens WordPress versie 4.7. Je gebruikt versie %s. "
+"Gelieve te upgraden en probeer dan opnieuw."
+
+#: inc/custom-header.php:47
+msgid "Default Header Image"
+msgstr "Standaard header afbeelding"
+
+#: inc/custom-header.php:121
+msgid "Play background video"
+msgstr "Speel achtergrondvideo"
+
+#: inc/custom-header.php:122
+msgid "Pause background video"
+msgstr "Pauzeer achtergrondvideo"
+
+#: woocommerce/cart/cart.php:128
+msgid "Verder winkelen"
+msgstr "Verder winkelen"
+
+#: template-parts/footer/footer-widgets.php:15
+msgid "Footer"
+msgstr "Footer"
+
+#: template-parts/footer/site-info.php:11
+msgid "Privacy policy"
+msgstr "Privacybeleid"
+
+#: template-parts/footer/site-info.php:12
+msgid "Login"
+msgstr "Login"
+
+#: template-parts/footer/site-info.php:14
+msgid "https://www.madeit.be/"
+msgstr "https://www.madeit.be/"
+
+#: template-parts/footer/site-info.php:14
+#, php-format
+msgid "Webdesign door %s uit Geel"
+msgstr "Webdesign door %s uit Geel"
+
+#: template-parts/footer/site-info.php:14
+#, php-format
+msgid "Proudly powered by %s"
+msgstr "Ondersteund door %s"
+
+#: template-parts/post/content-none.php:20
+#, php-format
+msgid ""
+"Ready to publish your first post? <a href=\"%1$s\">Get started here</a>."
+msgstr ""
+"Klaar om je eerste bericht te publiceren? <a href=\"%1$s\">Begin hier</a>."
+
+#: template-parts/post/content-none.php:24
+msgid ""
+"It seems we can&rsquo;t find what you&rsquo;re looking for. Perhaps "
+"searching can help."
+msgstr ""
+"Het lijkt dat we niet kunnen vinden wat u zoekt. Misschien kan de "
+"zoekfunctie helpen."
+
+#: template-parts/navigation/navigation-top.php:13
+#: template-parts/navigation/navigation-top.php:14
+msgid "Menu"
+msgstr "Menu"
+
+#. %s: Name of current post
+#: template-parts/page/content-front-page-panels.php:47
+#, php-format
+msgid "Continue reading <span class=\"screen-reader-text\">\"%s\"</span>"
+msgstr "Lees meer <span class=\"screen-reader-text\">\"%s\"</span>"
+
+#. Name of the theme
+#. Author of the theme
+msgid "Made I.T."
+msgstr "Made I.T."
+
+#. URI of the theme
+msgid "https://www.madeit.be"
+msgstr "https://www.madeit.be"
+
+#. Author URI of the theme
+msgid "https://wordpress.org/"
+msgstr "https://wordpress.org/"

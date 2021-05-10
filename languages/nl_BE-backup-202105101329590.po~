@@ -354,7 +354,7 @@ msgstr "Niets gevonden"
 
 #: inc/template-functions.php:191
 msgid "of"
-msgstr "van"
+msgstr "va"
 
 #: inc/customizer.php:168 inc/customizer.php:301
 msgid "One Column"

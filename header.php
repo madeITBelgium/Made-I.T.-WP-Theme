@@ -32,11 +32,12 @@
             <div class="row">
                 <?php get_template_part('template-parts/header/header', 'image'); ?>
             </div>
+            
         </header><!-- #masthead -->
     <?php } ?>
     <div class="flex-grow">
 <?php
-if (HEADER_UPPER_BOTTOM) {
+if (HEADER_UPPER_BOTTOM === true) {
     get_template_part('template-parts/navigation/navigation', 'upper-bottom');
 }
 ?>

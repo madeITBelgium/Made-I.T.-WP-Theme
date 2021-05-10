@@ -38,4 +38,15 @@ $menuClass = apply_filters('madeit_navbar_menu_class', ['menu', 'nav', 'navbar-n
             'walker'            => new wp_bootstrap_navwalker(),
         ]); ?>
     </div>
+        <?php
+        if (HEADER_UPPER_BOTTOM === 'sticky') {
+            ?>
+            <div class="row">
+                <div class="col p-0">
+                <?php get_template_part('template-parts/navigation/navigation', 'upper-bottom'); ?>
+                </div>
+            </div>
+            <?php
+        }
+        ?>
 </nav>

@@ -8,9 +8,9 @@ $navBarClass = apply_filters('madeit_upper_bottom_navbar_class', ['container-flu
 $containerClass = apply_filters('madeit_upper_bottom_navbar_container_class', ['container']);
 ?>
 
-<div class="<?php echo is_array($navBarClass) ? implode(' ', $navBarClass) : $navBarClass; ?>">
+<div class="<?php echo is_array($navBarClass) ? implode(' ', $navBarClass) : $navBarClass; ?>" id="secondary-bottom-navigation-container">
     <?php if (!in_array('container', $navBarClass)) { ?>
-    <div class="row">
+    <div class="row w-100">
         <div class="col">
             <div class="<?php echo is_array($containerClass) ? implode(' ', $containerClass) : $containerClass; ?>">
                 <?php } ?>

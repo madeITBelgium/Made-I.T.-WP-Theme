@@ -41,14 +41,16 @@ function ColumnEdit( props ) {
         backgroundColor,
         setBackgroundColor,
         textColor,
-        setTextColor
+        setTextColor,
+        className
     } = props;
     
     const { verticalAlignment, width } = attributes;
+    
 
-    const classes = classnames( 'block-core-columns', {
+    const classes = classnames( className, classnames( 'block-core-columns', {
         [ `is-vertically-aligned-${ verticalAlignment }` ]: verticalAlignment,
-    } );
+    } ) );
     
     const fallbackTextColor = '#FFFFFF';
     const fallbackBackgroundColor = '#000000';
@@ -105,7 +107,6 @@ function ColumnEdit( props ) {
                 </PanelColorSettings>
             </InspectorControls>
             <InnerBlocks
-                orientation="horizontal"
                 templateLock={ false }
                 renderAppender={ (
                     hasChildBlocks ?
