@@ -38,6 +38,6 @@
     <div class="flex-grow">
 <?php
 if (HEADER_UPPER_BOTTOM === true) {
-    get_template_part('template-parts/navigation/navigation', 'upper-bottom');
-}
+        get_template_part('template-parts/navigation/navigation', 'upper-bottom');
+    }
 ?>

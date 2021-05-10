@@ -21,7 +21,7 @@ if (!function_exists('madeit_posted_on')) {
         );
 
         // Finally, let's write all of this to the page.
-        echo '<span class="posted-on">'.madeit_time_link().'</span>' . (POST_AUTHOR ? ' <span class="byline"> '.$byline.'</span>' : '');
+        echo '<span class="posted-on">'.madeit_time_link().'</span>'.(POST_AUTHOR ? ' <span class="byline"> '.$byline.'</span>' : '');
     }
 }
 
