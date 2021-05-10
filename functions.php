@@ -69,11 +69,11 @@ if (!defined('WOO_SHOPING_CART_MENU_STYLE')) {
     define('WOO_SHOPING_CART_MENU_STYLE', 2);
 }
 
-if(!defined('SHOW_SINGLE_SIDEBAR')) {
+if (!defined('SHOW_SINGLE_SIDEBAR')) {
     define('SHOW_SINGLE_SIDEBAR', true);
 }
 
-if(!defined('DISABLE_VER_URL')) {
+if (!defined('DISABLE_VER_URL')) {
     define('DISABLE_VER_URL', true);
 }
 
