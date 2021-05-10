@@ -16,7 +16,7 @@
  *
  * @author  WooThemes
  *
- * @version 3.8.0
+ * @version 5.2.0
  */
 defined('ABSPATH') || exit;
 
@@ -48,10 +48,10 @@ do_action('woocommerce_before_mini_cart'); ?>
                         esc_attr($_product->get_sku())
                     ), $cart_item_key); ?>
 						<?php if (empty($product_permalink)) { ?>
-							<?php echo $thumbnail.$product_name; ?>
+							<?php echo $thumbnail . wp_kses_post( $product_name ); ?>
 						<?php } else { ?>
 							<a href="<?php echo esc_url($product_permalink); ?>">
-								<?php echo $thumbnail.$product_name; ?>
+								<?php echo $thumbnail . wp_kses_post( $product_name ); ?>
 							</a>
 						<?php } ?>
 						<?php echo wc_get_formatted_cart_item_data($cart_item); ?>

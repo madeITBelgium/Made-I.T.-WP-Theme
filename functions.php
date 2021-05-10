@@ -73,6 +73,10 @@ if(!defined('SHOW_SINGLE_SIDEBAR')) {
     define('SHOW_SINGLE_SIDEBAR', true);
 }
 
+if(!defined('DISABLE_VER_URL')) {
+    define('DISABLE_VER_URL', true);
+}
+
 if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
     require get_template_directory().'/inc/back-compat.php';
 
@@ -714,7 +718,7 @@ if (!function_exists('madeit_admin_style')) {
     add_action('admin_enqueue_scripts', 'madeit_admin_style');
 }
 
-if (!function_exists('remove_css_js_ver')) {
+if (!function_exists('remove_css_js_ver') && DISABLE_VER_URL) {
     function remove_css_js_ver($src)
     {
         if (!is_admin()) {
@@ -930,11 +934,6 @@ if (!function_exists('madeit_register_required_plugins')) {
                 'required' => false,
             ],
             [
-                'name'     => 'Aelia Foundation Classes for WooCommerce',
-                'slug'     => 'wc-aelia-foundation-classes',
-                'required' => false,
-            ],
-            [
                 'name'     => 'Google Analytics Dashboard for WP by ExactMetrics (formerly GADWP)',
                 'slug'     => 'google-analytics-dashboard-for-wp',
                 'required' => false,
@@ -967,6 +966,31 @@ if (!function_exists('madeit_register_required_plugins')) {
             [
                 'name'     => 'Custom Post Type UI',
                 'slug'     => 'custom-post-type-ui',
+                'required' => false,
+            ],
+            [
+                'name'     => 'Back In Stock Notifier for WooCommerce | WooCommerce Waitlist Pro',
+                'slug'     => 'back-in-stock-notifier-for-woocommerce',
+                'required' => false,
+            ],
+            [
+                'name'     => 'Mollie-betalingen voor WooCommerce',
+                'slug'     => 'mollie-payments-for-woocommerce',
+                'required' => false,
+            ],
+            [
+                'name'     => 'Sequential Order Numbers for WooCommerce',
+                'slug'     => 'wt-woocommerce-sequential-order-numbers',
+                'required' => false,
+            ],
+            [
+                'name'     => 'WooCommerce AJAX Products Filter',
+                'slug'     => 'woocommerce-ajax-filters',
+                'required' => false,
+            ],
+            [
+                'name'     => 'WooCommerce PDF Invoices & Packing Slips',
+                'slug'     => 'woocommerce-pdf-invoices-packing-slips',
                 'required' => false,
             ],
         ];
