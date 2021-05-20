@@ -20,6 +20,7 @@ $footerContainerClass = apply_filters('madeit_footer_container_class', ['contain
             <?php get_template_part('template-parts/footer/footer', 'widgets'); ?>
         </div>
     </div>
+    <?php do_action('madeit_between_footer'); ?>
     <div class="<?php echo is_array($footerContainerClass) ? implode(' ', $footerContainerClass) : $footerContainerClass; ?>">
         <div class="row">
             <?php

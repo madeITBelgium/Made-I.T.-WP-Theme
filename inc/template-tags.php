@@ -127,15 +127,16 @@ if (!function_exists('madeit_edit_link')) {
      */
     function madeit_edit_link()
     {
+        /*
         edit_post_link(
             sprintf(
-                /* translators: %s: Name of current post */
                 __('Edit<span class="screen-reader-text"> "%s"</span>', 'madeit'),
                 get_the_title()
             ),
             '<span class="edit-link">',
             '</span>'
         );
+        */
     }
 }
 

@@ -63,8 +63,10 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu
 
             $class_names = implode(' ', apply_filters('nav_menu_css_class', array_filter($classes), $item, $args));
 
-            if ($args->has_children) {
+            if ($args->has_children && $depth === 0) {
                 $class_names .= ' dropdown';
+            } else if ($args->has_children && $depth > 0) {
+                $class_names .= ' dropdown-submenu';
             }
 
             if (in_array('current-menu-item', $classes)) {
@@ -76,10 +78,10 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu
             $id = apply_filters('nav_menu_item_id', 'menu-item-'.$item->ID, $item, $args);
             $id = $id ? ' id="'.esc_attr($id).'"' : '';
 
-            $output .= $indent.'<li'.$id.$value.$class_names.'>';
+            $output .= $indent.'<li'.$id.$value.$class_names.' role="menuitem">';
 
             $atts = [];
-            $atts['title'] = !empty($item->title) ? $item->title : '';
+            //$atts['title'] = !empty($item->title) ? $item->title : '';
             $atts['target'] = !empty($item->target) ? $item->target : '';
             $atts['rel'] = !empty($item->xfn) ? $item->xfn : '';
 
@@ -88,6 +90,11 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu
                 $atts['href'] = '#';
                 $atts['data-toggle'] = 'dropdown';
                 $atts['class'] = 'dropdown-toggle';
+            } else if ($args->has_children && $depth > 0) {
+                //$atts['href'] = '#';
+                //$atts['data-toggle'] = 'dropdown';
+                $atts['class'] = 'dropdown-toggle';
+                $atts['href'] = !empty($item->url) ? $item->url : '';
             } else {
                 $atts['href'] = !empty($item->url) ? $item->url : '';
             }

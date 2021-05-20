@@ -112,12 +112,12 @@
   width: 100%;
   height: 100%;
 }
+
 .wp-block-image.is-style-square a {
     display: block;
     height: 100%;
     width: 100%;
 }
-
 
 .wp-block-image.is-style-square img {
     object-fit: cover;

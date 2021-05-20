@@ -29,7 +29,7 @@ $menuClass = apply_filters('madeit_navbar_menu_class', ['menu', 'nav', 'navbar-n
         wp_nav_menu([
             'theme_location'    => 'top',
             'menu_id'           => 'top-menu',
-            'depth'             => 2,
+            'depth'             => 3,
             'container'         => 'nav',
             'container_id'      => 'site-navigation',
             'container_class'   => 'collapse navbar-collapse main-navigation',

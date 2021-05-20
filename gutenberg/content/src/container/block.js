@@ -86,10 +86,6 @@ registerBlockType( 'madeit/block-content', {
         rowBackgroundColor: {
             type: 'string',
         },
-        containerPaddingRight: {
-            type: 'number',
-            default: 0
-        },
         customRowBackgroundColor: {
             type: 'string',
         },
@@ -128,7 +124,7 @@ registerBlockType( 'madeit/block-content', {
     getEditWrapperProps( attributes ) {
         const { size } = attributes;
         if ( 'container-fluid' === size || 'container-content-boxed' === size) {
-            return { 'data-align': 'wide' };
+            return { 'data-align': 'full' };
         }
         return { 'data-align': 'container' };
     },

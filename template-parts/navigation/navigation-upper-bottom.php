@@ -20,7 +20,7 @@ $containerClass = apply_filters('madeit_upper_bottom_navbar_container_class', ['
                         wp_nav_menu([
                             'theme_location'    => 'upper-bottom',
                             'menu_id'           => 'upper-bottom-menu',
-                            'depth'             => 2,
+                            'depth'             => 3,
                             'container'         => 'nav',
                             'container_id'      => 'secondary-bottom-navigation',
                             'container_class'   => 'secondary-bottom-navigation',
