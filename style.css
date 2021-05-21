@@ -403,7 +403,7 @@ img {
   margin-left: .1rem;
   margin-right: .1rem;
 }
-@media (max-width: 990px) {
+@media (max-width: 768px) {
     .navbar.fixed-top {
         overflow-y: auto;
         max-height: 100vh;
