@@ -1530,6 +1530,14 @@ if (!function_exists('madeit_cookie_law_default_settings')) {
     add_filter('wt_cli_plugin_settings', 'madeit_cookie_law_default_settings');
 }
 
+if (!function_exists('madeit_wt_cli_enable_ckyes_branding')) {
+    function madeit_wt_cli_enable_ckyes_branding($value)
+    {
+        return false;
+    }
+    add_filter('wt_cli_enable_ckyes_branding', 'madeit_wt_cli_enable_ckyes_branding', 99, 1);
+}
+
 /*
 
 */
