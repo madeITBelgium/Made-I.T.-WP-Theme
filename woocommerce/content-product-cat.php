@@ -33,7 +33,7 @@ if (!defined('ABSPATH')) {
                 ?>
             </div>
             <div class="card-body text-center" style="flex: initial; -ms-flex: initial;">
-                <a href="<?php echo esc_url( get_term_link( $category, 'product_cat' ) ); ?>" class="stretched-link">
+                <a href="<?php echo esc_url(get_term_link($category, 'product_cat')); ?>" class="stretched-link">
                 <?php
                 /**
                  * The woocommerce_before_subcategory hook.
@@ -41,19 +41,19 @@ if (!defined('ABSPATH')) {
                  * @hooked woocommerce_template_loop_category_link_open - 10
                  */
                 //do_action('woocommerce_before_subcategory', $category);
-               
+
                 /**
                  * The woocommerce_shop_loop_subcategory_title hook.
                  *
                  * @hooked woocommerce_template_loop_category_title - 10
                  */
-                do_action( 'woocommerce_shop_loop_subcategory_title', $category );
-                
+                do_action('woocommerce_shop_loop_subcategory_title', $category);
+
                 /**
                  * The woocommerce_after_subcategory_title hook.
                  */
                 do_action('woocommerce_after_subcategory_title', $category);
-            
+
                 /**
                  * The woocommerce_after_subcategory hook.
                  *
