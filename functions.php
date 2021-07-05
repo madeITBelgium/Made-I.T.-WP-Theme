@@ -10,7 +10,7 @@
  * Made I.T. Theme only works in WordPress 4.7 or later.
  */
 if (!defined('MADEIT_VERSION')) {
-    define('MADEIT_VERSION', '2.2.0');
+    define('MADEIT_VERSION', '2.6.0');
 }
 /* Default colors */
 if (!defined('MADEIT_CUSTOM_COLOR')) {
@@ -75,6 +75,10 @@ if (!defined('SHOW_SINGLE_SIDEBAR')) {
 
 if (!defined('DISABLE_VER_URL')) {
     define('DISABLE_VER_URL', true);
+}
+
+if(!defined('WWW_REDIRECT')) {
+    define('WWW_REDIRECT', false);
 }
 
 if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
@@ -1649,6 +1653,21 @@ if (!function_exists('madeit_add_mobile_menu_items_to_main_menu') && function_ex
     }
 }
 
+
+/* Redirect to WWW. */
+if(WWW_REDIRECT && !function_exists('madeit_www_redirect')) {
+    function madeit_www_redirect() {
+        global $_SERVER;
+        
+        if(strpos($_SERVER['HTTP_HOST'], 'www.') === false) {
+            $url = $_SERVER['REQUEST_SCHEME'] . '://www.' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+            wp_redirect( $url, 301 );
+            exit;
+            //print_r($url);
+        }
+    }
+    add_action('init', 'madeit_www_redirect');
+}
 /**
  * CSS Cache mechanisme.
  */
