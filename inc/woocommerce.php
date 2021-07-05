@@ -38,12 +38,13 @@ function add_discout_to_checkout()
     }
 }
 
-
-function madeit_update_berocket_aapf_listener_br_options($options) {
+function madeit_update_berocket_aapf_listener_br_options($options)
+{
     $options['products_holder_id'] = 'div.row.columns-3';
     $options['woocommerce_result_count_class'] = '.woocommerce-result-count';
     $options['woocommerce_ordering_class'] = 'form.woocommerce-ordering';
     $options['woocommerce_pagination_class'] = 'nav.woocommerce-pagination';
+
     return $options;
 }
 add_filter('berocket_aapf_listener_br_options', 'madeit_update_berocket_aapf_listener_br_options');
