@@ -240,19 +240,16 @@ $default-block-margin: 28px; // This value provides a consistent, contiguous spa
  * * columns alignment is prioritised over parent column alignment
  *
  */
-.are-vertically-aligned-top .block-core-columns,
-div.block-core-columns.is-vertically-aligned-top {
-	justify-content: flex-start;
+.are-vertically-aligned-top .block-editor-block-list__layout {
+	align-items: start;
 }
 
-.are-vertically-aligned-center .block-core-columns,
-div.block-core-columns.is-vertically-aligned-center {
-	justify-content: center;
+.are-vertically-aligned-center .block-editor-block-list__layout {
+	align-items: center;
 }
 
-.are-vertically-aligned-bottom .block-core-columns,
-div.block-core-columns.is-vertically-aligned-bottom {
-	justify-content: flex-end;
+.are-vertically-aligned-bottom .block-editor-block-list__layout {
+    align-items: end;
 }
 
 
@@ -277,6 +274,10 @@ div.block-core-columns.is-vertically-aligned-bottom {
 }
 [data-type="madeit/block-content-column"].block-editor-block-list__block.has-child-selected:before {
     border: 1px solid rgba(66,88,99,.4);
+}
+
+[data-type="madeit/block-content-column"] .wp-block-madeit-block-content-column {
+    width: 100%;
 }
 
 .wp-block[data-align="wide"] .wp-block-madeit-block-content .wp-block {

@@ -1,6 +1,6 @@
 <?php
 /**
- * Grouped product add to cart.
+ * Grouped product add to cart
  *
  * This template can be overridden by copying it to yourtheme/woocommerce/single-product/add-to-cart/grouped.php.
  *
@@ -11,19 +11,20 @@
  * the readme will list any important changes.
  *
  * @see     https://docs.woocommerce.com/document/template-structure/
- *
- * @version 4.0.0
+ * @package WooCommerce\Templates
+ * @version 4.8.0
  */
-defined('ABSPATH') || exit;
+
+defined( 'ABSPATH' ) || exit;
 
 global $product, $post;
 
 do_action('woocommerce_before_add_to_cart_form'); ?>
 
 <form class="cart grouped_form" action="<?php echo esc_url(apply_filters('woocommerce_add_to_cart_form_action', $product->get_permalink())); ?>" method="post" enctype='multipart/form-data'>
-	<table cellspacing="0" class="woocommerce-grouped-product-list group_table">
-		<tbody>
-			<?php
+    <table cellspacing="0" class="woocommerce-grouped-product-list group_table">
+        <tbody>
+            <?php
             $quantites_required = false;
             $previous_post = $post;
             $grouped_product_columns = apply_filters(
@@ -35,6 +36,7 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
                 ],
                 $product
             );
+            $show_add_to_cart_button = false;
 
             do_action('woocommerce_grouped_product_list_before', $grouped_product_columns, $quantites_required, $product);
 
@@ -43,6 +45,10 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
                 $quantites_required = $quantites_required || ($grouped_product_child->is_purchasable() && !$grouped_product_child->has_options());
                 $post = $post_object; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
                 setup_postdata($post);
+
+                if ( $grouped_product_child->is_in_stock() ) {
+                    $show_add_to_cart_button = true;
+                }
 
                 echo '<tr id="product-'.esc_attr($grouped_product_child->get_id()).'" class="woocommerce-grouped-product-list-item '.esc_attr(implode(' ', wc_get_product_class('', $grouped_product_child))).'">';
 
@@ -101,20 +107,20 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 
             do_action('woocommerce_grouped_product_list_after', $grouped_product_columns, $quantites_required, $product);
             ?>
-		</tbody>
-	</table>
+        </tbody>
+    </table>
 
-	<input type="hidden" name="add-to-cart" value="<?php echo esc_attr($product->get_id()); ?>" />
+    <input type="hidden" name="add-to-cart" value="<?php echo esc_attr($product->get_id()); ?>" />
 
-	<?php if ($quantites_required) { ?>
+    <?php if ($quantites_required && $show_add_to_cart_button) { ?>
 
-		<?php do_action('woocommerce_before_add_to_cart_button'); ?>
+        <?php do_action('woocommerce_before_add_to_cart_button'); ?>
         <?php $wooButtonClass = apply_filters('madeit_woo_btn_class', ['btn', 'btn-success']); ?>
-		<button type="submit" class="single_add_to_cart_button <?php echo is_array($wooButtonClass) ? implode(' ', $wooButtonClass) : $wooButtonClass; ?>"><?php echo esc_html($product->single_add_to_cart_text()); ?></button>
+        <button type="submit" class="single_add_to_cart_button <?php echo is_array($wooButtonClass) ? implode(' ', $wooButtonClass) : $wooButtonClass; ?>"><?php echo esc_html($product->single_add_to_cart_text()); ?></button>
 
-		<?php do_action('woocommerce_after_add_to_cart_button'); ?>
+        <?php do_action('woocommerce_after_add_to_cart_button'); ?>
 
-	<?php } ?>
+    <?php } ?>
 </form>
 
 <?php do_action('woocommerce_after_add_to_cart_form'); ?>

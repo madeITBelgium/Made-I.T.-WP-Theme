@@ -6,17 +6,15 @@
  */
 
 .wp-block-madeit-column-simple  {
-
-}
-
-.editor-block-list__block[data-column-xs], .editor-block-list__block[data-column-sm], .editor-block-list__block[data-column-md], .editor-block-list__block[data-column-lg], .editor-block-list__block[data-column-xl],
-.block-editor-block-list__block[data-column-xs], .block-editor-block-list__block[data-column-sm], .block-editor-block-list__block[data-column-md], .block-editor-block-list__block[data-column-lg], .block-editor-block-list__block[data-column-xl]{
-    position: relative;
-    width: 100%;
-    min-height: 1px;
-    .editor-block-list__block, .block-editor-block-list__block {
-        width: 100% !important;
-        max-width: 100% !important;
+    .editor-block-list__block[data-column-xs], .editor-block-list__block[data-column-sm], .editor-block-list__block[data-column-md], .editor-block-list__block[data-column-lg], .editor-block-list__block[data-column-xl],
+    .block-editor-block-list__block[data-column-xs], .block-editor-block-list__block[data-column-sm], .block-editor-block-list__block[data-column-md], .block-editor-block-list__block[data-column-lg], .block-editor-block-list__block[data-column-xl]{
+        position: relative;
+        width: 100%;
+        min-height: 1px;
+        > .editor-block-list__block, .block-editor-block-list__block {
+            width: 100% !important;
+            max-width: 100% !important;
+        }
     }
 }
 

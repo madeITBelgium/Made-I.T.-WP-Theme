@@ -2,7 +2,7 @@
 Contributors: madeit
 Requires at least: WordPress 5.0
 Tested up to: 5.6
-Version: 2.5.0
+Version: 2.6.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: madeit, bootstrap, bootstrap4, made i.t., Made I.T.
@@ -55,6 +55,10 @@ License: CC0 1.0 Universal (CC0 1.0)
 Source: https://unsplash.com/@englr?photo=bIhpiQA009k
 
 == Changelog ==
+= 2.6.0 =
+* WordPress 5.8 support
+* Card Gutenberg block
+
 = 2.5.0 =
 * Bootstrap 4.5.x
 * Improve WooCommerce Support
