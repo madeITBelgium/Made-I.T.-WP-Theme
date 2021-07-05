@@ -69,11 +69,11 @@ if (!defined('WOO_SHOPING_CART_MENU_STYLE')) {
     define('WOO_SHOPING_CART_MENU_STYLE', 2);
 }
 
-if(!defined('SHOW_SINGLE_SIDEBAR')) {
+if (!defined('SHOW_SINGLE_SIDEBAR')) {
     define('SHOW_SINGLE_SIDEBAR', true);
 }
 
-if(!defined('DISABLE_VER_URL')) {
+if (!defined('DISABLE_VER_URL')) {
     define('DISABLE_VER_URL', true);
 }
 
@@ -1542,21 +1542,22 @@ if (!function_exists('madeit_wt_cli_enable_ckyes_branding')) {
 
 */
 if (!function_exists('madeit_add_mobile_menu_items_to_main_menu') && function_exists('get_field')) {
-    function madeit_add_mobile_menu_items_to_main_menu($items, $menu, $args) {
+    function madeit_add_mobile_menu_items_to_main_menu($items, $menu, $args)
+    {
         $theme_locations = get_nav_menu_locations();
-        if($menu->term_id === $theme_locations['top'] && isset($theme_locations['upper-bottom'])) {
-            if(get_field('add_to_main_menu', 'menu_' . $theme_locations['upper-bottom'])) {
-                $position = get_field('start_positie_op_mobiel', 'menu_' . $theme_locations['upper-bottom']);
-               
+        if ($menu->term_id === $theme_locations['top'] && isset($theme_locations['upper-bottom'])) {
+            if (get_field('add_to_main_menu', 'menu_'.$theme_locations['upper-bottom'])) {
+                $position = get_field('start_positie_op_mobiel', 'menu_'.$theme_locations['upper-bottom']);
+
                 $newItems = [];
                 $i = 1;
-                foreach($items as $j => $item) {
+                foreach ($items as $j => $item) {
                     $item->menu_order = $i++;
                     $newItems[] = $item;
-                    
-                    if($j == $position) {
+
+                    if ($j == $position) {
                         $extraItems = wp_get_nav_menu_items($theme_locations['upper-bottom']);
-                        foreach($extraItems as $extraItem) {
+                        foreach ($extraItems as $extraItem) {
                             $extraItem->menu_order = $i++;
                             $extraItem->classes[] = 'd-md-none';
                             $newItems[] = $extraItem;
@@ -1567,84 +1568,84 @@ if (!function_exists('madeit_add_mobile_menu_items_to_main_menu') && function_ex
                 //$position;
             }
         }
-        
+
         return $items;
     }
-    
+
     add_filter('wp_get_nav_menu_items', 'madeit_add_mobile_menu_items_to_main_menu', 10, 3);
-    
-    if( function_exists('acf_add_local_field_group') ) {
-        acf_add_local_field_group(array(
-            'key' => 'group_60a6d8f6b4d3e',
-            'title' => 'Mobile menu',
-            'fields' => array(
-                array(
-                    'key' => 'field_60a6dae70f948',
-                    'label' => 'Toevoegen aan mobiel hoofd menu',
-                    'name' => 'add_to_main_menu',
-                    'type' => 'true_false',
-                    'instructions' => '',
-                    'required' => 0,
+
+    if (function_exists('acf_add_local_field_group')) {
+        acf_add_local_field_group([
+            'key'    => 'group_60a6d8f6b4d3e',
+            'title'  => 'Mobile menu',
+            'fields' => [
+                [
+                    'key'               => 'field_60a6dae70f948',
+                    'label'             => 'Toevoegen aan mobiel hoofd menu',
+                    'name'              => 'add_to_main_menu',
+                    'type'              => 'true_false',
+                    'instructions'      => '',
+                    'required'          => 0,
                     'conditional_logic' => 0,
-                    'wrapper' => array(
+                    'wrapper'           => [
                         'width' => '',
                         'class' => '',
-                        'id' => '',
-                    ),
-                    'message' => '',
+                        'id'    => '',
+                    ],
+                    'message'       => '',
                     'default_value' => 0,
-                    'ui' => 0,
-                    'ui_on_text' => '',
-                    'ui_off_text' => '',
-                ),
-                array(
-                    'key' => 'field_60a6db1d0f949',
-                    'label' => 'Start positie op mobiel',
-                    'name' => 'start_positie_op_mobiel',
-                    'type' => 'number',
-                    'instructions' => '',
-                    'required' => 0,
-                    'conditional_logic' => array(
-                        array(
-                            array(
-                                'field' => 'field_60a6dae70f948',
+                    'ui'            => 0,
+                    'ui_on_text'    => '',
+                    'ui_off_text'   => '',
+                ],
+                [
+                    'key'               => 'field_60a6db1d0f949',
+                    'label'             => 'Start positie op mobiel',
+                    'name'              => 'start_positie_op_mobiel',
+                    'type'              => 'number',
+                    'instructions'      => '',
+                    'required'          => 0,
+                    'conditional_logic' => [
+                        [
+                            [
+                                'field'    => 'field_60a6dae70f948',
                                 'operator' => '==',
-                                'value' => '1',
-                            ),
-                        ),
-                    ),
-                    'wrapper' => array(
+                                'value'    => '1',
+                            ],
+                        ],
+                    ],
+                    'wrapper' => [
                         'width' => '',
                         'class' => '',
-                        'id' => '',
-                    ),
+                        'id'    => '',
+                    ],
                     'default_value' => '',
-                    'placeholder' => '',
-                    'prepend' => '',
-                    'append' => '',
-                    'min' => '',
-                    'max' => '',
-                    'step' => '',
-                ),
-            ),
-            'location' => array(
-                array(
-                    array(
-                        'param' => 'nav_menu',
+                    'placeholder'   => '',
+                    'prepend'       => '',
+                    'append'        => '',
+                    'min'           => '',
+                    'max'           => '',
+                    'step'          => '',
+                ],
+            ],
+            'location' => [
+                [
+                    [
+                        'param'    => 'nav_menu',
                         'operator' => '==',
-                        'value' => 'location/upper-bottom',
-                    ),
-                ),
-            ),
-            'menu_order' => 0,
-            'position' => 'normal',
-            'style' => 'default',
-            'label_placement' => 'top',
+                        'value'    => 'location/upper-bottom',
+                    ],
+                ],
+            ],
+            'menu_order'            => 0,
+            'position'              => 'normal',
+            'style'                 => 'default',
+            'label_placement'       => 'top',
             'instruction_placement' => 'label',
-            'hide_on_screen' => '',
-            'active' => true,
-            'description' => '',
-        ));
+            'hide_on_screen'        => '',
+            'active'                => true,
+            'description'           => '',
+        ]);
     }
 }
 
