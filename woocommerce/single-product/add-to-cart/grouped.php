@@ -1,6 +1,6 @@
 <?php
 /**
- * Grouped product add to cart
+ * Grouped product add to cart.
  *
  * This template can be overridden by copying it to yourtheme/woocommerce/single-product/add-to-cart/grouped.php.
  *
@@ -11,11 +11,10 @@
  * the readme will list any important changes.
  *
  * @see     https://docs.woocommerce.com/document/template-structure/
- * @package WooCommerce\Templates
+ *
  * @version 4.8.0
  */
-
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 global $product, $post;
 
@@ -46,7 +45,7 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
                 $post = $post_object; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
                 setup_postdata($post);
 
-                if ( $grouped_product_child->is_in_stock() ) {
+                if ($grouped_product_child->is_in_stock()) {
                     $show_add_to_cart_button = true;
                 }
 
