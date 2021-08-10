@@ -77,7 +77,7 @@ if (!defined('DISABLE_VER_URL')) {
     define('DISABLE_VER_URL', true);
 }
 
-if(!defined('WWW_REDIRECT')) {
+if (!defined('WWW_REDIRECT')) {
     define('WWW_REDIRECT', false);
 }
 
@@ -1653,15 +1653,15 @@ if (!function_exists('madeit_add_mobile_menu_items_to_main_menu') && function_ex
     }
 }
 
-
 /* Redirect to WWW. */
-if(WWW_REDIRECT && !function_exists('madeit_www_redirect')) {
-    function madeit_www_redirect() {
+if (WWW_REDIRECT && !function_exists('madeit_www_redirect')) {
+    function madeit_www_redirect()
+    {
         global $_SERVER;
-        
-        if(strpos($_SERVER['HTTP_HOST'], 'www.') === false) {
-            $url = $_SERVER['REQUEST_SCHEME'] . '://www.' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-            wp_redirect( $url, 301 );
+
+        if (strpos($_SERVER['HTTP_HOST'], 'www.') === false) {
+            $url = $_SERVER['REQUEST_SCHEME'].'://www.'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+            wp_redirect($url, 301);
             exit;
             //print_r($url);
         }
