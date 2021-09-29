@@ -1,6 +1,6 @@
 <?php
 /**
- * Order Customer Details
+ * Order Customer Details.
  *
  * This template can be overridden by copying it to yourtheme/woocommerce/order/order-details-customer.php.
  *
@@ -11,10 +11,9 @@
  * the readme will list any important changes.
  *
  * @see     https://docs.woocommerce.com/document/template-structure/
- * @package WooCommerce\Templates
+ *
  * @version 5.6.0
  */
-
 defined('ABSPATH') || exit;
 
 $show_shipping = !wc_ship_to_billing_address_only() && $order->needs_shipping_address();
@@ -51,9 +50,9 @@ $show_shipping = !wc_ship_to_billing_address_only() && $order->needs_shipping_ad
             <address>
                 <?php echo wp_kses_post($order->get_formatted_shipping_address(esc_html__('N/A', 'woocommerce'))); ?>
 
-                <?php if ( $order->get_shipping_phone() ) : ?>
-                    <p class="woocommerce-customer-details--phone"><?php echo esc_html( $order->get_shipping_phone() ); ?></p>
-                <?php endif; ?>
+                <?php if ($order->get_shipping_phone()) { ?>
+                    <p class="woocommerce-customer-details--phone"><?php echo esc_html($order->get_shipping_phone()); ?></p>
+                <?php } ?>
             </address>
         </div><!-- /.col-2 -->
 
