@@ -9,7 +9,7 @@
  */
 get_header(); ?>
 
-<div class="container mt-7">
+<div class="container mt-5">
     <div class="row">
         <div class="col" id="primary" role="main">
             <?php
