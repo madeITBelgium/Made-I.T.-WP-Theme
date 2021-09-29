@@ -1659,7 +1659,7 @@ if(WWW_REDIRECT && !function_exists('madeit_www_redirect')) {
     function madeit_www_redirect() {
         global $_SERVER;
         
-        if(strpos($_SERVER['HTTP_HOST'], 'www.') === false) {
+        if(isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'www.') === false) {
             $url = $_SERVER['REQUEST_SCHEME'] . '://www.' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
             wp_redirect( $url, 301 );
             exit;
