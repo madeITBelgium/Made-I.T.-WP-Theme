@@ -10,7 +10,7 @@
  * Made I.T. Theme only works in WordPress 4.7 or later.
  */
 if (!defined('MADEIT_VERSION')) {
-    define('MADEIT_VERSION', '2.6.0');
+    define('MADEIT_VERSION', '2.6.1');
 }
 /* Default colors */
 if (!defined('MADEIT_CUSTOM_COLOR')) {
