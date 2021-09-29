@@ -219,7 +219,7 @@ class MadeIT_Github_Updater
     {
         $this->initThemeData();
         $this->getRepoReleaseInfo();
-        if ($theme['theme'] === $this->slug) {
+        if (isset($theme['theme']) && $theme['theme'] === $this->slug) {
             add_filter('http_request_args', [$this, 'addAuthHeader'], 10, 2);
         }
     }
