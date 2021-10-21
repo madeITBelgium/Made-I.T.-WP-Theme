@@ -1657,22 +1657,21 @@ if (!function_exists('madeit_add_mobile_menu_items_to_main_menu') && function_ex
 if (!function_exists('theme_madeit_forms_module_class')) {
     function theme_madeit_forms_module_class($class, $type)
     {
-        if(in_array($type, ['checkbox', 'radio', 'range'])) {
-            
-        } else if($type === 'submit') {
-            if(strpos($class, "btn-") === false) {
-                $class .= " btn-success";
+        if (in_array($type, ['checkbox', 'radio', 'range'])) {
+        } elseif ($type === 'submit') {
+            if (strpos($class, 'btn-') === false) {
+                $class .= ' btn-success';
             }
-        } else if($type === 'select') {
-            $class .= " form-select";
-        } else if(strpos($class, "form-control") === false) {
-            $class .= " form-control";
+        } elseif ($type === 'select') {
+            $class .= ' form-select';
+        } elseif (strpos($class, 'form-control') === false) {
+            $class .= ' form-control';
         }
+
         return $class;
     }
     add_filter('madeit_forms_module_class', 'theme_madeit_forms_module_class', 10, 2);
 }
-
 
 /**
  * CSS Cache mechanisme.
