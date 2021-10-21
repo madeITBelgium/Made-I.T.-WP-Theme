@@ -1653,21 +1653,27 @@ if (!function_exists('madeit_add_mobile_menu_items_to_main_menu') && function_ex
     }
 }
 
-/* Redirect to WWW. */
-if (WWW_REDIRECT && !function_exists('madeit_www_redirect')) {
-    function madeit_www_redirect()
+/** Made I.T. Forms **/
+if (!function_exists('theme_madeit_forms_module_class')) {
+    function theme_madeit_forms_module_class($class, $type)
     {
-        global $_SERVER;
-
-        if (isset($_SERVER['HTTP_HOST']) && strpos($_SERVER['HTTP_HOST'], 'www.') === false) {
-            $url = $_SERVER['REQUEST_SCHEME'].'://www.'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-            wp_redirect($url, 301);
-            exit;
-            //print_r($url);
+        if(in_array($type, ['checkbox', 'radio', 'range'])) {
+            
+        } else if($type === 'submit') {
+            if(strpos($class, "btn-") === false) {
+                $class .= " btn-success";
+            }
+        } else if($type === 'select') {
+            $class .= " form-select";
+        } else if(strpos($class, "form-control") === false) {
+            $class .= " form-control";
         }
+        return $class;
     }
-    add_action('init', 'madeit_www_redirect');
+    add_filter('madeit_forms_module_class', 'theme_madeit_forms_module_class', 10, 2);
 }
+
+
 /**
  * CSS Cache mechanisme.
  */
