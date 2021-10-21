@@ -1,8 +1,8 @@
 === Made I.T. ===
 Contributors: madeit
 Requires at least: WordPress 5.0
-Tested up to: 5.8
-Version: 2.6.1
+Tested up to: 5.8.1
+Version: 2.7.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: madeit, bootstrap, bootstrap4, made i.t., Made I.T.
@@ -55,6 +55,10 @@ License: CC0 1.0 Universal (CC0 1.0)
 Source: https://unsplash.com/@englr?photo=bIhpiQA009k
 
 == Changelog ==
+= 2.7.0 =
+* Made I.T. Visual Form Builder integration
+* Bootstrap 4.6.0
+
 = 2.6.1 =
 * WooCommerce 5.7
 
