@@ -47,13 +47,13 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu
          * a 0 if the strings are equal.
          */
         if (strcasecmp($item->attr_title, 'divider') == 0 && $depth === 1) {
-            $output .= $indent.'<li role="presentation" class="divider">';
+            $output .= $indent.'<li class="divider">';
         } elseif (strcasecmp($item->title, 'divider') == 0 && $depth === 1) {
-            $output .= $indent.'<li role="presentation" class="divider">';
+            $output .= $indent.'<li class="divider">';
         } elseif (strcasecmp($item->attr_title, 'dropdown-header') == 0 && $depth === 1) {
-            $output .= $indent.'<li role="presentation" class="dropdown-header">'.esc_attr($item->title);
+            $output .= $indent.'<li class="dropdown-header">'.esc_attr($item->title);
         } elseif (strcasecmp($item->attr_title, 'disabled') == 0) {
-            $output .= $indent.'<li role="presentation" class="disabled"><a href="#">'.esc_attr($item->title).'</a>';
+            $output .= $indent.'<li class="disabled"><a href="#">'.esc_attr($item->title).'</a>';
         } else {
             $class_names = $value = '';
 
