@@ -1,3 +1,7 @@
+html :where(.editor-styles-wrapper) {
+    font-family: sans-serif;
+}
+
 body.gutenberg-editor-page {
 	background-color: #FFF;
 	color: #000;
