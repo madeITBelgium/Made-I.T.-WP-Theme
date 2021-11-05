@@ -17,7 +17,7 @@ $leftCollPostition = apply_filters('madeit_upper_navbar_left_col_position', 'lef
                 <?php } ?>
                 <div class="row w-100 no-gutters">
                     <?php if (has_nav_menu('upper-top')) { ?>
-                        <div class="col <?php echo $leftCollPostition ? 'd-flex' : ''; ?>">
+                        <div class="col <?php echo $leftCollPostition !== 'left' ? 'd-flex' : ''; ?>">
                             <?php
                             wp_nav_menu([
                                 'theme_location'    => 'upper-top',
@@ -25,7 +25,7 @@ $leftCollPostition = apply_filters('madeit_upper_navbar_left_col_position', 'lef
                                 'depth'             => 2,
                                 'container'         => 'nav',
                                 'container_id'      => 'secondary-navigation',
-                                'container_class'   => 'secondary-navigation '.($leftCollPostition ? 'ml-auto' : ''),
+                                'container_class'   => 'secondary-navigation '.($leftCollPostition !== 'left' ? 'ml-auto' : ''),
                                 'menu_class'        => 'menu nav navbar-nav',
                                 'fallback_cb'       => 'wp_bootstrap_navwalker::fallback',
                                 'walker'            => new wp_bootstrap_navwalker(),
