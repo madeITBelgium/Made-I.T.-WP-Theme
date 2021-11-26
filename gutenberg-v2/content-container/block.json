@@ -1,0 +1,92 @@
+{
+	"$schema": "https://json.schemastore.org/block.json",
+	"apiVersion": 2,
+	"name": "madeit/block-content",
+	"version": "0.1.0",
+	"title": "Content by Made I.T.",
+	"category": "madeit",
+	"icon": "smiley",
+	"description": "Example block written with ESNext standard and JSX support – build step required.",
+	"supports": {
+		"html": false
+	},
+	"textdomain": "content-container",
+	"editorScript": "file:./build/index.js",
+	"editorStyle": "file:./build/index.css",
+	"style": "file:./build/style-index.css",
+    "attributes": {
+        "verticalAlignment": {
+            "type": "string"
+        },
+        "containerBackgroundColor": {
+            "type": "string"
+        },
+        "customContainerBackgroundColor": {
+            "type": "string"
+        },
+        "size": {
+            "type": "string",
+            "default": "container"
+        },
+        "containerMarginBottom": {
+            "type": "number",
+            "default": 0
+        },
+        "containerMarginTop": {
+            "type": "number",
+            "default": 0
+        },
+        "containerPaddingTop": {
+            "type": "number",
+            "default": 0
+        },
+        "containerPaddingBottom": {
+            "type": "number",
+            "default": 0
+        },
+        "containerPaddingLeft": {
+            "type": "number",
+            "default": 0
+        },
+        "containerPaddingRight": {
+            "type": "number",
+            "default": 0
+        },
+        "rowBackgroundColor": {
+            "type": "string"
+        },
+        "customRowBackgroundColor": {
+            "type": "string"
+        },
+        "rowTextColor": {
+            "type": "string"
+        },
+        "customRowTextColor": {
+            "type": "string"
+        },
+        "rowMarginBottom": {
+            "type": "number",
+            "default": 0
+        },
+        "rowMarginTop": {
+            "type": "number",
+            "default": 0
+        },
+        "rowPaddingTop": {
+            "type": "number",
+            "default": 0
+        },
+        "rowPaddingBottom": {
+            "type": "number",
+            "default": 0
+        },
+        "rowPaddingLeft": {
+            "type": "number",
+            "default": 0
+        },
+        "rowPaddingRight": {
+            "type": "number",
+            "default": 0
+        }
+    }
+}

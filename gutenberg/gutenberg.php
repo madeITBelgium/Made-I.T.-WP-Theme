@@ -16,5 +16,5 @@ require get_parent_theme_file_path('/gutenberg/container-simple/plugin.php');
 require get_parent_theme_file_path('/gutenberg/tabs/plugin.php');
 require get_parent_theme_file_path('/gutenberg/carousel/plugin.php');
 require get_parent_theme_file_path('/gutenberg/color-image-block/plugin.php');
-require get_parent_theme_file_path('/gutenberg/content/plugin.php');
+//require get_parent_theme_file_path('/gutenberg/content/plugin.php');
 require get_parent_theme_file_path('/gutenberg/card/plugin.php');
