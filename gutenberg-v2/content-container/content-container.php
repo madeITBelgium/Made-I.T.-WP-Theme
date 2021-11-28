@@ -1,6 +1,5 @@
 <?php
 
-
 function madeit_content_container_block_assets()
 {
     wp_register_style('content-container-madeit-style-css', get_template_directory_uri().'/gutenberg-v2/content-container/build/style-index.css', ['wp-editor'], null);
@@ -12,7 +11,7 @@ function madeit_content_container_block_assets()
     wp_register_style('content-container-madeit-block-editor-css', get_template_directory_uri().'/gutenberg-v2/content-container/build/index.css', ['wp-edit-blocks'], null);
 
     register_block_type('madeit/block-content', [
-        'style' => 'content-container-madeit-style-css',
+        'style'         => 'content-container-madeit-style-css',
         'editor_script' => 'content-container-madeit-block-js',
         'editor_style'  => 'content-container-madeit-block-editor-css',
     ]);
