@@ -132,7 +132,7 @@ function madeit_remove_menu_pages() {
         $hideMenus = true;
     }
     
-    $items = ['edit.php', 'upload.php', 'edit.php?post_type=page', 'edit-comments.php', 'madeit_forms', 'users.php'];
+    $items = ['index.php', 'edit.php', 'upload.php', 'edit.php?post_type=page', 'edit-comments.php', 'madeit_forms', 'users.php'];
     if(defined('MADEIT_HIDE_MENU_ITEMS')) {
         $items = array_merge($items, MADEIT_HIDE_MENU_ITEMS);
     }
@@ -145,7 +145,7 @@ function madeit_remove_menu_pages() {
         }
     }
 }
-add_action('admin_init', 'madeit_remove_menu_pages', 0, 99);
+add_action('admin_init', 'madeit_remove_menu_pages', 99, 0);
 
 function madeit_admin_theme_style() {
     global $user_ID;

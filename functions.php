@@ -1740,3 +1740,8 @@ if (in_array('woocommerce/woocommerce.php', $activePlugins) && in_array('sfwd-lm
  * Admin Menu Editor
  */
 require get_parent_theme_file_path('/inc/admin-menu-editor.php');
+
+/**
+ * Made I.T. Support
+ */
+require get_parent_theme_file_path('/inc/madeit-support.php');
