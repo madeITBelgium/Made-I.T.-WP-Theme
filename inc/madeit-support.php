@@ -1,20 +1,23 @@
 <?php
 
-function madeit_support_footer_notice($text) {
-    $text = '<a href="https://www.madeit.be/contact">Made I.T. Website</a> • <a href="#TB_inline?width=600&height=550&inlineId=modal-madeit-support" title="Made IT Support Ticket aanmaken" class="thickbox">Made I.T. Support Ticket</a> • ' . $text;
+function madeit_support_footer_notice($text)
+{
+    $text = '<a href="https://www.madeit.be/contact">Made I.T. Website</a> • <a href="#TB_inline?width=600&height=550&inlineId=modal-madeit-support" title="Made IT Support Ticket aanmaken" class="thickbox">Made I.T. Support Ticket</a> • '.$text;
+
     return $text;
 }
 add_filter('update_footer', 'madeit_support_footer_notice', 99, 1);
 
-function madeit_support_init() {
+function madeit_support_init()
+{
     add_thickbox();
 }
 add_action('admin_init', 'madeit_support_init');
 
-function madeit_support_popup() {
+function madeit_support_popup()
+{
     global $current_user;
-    wp_get_current_user();
-    ?>
+    wp_get_current_user(); ?>
     <div id="modal-madeit-support" style="display:none;">
         <p>Heb je een probleem of een vraag over de website? Stel ze hier, het Made I.T. Support team contacteert je zo snel mogelijk.</p>
         <form action="POST" method="" id="madeitSupportForm">
@@ -62,9 +65,10 @@ function madeit_support_popup() {
 }
 add_action('admin_footer', 'madeit_support_popup');
 
-function madeit_support_ticket_store() {
-    wp_mail('support@madeit.be', 'Support Ticket ' . $_POST['ms_subject'] . ' - ' . get_home_url(), print_r($_POST, true));
+function madeit_support_ticket_store()
+{
+    wp_mail('support@madeit.be', 'Support Ticket '.$_POST['ms_subject'].' - '.get_home_url(), print_r($_POST, true));
     echo json_encode(['success' => true]);
-	wp_die();
+    wp_die();
 }
 add_action('wp_ajax_madeit_support_ticket', 'madeit_support_ticket_store');

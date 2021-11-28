@@ -1,13 +1,12 @@
 <?php
-function madeit_adminmenu() {
+function madeit_adminmenu()
+{
     global $user_ID;
     $hideMenus = get_user_meta($user_ID, 'madeit_hide_admin_menu', true);
-    if(!metadata_exists('user', $user_ID, 'madeit_hide_admin_menu')) {
+    if (!metadata_exists('user', $user_ID, 'madeit_hide_admin_menu')) {
         update_user_meta($user_ID, 'madeit_hide_admin_menu', true);
         $hideMenus = true;
-    }
-
-    ?>
+    } ?>
     <li style="padding: 5px; color: #a7aaad; margin-top: 20px;" class="wp-menu-name">
         <div class="components-base-control components-toggle-control">
             <div class="components-base-control__field">
@@ -24,7 +23,8 @@ function madeit_adminmenu() {
 }
 add_action('adminmenu', 'madeit_adminmenu');
 
-function madeit_adminmenu_footer() {
+function madeit_adminmenu_footer()
+{
     ?>
     <script>
         const checkbox = document.getElementById('toggle-hide-admin-menu');
@@ -115,31 +115,33 @@ function madeit_adminmenu_footer() {
 }
 add_action('admin_footer', 'madeit_adminmenu_footer');
 
-function madeit_adminmenu_footer_save() {
+function madeit_adminmenu_footer_save()
+{
     global $user_ID;
-    update_user_meta($user_ID, 'madeit_hide_admin_menu', $_POST['hide'] === "true" || $_POST['hide'] === true);
+    update_user_meta($user_ID, 'madeit_hide_admin_menu', $_POST['hide'] === 'true' || $_POST['hide'] === true);
     echo json_encode($_POST);
-	wp_die();
+    wp_die();
 }
 add_action('wp_ajax_save_adminmenu', 'madeit_adminmenu_footer_save');
 
-function madeit_remove_menu_pages() {
+function madeit_remove_menu_pages()
+{
     global $user_ID, $submenu, $menu;
-    
+
     $hideMenus = get_user_meta($user_ID, 'madeit_hide_admin_menu', true);
-    if(!metadata_exists('user', $user_ID, 'madeit_hide_admin_menu')) {
+    if (!metadata_exists('user', $user_ID, 'madeit_hide_admin_menu')) {
         update_user_meta($user_ID, 'madeit_hide_admin_menu', true);
         $hideMenus = true;
     }
-    
+
     $items = ['index.php', 'edit.php', 'upload.php', 'edit.php?post_type=page', 'edit-comments.php', 'madeit_forms', 'users.php'];
-    if(defined('MADEIT_HIDE_MENU_ITEMS')) {
+    if (defined('MADEIT_HIDE_MENU_ITEMS')) {
         $items = array_merge($items, MADEIT_HIDE_MENU_ITEMS);
     }
-    
+
     if ($hideMenus) {
-        foreach($menu as $m) {
-            if(!in_array($m[2], $items) && strpos($m[2], 'edit.php') === false) {
+        foreach ($menu as $m) {
+            if (!in_array($m[2], $items) && strpos($m[2], 'edit.php') === false) {
                 remove_menu_page($m[2]);
             }
         }
@@ -147,9 +149,10 @@ function madeit_remove_menu_pages() {
 }
 add_action('admin_init', 'madeit_remove_menu_pages', 99, 0);
 
-function madeit_admin_theme_style() {
+function madeit_admin_theme_style()
+{
     global $user_ID;
-    
+
     if ($user_ID !== 1) {
         echo '<style>.update-nag, .updated, .error, .is-dismissible { display: none; }</style>';
     }

@@ -6,8 +6,6 @@
  *
  * @see https://developer.wordpress.org/block-editor/how-to-guides/block-tutorial/writing-your-first-block-type/
  */
-
-
 function madeit_content_column_block_assets()
 {
     //wp_register_style('content-column-madeit-style-css', get_template_directory_uri().'/gutenberg-v2/content-column/build/style-index.css', ['wp-editor'], null);
