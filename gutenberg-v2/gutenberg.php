@@ -27,3 +27,4 @@ add_filter('block_categories_all', 'madeit_filter_block_categories_when_post_pro
 
 require get_parent_theme_file_path('/gutenberg-v2/content-container/content-container.php');
 require get_parent_theme_file_path('/gutenberg-v2/content-column/content-column.php');
+require get_parent_theme_file_path('/gutenberg-v2/advanced-controls/advanced-controls.php');

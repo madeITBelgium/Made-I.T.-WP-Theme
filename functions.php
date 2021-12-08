@@ -1029,7 +1029,7 @@ if (!function_exists('madeit_add_image_popup_class')) {
             $imgs = $document->getElementsByTagName('img');
             foreach ($imgs as $img) {
                 $existing_class = $img->getAttribute('class');
-                if (strpos($existing_class, 'no-lightbox') === false && strpos($existing_class, 'wp-block-cover__image-background') === false) {
+                if (strpos($existing_class, 'do-lightbox') !== false && strpos($existing_class, 'wp-block-cover__image-background') === false) {
                     $img->setAttribute('class', "lightbox $existing_class");
                 }
             }
