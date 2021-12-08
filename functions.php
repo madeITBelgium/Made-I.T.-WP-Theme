@@ -353,7 +353,7 @@ if (!function_exists('madeit_gutenberg_support')) {
                     'color' => madeit_get_theme_color('danger_color_rgb', MADEIT_DANGER_COLOR),
                 ],
             ]);
-            
+
             add_theme_support('editor-gradient-presets', madeit_generate_gradients_colors());
         }
     }
@@ -1749,6 +1749,6 @@ require get_parent_theme_file_path('/inc/admin-menu-editor.php');
 require get_parent_theme_file_path('/inc/madeit-support.php');
 
 /**
- * Generate Theme Json file
+ * Generate Theme Json file.
  */
 require get_parent_theme_file_path('/inc/generate-theme-json.php');
