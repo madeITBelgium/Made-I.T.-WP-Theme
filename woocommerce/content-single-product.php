@@ -62,6 +62,7 @@ global $product;
 
         </div><!-- .summary -->
     </div>
+    <?php do_action('woocommerce_single_product_between'); ?>
     <div class="row">
         <div class="col">
             <?php

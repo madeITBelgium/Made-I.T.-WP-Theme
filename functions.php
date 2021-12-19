@@ -680,9 +680,12 @@ if (!function_exists('madeit_scripts')) {
 
         wp_enqueue_script('script-fix-jquery', get_theme_file_uri('/assets/js/script-fix-jquery.js'), ['jquery'], MADEIT_VERSION, true);
         wp_enqueue_script('popper', get_theme_file_uri('/assets/js/popper.min.js'), ['jquery'], MADEIT_VERSION, true);
-        wp_enqueue_script('bootstrap', get_theme_file_uri('/assets/js/bootstrap.js'), ['jquery', 'popper'], '4.1.0', true);
+        wp_enqueue_script('bootstrap', get_theme_file_uri('/assets/js/bootstrap.js'), ['jquery', 'popper'], MADEIT_VERSION, true);
         wp_enqueue_script('script', get_template_directory_uri().'/assets/js/script.js', ['bootstrap'], MADEIT_VERSION, true);
-
+        
+        wp_enqueue_script('madeit-infinitescroll', get_template_directory_uri() . '/assets/js/infinitescroll.js', ['jquery'], MADEIT_VERSION, true);
+        madeit_infinite_options_to_script();
+        
         //wp_enqueue_script('jquery-scrollto', get_theme_file_uri('/assets/js/jquery.scrollTo.js'), ['jquery'], '2.1.2', true);
 
         if (is_singular() && comments_open() && get_option('thread_comments')) {
@@ -690,6 +693,24 @@ if (!function_exists('madeit_scripts')) {
         }
     }
     add_action('wp_enqueue_scripts', 'madeit_scripts');
+}
+
+if(!function_exists('madeit_infinite_options_to_script')) {
+    function madeit_infinite_options_to_script()
+    {
+        $nav_selector = apply_filters('madeit_infinite_navselector', '.woocommerce-pagination');
+        $next_selector = apply_filters('madeit_infinite_nextselector', 'ul.page-numbers a.next');
+        $item_selector = apply_filters('madeit_infinite_itemselector', 'div.row.columns-3 .col');
+        $content_selector = apply_filters('madeit_infinite_contentselector', 'div.row.columns-3');
+
+        wp_localize_script('madeit-infinitescroll', 'madeit_infinite', [
+            'navSelector' => $nav_selector,
+            'nextSelector' => $next_selector,
+            'itemSelector' => $item_selector,
+            'contentSelector' => $content_selector,
+            'shop' => function_exists( 'WC' ) && ( is_shop() || is_product_category() || is_product_tag() ),
+        ]);
+    }
 }
 
 if (!function_exists('remove_jquery_migrate_and_move_jquery_to_footer')) {
