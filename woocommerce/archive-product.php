@@ -72,7 +72,7 @@ get_header('shop'); ?>
             if (wc_get_loop_prop('total')) {
                 while (have_posts()) {
                     ?>
-                    <div class="col col-md-6 col-lg-4">
+                    <div class="col-12 col-md-6 col-lg-4">
                         <?php
                         the_post();
                     /*

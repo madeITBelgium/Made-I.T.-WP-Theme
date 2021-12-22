@@ -700,7 +700,7 @@ if(!function_exists('madeit_infinite_options_to_script')) {
     {
         $nav_selector = apply_filters('madeit_infinite_navselector', '.woocommerce-pagination');
         $next_selector = apply_filters('madeit_infinite_nextselector', 'ul.page-numbers a.next');
-        $item_selector = apply_filters('madeit_infinite_itemselector', 'div.row.columns-3 .col');
+        $item_selector = apply_filters('madeit_infinite_itemselector', 'div.row.columns-3 .col, div.row.columns-3 .col-12');
         $content_selector = apply_filters('madeit_infinite_contentselector', 'div.row.columns-3');
 
         wp_localize_script('madeit-infinitescroll', 'madeit_infinite', [
