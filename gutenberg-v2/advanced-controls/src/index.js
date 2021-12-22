@@ -15,6 +15,16 @@ function madeit_hide_block_mobile(settings, name) {
                 }
             });
         }
+        if (name === 'madeit/block-content-column') {
+            settings.attributes = Object.assign(settings.attributes, {
+                orderFirst: {
+                    type: 'boolean',
+                },
+                orderLast: {
+                    type: 'boolean',
+                }
+            });
+        }
     }
     return settings;
 }
@@ -53,6 +63,21 @@ const madeitAdvancedControls = wp.compose.createHigherOrderComponent((BlockEdit)
                                 onChange={(newval) => setAttributes({ lightbox: !attributes.lightbox })}
                             />
                         }
+                        
+                        {props.name == 'madeit/block-content-column' && 
+                            <ToggleControl
+                                label={wp.i18n.__('Order kolom als eerst op mobiel, laatst op desktop.', 'madeit')}
+                                checked={!!attributes.orderFirst}
+                                onChange={(newval) => setAttributes({ orderFirst: !attributes.orderFirst })}
+                            />
+                        }
+                        {props.name == 'madeit/block-content-column' && 
+                            <ToggleControl
+                                label={wp.i18n.__('Order kolom als laatste op mobiel, eerste op desktop.', 'madeit')}
+                                checked={!!attributes.orderLast}
+                                onChange={(newval) => setAttributes({ orderLast: !attributes.orderLast })}
+                            />
+                        }
                     </PanelBody>
                 </InspectorControls>
                 }
@@ -62,9 +87,8 @@ const madeitAdvancedControls = wp.compose.createHigherOrderComponent((BlockEdit)
 }, 'madeitAdvancedControls');
 wp.hooks.addFilter('editor.BlockEdit', 'madeit/advanced-control', madeitAdvancedControls);
 
-
 function madeitApplyExtraClass(extraProps, blockType, attributes) {
-    const { hideOnMobile, hideOnDesktop, lightbox } = attributes;
+    const { hideOnMobile, hideOnDesktop, lightbox, orderFirst, orderLast } = attributes;
     
     var showDesktop = true;
     var showMobile = true;
@@ -89,6 +113,14 @@ function madeitApplyExtraClass(extraProps, blockType, attributes) {
     
     if (typeof lightbox !== 'undefined' && lightbox) {
         extraProps.className = extraProps.className + ' do-lightbox';
+    }
+    
+    
+    if (typeof orderFirst !== 'undefined' && orderFirst) {
+        extraProps.className = extraProps.className + ' order-lg-first';
+    }
+    if (typeof orderLast !== 'undefined' && orderLast) {
+        extraProps.className = extraProps.className + ' order-last order-lg-first';
     }
     return extraProps;
 }
