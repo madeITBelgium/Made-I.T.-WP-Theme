@@ -77,6 +77,9 @@ $default-block-margin: 28px; // This value provides a consistent, contiguous spa
 	flex: 1;
 }
 
+.block-editor-block-list__block>[data-align=container] {
+    max-width: 100% !important;
+}
 
 // These margins make sure that nested blocks stack/overlay with the parent block chrome
 // This is sort of an experiment at making sure the editor looks as much like the end result as possible
@@ -106,6 +109,8 @@ $default-block-margin: 28px; // This value provides a consistent, contiguous spa
 
 .wp-block-madeit-block-content {
     display:block;
+    
+    
     &.container-fluid {
         display: flex;
         justify-content: center;
