@@ -15,6 +15,8 @@
             loading = false,
             finished = false;
 
+        console.log(opts);
+        console.log($(opts.nextSelector).length  + '&&' + $(opts.navSelector).length +'&&' + $(opts.itemSelector).length +'&&' + $(opts.contentSelector).length);
         // validate options and hide std navigation
         if ($(opts.nextSelector).length && $(opts.navSelector).length && $(opts.itemSelector).length && $(opts.contentSelector).length) {
             $(opts.navSelector).hide();
@@ -35,7 +37,7 @@
 
             var last_elem = $(opts.itemSelector).last();
             // set loader and loading
-            $(opts.navSelector).after('<div class="madeit-infinite-infs-loader"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></div>');
+            $(opts.navSelector).after('<div class="madeit-infinite-infs-loader d-flex justify-content-center w-100 my-3"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></div>');
 
             loading = true;
             // decode url to prevent error

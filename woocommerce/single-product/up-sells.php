@@ -29,7 +29,7 @@ if ($upsells) { ?>
         <?php woocommerce_product_loop_start(); ?>
             
             <?php foreach ($upsells as $upsell) { ?>
-                <div class="col col-md-6 col-lg-3">
+                <div class="col-12 col-md-6 col-lg-3">
 
                     <?php
                     $post_object = get_post($upsell->get_id());

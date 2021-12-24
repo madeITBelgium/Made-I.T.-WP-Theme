@@ -31,7 +31,7 @@ if ($cross_sells) { ?>
         <?php woocommerce_product_loop_start(); ?>
 
             <?php foreach ($cross_sells as $cross_sell) { ?>
-                <div class="col col-md-6 col-lg-3">
+                <div class="col-12 col-md-6 col-lg-3">
                 <?php
                     $post_object = get_post($cross_sell->get_id());
 
