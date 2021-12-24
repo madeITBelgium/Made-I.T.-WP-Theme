@@ -12,7 +12,10 @@
  *
  * @version 1.0
  */
-get_header(); ?>
+get_header();
+
+do_action('madeit_before_index_page');
+?>
 
 <div class="container voffset6">
     <?php if (is_home() && !is_front_page()) { ?>
@@ -21,7 +24,7 @@ get_header(); ?>
         </header>
     <?php } else { ?>
         <header class="page-header">
-            <h2 class="page-title"><?php _e('Posts', 'madeit'); ?></h2>
+            <h2 class="page-title"><?php echo apply_filters('madeit_index_page_title', __('Posts', 'madeit')); ?></h2>
         </header>
     <?php } ?>
 
@@ -40,7 +43,7 @@ get_header(); ?>
                      * If you want to override this in a child theme, then include a file
                      * called content-___.php (where ___ is the Post Format name) and that will be used instead.
                      */
-                    get_template_part('template-parts/post/content', get_post_format());
+                    get_template_part(apply_filters('madeit_index_post_template', 'template-parts/post/content'), get_post_format());
                 }
 
                 madeit_page_pagination();

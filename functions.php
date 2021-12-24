@@ -56,10 +56,10 @@ if (!defined('HEADER_UPPER_BOTTOM')) {
     define('HEADER_UPPER_BOTTOM', false);
 }
 if (!defined('POST_AUTHOR')) {
-    define('POST_AUTHOR', true);
+    define('POST_AUTHOR', false);
 }
 if (!defined('POST_EDIT_TIME')) {
-    define('POST_EDIT_TIME', true);
+    define('POST_EDIT_TIME', false);
 }
 if (!defined('POST_TIME_FORMAT')) {
     define('POST_TIME_FORMAT', 'long');
