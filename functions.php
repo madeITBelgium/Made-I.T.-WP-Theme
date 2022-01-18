@@ -366,6 +366,7 @@ if (!function_exists('madeit_block_editor_styles')) {
     function madeit_block_editor_styles()
     {
         wp_enqueue_style('madeit-block-editor-styles', get_theme_file_uri('/style-editor.css'), false, MADEIT_VERSION, 'all');
+        wp_enqueue_script('madeit-gutenberg-toolbar', get_template_directory_uri() . '/assets/js/gutenberg-toolbar.js', array(), MADEIT_VERSION, true );
     }
 
     add_action('enqueue_block_editor_assets', 'madeit_block_editor_styles');
@@ -655,6 +656,7 @@ if (!function_exists('madeit_scripts')) {
         // Theme stylesheet.
         wp_enqueue_style('madeit-style', get_stylesheet_uri(), [], wp_get_theme()->get('Version'));
         wp_enqueue_style('madeit-gutenberg-style', get_theme_file_uri('/assets/css/gutenfront.css'), ['madeit-style', 'wp-editor'], wp_get_theme()->get('Version'));
+        wp_enqueue_style('madeit-aos-style', get_theme_file_uri('/assets/css/aos.css'), ['madeit-style'], wp_get_theme()->get('Version'));
 
         //wp_enqueue_style('font-awesome', get_theme_file_uri('/assets/css/font-awesome.min.css'), ['madeit-style'], '4.7.0');
 
@@ -683,6 +685,8 @@ if (!function_exists('madeit_scripts')) {
         wp_enqueue_script('bootstrap', get_theme_file_uri('/assets/js/bootstrap.js'), ['jquery', 'popper'], MADEIT_VERSION, true);
         wp_enqueue_script('script', get_template_directory_uri().'/assets/js/script.js', ['bootstrap'], MADEIT_VERSION, true);
         
+        wp_enqueue_script('madeit-aos', get_template_directory_uri() . '/assets/js/aos.js', [], MADEIT_VERSION, true);
+        
         wp_enqueue_script('madeit-infinitescroll', get_template_directory_uri() . '/assets/js/infinitescroll.js', ['jquery'], MADEIT_VERSION, true);
         madeit_infinite_options_to_script();
         
@@ -698,10 +702,10 @@ if (!function_exists('madeit_scripts')) {
 if(!function_exists('madeit_infinite_options_to_script')) {
     function madeit_infinite_options_to_script()
     {
-        $nav_selector = apply_filters('madeit_infinite_navselector', '.woocommerce-pagination');
-        $next_selector = apply_filters('madeit_infinite_nextselector', 'ul.page-numbers a.next');
-        $item_selector = apply_filters('madeit_infinite_itemselector', 'div.row.columns-3 .col, div.row.columns-3 .col-12');
-        $content_selector = apply_filters('madeit_infinite_contentselector', 'div.row.columns-3');
+        $nav_selector = apply_filters('madeit_infinite_navselector', '.woocommerce-pagination, .pagination');
+        $next_selector = apply_filters('madeit_infinite_nextselector', 'ul.page-numbers a.next, .pagination .next');
+        $item_selector = apply_filters('madeit_infinite_itemselector', 'div.row.columns-3 .col, div.row.columns-3 .col-12,  #primary .card-columns .card, .content-wrapper > div');
+        $content_selector = apply_filters('madeit_infinite_contentselector', 'div.row.columns-3, #primary .card-columns, .content-wrapper');
 
         wp_localize_script('madeit-infinitescroll', 'madeit_infinite', [
             'navSelector' => $nav_selector,
@@ -1694,6 +1698,19 @@ if (!function_exists('theme_madeit_forms_module_class')) {
         return $class;
     }
     add_filter('madeit_forms_module_class', 'theme_madeit_forms_module_class', 10, 2);
+}
+
+
+/*
+Wp Rocket settings
+*/
+if(!function_exists('madeit_wprocket_pre_get_rocket_option_delay_js_exclusions')) {
+    function madeit_wprocket_pre_get_rocket_option_delay_js_exclusions($optie, $default)
+    {
+        //mail('tjebbe.lievens@madeit.be', 'Test', print_r($files, true));
+        return ["aos.js"] + $default;
+    }
+    add_filter('pre_get_rocket_option_delay_js_exclusions', 'madeit_wprocket_pre_get_rocket_option_delay_js_exclusions', 10, 2);
 }
 
 /**

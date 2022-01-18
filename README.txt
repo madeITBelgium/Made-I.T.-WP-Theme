@@ -60,6 +60,8 @@ Source: https://unsplash.com/@englr?photo=bIhpiQA009k
 * Bootstrap 4.6.*
 * WooCommerce 6.1
 * Improved support and help functions
+* Add support for animation
+* Add support for infinityscroll
 
 = 2.6.1 =
 * WooCommerce 5.7

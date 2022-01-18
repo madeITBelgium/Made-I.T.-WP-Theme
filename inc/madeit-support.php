@@ -19,36 +19,49 @@ function madeit_support_popup()
     global $current_user;
     wp_get_current_user(); ?>
     <div id="modal-madeit-support" style="display:none;">
-        <p>Heb je een probleem of een vraag over de website? Stel ze hier, het Made I.T. Support team contacteert je zo snel mogelijk.</p>
-        <form action="POST" method="" id="madeitSupportForm">
-            <input type="hidden" name="action" value="madeit_support_ticket">
-            <input type="hidden" name="ms_user_id" value="<?php echo $current_user->ID; ?>">
-            <input type="hidden" name="ms_current_page" value="<?php echo get_current_screen()->id; ?>">
-            <input type="hidden" name="ms_website" value="<?php echo get_home_url(); ?>">
-            <div class="input-text-wrap" style="margin-bottom: 10px;">
-                <label for="ms_name">Naam: *</label><br>
-                <input type="text" name="ms_name" id="ms_name" value="<?php echo $current_user->display_name; ?>" style="width: 100%">
-            </div>
-            <div class="input-text-wrap" style="margin-bottom: 10px;">
-                <label for="ms_email">E-mailadres: *</label><br>
-                <input type="email" name="ms_email" id="ms_email" value="<?php echo $current_user->user_email; ?>" style="width: 100%">
-            </div>
-            <div class="input-text-wrap" style="margin-bottom: 10px;">
-                <label for="ms_phone">Telefoonnummer:</label><br>
-                <input type="text" name="ms_phone" id="ms_phone" value="" style="width: 100%">
-            </div>
-            <div class="input-text-wrap" style="margin-bottom: 10px;">
-                <label for="ms_subject">Onderwerp: *</label><br>
-                <input type="text" name="ms_subject" id="ms_subject" value="" style="width: 100%">
-            </div>
-            <div class="input-text-wrap" style="margin-bottom: 10px;">
-                <label for="ms_text">Vraag/Onderwerp: *</label><br>
-                <textarea name="ms_text" id="ms_text" style="width: 100%" rows="5"></textarea>
-            </div>
-            <div style="text-align: center">
-                <input type="submit" name="ms_sent" class="button button-primary" value="Verzenden">
-            </div>
-        </form>
+        <div style=" padding: 5px 10px;">
+            <p>Heb je een probleem of een vraag over de website? Stel ze hier, het Made I.T. Support team contacteert je zo snel mogelijk.</p>
+            <form action="POST" method="" id="madeitSupportForm">
+                <input type="hidden" name="action" value="madeit_support_ticket">
+                <input type="hidden" name="ms_user_id" value="<?php echo $current_user->ID; ?>">
+                <input type="hidden" name="ms_current_page" value="<?php echo get_current_screen()->id; ?>">
+                <input type="hidden" name="ms_current_url" value="<?php echo admin_url($_SERVER['REQUEST_URI']); ?>">
+                <input type="hidden" name="ms_website" value="<?php echo get_home_url(); ?>">
+                <div class="input-text-wrap" style="margin-bottom: 10px;">
+                    <label for="ms_name">Naam: *</label><br>
+                    <input type="text" name="ms_name" id="ms_name" value="<?php echo $current_user->display_name; ?>" style="width: 100%">
+                </div>
+                <div class="input-text-wrap" style="margin-bottom: 10px;">
+                    <label for="ms_email">E-mailadres: *</label><br>
+                    <input type="email" name="ms_email" id="ms_email" value="<?php echo $current_user->user_email; ?>" style="width: 100%">
+                </div>
+                <div class="input-text-wrap" style="margin-bottom: 10px;">
+                    <label for="ms_phone">Telefoonnummer:</label><br>
+                    <input type="text" name="ms_phone" id="ms_phone" value="" style="width: 100%">
+                </div>
+                <div class="input-text-wrap" style="margin-bottom: 10px;">
+                    <label for="ms_subject">Onderwerp: *</label><br>
+                    <input type="text" name="ms_subject" id="ms_subject" value="" style="width: 100%">
+                </div>
+                <div class="input-text-wrap" style="margin-bottom: 10px;">
+                    <label for="ms_text">Vraag/Onderwerp: *</label><br>
+                    <textarea name="ms_text" id="ms_text" style="width: 100%" rows="5"></textarea>
+                </div>
+                <div style="text-align: center">
+                    <input type="submit" name="ms_sent" class="button button-primary" value="Verzenden">
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <div id="modal-madeit-pagebuilder-help" style="display:none;">
+        <div style=" padding: 5px 10px;">
+            <p>
+                Deze pagina is opgebouwd met de standaard Editor van WordPress. Made I.T. heeft enkele extra functies toegevoegt. Via deze popup kom je bij de nodige informatie om je verder te helpen met het aanpassen of bouwen van pagina's.
+            </p>
+            
+        </div>
     </div>
 
     <script>
