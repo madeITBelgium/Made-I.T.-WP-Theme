@@ -353,7 +353,7 @@ if (!function_exists('madeit_gutenberg_support')) {
                     'color' => madeit_get_theme_color('danger_color_rgb', MADEIT_DANGER_COLOR),
                 ],
             ]);
-            
+
             add_theme_support('editor-gradient-presets', madeit_generate_gradients_colors());
         }
     }
@@ -366,7 +366,7 @@ if (!function_exists('madeit_block_editor_styles')) {
     function madeit_block_editor_styles()
     {
         wp_enqueue_style('madeit-block-editor-styles', get_theme_file_uri('/style-editor.css'), false, MADEIT_VERSION, 'all');
-        wp_enqueue_script('madeit-gutenberg-toolbar', get_template_directory_uri() . '/assets/js/gutenberg-toolbar.js', array(), MADEIT_VERSION, true );
+        wp_enqueue_script('madeit-gutenberg-toolbar', get_template_directory_uri().'/assets/js/gutenberg-toolbar.js', [], MADEIT_VERSION, true);
     }
 
     add_action('enqueue_block_editor_assets', 'madeit_block_editor_styles');
@@ -684,12 +684,12 @@ if (!function_exists('madeit_scripts')) {
         wp_enqueue_script('popper', get_theme_file_uri('/assets/js/popper.min.js'), ['jquery'], MADEIT_VERSION, true);
         wp_enqueue_script('bootstrap', get_theme_file_uri('/assets/js/bootstrap.js'), ['jquery', 'popper'], MADEIT_VERSION, true);
         wp_enqueue_script('script', get_template_directory_uri().'/assets/js/script.js', ['bootstrap'], MADEIT_VERSION, true);
-        
-        wp_enqueue_script('madeit-aos', get_template_directory_uri() . '/assets/js/aos.js', [], MADEIT_VERSION, true);
-        
-        wp_enqueue_script('madeit-infinitescroll', get_template_directory_uri() . '/assets/js/infinitescroll.js', ['jquery'], MADEIT_VERSION, true);
+
+        wp_enqueue_script('madeit-aos', get_template_directory_uri().'/assets/js/aos.js', [], MADEIT_VERSION, true);
+
+        wp_enqueue_script('madeit-infinitescroll', get_template_directory_uri().'/assets/js/infinitescroll.js', ['jquery'], MADEIT_VERSION, true);
         madeit_infinite_options_to_script();
-        
+
         //wp_enqueue_script('jquery-scrollto', get_theme_file_uri('/assets/js/jquery.scrollTo.js'), ['jquery'], '2.1.2', true);
 
         if (is_singular() && comments_open() && get_option('thread_comments')) {
@@ -699,7 +699,7 @@ if (!function_exists('madeit_scripts')) {
     add_action('wp_enqueue_scripts', 'madeit_scripts');
 }
 
-if(!function_exists('madeit_infinite_options_to_script')) {
+if (!function_exists('madeit_infinite_options_to_script')) {
     function madeit_infinite_options_to_script()
     {
         $nav_selector = apply_filters('madeit_infinite_navselector', '.woocommerce-pagination, .pagination');
@@ -708,11 +708,11 @@ if(!function_exists('madeit_infinite_options_to_script')) {
         $content_selector = apply_filters('madeit_infinite_contentselector', 'div.row.columns-3, #primary .card-columns, .content-wrapper');
 
         wp_localize_script('madeit-infinitescroll', 'madeit_infinite', [
-            'navSelector' => $nav_selector,
-            'nextSelector' => $next_selector,
-            'itemSelector' => $item_selector,
+            'navSelector'     => $nav_selector,
+            'nextSelector'    => $next_selector,
+            'itemSelector'    => $item_selector,
             'contentSelector' => $content_selector,
-            'shop' => function_exists( 'WC' ) && ( is_shop() || is_product_category() || is_product_tag() ),
+            'shop'            => function_exists('WC') && (is_shop() || is_product_category() || is_product_tag()),
         ]);
     }
 }
@@ -1700,15 +1700,14 @@ if (!function_exists('theme_madeit_forms_module_class')) {
     add_filter('madeit_forms_module_class', 'theme_madeit_forms_module_class', 10, 2);
 }
 
-
 /*
 Wp Rocket settings
 */
-if(!function_exists('madeit_wprocket_pre_get_rocket_option_delay_js_exclusions')) {
+if (!function_exists('madeit_wprocket_pre_get_rocket_option_delay_js_exclusions')) {
     function madeit_wprocket_pre_get_rocket_option_delay_js_exclusions($optie, $default)
     {
         //mail('tjebbe.lievens@madeit.be', 'Test', print_r($files, true));
-        return ["aos.js"] + $default;
+        return ['aos.js'] + $default;
     }
     add_filter('pre_get_rocket_option_delay_js_exclusions', 'madeit_wprocket_pre_get_rocket_option_delay_js_exclusions', 10, 2);
 }
@@ -1787,6 +1786,6 @@ require get_parent_theme_file_path('/inc/admin-menu-editor.php');
 require get_parent_theme_file_path('/inc/madeit-support.php');
 
 /**
- * Generate Theme Json file
+ * Generate Theme Json file.
  */
 require get_parent_theme_file_path('/inc/generate-theme-json.php');
