@@ -18,19 +18,22 @@ do_action('madeit_before_index_page');
 ?>
 
 <div class="container voffset6">
-    <?php if (is_home() && !is_front_page()) { ?>
-        <header class="page-header">
-            <h1 class="page-title"><?php single_post_title(); ?></h1>
-        </header>
-    <?php } else { ?>
-        <header class="page-header">
-            <h2 class="page-title"><?php echo apply_filters('madeit_index_page_title', __('Posts', 'madeit')); ?></h2>
-        </header>
-    <?php } ?>
-
     <div class="row">
         <div id="primary" class="col" id="main" role="main">
-
+            <?php
+            
+            do_action('madeit_between_index_page');
+            
+            if (is_home() && !is_front_page()) { ?>
+                <header class="page-header">
+                    <h1 class="page-title"><?php single_post_title(); ?></h1>
+                </header>
+            <?php } else { ?>
+                <header class="page-header">
+                    <h2 class="page-title"><?php echo apply_filters('madeit_index_page_title', __('Posts', 'madeit')); ?></h2>
+                </header>
+            <?php } ?>
+            
             <?php
             if (have_posts()) {
 
