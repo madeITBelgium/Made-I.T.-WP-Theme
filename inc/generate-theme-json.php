@@ -71,8 +71,8 @@ function madeit_generate_json_file()
                 'core/button' => [
                     'border' => [
                         'customRadius' => apply_filters('madeit_border_enable_radius', true),
-                    ]
-                ]
+                    ],
+                ],
             ]),
         ],
         'styles'          => [
@@ -80,9 +80,9 @@ function madeit_generate_json_file()
                 'core/button' => [
                     'border' => [
                         'radius' => apply_filters('madeit_style_border_radius', '0.25rem'),
-                    ]
-                ]
-            ])
+                    ],
+                ],
+            ]),
         ],
         'customTemplates' => [],
         'templateParts'   => [],
