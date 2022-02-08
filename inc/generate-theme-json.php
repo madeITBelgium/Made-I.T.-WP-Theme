@@ -67,8 +67,23 @@ function madeit_generate_json_file()
                     'heading' => apply_filters('madeit_lineheight_heading', 1.2),
                 ],
             ],
+            'blocks' => apply_filters('madeit_settings_blocks', [
+                'core/button' => [
+                    'border' => [
+                        'customRadius' => apply_filters('madeit_border_enable_radius', true),
+                    ]
+                ]
+            ]),
         ],
-        'styles'          => [],
+        'styles'          => [
+            'blocks' => apply_filters('madeit_styles_blocks', [
+                'core/button' => [
+                    'border' => [
+                        'radius' => apply_filters('madeit_style_border_radius', '0.25rem'),
+                    ]
+                ]
+            ])
+        ],
         'customTemplates' => [],
         'templateParts'   => [],
     ];
