@@ -52,7 +52,7 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 			</tbody>
 		</table>
     
-		<?php do_action( 'woocommerce_after_variations_table' ); ?>
+		<?php do_action('woocommerce_after_variations_table'); ?>
 
 		<div class="single_variation_wrap">
 			<?php

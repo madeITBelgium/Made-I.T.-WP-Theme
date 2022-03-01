@@ -42,115 +42,115 @@ const madeitAdvancedControls = wp.compose.createHigherOrderComponent((BlockEdit)
         
         var animationOptions = [
             {
-	                label: __( 'No Animation', 'mandiet' ),
+	                label: wp.i18n.__( 'No Animation', 'mandiet' ),
 	                value: '',
 	        },
 	        {
-	                label: __( 'Fade', 'mandiet' ),
+	                label: wp.i18n.__( 'Fade', 'mandiet' ),
 	                value: 'fade',
 	        },
 	        {
-	                label: __( 'Fade up', 'mandiet' ),
+	                label: wp.i18n.__( 'Fade up', 'mandiet' ),
 	                value: 'fade-up',
 	        },
 	        {
-	                label: __( 'Fade down', 'mandiet' ),
+	                label: wp.i18n.__( 'Fade down', 'mandiet' ),
 	                value: 'fade-down',
 	        },
 	        {
-	                label: __( 'Fade left', 'mandiet' ),
+	                label: wp.i18n.__( 'Fade left', 'mandiet' ),
 	                value: 'fade-left',
 	        },
 	        {
-	                label: __( 'Fade right', 'mandiet' ),
+	                label: wp.i18n.__( 'Fade right', 'mandiet' ),
 	                value: 'fade-right',
 	        },
 	        {
-	                label: __( 'Fade up right', 'mandiet' ),
+	                label: wp.i18n.__( 'Fade up right', 'mandiet' ),
 	                value: 'fade-up-right',
 	        },
 	        {
-	                label: __( 'Fade up left', 'mandiet' ),
+	                label: wp.i18n.__( 'Fade up left', 'mandiet' ),
 	                value: 'fade-up-left',
 	        },
 	        {
-	                label: __( 'Fade down right', 'mandiet' ),
+	                label: wp.i18n.__( 'Fade down right', 'mandiet' ),
 	                value: 'fade-down-right',
 	        },
 	        {
-	                label: __( 'Fade down left', 'mandiet' ),
+	                label: wp.i18n.__( 'Fade down left', 'mandiet' ),
 	                value: 'fade-down-left',
 	        },
 	        {
-	                label: __( 'Flip up', 'mandiet' ),
+	                label: wp.i18n.__( 'Flip up', 'mandiet' ),
 	                value: 'flip-up',
 	        },
 	        {
-	                label: __( 'Flip down', 'mandiet' ),
+	                label: wp.i18n.__( 'Flip down', 'mandiet' ),
 	                value: 'flip-down',
 	        },
 	        {
-	                label: __( 'Flip left', 'mandiet' ),
+	                label: wp.i18n.__( 'Flip left', 'mandiet' ),
 	                value: 'flip-left',
 	        },
 	        {
-	                label: __( 'Flip right', 'mandiet' ),
+	                label: wp.i18n.__( 'Flip right', 'mandiet' ),
 	                value: 'flip-right',
 	        },
 	        {
-	                label: __( 'Slide up', 'mandiet' ),
+	                label: wp.i18n.__( 'Slide up', 'mandiet' ),
 	                value: 'slide-up',
 	        },
 	        {
-	                label: __( 'Slide down', 'mandiet' ),
+	                label: wp.i18n.__( 'Slide down', 'mandiet' ),
 	                value: 'slide-down',
 	        },
 	        {
-	                label: __( 'Slide left', 'mandiet' ),
+	                label: wp.i18n.__( 'Slide left', 'mandiet' ),
 	                value: 'slide-left',
 	        },
 	        {
-	                label: __( 'Slide right', 'mandiet' ),
+	                label: wp.i18n.__( 'Slide right', 'mandiet' ),
 	                value: 'slide-right',
 	        },
 	        {
-	                label: __( 'Zoom in', 'mandiet' ),
+	                label: wp.i18n.__( 'Zoom in', 'mandiet' ),
 	                value: 'zoom-in',
 	        },
 	        {
-	                label: __( 'Zoom in up', 'mandiet' ),
+	                label: wp.i18n.__( 'Zoom in up', 'mandiet' ),
 	                value: 'zoom-in-up',
 	        },
 	        {
-	                label: __( 'Zoom in down', 'mandiet' ),
+	                label: wp.i18n.__( 'Zoom in down', 'mandiet' ),
 	                value: 'zoom-in-down',
 	        },
 	        {
-	                label: __( 'Zoom in left', 'mandiet' ),
+	                label: wp.i18n.__( 'Zoom in left', 'mandiet' ),
 	                value: 'zoom-in-left',
 	        },
 	        {
-	                label: __( 'Zoom in right', 'mandiet' ),
+	                label: wp.i18n.__( 'Zoom in right', 'mandiet' ),
 	                value: 'zoom-in-right',
 	        },
 	        {
-	                label: __( 'Zoom out', 'mandiet' ),
+	                label: wp.i18n.__( 'Zoom out', 'mandiet' ),
 	                value: 'zoom-out',
 	        },
 	        {
-	                label: __( 'Zoom out up', 'mandiet' ),
+	                label: wp.i18n.__( 'Zoom out up', 'mandiet' ),
 	                value: 'zoom-out-up',
 	        },
 	        {
-	                label: __( 'Zoom out down', 'mandiet' ),
+	                label: wp.i18n.__( 'Zoom out down', 'mandiet' ),
 	                value: 'zoom-out-down',
 	        },
 	        {
-	                label: __( 'Zoom out left', 'mandiet' ),
+	                label: wp.i18n.__( 'Zoom out left', 'mandiet' ),
 	                value: 'zoom-out-left',
 	        },
 	        {
-	                label: __( 'Zoom out right', 'mandiet' ),
+	                label: wp.i18n.__( 'Zoom out right', 'mandiet' ),
 	                value: 'zoom-out-right',
 	        },
 	    ];
@@ -197,7 +197,7 @@ const madeitAdvancedControls = wp.compose.createHigherOrderComponent((BlockEdit)
                             />
                         }
                         <SelectControl
-                            label={ __( 'Animation', 'madeit' ) }
+                            label={ wp.i18n.__( 'Animation', 'madeit' ) }
                             value={ attributes.aosFade }
                             options={ animationOptions }
                             onChange={(newval) => setAttributes({ aosFade: newval })}
