@@ -396,6 +396,7 @@ if (!class_exists('TGM_Plugin_Activation')) {
                 'dismiss'                         => __('Dismiss this notice', 'madeit'),
                 'notice_cannot_install_activate'  => __('There are one or more required or recommended plugins to install, update or activate.', 'madeit'),
                 'contact_admin'                   => __('Please contact the administrator of this site for help.', 'madeit'),
+                'skin_update_successful' => __('%s updated successfully.'),
             ];
 
             do_action('tgmpa_register');
@@ -3616,7 +3617,7 @@ if (!function_exists('tgmpa_load_bulk_installer')) {
                                 // Automatic activation strings.
                                 $this->upgrader->strings['skin_upgrade_start'] = __('The installation and activation process is starting. This process may take a while on some hosts, so please be patient.', 'madeit');
                                 /* translators: 1: plugin name. */
-                                $this->upgrader->strings['skin_update_successful'] = __('%1$s installed and activated successfully.', 'madeit').' <a href="#" class="hide-if-no-js" onclick="%2$s"><span>'.esc_html__('Show Details', 'madeit').'</span><span class="hidden">'.esc_html__('Hide Details', 'madeit').'</span>.</a>';
+                                $this->upgrader->strings['skin_update_successful'] = __('%1$s installed and activated successfully.', 'madeit');
                                 $this->upgrader->strings['skin_upgrade_end'] = __('All installations and activations have been completed.', 'madeit');
                                 /* translators: 1: plugin name, 2: action number 3: total number of actions. */
                                 $this->upgrader->strings['skin_before_update_header'] = __('Installing and Activating Plugin %1$s (%2$d/%3$d)', 'madeit');
@@ -3624,7 +3625,7 @@ if (!function_exists('tgmpa_load_bulk_installer')) {
                                 // Default installation strings.
                                 $this->upgrader->strings['skin_upgrade_start'] = __('The installation process is starting. This process may take a while on some hosts, so please be patient.', 'madeit');
                                 /* translators: 1: plugin name. */
-                                $this->upgrader->strings['skin_update_successful'] = esc_html__('%1$s installed successfully.', 'madeit').' <a href="#" class="hide-if-no-js" onclick="%2$s"><span>'.esc_html__('Show Details', 'madeit').'</span><span class="hidden">'.esc_html__('Hide Details', 'madeit').'</span>.</a>';
+                                $this->upgrader->strings['skin_update_successful'] = esc_html__('%1$s installed successfully.', 'madeit');
                                 $this->upgrader->strings['skin_upgrade_end'] = __('All installations have been completed.', 'madeit');
                                 /* translators: 1: plugin name, 2: action number 3: total number of actions. */
                                 $this->upgrader->strings['skin_before_update_header'] = __('Installing Plugin %1$s (%2$d/%3$d)', 'madeit');
