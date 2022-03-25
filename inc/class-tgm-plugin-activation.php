@@ -396,7 +396,7 @@ if (!class_exists('TGM_Plugin_Activation')) {
                 'dismiss'                         => __('Dismiss this notice', 'madeit'),
                 'notice_cannot_install_activate'  => __('There are one or more required or recommended plugins to install, update or activate.', 'madeit'),
                 'contact_admin'                   => __('Please contact the administrator of this site for help.', 'madeit'),
-                'skin_update_successful' => __('%s updated successfully.'),
+                'skin_update_successful'          => __('%s updated successfully.'),
             ];
 
             do_action('tgmpa_register');
