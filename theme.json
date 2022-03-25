@@ -150,9 +150,24 @@
                 "body": 1.5,
                 "heading": 1.2
             }
+        },
+        "blocks": {
+            "core\/button": {
+                "border": {
+                    "customRadius": true
+                }
+            }
         }
     },
-    "styles": [],
+    "styles": {
+        "blocks": {
+            "core\/button": {
+                "border": {
+                    "radius": "0.25rem"
+                }
+            }
+        }
+    },
     "customTemplates": [],
     "templateParts": []
 }

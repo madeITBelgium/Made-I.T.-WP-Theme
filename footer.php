@@ -14,6 +14,7 @@ $footerWidgetRow = apply_filters('madeit_footer_widget_row_class', ['row', 'mt-5
 $footerContainerClass = apply_filters('madeit_footer_container_class', ['container']);
 ?>
 </div>
+<?php do_action('madeit_before_footer'); ?>
 <footer id="colophon" class="<?php echo is_array($footerClass) ? implode(' ', $footerClass) : $footerClass; ?>" role="contentinfo">
     <div class="<?php echo is_array($footerWidgetRow) ? implode(' ', $footerWidgetRow) : $footerWidgetRow; ?>">
         <div class="col">
