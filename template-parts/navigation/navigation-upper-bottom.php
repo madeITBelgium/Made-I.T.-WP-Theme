@@ -5,12 +5,12 @@
  * @since 1.0
  */
 $navBarClass = apply_filters('madeit_upper_bottom_navbar_class', ['container-fluid', 'd-none', 'd-lg-block', 'pb-1', 'font-weight-light', 'upper-bottom-navbar', ' navbar', 'navbar-expand', 'border-bottom', 'border-dark']);
-$containerClass = apply_filters('madeit_upper_bottom_navbar_container_class', ['container']);
+$containerClass = apply_filters('madeit_upper_bottom_navbar_container_class', ['container', 'p-0']);
 ?>
 
 <div class="<?php echo is_array($navBarClass) ? implode(' ', $navBarClass) : $navBarClass; ?>" id="secondary-bottom-navigation-container">
     <?php if (!in_array('container', $navBarClass)) { ?>
-    <div class="row w-100">
+    <div class="row vw-100">
         <div class="col">
             <div class="<?php echo is_array($containerClass) ? implode(' ', $containerClass) : $containerClass; ?>">
                 <?php } ?>
