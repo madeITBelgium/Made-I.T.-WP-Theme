@@ -365,7 +365,7 @@ if (!function_exists('madeit_gutenberg_support')) {
 if (!function_exists('madeit_block_editor_styles')) {
     function madeit_block_editor_styles()
     {
-        wp_enqueue_style('madeit-block-editor-styles', get_template_directory_uri() . '/style-editor.css', false, MADEIT_VERSION, 'all');
+        wp_enqueue_style('madeit-block-editor-styles', get_template_directory_uri().'/style-editor.css', false, MADEIT_VERSION, 'all');
         wp_enqueue_script('madeit-gutenberg-toolbar', get_template_directory_uri().'/assets/js/gutenberg-toolbar.js', [], MADEIT_VERSION, true);
     }
 
