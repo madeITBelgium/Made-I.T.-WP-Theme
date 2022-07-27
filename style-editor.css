@@ -58,3 +58,13 @@ body.gutenberg-editor-page {
 .block-library-gallery-item__inline-menu .components-button.has-icon:not(:focus) {
     color: black;
 }
+
+.wp-block-image.aligncenter {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+.wp-block-image.alignright {
+    margin-left: auto;
+}

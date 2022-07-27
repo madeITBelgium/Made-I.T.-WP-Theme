@@ -13,6 +13,7 @@ $footerClass = apply_filters('madeit_footer_class', ['container-fluid', 'site-fo
 $footerWidgetRow = apply_filters('madeit_footer_widget_row_class', ['row', 'mt-5', 'mb-5']);
 $footerContainerClass = apply_filters('madeit_footer_container_class', ['container']);
 ?>
+<?php do_action('madeit_end_grow'); ?>
 </div>
 <?php do_action('madeit_before_footer'); ?>
 <footer id="colophon" class="<?php echo is_array($footerClass) ? implode(' ', $footerClass) : $footerClass; ?>" role="contentinfo">
