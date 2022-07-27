@@ -1425,6 +1425,15 @@ if (!function_exists('madeit_woocommerce_shopping_cart_in_menu')) {
             <i class="fa fa-shopping-cart"></i>
             </a></li>
             <?php
+        } elseif (WOO_SHOPING_CART_MENU_STYLE == 3 && $cart_contents_count > 0) {
+            ?>
+            <li class="menu-item nav-item">
+                <a class="wc-menu-cart nav-link" href="<?php echo wc_get_cart_url(); ?>" title="<?php __('View your shopping cart', 'madeit'); ?>">
+                    <span class="shopping-cart-count"><?php echo $cart_contents_count; ?></span>
+                    <i class="fa fa-shopping-cart"></i>
+                </a>
+            </li>
+            <?php
         }
         $social = ob_get_clean();
 
