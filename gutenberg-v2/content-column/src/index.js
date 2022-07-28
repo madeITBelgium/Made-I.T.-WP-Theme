@@ -81,6 +81,30 @@ registerBlockType( metadata, {
         customTextColor: {
             type: 'string',
         },
+        marginBottom: {
+            type: 'number',
+            default: 0
+        },
+        marginTop: {
+            type: 'number',
+            default: 0
+        },
+        paddingTop: {
+            type: 'number',
+            default: 0
+        },
+        paddingBottom: {
+            type: 'number',
+            default: 0
+        },
+        paddingLeft: {
+            type: 'number',
+            default: 0
+        },
+        paddingRight: {
+            type: 'number',
+            default: 0
+        },
     },
     
     // The "edit" property must be a valid function.

@@ -34,10 +34,20 @@ function ColumnEdit( props ) {
         setBackgroundColor,
         textColor,
         setTextColor,
-        className
+        className,
+        setAttributes,
     } = props;
     
-    const { verticalAlignment, width } = attributes;
+    const {
+        verticalAlignment,
+        width,
+        marginTop,
+        marginBottom,
+        paddingTop,
+        paddingBottom,
+        paddingLeft,
+        paddingRight,
+    } = attributes;
     
 
     const classes = classnames( className, classnames( 'block-core-columns', {
@@ -51,6 +61,26 @@ function ColumnEdit( props ) {
         backgroundColor: backgroundColor.color,
         color: textColor.color
     };
+
+    if(marginTop > 0) {
+        style.marginTop = (marginTop + 28) + 'px';
+    }
+    if(marginBottom > 0) {
+        style.marginBottom = (marginBottom + 28) + 'px';
+    }
+    
+    if(paddingTop > 0) {
+        style.paddingTop = paddingTop + 'px';
+    }
+    if(paddingBottom > 0) {
+        style.paddingBottom = paddingBottom + 'px';
+    }
+    if(paddingLeft > 0) {
+        style.paddingLeft = paddingLeft + 'px';
+    }
+    if(paddingRight > 0) {
+        style.paddingRight = paddingRight + 'px';
+    }
     
     
     const blockProps = useBlockProps({
@@ -103,6 +133,70 @@ function ColumnEdit( props ) {
                         } }
                     />
                 </PanelColorSettings>
+
+                <PanelBody
+                    title={__('Margin')}
+                    initialOpen={ false }>
+                    <RangeControl
+                        label={ __( 'Top' ) }
+                        value={ marginTop }
+                        min='0'
+                        max='100'
+                        onChange={ ( value ) => {
+                            setAttributes( { marginTop: value } )
+                        } }
+                    />
+                    <RangeControl
+                        label={ __( 'Bottom' ) }
+                        value={ marginBottom }
+                        min='0'
+                        max='100'
+                        onChange={ ( value ) => {
+                            setAttributes( { marginBottom: value } )
+                        } }
+                    />
+                </PanelBody>
+                
+                <PanelBody
+                    title={__('Padding')}
+                    initialOpen={ false }>
+                    <RangeControl
+                        label={ __( 'Top' ) }
+                        value={ paddingTop }
+                        min='0'
+                        max='100'
+                        onChange={ ( value ) => {
+                            setAttributes( { paddingTop: value } )
+                        } }
+                    />
+                    <RangeControl
+                        label={ __( 'Bottom' ) }
+                        value={ paddingBottom }
+                        min='0'
+                        max='100'
+                        onChange={ ( value ) => {
+                            setAttributes( { paddingBottom: value } )
+                        } }
+                    />
+                    <RangeControl
+                        label={ __( 'Left' ) }
+                        value={ paddingLeft }
+                        min='0'
+                        max='100'
+                        onChange={ ( value ) => {
+                            setAttributes( { paddingLeft: value } )
+                        } }
+                    />
+                    <RangeControl
+                        label={ __( 'Right' ) }
+                        value={ paddingRight }
+                        min='0'
+                        max='100'
+                        onChange={ ( value ) => {
+                            setAttributes( { paddingRight: value } )
+                        } }
+                    />
+                </PanelBody>
             </InspectorControls>
             <InnerBlocks
                 templateLock={ false }

@@ -17,6 +17,12 @@ export default function save( props ) {
         backgroundColor,
         customTextColor,
         textColor,
+        marginTop,
+        marginBottom,
+        paddingTop,
+        paddingBottom,
+        paddingLeft,
+        paddingRight,
     } = props.attributes;
     
     const {
@@ -44,6 +50,26 @@ export default function save( props ) {
         backgroundColor: backgroundColorClass ? undefined : customBackgroundColor,
         color: textColorClass ? undefined : customTextColor,
     };
+
+    if(marginTop > 0) {
+        style.marginTop = (marginTop + 28) + 'px';
+    }
+    if(marginBottom > 0) {
+        style.marginBottom = (marginBottom + 28) + 'px';
+    }
+    
+    if(paddingTop > 0) {
+        style.paddingTop = paddingTop + 'px';
+    }
+    if(paddingBottom > 0) {
+        style.paddingBottom = paddingBottom + 'px';
+    }
+    if(paddingLeft > 0) {
+        style.paddingLeft = paddingLeft + 'px';
+    }
+    if(paddingRight > 0) {
+        style.paddingRight = paddingRight + 'px';
+    }
     
     
     const blockProps = useBlockProps.save( {
