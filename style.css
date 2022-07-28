@@ -105,6 +105,15 @@ footer {
   margin-left: 8rem !important;
 }
 
+@media (max-width: 992px) {
+    .margin-column-mobile > .row > .wp-block-madeit-block-content-column, .margin-column-mobile > .row > .col > .container > .row > .wp-block-madeit-block-content-column {
+        margin-bottom: 30px;
+    }
+    .margin-column-mobile > .row > .wp-block-madeit-block-content-column:nth-last-child(1), .margin-column-mobile > .row > .col > .container > .row > .wp-block-madeit-block-content-column:nth-last-child(1) {
+        margin-bottom: 0;
+    }
+}
+
 /* WooCommerce */
 .entry-content {
     width: 100%;
