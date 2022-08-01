@@ -153,6 +153,68 @@ footer {
     left: 15px;
 }
 
+.woocommerce-product-gallery {
+  width: 80% !important;
+  float: none;
+}
+div.product .woocommerce-product-gallery--columns-1 .woocommerce-product-gallery__image:nth-child(n+2) {
+  margin-top: 20px;
+  margin-right: 20px;
+  width: calc((100% - 40px) / 3) !important;
+}
+div.product .woocommerce-product-gallery--columns-2 .woocommerce-product-gallery__image:nth-child(n+2) {
+  margin-top: 20px;
+  margin-right: 20px;
+  width: calc((100% - 40px) / 3) !important;
+}
+div.product .woocommerce-product-gallery--columns-3 .woocommerce-product-gallery__image:nth-child(n+2) {
+  margin-top: 20px;
+  margin-right: 20px;
+  width: calc((100% - 40px) / 3) !important;
+}
+div.product .woocommerce-product-gallery--columns-4 .woocommerce-product-gallery__image:nth-child(n+2) {
+  margin-top: 20px;
+  margin-right: 20px;
+  width: calc((100% - 60px) / 4) !important;
+}
+div.product .woocommerce-product-gallery--columns-5 .woocommerce-product-gallery__image:nth-child(n+2) {
+  margin-top: 20px;
+  margin-right: 20px;
+  width: calc((100% - 60px) / 5) !important;
+}
+div.product .woocommerce-product-gallery--columns-6 .woocommerce-product-gallery__image:nth-child(n+2) {
+  margin-top: 20px;
+  margin-right: 20px;
+  width: calc((100% - 40px) / 3) !important;
+}
+
+div.product div.images .woocommerce-product-gallery__image:nth-last-child(1) {
+  margin-right: 0 !important;
+}
+div.product div.woocommerce-product-gallery--columns-6 .woocommerce-product-gallery__image:nth-last-child(4) {
+  margin-right: 0 !important;
+}
+
+#wc_bookings_field_persons {
+  display: block;
+  width: 100%;
+  height: calc(1.5em + 0.75rem + 2px);
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.wc-bookings-booking-form-button {
+  width: 100%;
+}
+
 /* Gutenberg */
 .aligncenter {
 	
