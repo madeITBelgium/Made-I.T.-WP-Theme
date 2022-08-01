@@ -28,6 +28,14 @@ function madeit_hide_block_mobile(settings, name) {
                 }
             });
         }
+
+        if (name === 'madeit/block-content') {
+            settings.attributes = Object.assign(settings.attributes, {
+                appendMarginToColumnsMobile: {
+                    type: 'boolean',
+                }
+            });
+        }
     }
     return settings;
 }
@@ -196,6 +204,13 @@ const madeitAdvancedControls = wp.compose.createHigherOrderComponent((BlockEdit)
                                 onChange={(newval) => setAttributes({ orderLast: !attributes.orderLast })}
                             />
                         }
+                        {props.name == 'madeit/block-content' && 
+                            <ToggleControl
+                                label={wp.i18n.__('Voeg spatie toe onder kolommen op mobiel', 'madeit')}
+                                checked={!!attributes.appendMarginToColumnsMobile}
+                                onChange={(newval) => setAttributes({ appendMarginToColumnsMobile: !attributes.appendMarginToColumnsMobile })}
+                            />
+                        }
                         <SelectControl
                             label={ wp.i18n.__( 'Animation', 'madeit' ) }
                             value={ attributes.aosFade }
@@ -212,7 +227,7 @@ const madeitAdvancedControls = wp.compose.createHigherOrderComponent((BlockEdit)
 wp.hooks.addFilter('editor.BlockEdit', 'madeit/advanced-control', madeitAdvancedControls);
 
 function madeitApplyExtraClass(extraProps, blockType, attributes) {
-    const { hideOnMobile, hideOnDesktop, lightbox, orderFirst, orderLast, aosFade } = attributes;
+    const { hideOnMobile, hideOnDesktop, lightbox, orderFirst, orderLast, aosFade, appendMarginToColumnsMobile } = attributes;
     
     var showDesktop = true;
     var showMobile = true;
@@ -233,6 +248,10 @@ function madeitApplyExtraClass(extraProps, blockType, attributes) {
     }
     else if(showMobile && !showDesktop) {
         extraProps.className = extraProps.className + ' d-lg-none';
+    }
+
+    if(typeof appendMarginToColumnsMobile !== 'undefined' && appendMarginToColumnsMobile) {
+        extraProps.className  = extraProps.className + ' margin-column-mobile';
     }
     
     if (typeof lightbox !== 'undefined' && lightbox) {
