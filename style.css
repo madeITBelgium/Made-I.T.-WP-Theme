@@ -224,6 +224,34 @@ div.product div.woocommerce-product-gallery--columns-6 .woocommerce-product-gall
   width: 100%;
 }
 
+
+#wc_bookings_field_duration {
+    margin-right: 5px;
+    height: calc(1.5em + 0.75rem + 2px);
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.wc-bookings-date-picker .ui-datepicker-header {
+    background: var(--wp--preset--color--secondary);
+}
+.wc-bookings-date-picker .ui-datepicker td.bookable a {
+    background: var(--wp--preset--color--success) !important;
+}
+
+.wc_payment_method {
+    display: flex;
+    align-items: center;
+}
+
 /* Gutenberg */
 .aligncenter {
 	
