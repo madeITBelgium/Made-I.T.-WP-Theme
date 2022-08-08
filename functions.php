@@ -739,9 +739,9 @@ if (!function_exists('remove_jquery_migrate_and_move_jquery_to_footer')) {
 if (!function_exists('prefix_add_footer_styles')) {
     function prefix_add_footer_styles()
     {
-        if(MADEIT_FONTAWESOME === 4.7) {
+        if (MADEIT_FONTAWESOME === 4.7) {
             wp_enqueue_style('font-awesome', get_theme_file_uri('/assets/css/font-awesome.min.css'), [], '4.7.0');
-        } else if(MADEIT_FONTAWESOME === 5) {
+        } elseif (MADEIT_FONTAWESOME === 5) {
             wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css', [], '5.9.0');
         }
     }
