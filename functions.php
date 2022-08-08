@@ -81,6 +81,10 @@ if (!defined('WWW_REDIRECT')) {
     define('WWW_REDIRECT', false);
 }
 
+if (!defined('MADEIT_FONTAWESOME')) {
+    define('MADEIT_FONTAWESOME', 4.7);
+}
+
 if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
     require get_template_directory().'/inc/back-compat.php';
 
@@ -735,7 +739,11 @@ if (!function_exists('remove_jquery_migrate_and_move_jquery_to_footer')) {
 if (!function_exists('prefix_add_footer_styles')) {
     function prefix_add_footer_styles()
     {
-        wp_enqueue_style('font-awesome', get_theme_file_uri('/assets/css/font-awesome.min.css'), [], '4.7.0');
+        if(MADEIT_FONTAWESOME === 4.7) {
+            wp_enqueue_style('font-awesome', get_theme_file_uri('/assets/css/font-awesome.min.css'), [], '4.7.0');
+        } else if(MADEIT_FONTAWESOME === 5) {
+            wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css', [], '5.9.0');
+        }
     }
     add_action('get_footer', 'prefix_add_footer_styles');
 }
