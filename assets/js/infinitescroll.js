@@ -3,21 +3,19 @@
 
     $.fn.yit_infinitescroll = function(options) {
         var opts = $.extend({
-                nextSelector: false,
-                navSelector: false,
-                itemSelector: false,
-                contentSelector: false,
-                maxPage: false,
-                loader: false,
-                is_shop: false
-            }, options),
+            nextSelector: false,
+            navSelector: false,
+            itemSelector: false,
+            contentSelector: false,
+            maxPage: false,
+            loader: false,
+            is_shop: false
+        }, options),
 
-            loading = false,
-            finished = false;
-
-        console.log(opts);
-        console.log($(opts.nextSelector).length  + '&&' + $(opts.navSelector).length +'&&' + $(opts.itemSelector).length +'&&' + $(opts.contentSelector).length);
-        // validate options and hide std navigation
+        loading = false,
+        finished = false;
+        
+            // validate options and hide std navigation
         if ($(opts.nextSelector).length && $(opts.navSelector).length && $(opts.itemSelector).length && $(opts.contentSelector).length) {
             $(opts.navSelector).hide();
         } else {

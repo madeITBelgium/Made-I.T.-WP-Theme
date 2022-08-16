@@ -66,6 +66,9 @@ function madeit_generate_json_file()
                     'body'    => apply_filters('madeit_lineheight_body', 1.5),
                     'heading' => apply_filters('madeit_lineheight_heading', 1.2),
                 ],
+                'border-radius' => [
+                    'default' => apply_filters('madeit_style_border_radius', '0.25rem'),
+                ],
             ],
             'blocks' => apply_filters('madeit_settings_blocks', [
                 'core/button' => [

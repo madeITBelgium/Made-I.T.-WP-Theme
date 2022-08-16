@@ -25,6 +25,9 @@ function madeit_hide_block_mobile(settings, name) {
                 },
                 orderLast: {
                     type: 'boolean',
+                },
+                maxContainerSize: {
+                    type: 'boolean',
                 }
             });
         }
@@ -204,6 +207,13 @@ const madeitAdvancedControls = wp.compose.createHigherOrderComponent((BlockEdit)
                                 onChange={(newval) => setAttributes({ orderLast: !attributes.orderLast })}
                             />
                         }
+                        {props.name == 'madeit/block-content-column' && 
+                            <ToggleControl
+                                label={wp.i18n.__('Maximale breedte container aanhouden.', 'madeit')}
+                                checked={!!attributes.maxContainerSize}
+                                onChange={(newval) => setAttributes({ maxContainerSize: !attributes.maxContainerSize })}
+                            />
+                        }
                         {props.name == 'madeit/block-content' && 
                             <ToggleControl
                                 label={wp.i18n.__('Voeg spatie toe onder kolommen op mobiel', 'madeit')}
@@ -227,7 +237,7 @@ const madeitAdvancedControls = wp.compose.createHigherOrderComponent((BlockEdit)
 wp.hooks.addFilter('editor.BlockEdit', 'madeit/advanced-control', madeitAdvancedControls);
 
 function madeitApplyExtraClass(extraProps, blockType, attributes) {
-    const { hideOnMobile, hideOnDesktop, lightbox, orderFirst, orderLast, aosFade, appendMarginToColumnsMobile } = attributes;
+    const { hideOnMobile, hideOnDesktop, lightbox, orderFirst, orderLast, maxContainerSize, aosFade, appendMarginToColumnsMobile } = attributes;
     
     var showDesktop = true;
     var showMobile = true;
@@ -269,6 +279,10 @@ function madeitApplyExtraClass(extraProps, blockType, attributes) {
     
     if (typeof orderLast !== 'undefined' && orderLast) {
         extraProps.className = extraProps.className + ' order-last order-lg-first';
+    }
+
+    if(typeof maxContainerSize !== 'undefined' && maxContainerSize) {
+        extraProps.className = extraProps.className + ' keep-max-container-size';
     }
     
     if (typeof aosFade !== 'undefined' && aosFade !== '' && aosFade !== null ) {
