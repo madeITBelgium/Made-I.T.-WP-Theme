@@ -8,11 +8,13 @@ body.gutenberg-editor-page {
 }
 
 /* Main column width */
+/*
 @media (min-width: 1500px) {
     .wp-block {
         max-width: 1080px;
     }
 }
+*/
 
 /* Width of "wide" blocks */
 .wp-block[data-align="wide"] {
