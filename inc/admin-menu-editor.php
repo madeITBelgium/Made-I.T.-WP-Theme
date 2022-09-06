@@ -134,12 +134,12 @@ function madeit_remove_menu_pages()
         $hideMenus = true;
     }
 
-    $items = ['index.php', 'edit.php', 'upload.php', 'edit.php?post_type=page', 'edit-comments.php', 'madeit_forms', 'users.php'];
+    $items = ['index.php', 'edit.php', 'upload.php', 'edit.php?post_type=page', 'edit-comments.php', 'madeit_forms', 'users.php', 'woocommerce'];
     if (defined('MADEIT_HIDE_MENU_ITEMS')) {
         $items = array_merge($items, MADEIT_HIDE_MENU_ITEMS);
     }
 
-    if ($hideMenus) {
+    if ($hideMenus && is_array($menu)) {
         foreach ($menu as $m) {
             if (!in_array($m[2], $items) && strpos($m[2], 'edit.php') === false) {
                 remove_menu_page($m[2]);
