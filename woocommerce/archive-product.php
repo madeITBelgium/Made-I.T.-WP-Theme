@@ -71,8 +71,9 @@ get_header('shop'); ?>
 
             if (wc_get_loop_prop('total')) {
                 while (have_posts()) {
+                    $classes = apply_filters('madeit_woo_product_column_class', ['col-12', 'col-md-6', 'col-lg-4']);
                     ?>
-                    <div class="col-12 col-md-6 col-lg-4">
+                    <div class="<?php echo implode(" ", $classes); ?>">
                         <?php
                         the_post();
                     /*
