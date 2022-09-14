@@ -16,10 +16,11 @@ global $product;
 if (empty($product) || !$product->is_visible()) {
     return;
 }
+$productImageContainer = apply_filters('madeit_woo_category_product_image_container_class', ['d-block', 'mt-auto', 'mb-auto']);
 ?>
 <div <?php wc_product_class('mb-4 h-100 pb-4', $product); ?>>
     <div class="card h-100 d-flex justify-content-between">
-        <a href="<?php echo get_the_permalink(); ?>" class="d-block mt-auto mb-auto">
+        <a href="<?php echo get_the_permalink(); ?>" class="<?php echo implode(" ", $productImageContainer); ?>">
             <?php
             /**
              * Hook: woocommerce_before_shop_loop_item.
