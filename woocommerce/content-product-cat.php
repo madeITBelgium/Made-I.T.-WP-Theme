@@ -21,10 +21,10 @@ if (!defined('ABSPATH')) {
 $classes = apply_filters('madeit_woo_category_column_class', ['col-12', 'col-md-6', 'col-lg-4']);
 $productImageContainer = apply_filters('madeit_woo_category_product_image_container_class', ['mt-auto', 'mb-auto']);
 ?>
-<div class="<?php echo implode(" ", $classes); ?>">
+<div class="<?php echo implode(' ', $classes); ?>">
     <div <?php wc_product_cat_class('mb-4 h-100 pb-4', $category); ?>>
         <div class="card h-100 p-4 border-0 d-flex justify-content-between">
-            <div class="<?php echo implode(" ", $productImageContainer); ?>">
+            <div class="<?php echo implode(' ', $productImageContainer); ?>">
                 <?php
 
                 /**
