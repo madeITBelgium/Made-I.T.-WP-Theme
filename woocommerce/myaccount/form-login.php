@@ -95,7 +95,7 @@ do_action('woocommerce_before_customer_login_form'); ?>
 
 			<?php } else { ?>
 
-				<p><?php esc_html_e( 'A link to set a new password will be sent to your email address.', 'woocommerce' ); ?></p>
+				<p><?php esc_html_e('A link to set a new password will be sent to your email address.', 'woocommerce'); ?></p>
 
 			<?php } ?>
 
