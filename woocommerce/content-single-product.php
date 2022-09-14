@@ -17,9 +17,9 @@ global $product;
 <?php
 /**
  * woocommerce_before_single_product hook.
-*
-* @hooked wc_print_notices - 10
-*/
+ *
+ * @hooked wc_print_notices - 10
+ */
 do_action('woocommerce_before_single_product');
 
 if (post_password_required()) {
@@ -34,7 +34,7 @@ $col2 = apply_filters('madeit_woo_single_product_col_2_class', ['col-md']);
 
 <div id="product-<?php the_ID(); ?>" <?php wc_product_class('', $product); ?>>
     <div class="row">
-        <div class="<?php echo implode(" ", $col1); ?>">
+        <div class="<?php echo implode(' ', $col1); ?>">
             <?php
                 /**
                  * woocommerce_before_single_product_summary hook.
@@ -45,7 +45,7 @@ $col2 = apply_filters('madeit_woo_single_product_col_2_class', ['col-md']);
                 do_action('woocommerce_before_single_product_summary');
             ?>
         </div>
-        <div class="<?php echo implode(" ", $col2); ?>">
+        <div class="<?php echo implode(' ', $col2); ?>">
 
             <?php
                 /**
