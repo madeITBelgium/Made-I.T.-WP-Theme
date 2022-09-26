@@ -85,6 +85,10 @@ if (!defined('MADEIT_FONTAWESOME')) {
     define('MADEIT_FONTAWESOME', 4.7);
 }
 
+if (!defined('MADEIT_ADD_DATEPICKER')) {
+    define('MADEIT_ADD_DATEPICKER', false);
+}
+
 if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
     require get_template_directory().'/inc/back-compat.php';
 
@@ -694,6 +698,10 @@ if (!function_exists('madeit_scripts')) {
         wp_enqueue_script('madeit-infinitescroll', get_template_directory_uri().'/assets/js/infinitescroll.js', ['jquery'], MADEIT_VERSION, true);
         madeit_infinite_options_to_script();
 
+        if(MADEIT_ADD_DATEPICKER) {
+            wp_enqueue_script('bootstrap-datepicker', get_theme_file_uri('/assets/js/bootstrap-datepicker.min.js'), ['jquery'], MADEIT_VERSION, true);
+        }
+
         //wp_enqueue_script('jquery-scrollto', get_theme_file_uri('/assets/js/jquery.scrollTo.js'), ['jquery'], '2.1.2', true);
 
         if (is_singular() && comments_open() && get_option('thread_comments')) {
@@ -743,6 +751,11 @@ if (!function_exists('prefix_add_footer_styles')) {
             wp_enqueue_style('font-awesome', get_theme_file_uri('/assets/css/font-awesome.min.css'), [], '4.7.0');
         } elseif (MADEIT_FONTAWESOME === 5) {
             wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css', [], '5.9.0');
+        }
+
+
+        if(MADEIT_ADD_DATEPICKER) {
+            wp_enqueue_style('bootstrap-datepicker', get_theme_file_uri('/assets/css/bootstrap-datepicker.min.css'), [], MADEIT_VERSION);
         }
     }
     add_action('get_footer', 'prefix_add_footer_styles');
@@ -965,16 +978,6 @@ if (!function_exists('madeit_register_required_plugins')) {
             [
                 'name'     => 'WooCommerce',
                 'slug'     => 'woocommerce',
-                'required' => false,
-            ],
-            [
-                'name'     => 'WooCommerce EU VAT Assistant',
-                'slug'     => 'woocommerce-eu-vat-assistant',
-                'required' => false,
-            ],
-            [
-                'name'     => 'Google Analytics Dashboard for WP by ExactMetrics (formerly GADWP)',
-                'slug'     => 'google-analytics-dashboard-for-wp',
                 'required' => false,
             ],
             [
@@ -1336,10 +1339,28 @@ if (!function_exists('madeit_woocommerce_form_field')) {
                 $field .= '<label for="'.esc_attr($key).'" class="'.implode(' ', $args['label_class']).'">'.$args['label'].$required.'</label>';
             }
 
-            $field .= '<input type="text" class="form-control input-text '.implode(' ', $args['input_class']).'" name="'.esc_attr($key).'" id="'.esc_attr($key).'" placeholder="'.esc_attr($args['placeholder']).'" '.$args['maxlength'].' value="'.esc_attr($value).'" '.implode(' ', $custom_attributes).' />
+            $field .= '<input type="' . $args['type'] . '" class="form-control input-text '.implode(' ', $args['input_class']).'" name="'.esc_attr($key).'" id="'.esc_attr($key).'" placeholder="'.esc_attr($args['placeholder']).'" '.$args['maxlength'].' value="'.esc_attr($value).'" '.implode(' ', $custom_attributes).' />
                 </div>'.$after;
 
             break;
+        case 'date':
+    
+                $field = '<div class="form-group form-row '.esc_attr(implode(' ', $args['class'])).'" id="'.esc_attr($key).'_field">';
+    
+                if ($args['label']) {
+                    $field .= '<label for="'.esc_attr($key).'" class="'.implode(' ', $args['label_class']).'">'.$args['label'].$required.'</label>';
+                }
+    
+                $field .= '<div class="input-group flex-nowrap date" data-provide="datepicker">';
+                    $field .= '<input type="' . $args['type'] . '" class="form-control input-text '.implode(' ', $args['input_class']).'" name="'.esc_attr($key).'" id="'.esc_attr($key).'" placeholder="'.esc_attr($args['placeholder']).'" '.$args['maxlength'].' value="'.esc_attr($value).'" '.implode(' ', $custom_attributes).' />';
+                    if(MADEIT_ADD_DATEPICKER) {
+                        $field .= '<div class="input-group-prepend">
+                            <span class="input-group-text" id="addon-wrapping"><i class="fas fa-calendar"></i></span>
+                        </div>';
+                    }
+                $field .= '</div></div>'.$after;
+    
+                break;
         case 'select':
 
             $options = '';
