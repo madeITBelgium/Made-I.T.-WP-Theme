@@ -1358,7 +1358,7 @@ if (!function_exists('madeit_woocommerce_form_field')) {
                             <span class="input-group-text" id="addon-wrapping"><i class="fas fa-calendar"></i></span>
                         </div>';
                     }
-                $field .= '</div></div>'.$after;
+                $field .= '</div>' . ($args['after'] ?? '') . '</div>'.$after;
     
                 break;
         case 'select':
@@ -1606,6 +1606,8 @@ if (!function_exists('madeit_wt_cli_enable_ckyes_branding')) {
     }
     add_filter('wt_cli_enable_ckyes_branding', 'madeit_wt_cli_enable_ckyes_branding', 99, 1);
 }
+
+
 
 /*
 

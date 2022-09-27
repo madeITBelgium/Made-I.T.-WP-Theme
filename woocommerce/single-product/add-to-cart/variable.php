@@ -42,6 +42,7 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
         'options'   => $options,
         'attribute' => $attribute_name,
         'product'   => $product,
+        'class' => 'form-control',
     ]
 );
                                 echo end($attribute_keys) === $attribute_name ? wp_kses_post(apply_filters('woocommerce_reset_variations_link', '<a class="reset_variations" href="#">'.esc_html__('Clear', 'woocommerce').'</a>')) : '';
