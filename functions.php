@@ -317,7 +317,7 @@ if (!function_exists('madeit_gutenberg_support')) {
         add_theme_support('responsive-embeds');
 
         if (MADEIT_CUSTOM_COLOR || 'custom' === get_theme_mod('colorscheme')) {
-            add_theme_support('editor-color-palette', [
+            add_theme_support('editor-color-palette', apply_filters('madeit_colorscheme', [
                 [
                     'name'  => __('White Color', 'madeit'),
                     'slug'  => 'white',
@@ -368,7 +368,7 @@ if (!function_exists('madeit_gutenberg_support')) {
                     'slug'  => 'danger',
                     'color' => madeit_get_theme_color('danger_color_rgb', MADEIT_DANGER_COLOR),
                 ],
-            ]);
+            ]));
 
             add_theme_support('editor-gradient-presets', madeit_generate_gradients_colors());
         }
