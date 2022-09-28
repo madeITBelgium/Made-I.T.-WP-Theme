@@ -81,6 +81,12 @@ if (!defined('WWW_REDIRECT')) {
     define('WWW_REDIRECT', false);
 }
 
+if (!defined('MADEIT_REVIEWS')) {
+    define('MADEIT_REVIEWS', false);
+}
+if(MADEIT_REVIEWS) {
+    define('MADEIT_FONTAWESOME', 5);
+}
 if (!defined('MADEIT_FONTAWESOME')) {
     define('MADEIT_FONTAWESOME', 4.7);
 }
@@ -88,6 +94,8 @@ if (!defined('MADEIT_FONTAWESOME')) {
 if (!defined('MADEIT_ADD_DATEPICKER')) {
     define('MADEIT_ADD_DATEPICKER', false);
 }
+
+
 
 if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
     require get_template_directory().'/inc/back-compat.php';
@@ -662,10 +670,14 @@ if (!function_exists('madeit_scripts')) {
         //wp_enqueue_style('madeit-fonts', madeit_fonts_url(), [], null);
 
         // Theme stylesheet.
-        wp_enqueue_style('madeit-style', get_stylesheet_uri(), [], wp_get_theme()->get('Version'));
+        if (MADEIT_REVIEWS) {
+            wp_enqueue_style('madeit-reviews-css', get_theme_file_uri('/assets/css/reviews.css'), [], wp_get_theme()->get('Version'));
+        }
         wp_enqueue_style('madeit-gutenberg-style', get_theme_file_uri('/assets/css/gutenfront.css'), ['madeit-style', 'wp-editor'], wp_get_theme()->get('Version'));
         wp_enqueue_style('madeit-aos-style', get_theme_file_uri('/assets/css/aos.css'), ['madeit-style'], wp_get_theme()->get('Version'));
 
+        wp_enqueue_style('madeit-style', get_stylesheet_uri(), [], wp_get_theme()->get('Version'));
+        
         //wp_enqueue_style('font-awesome', get_theme_file_uri('/assets/css/font-awesome.min.css'), ['madeit-style'], '4.7.0');
 
         // Load the dark colorscheme.
@@ -1829,3 +1841,10 @@ require get_parent_theme_file_path('/inc/madeit-support.php');
  * Generate Theme Json file.
  */
 require get_parent_theme_file_path('/inc/generate-theme-json.php');
+
+/**
+ * MADE I.T Reviews
+ */
+if(defined('MADEIT_REVIEWS') && MADEIT_REVIEWS) {
+    require get_parent_theme_file_path('/inc/reviews.php');
+}
