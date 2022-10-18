@@ -204,6 +204,14 @@ div.product div.woocommerce-product-gallery--columns-6 .woocommerce-product-gall
   margin-right: 0 !important;
 }
 
+#add_payment_method #payment, .woocommerce-cart #payment, .woocommerce-checkout #payment {
+  background: none;
+  border-radius: none;
+}
+#add_payment_method #payment .card, .woocommerce-cart #payment .card, .woocommerce-checkout #payment .card {
+  background: #ebe9eb;
+}
+
 #wc_bookings_field_persons {
   display: block;
   width: 100%;
@@ -3553,8 +3561,18 @@ textarea.form-control {
   border-radius: 0.25rem;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
-.btn {
+
+.btn, .card, .card .card-body > table,  .card .card-body > .table-responsive > table, .form-control, .woocommerce .input-text, .woocommerce #respond input#submit, .woocommerce a.button, .woocommerce button.button, .woocommerce input.button {
   border-radius: var(--wp--custom--border-radius--default,.25rem);
+}
+.password-input {
+  width: 100%;
+}
+
+@media(min-width: 678px) {
+  #order_review_heading {
+    margin-top: 0 !important;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

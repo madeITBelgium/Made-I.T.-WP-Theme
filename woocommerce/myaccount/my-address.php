@@ -33,15 +33,20 @@ if (!wc_ship_to_billing_address_only() && wc_shipping_enabled()) {
 <div class="row woocommerce-Addresses col2-set addresses">
     <?php foreach ($get_addresses as $name => $title) { ?>
 
-        <div class="col-sm-3 woocommerce-Address">
-            <header class="woocommerce-Address-title title">
-                <h3><?php echo $title; ?></h3>
-                <a href="<?php echo esc_url(wc_get_endpoint_url('edit-address', $name)); ?>" class="edit"><?php _e('Edit', 'woocommerce'); ?></a>
-            </header>
-            <address><?php
-                $address = wc_get_account_formatted_address($name);
-                echo $address ? wp_kses_post($address) : esc_html_e('You have not set up this type of address yet.', 'woocommerce');
-            ?></address>
+        <div class="col-sm-4 woocommerce-Address">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <header class="woocommerce-Address-title title">
+                        <h3><?php echo $title; ?></h3>
+                        <a href="<?php echo esc_url(wc_get_endpoint_url('edit-address', $name)); ?>" class="edit"><?php _e('Edit', 'woocommerce'); ?></a>
+                    </header>
+
+                    <address><?php
+                        $address = wc_get_account_formatted_address($name);
+                        echo $address ? wp_kses_post($address) : esc_html_e('You have not set up this type of address yet.', 'woocommerce');
+                    ?></address>
+                </div>
+            </div>
         </div>
 
     <?php } ?>
