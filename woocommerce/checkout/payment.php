@@ -50,5 +50,5 @@ if (!is_ajax()) {
 </div>
 <?php
 if (!is_ajax()) {
-    do_action('woocommerce_review_order_after_payment');
-}
+                        do_action('woocommerce_review_order_after_payment');
+                    }
