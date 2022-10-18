@@ -25,7 +25,7 @@ $leftCollPostition = apply_filters('madeit_upper_navbar_left_col_position', 'lef
                                 'depth'             => 2,
                                 'container'         => 'nav',
                                 'container_id'      => 'secondary-navigation',
-                                'container_class'   => 'secondary-navigation '.($leftCollPostition !== 'left' ? 'ml-auto' : ''),
+                                'container_class'   => 'secondary-navigation '.($leftCollPostition !== 'left' ? 'ms-auto ml-auto' : ''),
                                 'menu_class'        => 'menu nav navbar-nav',
                                 'fallback_cb'       => 'wp_bootstrap_navwalker::fallback',
                                 'walker'            => new wp_bootstrap_navwalker(),

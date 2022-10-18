@@ -199,7 +199,7 @@ function madeit_page_pagination($pages = '', $range = 2)
         }
 
         if (($paged - 1) > 0) {
-            echo '<li class="page-item d-none"><a class="page-link" href="'.get_pagenum_link($paged - 1).'" aria-label="Previous Page">&lsaquo;<span class="hidden-sm-down d-none d-md-inline-block ml-1"> '.__('Previous', 'madeit').'</span></a></li>';
+            echo '<li class="page-item d-none"><a class="page-link" href="'.get_pagenum_link($paged - 1).'" aria-label="Previous Page">&lsaquo;<span class="hidden-sm-down d-none d-md-inline-block ml-1 ms-1"> '.__('Previous', 'madeit').'</span></a></li>';
         }
 
         for ($i = 1; $i <= $pages; $i++) {

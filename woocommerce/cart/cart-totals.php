@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) {
 }
 
 ?>
-<div class="col-12 col-md-6 <?php echo (WC()->customer->has_calculated_shipping()) ? 'calculated_shipping' : ''; ?>">
+<div class="col-12 col-md-6 ms-auto ml-auto <?php echo (WC()->customer->has_calculated_shipping()) ? 'calculated_shipping' : ''; ?>">
 
 	<?php do_action('woocommerce_before_cart_totals'); ?>
 
