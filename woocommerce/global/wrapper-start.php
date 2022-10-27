@@ -20,4 +20,4 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 ?>
-<div class="container voffset6">
+<div class="container mt-3">

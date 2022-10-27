@@ -1,4 +1,13 @@
 @charset "UTF-8";
+@media screen and (min-width: 992px) {
+  #lightbox-modal .close {
+    margin-left: auto !important;
+    right: -12px !important;
+    top: 1px !important;
+    border: 0;
+  }
+}
+
 /*!
  * Bootstrap  v5.2.2 (https://getbootstrap.com/)
  * Copyright 2011-2022 The Bootstrap Authors
