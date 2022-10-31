@@ -1,10 +1,78 @@
 <?php
-function cptui_register_my_cpts_review() {
 
-	/**
-	 * Post Type: Reviews.
-	 */
+function getGoogleReviews($option) {
+    $url = 'https://maps.googleapis.com/maps/api/place/details/json?place_id=' . MADEIT_REVIEWS_GOOGLE_ID . '&key=' . MADEIT_REVIEWS_GOOGLE_API;
+    if (function_exists('curl_version')) {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        if ( isset($option['your_language_for_tran']) and !empty($option['your_language_for_tran']) ) {
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept-Language: '.$option['your_language_for_tran']));
+        }
+        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36');
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $result = curl_exec($ch);
+        curl_close($ch);
+    } else {
+        $arrContextOptions=array(
+            'ssl' => array(
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+            ),
+            'http' => array(
+                'method' => 'GET',
+                'header' => 'Accept-language: '.$option['your_language_for_tran']."\r\n" .
+                "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36\r\n"
+            )
+        );  
+        $result = file_get_contents($url, false, stream_context_create($arrContextOptions));
+    }
+    return json_decode($result, true);
+}
 
+if (defined('MADEIT_REVIEWS') && MADEIT_REVIEWS && defined('MADEIT_REVIEWS_GOOGLE_API') && !wp_next_scheduled('madeit_load_google_reviews')) {
+    wp_schedule_event(time(), 'daily', 'madeit_load_google_reviews');
+}
+
+function madeit_load_google_reviews()
+{
+    $reviews = getGoogleReviews([
+        'your_language_for_tran' => 'nl'
+    ]);
+
+    foreach($reviews['result']['reviews'] as $review) {
+        $reviewExists = get_posts([
+            'post_type' => 'review',
+            'meta_query' => [
+                [
+                    'key' => 'google_id',
+                    'value' => $review['time'],
+                    'compare' => '=',
+                ]
+            ]
+        ]);
+        if(count($reviewExists) === 0) {
+            $post = [
+                'post_title' => $review['author_name'],
+                'post_status' => 'publish',
+                'post_type' => 'review',
+                'post_date' => date('Y-m-d H:i:s', $review['time']),
+            ];
+            $postId = wp_insert_post($post);
+            update_post_meta($postId, 'naam', $review['author_name']);
+            update_post_meta($postId, 'google_id', $review['time']);
+            update_post_meta($postId, 'rating', $review['rating']);
+            update_post_meta($postId, 'bericht', $review['text']);
+        }
+    }
+}
+add_action('madeit_load_google_reviews', 'madeit_load_google_reviews');
+if(class_exists('WP_CLI')) {
+    WP_CLI::add_command('load-reviews', 'madeit_load_google_reviews');
+}
+
+function cptui_register_my_cpts_review()
+{
 	$labels = [
 		"name" => esc_html__( "Reviews", "madeit" ),
 		"singular_name" => esc_html__( "Review", "madeit" ),
@@ -68,11 +136,9 @@ function cptui_register_my_cpts_review() {
 
 	register_post_type( "review", $args );
 }
-
 add_action( 'init', 'cptui_register_my_cpts_review' );
 
 if( function_exists('acf_add_local_field_group') ) {
-
     acf_add_local_field_group(array(
         'key' => 'group_6320a45d1dacc',
         'title' => 'Reviews',
@@ -177,7 +243,6 @@ if( function_exists('acf_add_local_field_group') ) {
     
 }
 
-
 function show_reviews()
 {
     ob_start();
@@ -199,7 +264,7 @@ function show_reviews()
                     <div class="<?php echo implode(" ", $reviewCardClass); ?>">
                         <div class="card-body p-3 d-flex flex-column">
                             <h4 class="mb-2 text-center"><?php echo esc_html($review->post_title); ?></h4>
-                            <p class="text-center">"<?php echo esc_html(str_replace(['<p>', '</p>'], '', get_field('bericht', $review))); ?>"</p>
+                            <p class="text-center">"<?php echo str_replace(['<p>', '</p>'], '', get_field('bericht', $review)); ?>"</p>
                             <p class="text-center mt-auto">- <?php echo esc_html(get_field('naam', $review)); ?> -</p>
                             <div class="text-center">
                                 <?php
