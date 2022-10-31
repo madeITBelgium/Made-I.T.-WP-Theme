@@ -1,12 +1,13 @@
 <?php
 
-function getGoogleReviews($option) {
-    $url = 'https://maps.googleapis.com/maps/api/place/details/json?place_id=' . MADEIT_REVIEWS_GOOGLE_ID . '&key=' . MADEIT_REVIEWS_GOOGLE_API;
+function getGoogleReviews($option)
+{
+    $url = 'https://maps.googleapis.com/maps/api/place/details/json?place_id='.MADEIT_REVIEWS_GOOGLE_ID.'&key='.MADEIT_REVIEWS_GOOGLE_API;
     if (function_exists('curl_version')) {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
-        if ( isset($option['your_language_for_tran']) and !empty($option['your_language_for_tran']) ) {
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept-Language: '.$option['your_language_for_tran']));
+        if (isset($option['your_language_for_tran']) and !empty($option['your_language_for_tran'])) {
+            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Accept-Language: '.$option['your_language_for_tran']]);
         }
         curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36');
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
@@ -14,19 +15,20 @@ function getGoogleReviews($option) {
         $result = curl_exec($ch);
         curl_close($ch);
     } else {
-        $arrContextOptions=array(
-            'ssl' => array(
-                'verify_peer' => false,
+        $arrContextOptions = [
+            'ssl' => [
+                'verify_peer'      => false,
                 'verify_peer_name' => false,
-            ),
-            'http' => array(
+            ],
+            'http' => [
                 'method' => 'GET',
-                'header' => 'Accept-language: '.$option['your_language_for_tran']."\r\n" .
-                "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36\r\n"
-            )
-        );  
+                'header' => 'Accept-language: '.$option['your_language_for_tran']."\r\n".
+                "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36\r\n",
+            ],
+        ];
         $result = file_get_contents($url, false, stream_context_create($arrContextOptions));
     }
+
     return json_decode($result, true);
 }
 
@@ -37,26 +39,26 @@ if (defined('MADEIT_REVIEWS') && MADEIT_REVIEWS && defined('MADEIT_REVIEWS_GOOGL
 function madeit_load_google_reviews()
 {
     $reviews = getGoogleReviews([
-        'your_language_for_tran' => 'nl'
+        'your_language_for_tran' => 'nl',
     ]);
 
-    foreach($reviews['result']['reviews'] as $review) {
+    foreach ($reviews['result']['reviews'] as $review) {
         $reviewExists = get_posts([
-            'post_type' => 'review',
+            'post_type'  => 'review',
             'meta_query' => [
                 [
-                    'key' => 'google_id',
-                    'value' => $review['time'],
+                    'key'     => 'google_id',
+                    'value'   => $review['time'],
                     'compare' => '=',
-                ]
-            ]
+                ],
+            ],
         ]);
-        if(count($reviewExists) === 0) {
+        if (count($reviewExists) === 0) {
             $post = [
-                'post_title' => $review['author_name'],
+                'post_title'  => $review['author_name'],
                 'post_status' => 'publish',
-                'post_type' => 'review',
-                'post_date' => date('Y-m-d H:i:s', $review['time']),
+                'post_type'   => 'review',
+                'post_date'   => date('Y-m-d H:i:s', $review['time']),
             ];
             $postId = wp_insert_post($post);
             update_post_meta($postId, 'naam', $review['author_name']);
@@ -67,46 +69,46 @@ function madeit_load_google_reviews()
     }
 }
 add_action('madeit_load_google_reviews', 'madeit_load_google_reviews');
-if(class_exists('WP_CLI')) {
+if (class_exists('WP_CLI')) {
     WP_CLI::add_command('load-reviews', 'madeit_load_google_reviews');
 }
 
 function cptui_register_my_cpts_review()
 {
-	$labels = [
-		"name" => esc_html__( "Reviews", "madeit" ),
-		"singular_name" => esc_html__( "Review", "madeit" ),
-		"menu_name" => esc_html__( "Reviews", "madeit" ),
-		"all_items" => esc_html__( "All Reviews", "madeit" ),
-		"add_new" => esc_html__( "Add new", "madeit" ),
-		"add_new_item" => esc_html__( "Add new Review", "madeit" ),
-		"edit_item" => esc_html__( "Edit Review", "madeit" ),
-		"new_item" => esc_html__( "New Review", "madeit" ),
-		"view_item" => esc_html__( "View Review", "madeit" ),
-		"view_items" => esc_html__( "View Reviews", "madeit" ),
-		"search_items" => esc_html__( "Search Reviews", "madeit" ),
-		"not_found" => esc_html__( "No Reviews found", "madeit" ),
-		"not_found_in_trash" => esc_html__( "No Reviews found in trash", "madeit" ),
-		"parent" => esc_html__( "Parent Review:", "madeit" ),
-		"featured_image" => esc_html__( "Featured image for this Review", "madeit" ),
-		"set_featured_image" => esc_html__( "Set featured image for this Review", "madeit" ),
-		"remove_featured_image" => esc_html__( "Remove featured image for this Review", "madeit" ),
-		"use_featured_image" => esc_html__( "Use as featured image for this Review", "madeit" ),
-		"archives" => esc_html__( "Review archives", "madeit" ),
-		"insert_into_item" => esc_html__( "Insert into Review", "madeit" ),
-		"uploaded_to_this_item" => esc_html__( "Upload to this Review", "madeit" ),
-		"filter_items_list" => esc_html__( "Filter Reviews list", "madeit" ),
-		"items_list_navigation" => esc_html__( "Reviews list navigation", "madeit" ),
-		"items_list" => esc_html__( "Reviews list", "madeit" ),
-		"attributes" => esc_html__( "Reviews attributes", "madeit" ),
-		"name_admin_bar" => esc_html__( "Review", "madeit" ),
-		"item_published" => esc_html__( "Review published", "madeit" ),
-		"item_published_privately" => esc_html__( "Review published privately.", "madeit" ),
-		"item_reverted_to_draft" => esc_html__( "Review reverted to draft.", "madeit" ),
-		"item_scheduled" => esc_html__( "Review scheduled", "madeit" ),
-		"item_updated" => esc_html__( "Review updated.", "madeit" ),
-		"parent_item_colon" => esc_html__( "Parent Review:", "madeit" ),
-	];
+    $labels = [
+        'name'                     => esc_html__('Reviews', 'madeit'),
+        'singular_name'            => esc_html__('Review', 'madeit'),
+        'menu_name'                => esc_html__('Reviews', 'madeit'),
+        'all_items'                => esc_html__('All Reviews', 'madeit'),
+        'add_new'                  => esc_html__('Add new', 'madeit'),
+        'add_new_item'             => esc_html__('Add new Review', 'madeit'),
+        'edit_item'                => esc_html__('Edit Review', 'madeit'),
+        'new_item'                 => esc_html__('New Review', 'madeit'),
+        'view_item'                => esc_html__('View Review', 'madeit'),
+        'view_items'               => esc_html__('View Reviews', 'madeit'),
+        'search_items'             => esc_html__('Search Reviews', 'madeit'),
+        'not_found'                => esc_html__('No Reviews found', 'madeit'),
+        'not_found_in_trash'       => esc_html__('No Reviews found in trash', 'madeit'),
+        'parent'                   => esc_html__('Parent Review:', 'madeit'),
+        'featured_image'           => esc_html__('Featured image for this Review', 'madeit'),
+        'set_featured_image'       => esc_html__('Set featured image for this Review', 'madeit'),
+        'remove_featured_image'    => esc_html__('Remove featured image for this Review', 'madeit'),
+        'use_featured_image'       => esc_html__('Use as featured image for this Review', 'madeit'),
+        'archives'                 => esc_html__('Review archives', 'madeit'),
+        'insert_into_item'         => esc_html__('Insert into Review', 'madeit'),
+        'uploaded_to_this_item'    => esc_html__('Upload to this Review', 'madeit'),
+        'filter_items_list'        => esc_html__('Filter Reviews list', 'madeit'),
+        'items_list_navigation'    => esc_html__('Reviews list navigation', 'madeit'),
+        'items_list'               => esc_html__('Reviews list', 'madeit'),
+        'attributes'               => esc_html__('Reviews attributes', 'madeit'),
+        'name_admin_bar'           => esc_html__('Review', 'madeit'),
+        'item_published'           => esc_html__('Review published', 'madeit'),
+        'item_published_privately' => esc_html__('Review published privately.', 'madeit'),
+        'item_reverted_to_draft'   => esc_html__('Review reverted to draft.', 'madeit'),
+        'item_scheduled'           => esc_html__('Review scheduled', 'madeit'),
+        'item_updated'             => esc_html__('Review updated.', 'madeit'),
+        'parent_item_colon'        => esc_html__('Parent Review:', 'madeit'),
+    ];
 
     $args = [
         'label'                 => esc_html__('Reviews', 'madeit'),
@@ -136,20 +138,20 @@ function cptui_register_my_cpts_review()
 
     register_post_type('review', $args);
 }
-add_action( 'init', 'cptui_register_my_cpts_review' );
+add_action('init', 'cptui_register_my_cpts_review');
 
-if( function_exists('acf_add_local_field_group') ) {
+if (function_exists('acf_add_local_field_group')) {
     acf_add_local_field_group([
-        'key' => 'group_6320a45d1dacc',
-        'title' => 'Reviews',
+        'key'    => 'group_6320a45d1dacc',
+        'title'  => 'Reviews',
         'fields' => [
             [
-                'key' => 'field_6320a46330e4d',
-                'label' => 'Naam',
-                'name' => 'naam',
-                'type' => 'text',
-                'instructions' => '',
-                'required' => 0,
+                'key'               => 'field_6320a46330e4d',
+                'label'             => 'Naam',
+                'name'              => 'naam',
+                'type'              => 'text',
+                'instructions'      => '',
+                'required'          => 0,
                 'conditional_logic' => 0,
                 'wrapper'           => [
                     'width' => '',
