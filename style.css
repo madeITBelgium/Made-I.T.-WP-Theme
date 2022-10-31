@@ -163,8 +163,13 @@ footer {
 }
 
 .woocommerce-product-gallery {
-  width: 80% !important;
+  width: 100% !important;
   float: none;
+}
+@media (min-width: 768px) {
+    .woocommerce-product-gallery {
+        width: 75% !important;
+    }
 }
 div.product .woocommerce-product-gallery--columns-1 .woocommerce-product-gallery__image:nth-child(n+2) {
   margin-top: 20px;
@@ -1036,4 +1041,14 @@ LearnDash
     .wp-block-madeit-block-content-column.keep-max-container-size:last-child {
         padding-right: calc((100vw - 1140px) / 2 + 15px);
     }
+}
+
+.navbar-toggler {
+    border: none !important;
+}
+.navbar-toggler .icon-bar {
+    background-color: var(--wp--preset--color--primary);
+}
+.bg-primary .navbar-toggler .icon-bar {
+    background-color: var(--wp--preset--color--secondary);
 }
