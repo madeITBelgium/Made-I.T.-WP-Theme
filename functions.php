@@ -10,7 +10,7 @@
  * Made I.T. Theme only works in WordPress 4.7 or later.
  */
 if (!defined('MADEIT_VERSION')) {
-    define('MADEIT_VERSION', '2.6.1');
+    define('MADEIT_VERSION', '2.8.0');
 }
 /* Default colors */
 if (!defined('MADEIT_CUSTOM_COLOR')) {
@@ -84,18 +84,20 @@ if (!defined('WWW_REDIRECT')) {
 if (!defined('MADEIT_REVIEWS')) {
     define('MADEIT_REVIEWS', false);
 }
-if(MADEIT_REVIEWS) {
+if (MADEIT_REVIEWS) {
     define('MADEIT_FONTAWESOME', 5);
 }
 if (!defined('MADEIT_FONTAWESOME')) {
     define('MADEIT_FONTAWESOME', 4.7);
 }
 
+if (!defined('MADEIT_BOOTSTRAP_VERSION')) {
+    define('MADEIT_BOOTSTRAP_VERSION', 4);
+}
+
 if (!defined('MADEIT_ADD_DATEPICKER')) {
     define('MADEIT_ADD_DATEPICKER', false);
 }
-
-
 
 if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
     require get_template_directory().'/inc/back-compat.php';
@@ -669,16 +671,20 @@ if (!function_exists('madeit_scripts')) {
         // Add custom fonts, used in the main stylesheet.
         //wp_enqueue_style('madeit-fonts', madeit_fonts_url(), [], null);
 
+        if(MADEIT_BOOTSTRAP_VERSION === 5) {
+            wp_enqueue_style('madeit-bootstrap-style', get_theme_file_uri('/assets/bootstrap-5/style.css'), [], wp_get_theme()->get('Version'));
+        } else {
+            wp_enqueue_style('madeit-bootstrap-style', get_theme_file_uri('/assets/bootstrap-46/style.css'), [], wp_get_theme()->get('Version'));
+        }
+
+        wp_enqueue_style('madeit-style', get_stylesheet_uri(), ['madeit-bootstrap-style'], wp_get_theme()->get('Version'));
+
         // Theme stylesheet.
         if (MADEIT_REVIEWS) {
             wp_enqueue_style('madeit-reviews-css', get_theme_file_uri('/assets/css/reviews.css'), [], wp_get_theme()->get('Version'));
         }
         wp_enqueue_style('madeit-gutenberg-style', get_theme_file_uri('/assets/css/gutenfront.css'), ['madeit-style', 'wp-editor'], wp_get_theme()->get('Version'));
         wp_enqueue_style('madeit-aos-style', get_theme_file_uri('/assets/css/aos.css'), ['madeit-style'], wp_get_theme()->get('Version'));
-
-        wp_enqueue_style('madeit-style', get_stylesheet_uri(), [], wp_get_theme()->get('Version'));
-        
-        //wp_enqueue_style('font-awesome', get_theme_file_uri('/assets/css/font-awesome.min.css'), ['madeit-style'], '4.7.0');
 
         // Load the dark colorscheme.
         if ('dark' === get_theme_mod('colorscheme', 'light') || is_customize_preview()) {
@@ -692,25 +698,22 @@ if (!function_exists('madeit_scripts')) {
             wp_enqueue_style('madeit-custom-css', madeit_css_cacheUrl(), ['madeit-style'], wp_get_theme()->get('Version'));
         }
 
-        // Load the html5 shiv.
-        wp_enqueue_script('html5', get_theme_file_uri('/assets/js/html5.js'), [], '3.7.3', true);
-        wp_script_add_data('html5', 'conditional', 'lt IE 9');
-
-        wp_enqueue_script('madeit-skip-link-focus-fix', get_theme_file_uri('/assets/js/skip-link-focus-fix.js'), [], MADEIT_VERSION, true);
-
-        //wp_add_inline_script('jquery-core', '$=jQuery;');
-
         wp_enqueue_script('script-fix-jquery', get_theme_file_uri('/assets/js/script-fix-jquery.js'), ['jquery'], MADEIT_VERSION, true);
-        wp_enqueue_script('popper', get_theme_file_uri('/assets/js/popper.min.js'), ['jquery'], MADEIT_VERSION, true);
-        wp_enqueue_script('bootstrap', get_theme_file_uri('/assets/js/bootstrap.js'), ['jquery', 'popper'], MADEIT_VERSION, true);
-        wp_enqueue_script('script', get_template_directory_uri().'/assets/js/script.js', ['bootstrap'], MADEIT_VERSION, true);
 
+        if(MADEIT_BOOTSTRAP_VERSION === 5) {
+            wp_enqueue_script('bootstrap', get_theme_file_uri('/assets/bootstrap-5/script.js'), [], MADEIT_VERSION, true);
+        } else {
+            wp_enqueue_script('popper', get_theme_file_uri('/assets/bootstrap-46/popper.min.js'), ['jquery'], MADEIT_VERSION, true);
+            wp_enqueue_script('bootstrap', get_theme_file_uri('/assets/bootstrap-46/script.js'), ['jquery', 'popper'], MADEIT_VERSION, true);
+        }
+
+        wp_enqueue_script('script', get_template_directory_uri().'/assets/js/script.js', ['bootstrap'], MADEIT_VERSION, true);
         wp_enqueue_script('madeit-aos', get_template_directory_uri().'/assets/js/aos.js', [], MADEIT_VERSION, true);
 
         wp_enqueue_script('madeit-infinitescroll', get_template_directory_uri().'/assets/js/infinitescroll.js', ['jquery'], MADEIT_VERSION, true);
         madeit_infinite_options_to_script();
 
-        if(MADEIT_ADD_DATEPICKER) {
+        if (MADEIT_ADD_DATEPICKER) {
             wp_enqueue_script('bootstrap-datepicker', get_theme_file_uri('/assets/js/bootstrap-datepicker.min.js'), ['jquery'], MADEIT_VERSION, true);
         }
 
@@ -762,11 +765,10 @@ if (!function_exists('prefix_add_footer_styles')) {
         if (MADEIT_FONTAWESOME === 4.7) {
             wp_enqueue_style('font-awesome', get_theme_file_uri('/assets/css/font-awesome.min.css'), [], '4.7.0');
         } elseif (MADEIT_FONTAWESOME === 5) {
-            wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css', [], '5.9.0');
+            wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css', [], '5.15.4');
         }
 
-
-        if(MADEIT_ADD_DATEPICKER) {
+        if (MADEIT_ADD_DATEPICKER) {
             wp_enqueue_style('bootstrap-datepicker', get_theme_file_uri('/assets/css/bootstrap-datepicker.min.css'), [], MADEIT_VERSION);
         }
     }
@@ -1351,27 +1353,27 @@ if (!function_exists('madeit_woocommerce_form_field')) {
                 $field .= '<label for="'.esc_attr($key).'" class="'.implode(' ', $args['label_class']).'">'.$args['label'].$required.'</label>';
             }
 
-            $field .= '<input type="' . $args['type'] . '" class="form-control input-text '.implode(' ', $args['input_class']).'" name="'.esc_attr($key).'" id="'.esc_attr($key).'" placeholder="'.esc_attr($args['placeholder']).'" '.$args['maxlength'].' value="'.esc_attr($value).'" '.implode(' ', $custom_attributes).' />
+            $field .= '<input type="'.$args['type'].'" class="form-control input-text '.implode(' ', $args['input_class']).'" name="'.esc_attr($key).'" id="'.esc_attr($key).'" placeholder="'.esc_attr($args['placeholder']).'" '.$args['maxlength'].' value="'.esc_attr($value).'" '.implode(' ', $custom_attributes).' />
                 </div>'.$after;
 
             break;
         case 'date':
-    
+
                 $field = '<div class="form-group form-row '.esc_attr(implode(' ', $args['class'])).'" id="'.esc_attr($key).'_field">';
-    
+
                 if ($args['label']) {
                     $field .= '<label for="'.esc_attr($key).'" class="'.implode(' ', $args['label_class']).'">'.$args['label'].$required.'</label>';
                 }
-    
+
                 $field .= '<div class="input-group flex-nowrap date" data-provide="datepicker">';
-                    $field .= '<input type="' . $args['type'] . '" class="form-control input-text '.implode(' ', $args['input_class']).'" name="'.esc_attr($key).'" id="'.esc_attr($key).'" placeholder="'.esc_attr($args['placeholder']).'" '.$args['maxlength'].' value="'.esc_attr($value).'" '.implode(' ', $custom_attributes).' />';
-                    if(MADEIT_ADD_DATEPICKER) {
+                    $field .= '<input type="'.$args['type'].'" class="form-control input-text '.implode(' ', $args['input_class']).'" name="'.esc_attr($key).'" id="'.esc_attr($key).'" placeholder="'.esc_attr($args['placeholder']).'" '.$args['maxlength'].' value="'.esc_attr($value).'" '.implode(' ', $custom_attributes).' />';
+                    if (MADEIT_ADD_DATEPICKER) {
                         $field .= '<div class="input-group-prepend">
                             <span class="input-group-text" id="addon-wrapping"><i class="fas fa-calendar"></i></span>
                         </div>';
                     }
-                $field .= '</div>' . ($args['after'] ?? '') . '</div>'.$after;
-    
+                $field .= '</div>'.($args['after'] ?? '').'</div>'.$after;
+
                 break;
         case 'select':
 
@@ -1475,7 +1477,21 @@ if (!function_exists('madeit_woocommerce_shopping_cart_in_menu')) {
                 </a>
             </li>
             <?php
-        }
+        } elseif (WOO_SHOPING_CART_MENU_STYLE == 4) {
+            if ($cart_contents_count == 0) {
+                ?>
+                <li class="menu-item nav-item"><a class="wc-menu-cart nav-link" href="<?php echo get_permalink(wc_get_page_id('shop')); ?>" title="<?php echo  __('Start shopping', 'madeit'); ?>">
+                <?php
+            } else {
+                ?>
+                <li class="menu-item nav-item"><a class="wc-menu-cart nav-link" href="<?php echo wc_get_cart_url(); ?>" title="<?php __('View your shopping cart', 'madeit'); ?>">
+                <?php
+            } ?>
+                <span class="shopping-cart-count"><?php echo $cart_contents_count; ?></span>
+                <i class="far fa-shopping-basket"></i>
+            </a></li>
+            <?php
+        } 
         $social = ob_get_clean();
 
         return $menu.$social;
@@ -1618,8 +1634,6 @@ if (!function_exists('madeit_wt_cli_enable_ckyes_branding')) {
     }
     add_filter('wt_cli_enable_ckyes_branding', 'madeit_wt_cli_enable_ckyes_branding', 99, 1);
 }
-
-
 
 /*
 
@@ -1843,8 +1857,8 @@ require get_parent_theme_file_path('/inc/madeit-support.php');
 require get_parent_theme_file_path('/inc/generate-theme-json.php');
 
 /**
- * MADE I.T Reviews
+ * MADE I.T Reviews.
  */
-if(defined('MADEIT_REVIEWS') && MADEIT_REVIEWS) {
+if (defined('MADEIT_REVIEWS') && MADEIT_REVIEWS) {
     require get_parent_theme_file_path('/inc/reviews.php');
 }

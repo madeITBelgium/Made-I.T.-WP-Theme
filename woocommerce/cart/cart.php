@@ -17,7 +17,7 @@
     <form class="woocommerce-cart-form" action="<?php echo esc_url(wc_get_cart_url()); ?>" method="post">
         <?php do_action('woocommerce_before_cart_table'); ?>
 
-        <table class="cart woocommerce-cart-form__contents table" cellspacing="0">
+        <table class="cart woocommerce-cart-form__contents table mb-0" cellspacing="0">
             <thead>
                 <tr>
                     <th class="product-remove">&nbsp;</th>
@@ -100,7 +100,7 @@
                                 ], $_product, false);
                             }
 
-                        echo apply_filters('woocommerce_cart_item_quantity', $product_quantity, $cart_item_key, $cart_item); ?></td>
+                            echo apply_filters('woocommerce_cart_item_quantity', $product_quantity, $cart_item_key, $cart_item); ?></td>
 
                             <td class="product-subtotal" data-title="<?php esc_attr_e('Subtotal', 'woocommerce'); ?>">
                                 <?php
@@ -125,9 +125,9 @@
                             </div>
                         <?php
                 } ?>
-                        <a href="<?php echo get_permalink(wc_get_page_id('shop')); ?>" class="button"><?php _e('Verder winkelen', 'madeit'); ?></a>
+                        <a href="<?php echo get_permalink(wc_get_page_id('shop')); ?>" class="button m-1"><?php _e('Verder winkelen', 'madeit'); ?></a>
 
-                        <button type="submit" class="button" name="update_cart" value="<?php esc_attr_e('Update cart', 'woocommerce'); ?>"><?php esc_attr_e('Update cart', 'woocommerce'); ?></button>
+                        <button type="submit" class="button m-1" name="update_cart" value="<?php esc_attr_e('Update cart', 'woocommerce'); ?>"><?php esc_attr_e('Update cart', 'woocommerce'); ?></button>
 
                         <?php do_action('woocommerce_cart_actions'); ?>
 
@@ -143,7 +143,7 @@
 
     <?php do_action('woocommerce_before_cart_collaterals'); ?>
 
-    <div class="cart-collaterals">
+    <div class="row mt-3">
         <?php
             /**
              * Cart collaterals hook.

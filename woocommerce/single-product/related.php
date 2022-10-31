@@ -44,7 +44,7 @@ if ($related_products) { ?>
             }
             foreach ($related_products as $related_product) {
                 ?>
-                <div class="col <?php echo $relatedProductColClass; ?>">
+                <div class="col-12 <?php echo $relatedProductColClass; ?>">
 
                     <?php
                     $post_object = get_post($related_product->get_id());

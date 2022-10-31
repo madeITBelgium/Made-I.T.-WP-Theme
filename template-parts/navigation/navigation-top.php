@@ -6,7 +6,7 @@
  */
 $navBarClass = apply_filters('madeit_navbar_class', ['navbar', 'navbar-expand-md', 'bg-white', 'fixed-top', 'd-block']);
 $containerClass = apply_filters('madeit_navbar_container_class', ['container']);
-$menuClass = apply_filters('madeit_navbar_menu_class', ['menu', 'nav', 'navbar-nav', 'ml-auto', 'align-items-md-center']);
+$menuClass = apply_filters('madeit_navbar_menu_class', ['menu', 'nav', 'navbar-nav', 'ml-auto', 'ms-auto', 'align-items-md-center']);
 ?>
 <nav class="<?php echo is_array($navBarClass) ? implode(' ', $navBarClass) : $navBarClass; ?>">
     
@@ -18,7 +18,7 @@ $menuClass = apply_filters('madeit_navbar_menu_class', ['menu', 'nav', 'navbar-n
     <div class="<?php echo is_array($containerClass) ? implode(' ', $containerClass) : $containerClass; ?>">
         <?php get_template_part('template-parts/header/site', 'branding'); ?>
 
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#site-navigation" aria-expanded="false" aria-label="<?php _e('Menu', 'madeit'); ?>">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#site-navigation" data-bs-toggle="collapse" data-bs-target="#site-navigation" aria-expanded="false" aria-label="<?php _e('Menu', 'madeit'); ?>">
             <span class="sr-only"><?php _e('Menu', 'madeit'); ?></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>

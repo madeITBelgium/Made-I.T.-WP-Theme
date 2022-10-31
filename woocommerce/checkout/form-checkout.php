@@ -29,7 +29,7 @@ if (!$checkout->is_registration_enabled() && $checkout->is_registration_required
 
     <div class="row" id="customer_details">
         <?php if ($checkout->get_checkout_fields()) { ?>
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-md-6 mb-4">
                 <?php do_action('woocommerce_checkout_before_customer_details'); ?>
 
                 <?php do_action('woocommerce_checkout_billing'); ?>
@@ -39,8 +39,8 @@ if (!$checkout->is_registration_enabled() && $checkout->is_registration_required
                 <?php do_action('woocommerce_checkout_after_customer_details'); ?>
             </div>
         <?php } ?>
-        <div class="col-12 col-md-6">
-            <h3 id="order_review_heading" class="mt-4"><?php esc_html_e('Your order', 'woocommerce'); ?></h3>
+        <div class="col-12 col-md-6 mb-4">
+            <h3 id="order_review_heading"><?php esc_html_e('Your order', 'woocommerce'); ?></h3>
 
             <?php do_action('woocommerce_checkout_before_order_review'); ?>
 
