@@ -671,7 +671,7 @@ if (!function_exists('madeit_scripts')) {
         // Add custom fonts, used in the main stylesheet.
         //wp_enqueue_style('madeit-fonts', madeit_fonts_url(), [], null);
 
-        if(MADEIT_BOOTSTRAP_VERSION === 5) {
+        if (MADEIT_BOOTSTRAP_VERSION === 5) {
             wp_enqueue_style('madeit-bootstrap-style', get_theme_file_uri('/assets/bootstrap-5/style.css'), [], wp_get_theme()->get('Version'));
         } else {
             wp_enqueue_style('madeit-bootstrap-style', get_theme_file_uri('/assets/bootstrap-46/style.css'), [], wp_get_theme()->get('Version'));
@@ -700,7 +700,7 @@ if (!function_exists('madeit_scripts')) {
 
         wp_enqueue_script('script-fix-jquery', get_theme_file_uri('/assets/js/script-fix-jquery.js'), ['jquery'], MADEIT_VERSION, true);
 
-        if(MADEIT_BOOTSTRAP_VERSION === 5) {
+        if (MADEIT_BOOTSTRAP_VERSION === 5) {
             wp_enqueue_script('bootstrap', get_theme_file_uri('/assets/bootstrap-5/script.js'), [], MADEIT_VERSION, true);
         } else {
             wp_enqueue_script('popper', get_theme_file_uri('/assets/bootstrap-46/popper.min.js'), ['jquery'], MADEIT_VERSION, true);
@@ -1491,7 +1491,7 @@ if (!function_exists('madeit_woocommerce_shopping_cart_in_menu')) {
                 <i class="far fa-shopping-basket"></i>
             </a></li>
             <?php
-        } 
+        }
         $social = ob_get_clean();
 
         return $menu.$social;
