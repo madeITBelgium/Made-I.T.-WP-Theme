@@ -139,11 +139,11 @@ function cptui_register_my_cpts_review()
 add_action( 'init', 'cptui_register_my_cpts_review' );
 
 if( function_exists('acf_add_local_field_group') ) {
-    acf_add_local_field_group(array(
+    acf_add_local_field_group([
         'key' => 'group_6320a45d1dacc',
         'title' => 'Reviews',
-        'fields' => array(
-            array(
+        'fields' => [
+            [
                 'key' => 'field_6320a46330e4d',
                 'label' => 'Naam',
                 'name' => 'naam',
