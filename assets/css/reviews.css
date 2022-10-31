@@ -1,6 +1,7 @@
 @media (min-width: 768px) {
     #carouselReviewControls .carousel-item {
         margin-right: 0;
+        width: 33.33%;
     }
     /* show 3 items */
     #carouselReviewControls .carousel-inner .active,

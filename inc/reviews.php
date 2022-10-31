@@ -253,15 +253,24 @@ function show_reviews()
     $reviews = get_posts($args);
 
     $reviewCardClass = apply_filters('madeit_reviews_card_class', ['card', 'border-0', 'h-100']); ?>
-    <div id="carouselReviewControls" class="carousel slide" data-ride="carousel" data-interval="5000" >
+    <div id="carouselReviewControls" class="carousel slide" data-ride="carousel" data-interval="5000" data-bs-ride="carousel">
         <div class="carousel-inner row w-100 mx-auto reviews">
             <?php foreach ($reviews as $i => $review) {
         ?>
-                <div class="carousel-item col-md-4 <?php echo $i === 0 ? 'active' : ''; ?>">
+                <div class="carousel-item review-item col-md-4 <?php echo $i === 0 ? 'active' : ''; ?>">
                     <div class="<?php echo implode(' ', $reviewCardClass); ?>">
                         <div class="card-body p-3 d-flex flex-column">
                             <h4 class="mb-2 text-center"><?php echo esc_html($review->post_title); ?></h4>
-                            <p class="text-center">"<?php echo str_replace(['<p>', '</p>'], '', get_field('bericht', $review)); ?>"</p>
+                            <?php
+                            $bericht = get_field('bericht', $review);
+                            if(mb_strlen($bericht) > 250) {
+                                ?>
+                                <p class="text-center short">"<?php echo mb_substr(str_replace(['<p>', '</p>'], '', $bericht), 0, 250); ?>... <a href="#" class="review-show-more">Lees meer</a>"</p>
+                                <p class="text-center long d-none">"<?php echo str_replace(['<p>', '</p>'], '', $bericht); ?>"</p>
+                                <?php
+                            } else { ?>
+                                <p class="text-center">"<?php echo str_replace(['<p>', '</p>'], '', $bericht); ?>"</p>
+                            <?php } ?>
                             <p class="text-center mt-auto">- <?php echo esc_html(get_field('naam', $review)); ?> -</p>
                             <div class="text-center">
                                 <?php
@@ -283,16 +292,61 @@ function show_reviews()
             <?php
     } ?>
         </div>
-        <a class="carousel-control-prev" href="#carouselReviewControls" role="button" data-slide="prev">
+        <a class="carousel-control-prev" href="#carouselReviewControls" data-bs-target="#carouselReviewControls" data-bs-slide="prev" role="button" data-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="sr-only"><?php echo __('Vorige', 'madeit'); ?></span>
+            <span class="sr-only visually-hidden"><?php echo __('Vorige', 'madeit'); ?></span>
         </a>
-        <a class="carousel-control-next" href="#carouselReviewControls" role="button" data-slide="next">
+        <a class="carousel-control-next" href="#carouselReviewControls" data-bs-target="#carouselReviewControls" data-bs-slide="next" role="button" data-slide="next">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="sr-only"><?php echo __('Volgend', 'madeit'); ?></span>
+            <span class="sr-only visually-hidden"><?php echo __('Volgend', 'madeit'); ?></span>
         </a>
     </div>
     <?php
     return ob_get_clean();
 }
 add_shortcode('show_reviews', 'show_reviews');
+
+function list_reviews()
+{
+    ob_start();
+
+    $args = [
+        'post_type' => 'review',
+        //set number of posts to -1 to show all posts
+        'numberposts' => -1,
+
+    ];
+
+    $reviews = get_posts($args);
+    ?>
+    <div class="row reviews">
+        <?php foreach ($reviews as $i => $review) { ?>
+            <div class="review-item col-12 mx-auto col-md-8 col-lg-7 mb-5">
+                <div class="card border-0">
+                    <div class="card-body p-3 d-flex flex-column">
+                        <h4 class="mb-2 text-center"><?php echo esc_html($review->post_title); ?></h4>
+                        <p class="text-center">"<?php echo str_replace(['<p>', '</p>'], '', get_field('bericht', $review)); ?>"</p>
+                        <p class="text-center mt-auto">- <?php echo esc_html(get_field('naam', $review)); ?> -</p>
+                        <div class="text-center">
+                            <?php
+                            for ($i = 1; $i <= 5; $i++) {
+                                if ($i <= get_field('rating', $review)) {
+                                    ?>
+                                    <i class="fas fa-star text-gold"></i>
+                                    <?php
+                                } else {
+                                    ?>
+                                    <i class="far fa-star text-gold"></i>
+                                    <?php
+                                }
+                            } ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php } ?>
+    </div>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('list_reviews', 'list_reviews');

@@ -328,4 +328,12 @@ jQuery(document).ready( function( $ ) {
 
         return false;
     });
+
+    $('.review-show-more').on('click', function(e) {
+        e.preventDefault();
+        //find parent .review-item
+        var reviewItem = $(this).parents('.review-item');
+        reviewItem.find('.long').removeClass('d-none');
+        reviewItem.find('.short').addClass('d-none');
+    });
 });
