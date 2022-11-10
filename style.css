@@ -1052,3 +1052,7 @@ LearnDash
 .bg-primary .navbar-toggler .icon-bar {
     background-color: var(--wp--preset--color--secondary);
 }
+
+.card-body > table {
+    border: none !important;
+}

@@ -36,9 +36,9 @@ do_action('woocommerce_before_account_orders', $has_orders); ?>
 
 					<tbody>
 						<?php
-						foreach ($customer_orders->orders as $customer_order) {
-							$order = wc_get_order($customer_order); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.OverrideProhibited
-							$item_count = $order->get_item_count() - $order->get_item_count_refunded(); ?>
+                        foreach ($customer_orders->orders as $customer_order) {
+                            $order = wc_get_order($customer_order); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.OverrideProhibited
+                            $item_count = $order->get_item_count() - $order->get_item_count_refunded(); ?>
 							<tr class="woocommerce-orders-table__row woocommerce-orders-table__row--status-<?php echo esc_attr($order->get_status()); ?> order">
 								<?php foreach (wc_get_account_orders_columns() as $column_id => $column_name) { ?>
 									<td class="woocommerce-orders-table__cell woocommerce-orders-table__cell-<?php echo esc_attr($column_id); ?>" data-title="<?php echo esc_attr($column_name); ?>">
@@ -58,27 +58,36 @@ do_action('woocommerce_before_account_orders', $has_orders); ?>
 
 										<?php } elseif ('order-total' === $column_id) { ?>
 											<?php
-											/* translators: 1: formatted order total 2: total order items */
-											echo wp_kses_post(sprintf(_n('%1$s for %2$s item', '%1$s for %2$s items', $item_count, 'woocommerce'), $order->get_formatted_order_total(), $item_count));
-											?>
+                                            /* translators: 1: formatted order total 2: total order items */
+                                            echo wp_kses_post(sprintf(_n('%1$s for %2$s item', '%1$s for %2$s items', $item_count, 'woocommerce'), $order->get_formatted_order_total(), $item_count));
+                                            ?>
 
 										<?php } elseif ('order-actions' === $column_id) { ?>
 											<?php
-											$actions = wc_get_account_orders_actions($order);
+                                            $actions = wc_get_account_orders_actions($order);
 
+<<<<<<< HEAD
 											if (!empty($actions)) {
 												foreach ($actions as $key => $action) { // phpcs:ignore WordPress.WP.GlobalVariablesOverride.OverrideProhibited
 													echo '<a href="'.esc_url($action['url']).'" class="woocommerce-button' . esc_attr( $wp_button_class ) . ' button '.sanitize_html_class($key).'">'.esc_html($action['name']).'</a>';
 												}
 											}
 											?>
+=======
+                                            if (!empty($actions)) {
+                                                foreach ($actions as $key => $action) { // phpcs:ignore WordPress.WP.GlobalVariablesOverride.OverrideProhibited
+                                                    echo '<a href="'.esc_url($action['url']).'" class="woocommerce-button button '.sanitize_html_class($key).'">'.esc_html($action['name']).'</a>';
+                                                }
+                                            }
+                                            ?>
+>>>>>>> d8e5d17202e2c4a6159c425014b564a4d8a2e4fc
 										<?php } ?>
 									</td>
 								<?php } ?>
 							</tr>
 							<?php
-						}
-						?>
+                        }
+                        ?>
 					</tbody>
 				</table>
 			</div>
