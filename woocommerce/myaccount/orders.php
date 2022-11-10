@@ -66,21 +66,12 @@ do_action('woocommerce_before_account_orders', $has_orders); ?>
 											<?php
                                             $actions = wc_get_account_orders_actions($order);
 
-<<<<<<< HEAD
 											if (!empty($actions)) {
 												foreach ($actions as $key => $action) { // phpcs:ignore WordPress.WP.GlobalVariablesOverride.OverrideProhibited
 													echo '<a href="'.esc_url($action['url']).'" class="woocommerce-button' . esc_attr( $wp_button_class ) . ' button '.sanitize_html_class($key).'">'.esc_html($action['name']).'</a>';
 												}
 											}
 											?>
-=======
-                                            if (!empty($actions)) {
-                                                foreach ($actions as $key => $action) { // phpcs:ignore WordPress.WP.GlobalVariablesOverride.OverrideProhibited
-                                                    echo '<a href="'.esc_url($action['url']).'" class="woocommerce-button button '.sanitize_html_class($key).'">'.esc_html($action['name']).'</a>';
-                                                }
-                                            }
-                                            ?>
->>>>>>> d8e5d17202e2c4a6159c425014b564a4d8a2e4fc
 										<?php } ?>
 									</td>
 								<?php } ?>
