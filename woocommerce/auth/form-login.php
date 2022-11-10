@@ -14,7 +14,7 @@
  *
  * @author  WooThemes
  *
- * @version 3.4.0
+ * @version 7.0.1
  */
 if (!defined('ABSPATH')) {
     exit;
@@ -41,7 +41,7 @@ if (!defined('ABSPATH')) {
 	</p>
 	<p class="wc-auth-actions">
 		<?php wp_nonce_field('woocommerce-login', 'woocommerce-login-nonce'); ?>
-		<input type="submit" class="btn btn-lg btn-primary wc-auth-login-button" name="login" value="<?php esc_attr_e('Login', 'woocommerce'); ?>" />
+		<input type="submit" class="btn btn-lg btn-primary wc-auth-login-button<?php echo esc_attr( wc_wp_theme_get_element_class_name( 'button' ) ? ' ' . wc_wp_theme_get_element_class_name( 'button' ) : '' ); ?>" name="login" value="<?php esc_attr_e('Login', 'woocommerce'); ?>" />
 		<input type="hidden" name="redirect" value="<?php echo esc_url($redirect_url); ?>" />
 	</p>
 </form>

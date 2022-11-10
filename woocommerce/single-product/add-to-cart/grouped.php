@@ -12,7 +12,7 @@
  *
  * @see     https://docs.woocommerce.com/document/template-structure/
  *
- * @version 4.8.0
+ * @version 7.0.1
  */
 defined('ABSPATH') || exit;
 
@@ -115,7 +115,7 @@ do_action('woocommerce_before_add_to_cart_form'); ?>
 
         <?php do_action('woocommerce_before_add_to_cart_button'); ?>
         <?php $wooButtonClass = apply_filters('madeit_woo_btn_class', ['btn', 'btn-success']); ?>
-        <button type="submit" class="single_add_to_cart_button <?php echo is_array($wooButtonClass) ? implode(' ', $wooButtonClass) : $wooButtonClass; ?>"><?php echo esc_html($product->single_add_to_cart_text()); ?></button>
+        <button type="submit" class="single_add_to_cart_button <?php echo is_array($wooButtonClass) ? implode(' ', $wooButtonClass) : $wooButtonClass; ?><?php echo esc_attr( wc_wp_theme_get_element_class_name( 'button' ) ? ' ' . wc_wp_theme_get_element_class_name( 'button' ) : '' ); ?>"><?php echo esc_html($product->single_add_to_cart_text()); ?></button>
 
         <?php do_action('woocommerce_after_add_to_cart_button'); ?>
 

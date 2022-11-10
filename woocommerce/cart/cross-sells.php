@@ -18,7 +18,7 @@
 defined('ABSPATH') || exit;
 
 if ($cross_sells) { ?>
-    <div class="col-12 col-md-6 order-last order-md-first">
+    <div class="col-12 col-md-6 order-last order-md-first cross-sells">
         <?php
         $heading = apply_filters('woocommerce_product_cross_sells_products_heading', __('You may be interested in&hellip;', 'woocommerce'));
 

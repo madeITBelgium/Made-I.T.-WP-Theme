@@ -57,7 +57,7 @@ Source: https://unsplash.com/@englr?photo=bIhpiQA009k
 == Changelog ==
 = 2.8.0 =
 * Review support
-* WooCommerce 7.0
+* WooCommerce 7.0 & 7.1
 * Improved WooCommerce support - Card layouts
 * Boostrap 4 & 5 Support
 
