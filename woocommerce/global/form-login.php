@@ -6,7 +6,7 @@
  *
  * @author 		Made I.T.
  *
- * @version     3.6.0
+ * @version     7.0.1
  */
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.

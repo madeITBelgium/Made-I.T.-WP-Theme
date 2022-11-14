@@ -12,7 +12,7 @@
  *
  * @see     https://docs.woocommerce.com/document/template-structure/
  *
- * @version 6.0.0
+ * @version 7.0.1
  */
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
