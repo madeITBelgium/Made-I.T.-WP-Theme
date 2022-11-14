@@ -87,7 +87,7 @@ do_action('woocommerce_before_shipping_calculator'); ?>
 
 		<?php } ?>
 
-		<p><button type="submit" name="calc_shipping" value="1" class="button<?php echo esc_attr( wc_wp_theme_get_element_class_name( 'button' ) ? ' ' . wc_wp_theme_get_element_class_name( 'button' ) : '' ); ?>"><?php esc_html_e('Update', 'woocommerce'); ?></button></p>
+		<p><button type="submit" name="calc_shipping" value="1" class="button<?php echo esc_attr(wc_wp_theme_get_element_class_name('button') ? ' '.wc_wp_theme_get_element_class_name('button') : ''); ?>"><?php esc_html_e('Update', 'woocommerce'); ?></button></p>
 
 		<?php  wp_nonce_field('woocommerce-shipping-calculator', 'woocommerce-shipping-calculator-nonce'); ?>
 	</section>
