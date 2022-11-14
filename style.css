@@ -1061,3 +1061,8 @@ LearnDash
 .btn, .card, .card .card-body > table,  .card .card-body > .table-responsive > table, .form-control, .woocommerce .input-text, .woocommerce #respond input#submit, .woocommerce a.button, .woocommerce button.button, .woocommerce input.button {
     border-radius: var(--wp--custom--border-radius--default,.25rem);
 }
+footer.site-footer {
+    padding-left: 0;
+    padding-right: 0;
+    overflow: hidden;
+}

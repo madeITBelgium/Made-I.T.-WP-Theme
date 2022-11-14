@@ -337,7 +337,7 @@ function reviews_single()
         } else { ?>
                                 <p class="text-center">"<?php echo str_replace(['<p>', '</p>'], '', $bericht); ?>"</p>
                             <?php } ?>
-                            <p class="text-center mt-auto">- <?php echo esc_html(get_field('naam', $review)); ?> -</p>
+                            <p class="text-center mt-auto line-2">- <?php echo esc_html(get_field('naam', $review)); ?> -</p>
                             <div class="text-center">
                                 <?php
                                 for ($i = 1; $i <= 5; $i++) {
