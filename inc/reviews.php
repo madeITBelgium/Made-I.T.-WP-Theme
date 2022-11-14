@@ -308,6 +308,70 @@ function show_reviews()
 }
 add_shortcode('show_reviews', 'show_reviews');
 
+function reviews_single()
+{
+    ob_start();
+
+    $args = [
+        'post_type' => 'review',
+    ];
+
+    $reviews = get_posts($args);
+
+    $reviewCardClass = apply_filters('madeit_reviews_card_class', ['card', 'border-0', 'h-100']); ?>
+    <div id="carouselSingleReviewControls" class="carousel slide" data-ride="carousel" data-interval="5000" data-bs-ride="carousel">
+        <div class="carousel-inner single-reviews">
+            <?php foreach ($reviews as $i => $review) {
+        ?>
+                <div class="carousel-item single-review-item <?php echo $i === 0 ? 'active' : ''; ?>">
+                    <div class="<?php echo implode(' ', $reviewCardClass); ?>">
+                        <div class="card-body p-3 d-flex flex-column">
+                            <h4 class="mb-2 text-center"><?php echo esc_html($review->post_title); ?></h4>
+                            <?php
+                            $bericht = get_field('bericht', $review);
+        if (mb_strlen($bericht) > 250) {
+            ?>
+                                <p class="text-center short">"<?php echo mb_substr(str_replace(['<p>', '</p>'], '', $bericht), 0, 250); ?>... <a href="#" class="review-show-more">Lees meer</a>"</p>
+                                <p class="text-center long d-none">"<?php echo str_replace(['<p>', '</p>'], '', $bericht); ?>"</p>
+                                <?php
+        } else { ?>
+                                <p class="text-center">"<?php echo str_replace(['<p>', '</p>'], '', $bericht); ?>"</p>
+                            <?php } ?>
+                            <p class="text-center mt-auto">- <?php echo esc_html(get_field('naam', $review)); ?> -</p>
+                            <div class="text-center">
+                                <?php
+                                for ($i = 1; $i <= 5; $i++) {
+                                    if ($i <= get_field('rating', $review)) {
+                                        ?>
+                                        <i class="fas fa-star text-gold"></i>
+                                        <?php
+                                    } else {
+                                        ?>
+                                        <i class="far fa-star text-gold"></i>
+                                        <?php
+                                    }
+                                } ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php
+    } ?>
+        </div>
+        <a class="carousel-control-prev" href="#carouselSingleReviewControls" data-bs-target="#carouselSingleReviewControls" data-bs-slide="prev" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only visually-hidden"><?php echo __('Vorige', 'madeit'); ?></span>
+        </a>
+        <a class="carousel-control-next" href="#carouselSingleReviewControls" data-bs-target="#carouselSingleReviewControls" data-bs-slide="next" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only visually-hidden"><?php echo __('Volgend', 'madeit'); ?></span>
+        </a>
+    </div>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('reviews_single', 'reviews_single');
+
 function list_reviews()
 {
     ob_start();
