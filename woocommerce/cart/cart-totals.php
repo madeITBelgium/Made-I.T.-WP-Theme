@@ -15,13 +15,13 @@ if (!defined('ABSPATH')) {
 }
 
 ?>
-<div class="cart_totals <?php echo (WC()->customer->has_calculated_shipping()) ? 'calculated_shipping' : ''; ?>">
+<div class="col-12 col-md-6 ms-auto ml-auto cart_totals <?php echo (WC()->customer->has_calculated_shipping()) ? 'calculated_shipping' : ''; ?>">
 
 	<?php do_action('woocommerce_before_cart_totals'); ?>
 
 	<h2><?php _e('Cart totals', 'woocommerce'); ?></h2>
-
-	<table cellspacing="0" class="shop_table shop_table_responsive">
+	<div class="card"><div class="card-body p-0">
+	<table cellspacing="0" class="shop_table shop_table_responsive mb-0">
 
 		<tr class="cart-subtotal">
 			<th><?php _e('Subtotal', 'woocommerce'); ?></th>
@@ -91,7 +91,7 @@ if (!defined('ABSPATH')) {
 		<?php do_action('woocommerce_cart_totals_after_order_total'); ?>
 
 	</table>
-
+	</div></div>
 	<div class="wc-proceed-to-checkout">
 		<?php do_action('woocommerce_proceed_to_checkout'); ?>
 	</div>

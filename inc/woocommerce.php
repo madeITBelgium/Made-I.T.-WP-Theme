@@ -49,3 +49,31 @@ function madeit_update_berocket_aapf_listener_br_options($options)
 }
 add_filter('berocket_aapf_listener_br_options', 'madeit_update_berocket_aapf_listener_br_options');
 add_filter('brfr_get_option_ajax_filters', 'madeit_update_berocket_aapf_listener_br_options');
+
+function madeit_woocommerce_before_cart_table()
+{
+    echo '<div class="card"><div class="card-body"><div class="table-responsive">';
+}
+add_filter('woocommerce_before_cart_table', 'madeit_woocommerce_before_cart_table');
+
+function madeit_woocommerce_after_cart_table()
+{
+    echo '</div></div></div>';
+}
+add_filter('woocommerce_after_cart_table', 'madeit_woocommerce_after_cart_table');
+
+function madeit_woocommerce_before_checkout_billing_form()
+{
+    echo '<div class="card mb-3"><div class="card-body">';
+}
+add_filter('woocommerce_before_checkout_billing_form', 'madeit_woocommerce_before_checkout_billing_form', 1);
+add_filter('woocommerce_before_checkout_shipping_form', 'madeit_woocommerce_before_checkout_billing_form', 1);
+add_filter('woocommerce_before_order_notes', 'madeit_woocommerce_before_checkout_billing_form', 1);
+
+function madeit_woocommerce_after_checkout_billing_form()
+{
+    echo '</div></div>';
+}
+add_filter('woocommerce_after_checkout_billing_form', 'madeit_woocommerce_after_checkout_billing_form', 99);
+add_filter('woocommerce_after_checkout_shipping_form', 'madeit_woocommerce_after_checkout_billing_form', 99);
+add_filter('woocommerce_after_order_notes', 'madeit_woocommerce_after_checkout_billing_form', 99);
