@@ -705,7 +705,7 @@ if (!function_exists('madeit_scripts')) {
 
         if (MADEIT_BOOTSTRAP_VERSION === 5) {
             wp_enqueue_script('bootstrap', get_theme_file_uri('/assets/bootstrap-5/script.js'), [], MADEIT_VERSION, true);
-            if(MADEIT_BOOTSTRAP_POPPER) {
+            if (MADEIT_BOOTSTRAP_POPPER) {
                 wp_enqueue_script('popper', get_theme_file_uri('/assets/bootstrap-5/popper.js'), ['bootstrap'], MADEIT_VERSION, true);
             }
         } else {
