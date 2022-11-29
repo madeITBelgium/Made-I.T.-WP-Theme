@@ -1647,6 +1647,10 @@ if (!function_exists('madeit_wt_cli_enable_ckyes_branding')) {
 if (!function_exists('madeit_add_mobile_menu_items_to_main_menu') && function_exists('get_field')) {
     function madeit_add_mobile_menu_items_to_main_menu($items, $menu, $args)
     {
+        if(is_admin()) {
+            return $items;
+        }
+        
         $theme_locations = get_nav_menu_locations();
         if ($menu->term_id === $theme_locations['top'] && isset($theme_locations['upper-bottom'])) {
             if (get_field('add_to_main_menu', 'menu_'.$theme_locations['upper-bottom'])) {
