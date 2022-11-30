@@ -731,7 +731,7 @@ if (!function_exists('madeit_infinite_options_to_script')) {
     {
         $nav_selector = apply_filters('madeit_infinite_navselector', '.woocommerce-pagination, .pagination');
         $next_selector = apply_filters('madeit_infinite_nextselector', 'ul.page-numbers a.next, .pagination .next');
-        $item_selector = apply_filters('madeit_infinite_itemselector', 'div.row.columns-3 .col, div.row.columns-3 .col-12,  #primary .card-columns .card, .content-wrapper > div');
+        $item_selector = apply_filters('madeit_infinite_itemselector', 'div.row.columns-3 .col, div.row.columns-3 .col-12, #primary .card-columns .card, .content-wrapper > div');
         $content_selector = apply_filters('madeit_infinite_contentselector', 'div.row.columns-3, #primary .card-columns, .content-wrapper');
 
         wp_localize_script('madeit-infinitescroll', 'madeit_infinite', [
@@ -1457,38 +1457,38 @@ if (!function_exists('madeit_woocommerce_shopping_cart_in_menu')) {
         } elseif (WOO_SHOPING_CART_MENU_STYLE == 2) {
             if ($cart_contents_count == 0) {
                 ?>
-                <li class="menu-item nav-item"><a class="wc-menu-cart nav-link" href="<?php echo get_permalink(wc_get_page_id('shop')); ?>" title="<?php echo  __('Start shopping', 'madeit'); ?>">
+                <li class="menu-item nav-item"><a class="wc-menu-cart nav-link d-flex" href="<?php echo get_permalink(wc_get_page_id('shop')); ?>" title="<?php echo  __('Start shopping', 'madeit'); ?>">
                 <?php
             } else {
                 ?>
-                <li class="menu-item nav-item"><a class="wc-menu-cart nav-link" href="<?php echo wc_get_cart_url(); ?>" title="<?php __('View your shopping cart', 'madeit'); ?>">
+                <li class="menu-item nav-item"><a class="wc-menu-cart nav-link d-flex" href="<?php echo wc_get_cart_url(); ?>" title="<?php __('View your shopping cart', 'madeit'); ?>">
                 <?php
             } ?>
-            <span class="shopping-cart-count"><?php echo $cart_contents_count; ?></span>
-            <i class="fa fa-shopping-cart"></i>
+                <span class="shopping-cart-count"><?php echo $cart_contents_count; ?></span>
+                <svg xmlns="http://www.w3.org/2000/svg" style="display: block; height: 12px; align-self: center; margin-left: 5px;" viewBox="0 0 576 512"><path d="M175.1 416c-26.51 0-47.1 21.49-47.1 48S149.5 512 175.1 512s47.1-21.49 47.1-48S202.5 416 175.1 416zM463.1 416c-26.51 0-47.1 21.49-47.1 48s21.49 48 47.1 48s47.1-21.49 47.1-48S490.5 416 463.1 416zM569.5 44.73c-6.109-8.094-15.42-12.73-25.56-12.73H121.1L119.6 19.51C117.4 8.189 107.5 0 96 0H23.1C10.75 0 0 10.74 0 23.1C0 37.25 10.75 48 23.1 48h52.14l60.28 316.5C138.6 375.8 148.5 384 160 384H488c13.25 0 24-10.75 24-23.1C512 346.7 501.3 336 488 336H179.9L170.7 288h318.4c14.28 0 26.84-9.479 30.77-23.21l54.86-191.1C577.5 63.05 575.6 52.83 569.5 44.73zM477 240H161.6l-30.47-160h391.7L477 240z"/></svg>
             </a></li>
             <?php
         } elseif (WOO_SHOPING_CART_MENU_STYLE == 3 && $cart_contents_count > 0) {
             ?>
             <li class="menu-item nav-item">
-                <a class="wc-menu-cart nav-link" href="<?php echo wc_get_cart_url(); ?>" title="<?php __('View your shopping cart', 'madeit'); ?>">
+                <a class="wc-menu-cart nav-link d-flex" href="<?php echo wc_get_cart_url(); ?>" title="<?php __('View your shopping cart', 'madeit'); ?>">
                     <span class="shopping-cart-count"><?php echo $cart_contents_count; ?></span>
-                    <i class="fa fa-shopping-cart"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" style="display: block; height: 12px; align-self: center; margin-left: 5px;" viewBox="0 0 576 512"><path d="M175.1 416c-26.51 0-47.1 21.49-47.1 48S149.5 512 175.1 512s47.1-21.49 47.1-48S202.5 416 175.1 416zM463.1 416c-26.51 0-47.1 21.49-47.1 48s21.49 48 47.1 48s47.1-21.49 47.1-48S490.5 416 463.1 416zM569.5 44.73c-6.109-8.094-15.42-12.73-25.56-12.73H121.1L119.6 19.51C117.4 8.189 107.5 0 96 0H23.1C10.75 0 0 10.74 0 23.1C0 37.25 10.75 48 23.1 48h52.14l60.28 316.5C138.6 375.8 148.5 384 160 384H488c13.25 0 24-10.75 24-23.1C512 346.7 501.3 336 488 336H179.9L170.7 288h318.4c14.28 0 26.84-9.479 30.77-23.21l54.86-191.1C577.5 63.05 575.6 52.83 569.5 44.73zM477 240H161.6l-30.47-160h391.7L477 240z"/></svg>
                 </a>
             </li>
             <?php
         } elseif (WOO_SHOPING_CART_MENU_STYLE == 4) {
             if ($cart_contents_count == 0) {
                 ?>
-                <li class="menu-item nav-item"><a class="wc-menu-cart nav-link" href="<?php echo get_permalink(wc_get_page_id('shop')); ?>" title="<?php echo  __('Start shopping', 'madeit'); ?>">
+                <li class="menu-item nav-item"><a class="wc-menu-cart nav-link d-flex" href="<?php echo get_permalink(wc_get_page_id('shop')); ?>" title="<?php echo  __('Start shopping', 'madeit'); ?>">
                 <?php
             } else {
                 ?>
-                <li class="menu-item nav-item"><a class="wc-menu-cart nav-link" href="<?php echo wc_get_cart_url(); ?>" title="<?php __('View your shopping cart', 'madeit'); ?>">
+                <li class="menu-item nav-item"><a class="wc-menu-cart nav-link d-flex" href="<?php echo wc_get_cart_url(); ?>" title="<?php __('View your shopping cart', 'madeit'); ?>">
                 <?php
             } ?>
                 <span class="shopping-cart-count"><?php echo $cart_contents_count; ?></span>
-                <i class="far fa-shopping-basket"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" style="display: block; height: 12px; align-self: center; margin-left: 5px;" viewBox="0 0 576 512"><path d="M552 192l-136.5-.0046l-56.65-175.4c-4.062-12.59-17.58-19.53-30.22-15.47c-12.61 4.078-19.53 17.59-15.47 30.22l51.81 160.6H211L262.8 31.38c4.062-12.62-2.859-26.14-15.47-30.22C234.8-2.885 221.2 4.036 217.2 16.63L160.5 191.1L24 192c-13.25 0-24 10.75-24 23.1c0 13.25 10.75 23.1 24 23.1h18.85l45.6 214.9C95.47 488 125.1 512 158.9 512h258.2c33.8 0 63.42-23.1 70.44-57.06l45.6-214.9H552c13.25 0 24-10.75 24-23.1C576 202.8 565.3 192 552 192zM440.6 444.1c-2.328 11.03-12.2 19.03-23.47 19.03H158.9c-11.27 0-21.14-7.1-23.47-19.03L91.94 240h53.16l-7.943 24.62C133.1 277.3 140 290.8 152.6 294.8C155.1 295.6 157.6 296 160 296c10.14 0 19.56-6.469 22.84-16.62l12.7-39.37h184.9l12.7 39.37C396.4 289.5 405.9 296 416 296c2.438 0 4.922-.375 7.375-1.156c12.61-4.078 19.53-17.59 15.47-30.22l-7.943-24.62h53.16L440.6 444.1zM224 319.1v87.1c0 8.844-7.156 15.1-16 15.1S192 416.8 192 407.1V319.1c0-8.844 7.156-15.1 16-15.1S224 311.2 224 319.1zM304 319.1v87.1c0 8.844-7.156 15.1-16 15.1s-16-7.156-16-15.1V319.1c0-8.844 7.156-15.1 16-15.1S304 311.2 304 319.1zM384 319.1v87.1c0 8.844-7.156 15.1-16 15.1S352 416.8 352 407.1V319.1c0-8.844 7.156-15.1 16-15.1S384 311.2 384 319.1z"/></svg>
             </a></li>
             <?php
         }

@@ -67,6 +67,7 @@
                     last_elem.after(elem);
 
                     $('.madeit-infinite-infs-loader').remove();
+                    $('.woocommerce-result-count').remove();
 
                     $(document).trigger('madeit_infinite_adding_elem', [elem, current_url]);
 
