@@ -9,7 +9,13 @@
 ?>
 <div id="post-<?php the_ID(); ?>" <?php post_class(); ?> >
     <?php
-    $hidetitle = get_post_meta($post->ID, 'hide_title', true);
+    $parentPageId = apply_filters( 'wpml_object_id', $post->ID, $post->post_type, true, apply_filters( 'wpml_default_language', 'nl') );
+    $postId = $post->ID;
+    if(!empty($parentPageId)) {
+        $postId = $parentPageId;
+    }
+    
+    $hidetitle = get_post_meta($postId, 'hide_title', true);
     if (empty($hidetitle) || $hidetitle == 0) {
         ?>
         <div class="container">
