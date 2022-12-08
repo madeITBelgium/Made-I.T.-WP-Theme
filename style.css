@@ -1070,3 +1070,8 @@ footer.site-footer {
 .bapf_body ul {
     padding-left: 0;
 }
+
+
+mark, .mark {
+    padding: 0;
+}
