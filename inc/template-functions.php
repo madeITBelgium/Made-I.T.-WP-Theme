@@ -199,7 +199,7 @@ function madeit_page_pagination($pages = '', $range = 2)
         }
 
         if (($paged - 1) > 0) {
-            echo '<li class="page-item d-none"><a class="page-link" href="'.get_pagenum_link($paged - 1).'" aria-label="Previous Page">&lsaquo;<span class="hidden-sm-down d-none d-md-inline-block ml-1"> '.__('Previous', 'madeit').'</span></a></li>';
+            echo '<li class="page-item d-none"><a class="page-link" href="'.get_pagenum_link($paged - 1).'" aria-label="Previous Page">&lsaquo;<span class="hidden-sm-down d-none d-md-inline-block ml-1 ms-1"> '.__('Previous', 'madeit').'</span></a></li>';
         }
 
         for ($i = 1; $i <= $pages; $i++) {
@@ -225,12 +225,12 @@ function madeit_page_pagination($pages = '', $range = 2)
 if (!function_exists('madeit_show_title_metabox')) {
     function madeit_show_title_metabox($post_type)
     {
-        if ('page' == $post_type) {
+        if (in_array($post_type, apply_filters('madeit_hide_title_post_types', ['page']))) {
             add_meta_box(
                 'madeit-pagetitle-meta-box',
                 'page' == $post_type ? __('Page Attributes') : __('Attributes'),
                 'madeit_pagetitle_meta_box_cb',
-                'page',
+                apply_filters('madeit_hide_title_post_types', ['page']),
                 'side',
                 'low'
             );
@@ -255,7 +255,7 @@ if (!function_exists('madeit_pagetitle_meta_box_cb')) {
 if (!function_exists('madeit_pagetitle_meta_box_save')) {
     function madeit_pagetitle_meta_box_save($post_id, $post)
     {
-        if (current_user_can('edit_post', $post_id) && $post->post_type == 'page') {
+        if (current_user_can('edit_post', $post_id) && in_array($post->post_type, apply_filters('madeit_hide_title_post_types', ['page']))) {
             remove_action('save_post', 'madeit_pagetitle_meta_box_save', 99, 2);
             if (isset($_POST['hide_title'])) {
                 update_post_meta($post_id, 'hide_title', 1);

@@ -10,7 +10,7 @@
  * Made I.T. Theme only works in WordPress 4.7 or later.
  */
 if (!defined('MADEIT_VERSION')) {
-    define('MADEIT_VERSION', '2.6.1');
+    define('MADEIT_VERSION', '2.8.0');
 }
 /* Default colors */
 if (!defined('MADEIT_CUSTOM_COLOR')) {
@@ -81,8 +81,25 @@ if (!defined('WWW_REDIRECT')) {
     define('WWW_REDIRECT', false);
 }
 
+if (!defined('MADEIT_REVIEWS')) {
+    define('MADEIT_REVIEWS', false);
+}
+if (MADEIT_REVIEWS) {
+    define('MADEIT_FONTAWESOME', 5);
+}
 if (!defined('MADEIT_FONTAWESOME')) {
     define('MADEIT_FONTAWESOME', 4.7);
+}
+
+if (!defined('MADEIT_BOOTSTRAP_VERSION')) {
+    define('MADEIT_BOOTSTRAP_VERSION', 4);
+}
+
+if (!defined('MADEIT_ADD_DATEPICKER')) {
+    define('MADEIT_ADD_DATEPICKER', false);
+}
+if (!defined('MADEIT_BOOTSTRAP_POPPER')) {
+    define('MADEIT_BOOTSTRAP_POPPER', false);
 }
 
 if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
@@ -305,7 +322,7 @@ if (!function_exists('madeit_gutenberg_support')) {
         add_theme_support('responsive-embeds');
 
         if (MADEIT_CUSTOM_COLOR || 'custom' === get_theme_mod('colorscheme')) {
-            add_theme_support('editor-color-palette', [
+            add_theme_support('editor-color-palette', apply_filters('madeit_colorscheme', [
                 [
                     'name'  => __('White Color', 'madeit'),
                     'slug'  => 'white',
@@ -356,7 +373,7 @@ if (!function_exists('madeit_gutenberg_support')) {
                     'slug'  => 'danger',
                     'color' => madeit_get_theme_color('danger_color_rgb', MADEIT_DANGER_COLOR),
                 ],
-            ]);
+            ]));
 
             add_theme_support('editor-gradient-presets', madeit_generate_gradients_colors());
         }
@@ -657,12 +674,20 @@ if (!function_exists('madeit_scripts')) {
         // Add custom fonts, used in the main stylesheet.
         //wp_enqueue_style('madeit-fonts', madeit_fonts_url(), [], null);
 
+        if (MADEIT_BOOTSTRAP_VERSION === 5) {
+            wp_enqueue_style('madeit-bootstrap-style', get_theme_file_uri('/assets/bootstrap-5/style.css'), [], wp_get_theme()->get('Version'));
+        } else {
+            wp_enqueue_style('madeit-bootstrap-style', get_theme_file_uri('/assets/bootstrap-46/style.css'), [], wp_get_theme()->get('Version'));
+        }
+
+        wp_enqueue_style('madeit-style', get_stylesheet_uri(), ['madeit-bootstrap-style'], wp_get_theme()->get('Version'));
+
         // Theme stylesheet.
-        wp_enqueue_style('madeit-style', get_stylesheet_uri(), [], wp_get_theme()->get('Version'));
+        if (MADEIT_REVIEWS) {
+            wp_enqueue_style('madeit-reviews-css', get_theme_file_uri('/assets/css/reviews.css'), [], wp_get_theme()->get('Version'));
+        }
         wp_enqueue_style('madeit-gutenberg-style', get_theme_file_uri('/assets/css/gutenfront.css'), ['madeit-style', 'wp-editor'], wp_get_theme()->get('Version'));
         wp_enqueue_style('madeit-aos-style', get_theme_file_uri('/assets/css/aos.css'), ['madeit-style'], wp_get_theme()->get('Version'));
-
-        //wp_enqueue_style('font-awesome', get_theme_file_uri('/assets/css/font-awesome.min.css'), ['madeit-style'], '4.7.0');
 
         // Load the dark colorscheme.
         if ('dark' === get_theme_mod('colorscheme', 'light') || is_customize_preview()) {
@@ -676,23 +701,27 @@ if (!function_exists('madeit_scripts')) {
             wp_enqueue_style('madeit-custom-css', madeit_css_cacheUrl(), ['madeit-style'], wp_get_theme()->get('Version'));
         }
 
-        // Load the html5 shiv.
-        wp_enqueue_script('html5', get_theme_file_uri('/assets/js/html5.js'), [], '3.7.3', true);
-        wp_script_add_data('html5', 'conditional', 'lt IE 9');
-
-        wp_enqueue_script('madeit-skip-link-focus-fix', get_theme_file_uri('/assets/js/skip-link-focus-fix.js'), [], MADEIT_VERSION, true);
-
-        //wp_add_inline_script('jquery-core', '$=jQuery;');
-
         wp_enqueue_script('script-fix-jquery', get_theme_file_uri('/assets/js/script-fix-jquery.js'), ['jquery'], MADEIT_VERSION, true);
-        wp_enqueue_script('popper', get_theme_file_uri('/assets/js/popper.min.js'), ['jquery'], MADEIT_VERSION, true);
-        wp_enqueue_script('bootstrap', get_theme_file_uri('/assets/js/bootstrap.js'), ['jquery', 'popper'], MADEIT_VERSION, true);
-        wp_enqueue_script('script', get_template_directory_uri().'/assets/js/script.js', ['bootstrap'], MADEIT_VERSION, true);
 
+        if (MADEIT_BOOTSTRAP_VERSION === 5) {
+            wp_enqueue_script('bootstrap', get_theme_file_uri('/assets/bootstrap-5/script.js'), [], MADEIT_VERSION, true);
+            if(MADEIT_BOOTSTRAP_POPPER) {
+                wp_enqueue_script('popper', get_theme_file_uri('/assets/bootstrap-5/popper.js'), ['bootstrap'], MADEIT_VERSION, true);
+            }
+        } else {
+            wp_enqueue_script('popper', get_theme_file_uri('/assets/bootstrap-46/popper.min.js'), ['jquery'], MADEIT_VERSION, true);
+            wp_enqueue_script('bootstrap', get_theme_file_uri('/assets/bootstrap-46/script.js'), ['jquery', 'popper'], MADEIT_VERSION, true);
+        }
+
+        wp_enqueue_script('script', get_template_directory_uri().'/assets/js/script.js', ['bootstrap'], MADEIT_VERSION, true);
         wp_enqueue_script('madeit-aos', get_template_directory_uri().'/assets/js/aos.js', [], MADEIT_VERSION, true);
 
         wp_enqueue_script('madeit-infinitescroll', get_template_directory_uri().'/assets/js/infinitescroll.js', ['jquery'], MADEIT_VERSION, true);
         madeit_infinite_options_to_script();
+
+        if (MADEIT_ADD_DATEPICKER) {
+            wp_enqueue_script('bootstrap-datepicker', get_theme_file_uri('/assets/js/bootstrap-datepicker.min.js'), ['jquery'], MADEIT_VERSION, true);
+        }
 
         //wp_enqueue_script('jquery-scrollto', get_theme_file_uri('/assets/js/jquery.scrollTo.js'), ['jquery'], '2.1.2', true);
 
@@ -708,7 +737,7 @@ if (!function_exists('madeit_infinite_options_to_script')) {
     {
         $nav_selector = apply_filters('madeit_infinite_navselector', '.woocommerce-pagination, .pagination');
         $next_selector = apply_filters('madeit_infinite_nextselector', 'ul.page-numbers a.next, .pagination .next');
-        $item_selector = apply_filters('madeit_infinite_itemselector', 'div.row.columns-3 .col, div.row.columns-3 .col-12,  #primary .card-columns .card, .content-wrapper > div');
+        $item_selector = apply_filters('madeit_infinite_itemselector', 'div.row.columns-3 .col, div.row.columns-3 .col-12, #primary .card-columns .card, .content-wrapper > div');
         $content_selector = apply_filters('madeit_infinite_contentselector', 'div.row.columns-3, #primary .card-columns, .content-wrapper');
 
         wp_localize_script('madeit-infinitescroll', 'madeit_infinite', [
@@ -742,7 +771,11 @@ if (!function_exists('prefix_add_footer_styles')) {
         if (MADEIT_FONTAWESOME === 4.7) {
             wp_enqueue_style('font-awesome', get_theme_file_uri('/assets/css/font-awesome.min.css'), [], '4.7.0');
         } elseif (MADEIT_FONTAWESOME === 5) {
-            wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css', [], '5.9.0');
+            wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css', [], '5.15.4');
+        }
+
+        if (MADEIT_ADD_DATEPICKER) {
+            wp_enqueue_style('bootstrap-datepicker', get_theme_file_uri('/assets/css/bootstrap-datepicker.min.css'), [], MADEIT_VERSION);
         }
     }
     add_action('get_footer', 'prefix_add_footer_styles');
@@ -965,16 +998,6 @@ if (!function_exists('madeit_register_required_plugins')) {
             [
                 'name'     => 'WooCommerce',
                 'slug'     => 'woocommerce',
-                'required' => false,
-            ],
-            [
-                'name'     => 'WooCommerce EU VAT Assistant',
-                'slug'     => 'woocommerce-eu-vat-assistant',
-                'required' => false,
-            ],
-            [
-                'name'     => 'Google Analytics Dashboard for WP by ExactMetrics (formerly GADWP)',
-                'slug'     => 'google-analytics-dashboard-for-wp',
                 'required' => false,
             ],
             [
@@ -1336,10 +1359,28 @@ if (!function_exists('madeit_woocommerce_form_field')) {
                 $field .= '<label for="'.esc_attr($key).'" class="'.implode(' ', $args['label_class']).'">'.$args['label'].$required.'</label>';
             }
 
-            $field .= '<input type="text" class="form-control input-text '.implode(' ', $args['input_class']).'" name="'.esc_attr($key).'" id="'.esc_attr($key).'" placeholder="'.esc_attr($args['placeholder']).'" '.$args['maxlength'].' value="'.esc_attr($value).'" '.implode(' ', $custom_attributes).' />
+            $field .= '<input type="'.$args['type'].'" class="form-control input-text '.implode(' ', $args['input_class']).'" name="'.esc_attr($key).'" id="'.esc_attr($key).'" placeholder="'.esc_attr($args['placeholder']).'" '.$args['maxlength'].' value="'.esc_attr($value).'" '.implode(' ', $custom_attributes).' />
                 </div>'.$after;
 
             break;
+        case 'date':
+
+                $field = '<div class="form-group form-row '.esc_attr(implode(' ', $args['class'])).'" id="'.esc_attr($key).'_field">';
+
+                if ($args['label']) {
+                    $field .= '<label for="'.esc_attr($key).'" class="'.implode(' ', $args['label_class']).'">'.$args['label'].$required.'</label>';
+                }
+
+                $field .= '<div class="input-group flex-nowrap date" data-provide="datepicker">';
+                    $field .= '<input type="'.$args['type'].'" class="form-control input-text '.implode(' ', $args['input_class']).'" name="'.esc_attr($key).'" id="'.esc_attr($key).'" placeholder="'.esc_attr($args['placeholder']).'" '.$args['maxlength'].' value="'.esc_attr($value).'" '.implode(' ', $custom_attributes).' />';
+                    if (MADEIT_ADD_DATEPICKER) {
+                        $field .= '<div class="input-group-prepend">
+                            <span class="input-group-text" id="addon-wrapping"><i class="fas fa-calendar"></i></span>
+                        </div>';
+                    }
+                $field .= '</div>'.($args['after'] ?? '').'</div>'.$after;
+
+                break;
         case 'select':
 
             $options = '';
@@ -1422,25 +1463,39 @@ if (!function_exists('madeit_woocommerce_shopping_cart_in_menu')) {
         } elseif (WOO_SHOPING_CART_MENU_STYLE == 2) {
             if ($cart_contents_count == 0) {
                 ?>
-                <li class="menu-item nav-item"><a class="wc-menu-cart nav-link" href="<?php echo get_permalink(wc_get_page_id('shop')); ?>" title="<?php echo  __('Start shopping', 'madeit'); ?>">
+                <li class="menu-item nav-item"><a class="wc-menu-cart nav-link d-flex" href="<?php echo get_permalink(wc_get_page_id('shop')); ?>" title="<?php echo  __('Start shopping', 'madeit'); ?>">
                 <?php
             } else {
                 ?>
-                <li class="menu-item nav-item"><a class="wc-menu-cart nav-link" href="<?php echo wc_get_cart_url(); ?>" title="<?php __('View your shopping cart', 'madeit'); ?>">
+                <li class="menu-item nav-item"><a class="wc-menu-cart nav-link d-flex" href="<?php echo wc_get_cart_url(); ?>" title="<?php __('View your shopping cart', 'madeit'); ?>">
                 <?php
             } ?>
-            <span class="shopping-cart-count"><?php echo $cart_contents_count; ?></span>
-            <i class="fa fa-shopping-cart"></i>
+                <span class="shopping-cart-count"><?php echo $cart_contents_count; ?></span>
+                <svg xmlns="http://www.w3.org/2000/svg" style="display: block; height: 12px; align-self: center; margin-left: 5px;" viewBox="0 0 576 512"><path d="M175.1 416c-26.51 0-47.1 21.49-47.1 48S149.5 512 175.1 512s47.1-21.49 47.1-48S202.5 416 175.1 416zM463.1 416c-26.51 0-47.1 21.49-47.1 48s21.49 48 47.1 48s47.1-21.49 47.1-48S490.5 416 463.1 416zM569.5 44.73c-6.109-8.094-15.42-12.73-25.56-12.73H121.1L119.6 19.51C117.4 8.189 107.5 0 96 0H23.1C10.75 0 0 10.74 0 23.1C0 37.25 10.75 48 23.1 48h52.14l60.28 316.5C138.6 375.8 148.5 384 160 384H488c13.25 0 24-10.75 24-23.1C512 346.7 501.3 336 488 336H179.9L170.7 288h318.4c14.28 0 26.84-9.479 30.77-23.21l54.86-191.1C577.5 63.05 575.6 52.83 569.5 44.73zM477 240H161.6l-30.47-160h391.7L477 240z"/></svg>
             </a></li>
             <?php
         } elseif (WOO_SHOPING_CART_MENU_STYLE == 3 && $cart_contents_count > 0) {
             ?>
             <li class="menu-item nav-item">
-                <a class="wc-menu-cart nav-link" href="<?php echo wc_get_cart_url(); ?>" title="<?php __('View your shopping cart', 'madeit'); ?>">
+                <a class="wc-menu-cart nav-link d-flex" href="<?php echo wc_get_cart_url(); ?>" title="<?php __('View your shopping cart', 'madeit'); ?>">
                     <span class="shopping-cart-count"><?php echo $cart_contents_count; ?></span>
-                    <i class="fa fa-shopping-cart"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" style="display: block; height: 12px; align-self: center; margin-left: 5px;" viewBox="0 0 576 512"><path d="M175.1 416c-26.51 0-47.1 21.49-47.1 48S149.5 512 175.1 512s47.1-21.49 47.1-48S202.5 416 175.1 416zM463.1 416c-26.51 0-47.1 21.49-47.1 48s21.49 48 47.1 48s47.1-21.49 47.1-48S490.5 416 463.1 416zM569.5 44.73c-6.109-8.094-15.42-12.73-25.56-12.73H121.1L119.6 19.51C117.4 8.189 107.5 0 96 0H23.1C10.75 0 0 10.74 0 23.1C0 37.25 10.75 48 23.1 48h52.14l60.28 316.5C138.6 375.8 148.5 384 160 384H488c13.25 0 24-10.75 24-23.1C512 346.7 501.3 336 488 336H179.9L170.7 288h318.4c14.28 0 26.84-9.479 30.77-23.21l54.86-191.1C577.5 63.05 575.6 52.83 569.5 44.73zM477 240H161.6l-30.47-160h391.7L477 240z"/></svg>
                 </a>
             </li>
+            <?php
+        } elseif (WOO_SHOPING_CART_MENU_STYLE == 4) {
+            if ($cart_contents_count == 0) {
+                ?>
+                <li class="menu-item nav-item"><a class="wc-menu-cart nav-link d-flex" href="<?php echo get_permalink(wc_get_page_id('shop')); ?>" title="<?php echo  __('Start shopping', 'madeit'); ?>">
+                <?php
+            } else {
+                ?>
+                <li class="menu-item nav-item"><a class="wc-menu-cart nav-link d-flex" href="<?php echo wc_get_cart_url(); ?>" title="<?php __('View your shopping cart', 'madeit'); ?>">
+                <?php
+            } ?>
+                <span class="shopping-cart-count"><?php echo $cart_contents_count; ?></span>
+                <svg xmlns="http://www.w3.org/2000/svg" style="display: block; height: 12px; align-self: center; margin-left: 5px;" viewBox="0 0 576 512"><path d="M552 192l-136.5-.0046l-56.65-175.4c-4.062-12.59-17.58-19.53-30.22-15.47c-12.61 4.078-19.53 17.59-15.47 30.22l51.81 160.6H211L262.8 31.38c4.062-12.62-2.859-26.14-15.47-30.22C234.8-2.885 221.2 4.036 217.2 16.63L160.5 191.1L24 192c-13.25 0-24 10.75-24 23.1c0 13.25 10.75 23.1 24 23.1h18.85l45.6 214.9C95.47 488 125.1 512 158.9 512h258.2c33.8 0 63.42-23.1 70.44-57.06l45.6-214.9H552c13.25 0 24-10.75 24-23.1C576 202.8 565.3 192 552 192zM440.6 444.1c-2.328 11.03-12.2 19.03-23.47 19.03H158.9c-11.27 0-21.14-7.1-23.47-19.03L91.94 240h53.16l-7.943 24.62C133.1 277.3 140 290.8 152.6 294.8C155.1 295.6 157.6 296 160 296c10.14 0 19.56-6.469 22.84-16.62l12.7-39.37h184.9l12.7 39.37C396.4 289.5 405.9 296 416 296c2.438 0 4.922-.375 7.375-1.156c12.61-4.078 19.53-17.59 15.47-30.22l-7.943-24.62h53.16L440.6 444.1zM224 319.1v87.1c0 8.844-7.156 15.1-16 15.1S192 416.8 192 407.1V319.1c0-8.844 7.156-15.1 16-15.1S224 311.2 224 319.1zM304 319.1v87.1c0 8.844-7.156 15.1-16 15.1s-16-7.156-16-15.1V319.1c0-8.844 7.156-15.1 16-15.1S304 311.2 304 319.1zM384 319.1v87.1c0 8.844-7.156 15.1-16 15.1S352 416.8 352 407.1V319.1c0-8.844 7.156-15.1 16-15.1S384 311.2 384 319.1z"/></svg>
+            </a></li>
             <?php
         }
         $social = ob_get_clean();
@@ -1592,6 +1647,10 @@ if (!function_exists('madeit_wt_cli_enable_ckyes_branding')) {
 if (!function_exists('madeit_add_mobile_menu_items_to_main_menu') && function_exists('get_field')) {
     function madeit_add_mobile_menu_items_to_main_menu($items, $menu, $args)
     {
+        if(is_admin()) {
+            return $items;
+        }
+        
         $theme_locations = get_nav_menu_locations();
         if ($menu->term_id === $theme_locations['top'] && isset($theme_locations['upper-bottom'])) {
             if (get_field('add_to_main_menu', 'menu_'.$theme_locations['upper-bottom'])) {
@@ -1806,3 +1865,10 @@ require get_parent_theme_file_path('/inc/madeit-support.php');
  * Generate Theme Json file.
  */
 require get_parent_theme_file_path('/inc/generate-theme-json.php');
+
+/**
+ * MADE I.T Reviews.
+ */
+if (defined('MADEIT_REVIEWS') && MADEIT_REVIEWS) {
+    require get_parent_theme_file_path('/inc/reviews.php');
+}

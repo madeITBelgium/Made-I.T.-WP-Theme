@@ -14,7 +14,7 @@
  *
  * @author  WooThemes
  *
- * @version 3.3.0
+ * @version 7.0.1
  */
 if (!defined('ABSPATH')) {
     exit;
@@ -26,7 +26,7 @@ if (!defined('ABSPATH')) {
         <div class="input-group">
 	        <input type="search" id="woocommerce-product-search-field-<?php echo isset($index) ? absint($index) : 0; ?>" class="form-control search-field" placeholder="<?php echo esc_attr__('Search products&hellip;', 'woocommerce'); ?>" value="<?php echo get_search_query(); ?>" name="s" />
             <div class="input-group-append">
-	            <button type="submit" value="<?php echo esc_attr_x('Search', 'submit button', 'woocommerce'); ?>" class="btn btn-primary"><?php echo esc_html_x('Search', 'submit button', 'woocommerce'); ?></button>
+	            <button type="submit" value="<?php echo esc_attr_x('Search', 'submit button', 'woocommerce'); ?>" class="btn btn-primary <?php echo esc_attr(wc_wp_theme_get_element_class_name('button')); ?>"><?php echo esc_html_x('Search', 'submit button', 'woocommerce'); ?></button>
             </div>
         </div>
     </div>

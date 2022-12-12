@@ -49,7 +49,7 @@ jQuery( document ).ready( function( $ ) {
 
             $( '#lightbox-modal .modal-content' ).html( '' +
                 '<div class="modal-header">' +
-                    '<button type="button" aria-label="Close" data-dismiss="modal" class="close"><span aria-hidden="true">×</span></button>' +
+                    '<button type="button" aria-label="Close" data-dismiss="modal" data-bs-dismiss="modal" class="close"><span aria-hidden="true">×</span></button>' +
                 '</div>' +
                 '<div class="lightbox-nav-overlay">' +
                     '<a href="' + leftUrl + '" data-index="' + leftIndex + '"><span>❮</span></a>' +
@@ -60,7 +60,7 @@ jQuery( document ).ready( function( $ ) {
         } else {
             $( '#lightbox-modal .modal-content' ).html( '' +
                 '<div class="modal-header">' +
-                    '<button type="button" aria-label="Close" data-dismiss="modal" class="close"><span aria-hidden="true">×</span></button>' +
+                    '<button type="button" aria-label="Close" data-dismiss="modal" data-bs-dismiss="modal" class="close"><span aria-hidden="true">×</span></button>' +
                 '</div>' +
                 '<img src="' + url + '" alt="" style="width: 100%">'
             );
@@ -73,7 +73,7 @@ jQuery( document ).ready( function( $ ) {
         if ( ! gutenbergGallery ) {
             $( lightboxGroup ).find( '.click-lightbox:eq(' + $( this ).attr( 'data-index' ) + ')' ).click( );
         } else {
-            $( lightboxGroup ).find( 'a:eq(' + $( this ).attr( 'data-index' ) + ')' ).click( );
+            $( lightboxGroup ).find( 'a:eq(' + $( this ).attr( 'data-index' ) + ')' ).addClass('active-lightbox-click').click( );
         }
     });
 
@@ -123,7 +123,7 @@ jQuery( document ).ready( function( $ ) {
 
             $( '#lightbox-modal .modal-content' ).html( '' +
                 '<div class="modal-header">' +
-                    '<button type="button" aria-label="Close" data-dismiss="modal" class="close"><span aria-hidden="true">×</span></button>' +
+                    '<button type="button" aria-label="Close" data-bs-dismiss="modal" data-dismiss="modal" class="close"><span aria-hidden="true">×</span></button>' +
                 '</div>' +
                 '<div class="lightbox-nav-overlay">' +
                     '<a href="' + leftUrl + '" data-index="' + leftIndex + '"><span>❮</span></a>' +
@@ -131,7 +131,7 @@ jQuery( document ).ready( function( $ ) {
                 '</div><img src="' + url + '" alt="" style="width: 100%">' + descHtml );
         } else {
             $( '#lightbox-modal .modal-content' ).html( '<div class="modal-header">' +
-                    '<button type="button" aria-label="Close" data-dismiss="modal" class="close"><span aria-hidden="true">×</span></button>' +
+                    '<button type="button" aria-label="Close"data-bs-dismiss="modal" data-dismiss="modal" class="close"><span aria-hidden="true">×</span></button>' +
                 '</div>' +
                 '<img src="' + url + '" alt="" style="width: 100%">' );
         }
@@ -139,46 +139,59 @@ jQuery( document ).ready( function( $ ) {
     });
 
     $( '.woocommerce-product-gallery__wrapper[data-galary-id] a' ).click( function( e ) {
-        var url = $( this ).attr( 'href' );
-        var group, index, total, leftIndex, rightIndex, leftUrl, rightUrl;
-        var hasDescription = false;
-        var description = '';
-        var descHtml = '';
         e.preventDefault();
-        if ( ! url.endsWith( '.jpg' ) && ! url.endsWith( '.png' ) ) {
-            url = $( this ).find( 'img:eq(0)' ).attr( 'data-large_image' );
-        }
-
-        if ( $( this ).parents( '.woocommerce-product-gallery__wrapper' ).length ) {
-            group = $( this ).parents( '.woocommerce-product-gallery__wrapper' )[0];
-            lightboxGroup = group;
-            gutenbergGallery = true;
-
-            index = $( group ).find( 'a' ).index( this );
-            total = $( group ).find( 'a' ).length - 1;
-
-            leftIndex = index > 0 ? index - 1 : total;
-            rightIndex = index < total ? index + 1 : 0;
-
-            leftUrl = $( group ).find( 'a:eq(' + leftIndex + ')' ).attr( 'href' );
-            rightUrl = $( group ) .find( 'a:eq(' + rightIndex + ')' ).attr( 'href' );
-            
-            $( '#lightbox-modal .modal-content' ).html( '' +
-                '<div class="modal-header">' +
-                    '<button type="button" aria-label="Close" data-dismiss="modal" class="close"><span aria-hidden="true">×</span></button>' +
-                '</div>' +
-                '<div class="lightbox-nav-overlay">' +
-                    '<a href="' + leftUrl + '" data-index="' + leftIndex + '"><span>❮</span></a>' +
-                    '<a href="' + rightUrl + '" data-index="' + rightIndex + '"><span>❯</span></a>' +
-                '</div><img src="' + url + '" alt="" style="width: 100%">');
+        var url = $(this).attr( 'href' );
+        var index = $( this ).parents( '.woocommerce-product-gallery__wrapper' ).find( 'a' ).index( this );
+        if(index > 0 && !$(this).hasClass('active-lightbox-click')) {
+            var thisSrcSet = $( this ).find( 'img' ).attr( 'srcset' );
+            $( '.woocommerce-product-gallery__wrapper[data-galary-id] a:eq(0) img' ).attr( 'srcset', thisSrcSet );
+            $( '.woocommerce-product-gallery__wrapper[data-galary-id] a:eq(0) img' ).attr( 'scr', url );
+            $( '.woocommerce-product-gallery__wrapper[data-galary-id] a:eq(0) img' ).attr( 'data-large_image', url );
+            $( '.woocommerce-product-gallery__wrapper[data-galary-id] a:eq(0)' ).attr( 'href', url );
         } else {
-            $( '#lightbox-modal .modal-content' ).html( '<div class="modal-header">' +
-                    '<button type="button" aria-label="Close" data-dismiss="modal" class="close"><span aria-hidden="true">×</span></button>' +
-                '</div>' +
-                '<img src="' + url + '" alt="" style="width: 100%">' );
+            $(this).removeClass('active-lightbox-click');
+            var url = $( this ).attr( 'href' );
+            var group, index, total, leftIndex, rightIndex, leftUrl, rightUrl;
+            var hasDescription = false;
+            var description = '';
+            var descHtml = '';
+            e.preventDefault();
+            if ( ! url.endsWith( '.jpg' ) && ! url.endsWith( '.png' ) ) {
+                url = $( this ).find( 'img:eq(0)' ).attr( 'data-large_image' );
+            }
+
+            if ( $( this ).parents( '.woocommerce-product-gallery__wrapper' ).length ) {
+                group = $( this ).parents( '.woocommerce-product-gallery__wrapper' )[0];
+                lightboxGroup = group;
+                gutenbergGallery = true;
+
+                index = $( group ).find( 'a' ).index( this );
+                total = $( group ).find( 'a' ).length - 1;
+
+                leftIndex = index > 0 ? index - 1 : total;
+                rightIndex = index < total ? index + 1 : 0;
+
+                leftUrl = $( group ).find( 'a:eq(' + leftIndex + ')' ).attr( 'href' );
+                rightUrl = $( group ) .find( 'a:eq(' + rightIndex + ')' ).attr( 'href' );
+                
+                $( '#lightbox-modal .modal-content' ).html( '' +
+                    '<div class="modal-header">' +
+                        '<button type="button" aria-label="Close"data-bs-dismiss="modal" data-dismiss="modal" class="close"><span aria-hidden="true">×</span></button>' +
+                    '</div>' +
+                    '<div class="lightbox-nav-overlay">' +
+                        '<a href="' + leftUrl + '" data-index="' + leftIndex + '"><span>❮</span></a>' +
+                        '<a href="' + rightUrl + '" data-index="' + rightIndex + '"><span>❯</span></a>' +
+                    '</div><img src="' + url + '" alt="" style="width: 100%">');
+            } else {
+                $( '#lightbox-modal .modal-content' ).html( '<div class="modal-header">' +
+                        '<button type="button" aria-label="Close" data-bs-dismiss="modal" data-dismiss="modal" class="close"><span aria-hidden="true">×</span></button>' +
+                    '</div>' +
+                    '<img src="' + url + '" alt="" style="width: 100%">' );
+            }
+            $( '#lightbox-modal' ).modal( 'show' );
         }
-        $( '#lightbox-modal' ).modal( 'show' );
     });
+    
 
     document.onkeyup = function( e ) {
         if ( $( '#lightbox-modal' ).is( ':visible' ) && $( '#lightbox-modal .lightbox-nav-overlay a' ).length > 0 ) {
@@ -314,5 +327,13 @@ jQuery(document).ready( function( $ ) {
         }
 
         return false;
+    });
+
+    $('.review-show-more').on('click', function(e) {
+        e.preventDefault();
+        //find parent .review-item
+        var reviewItem = $(this).parents('.review-item, .single-review-item');
+        reviewItem.find('.long').removeClass('d-none');
+        reviewItem.find('.short').addClass('d-none');
     });
 });
