@@ -1076,6 +1076,6 @@ mark, .mark {
     padding: 0;
 }
 
-.nav-link {
+.navbar a {
   text-decoration: none;
 }
