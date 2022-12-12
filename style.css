@@ -1075,3 +1075,7 @@ footer.site-footer {
 mark, .mark {
     padding: 0;
 }
+
+.nav-link {
+  text-decoration: none;
+}
