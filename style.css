@@ -1076,6 +1076,30 @@ mark, .mark {
     padding: 0;
 }
 
+/* Menu general */
+.menu li a.nav-link {
+    border: none;
+    padding-right: calc(var(--bs-gutter-x) * 0.5);
+    padding-left: calc(var(--bs-gutter-x) * 0.5);
+}
 .navbar a {
   text-decoration: none;
+}
+#site-navigation {
+    margin-right: calc(var(--bs-gutter-x) * -0.5);
+    margin-left: calc(var(--bs-gutter-x) * -0.5);
+}
+@media(max-width: 768px) {
+    .navbar-nav .dropdown-menu {
+        border: none;
+        padding-left: 20px;
+        padding-top: 0;
+        background: transparent;
+    }
+}
+@media(min-width: 768px) {
+    #site-navigation {
+        margin-right: 0;
+        margin-left: 0;
+    }
 }
