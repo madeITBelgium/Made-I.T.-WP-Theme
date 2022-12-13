@@ -418,9 +418,7 @@ add_shortcode('list_reviews', 'list_reviews');
 
 function review_widget($atts)
 {
-    ob_start();
-
-    ?>
+    ob_start(); ?>
     <div class="">
         <div>
             <svg xmlns="http://www.w3.org/2000/svg" width="35.28" height="36" viewBox="0 0 35.28 36">
