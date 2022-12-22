@@ -337,3 +337,29 @@ jQuery(document).ready( function( $ ) {
         reviewItem.find('.short').addClass('d-none');
     });
 });
+
+
+/* Fix Menu Scroll */
+function getScollPosition() {
+    let scroll = window.scrollY;
+    let roundedScroll = Math.round(scroll/100)*100;
+
+    const el = document.querySelector("body");
+
+	var regx = new RegExp('\\bhas-scroll-[^ ]*[ ]?\\b', 'g');
+	el.className = el.className.replace(regx, '');
+
+    if(scroll >= 40) {
+        el.classList.remove('no-scroll');
+        el.classList.add('has-scroll');
+    } else {
+        el.classList.remove('has-scroll');
+        el.classList.add('no-scroll');
+    }
+    el.classList.add('has-scroll-' + roundedScroll);
+}
+
+getScollPosition();
+window.addEventListener('scroll', function() {
+    getScollPosition();
+});
