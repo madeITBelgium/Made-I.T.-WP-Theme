@@ -34,7 +34,7 @@ $leftCollPostition = apply_filters('madeit_upper_navbar_left_col_position', 'lef
                     <?php } ?>
                     
                     <?php if (has_nav_menu('social')) { ?>
-                        <div class="col text-right social-menu">
+                        <div class="col text-right text-end social-menu">
                             <nav class="social-upper-navigation" role="navigation" aria-label="<?php esc_attr_e('Social Links Menu', 'madeit'); ?>">
                                 <?php
                                     wp_nav_menu([
