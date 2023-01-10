@@ -1,0 +1,2097 @@
+{
+    "footer.php": {
+        "filters": {
+            "madeit_footer_class": {
+                "linenr": 12,
+                "line": "apply_filters('madeit_footer_class', ['container-fluid', 'site-footer']);",
+                "default": " ['container-fluid', 'site-footer']"
+            },
+            "madeit_footer_widget_row_class": {
+                "linenr": 13,
+                "line": "apply_filters('madeit_footer_widget_row_class', ['row', 'mt-5', 'mb-5']);",
+                "default": " ['row', 'mt-5', 'mb-5']"
+            },
+            "madeit_footer_container_class": {
+                "linenr": 14,
+                "line": "apply_filters('madeit_footer_container_class', ['container']);",
+                "default": " ['container']"
+            }
+        }
+    },
+    "front-page.php": {
+        "filters": {
+            "madeit_front_page_sections": {
+                "linenr": 44,
+                "line": "apply_filters('madeit_front_page_sections', 4);",
+                "default": " 4"
+            }
+        }
+    },
+    "inc\/bootstrap-navwalker.php": {
+        "filters": {
+            "nav_menu_css_class": {
+                "linenr": 64,
+                "line": "apply_filters('nav_menu_css_class', array_filter($classes), $item, $args));",
+                "default": " array_filter($classes), $item, $args)"
+            },
+            "nav_menu_item_id": {
+                "linenr": 78,
+                "line": "apply_filters('nav_menu_item_id', 'menu-item-'.$item->ID, $item, $args);",
+                "default": " 'menu-item-'.$item->ID, $item, $args"
+            },
+            "nav_menu_link_attributes": {
+                "linenr": 110,
+                "line": "apply_filters('nav_menu_link_attributes', $atts, $item, $args);",
+                "default": " $atts, $item, $args"
+            },
+            "walker_nav_menu_start_el": {
+                "linenr": 139,
+                "line": "apply_filters('walker_nav_menu_start_el', $item_output, $item, $depth, $args);",
+                "default": " $item_output, $item, $depth, $args"
+            }
+        }
+    },
+    "inc\/class-tgm-plugin-activation.php": {
+        "filters": {
+            "tgmpa_notice_action_links": {
+                "linenr": 1206,
+                "line": "apply_filters('tgmpa_notice_action_links', $action_links);",
+                "default": " $action_links"
+            },
+            "tgmpa_notice_rendered_action_links": {
+                "linenr": 1213,
+                "line": "apply_filters('tgmpa_notice_rendered_action_links', $action_links);",
+                "default": " $action_links"
+            },
+            "tgmpa_sanitize_key": {
+                "linenr": 1392,
+                "line": "apply_filters('tgmpa_sanitize_key', $key, $raw_key);",
+                "default": " $key, $raw_key"
+            },
+            "tgmpa_table_data_item": {
+                "linenr": 2279,
+                "line": "apply_filters('tgmpa_table_data_item', $table_data[$i], $plugin);",
+                "default": " $table_data[$i], $plugin"
+            },
+            "tgmpa_table_columns": {
+                "linenr": 2649,
+                "line": "apply_filters('tgmpa_table_columns', $columns);",
+                "default": " $columns"
+            },
+            "tgmpa_table_data_items": {
+                "linenr": 3091,
+                "line": "apply_filters('tgmpa_table_data_items', $this->_gather_plugin_data());",
+                "default": " $this->_gather_plugin_data()"
+            },
+            "tgmpa_update_bulk_plugins_complete_actions": {
+                "linenr": 3708,
+                "line": "apply_filters('tgmpa_update_bulk_plugins_complete_actions', $update_actions, $this->plugin_info);",
+                "default": " $update_actions, $this->plugin_info"
+            }
+        }
+    },
+    "inc\/color-patterns.php": {
+        "filters": {
+            "madeit_custom_colors_css": {
+                "linenr": 913,
+                "line": "apply_filters('madeit_custom_colors_css', $css, $colors);",
+                "default": " $css, $colors"
+            }
+        }
+    },
+    "inc\/customizer.php": {
+        "filters": {
+            "madeit_front_page_sections": {
+                "linenr": 219,
+                "line": "apply_filters('madeit_front_page_sections', 4);",
+                "default": " 4"
+            }
+        }
+    },
+    "inc\/generate-theme-json.php": {
+        "filters": {
+            "madeit_theme_json": {
+                "linenr": 94,
+                "line": "apply_filters('madeit_theme_json', $json);",
+                "default": " $json"
+            }
+        }
+    },
+    "inc\/icon-functions.php": {
+        "filters": {
+            "madeit_social_links_icons": {
+                "linenr": 227,
+                "line": "apply_filters('madeit_social_links_icons', $social_links_icons);",
+                "default": " $social_links_icons"
+            }
+        }
+    },
+    "inc\/template-functions.php": {
+        "filters": {
+            "madeit_front_page_sections": {
+                "linenr": 94,
+                "line": "apply_filters('madeit_front_page_sections', 4);",
+                "default": " 4"
+            }
+        }
+    },
+    "inc\/template-widgets.php": {
+        "filters": {
+            "widget_title": {
+                "linenr": 53,
+                "line": "apply_filters('widget_title', $instance['title']);",
+                "default": " $instance['title']"
+            }
+        }
+    },
+    "inc\/wp-members.php": {
+        "filters": {
+            "wpmem_inc_login_inputs": {
+                "linenr": 73,
+                "line": "apply_filters('wpmem_inc_login_inputs', $default_inputs);",
+                "default": " $default_inputs"
+            },
+            "wpmem_inc_login_args": {
+                "linenr": 90,
+                "line": "apply_filters('wpmem_inc_login_args', '');",
+                "default": " ''"
+            },
+            "wpmem_reg_link": {
+                "linenr": 96,
+                "line": "apply_filters('wpmem_reg_link', WPMEM_REGURL);",
+                "default": " WPMEM_REGURL"
+            },
+            "wpmem_login_form_args": {
+                "linenr": 163,
+                "line": "apply_filters('wpmem_login_form_args', '', $action);",
+                "default": " '', $action"
+            },
+            "wpmem_login_form_rows": {
+                "linenr": 196,
+                "line": "apply_filters('wpmem_login_form_rows', $rows, $action);",
+                "default": " $rows, $action"
+            },
+            "wpmem_login_hidden_fields": {
+                "linenr": 221,
+                "line": "apply_filters('wpmem_login_hidden_fields', $hidden, $action);",
+                "default": " $hidden, $action"
+            },
+            "wpmem_login_form_buttons": {
+                "linenr": 241,
+                "line": "apply_filters('wpmem_login_form_buttons', $buttons_before.$n.$buttons.$buttons_after.$n, $action);",
+                "default": " $buttons_before.$n.$buttons.$buttons_after.$n, $action"
+            },
+            "wpmem_forgot_link": {
+                "linenr": 252,
+                "line": "apply_filters('wpmem_forgot_link', wpmem_chk_qstr(WPMEM_MSURL).'a=pwdreset');",
+                "default": " wpmem_chk_qstr(WPMEM_MSURL).'a=pwdreset'"
+            },
+            "wpmem_login_form": {
+                "linenr": 302,
+                "line": "apply_filters('wpmem_login_form', $form, $action);",
+                "default": " $form, $action"
+            },
+            "wpmem_register_form_args": {
+                "linenr": 393,
+                "line": "apply_filters('wpmem_register_form_args', '', $toggle);",
+                "default": " '', $toggle"
+            },
+            "wpmem_register_fields_arr": {
+                "linenr": 440,
+                "line": "apply_filters('wpmem_register_fields_arr', get_option('wpmembers_fields'), $toggle);",
+                "default": " get_option('wpmembers_fields'), $toggle"
+            },
+            "wpmem_tos_link_txt": {
+                "linenr": 524,
+                "line": "apply_filters('wpmem_tos_link_txt', sprintf(__('Please indicate that you agree to the %s TOS %s', 'wp-members'), $tos_pop, '<\/a>'), $toggle);",
+                "default": " sprintf(__('Please indicate that you agree to the %s TOS %s', 'wp-members'), $tos_pop, '<\/a>'), $toggle"
+            },
+            "wpmem_register_form_rows": {
+                "linenr": 606,
+                "line": "apply_filters('wpmem_register_form_rows', $rows, $toggle);",
+                "default": " $rows, $toggle"
+            },
+            "wpmem_register_captcha_row": {
+                "linenr": 639,
+                "line": "apply_filters('wpmem_register_captcha_row', $row_before.$row.$row_after, $toggle);",
+                "default": " $row_before.$row.$row_after, $toggle"
+            },
+            "wpmem_register_hidden_fields": {
+                "linenr": 657,
+                "line": "apply_filters('wpmem_register_hidden_fields', $hidden, $toggle);",
+                "default": " $hidden, $toggle"
+            },
+            "wpmem_register_form_buttons": {
+                "linenr": 677,
+                "line": "apply_filters('wpmem_register_form_buttons', $buttons, $toggle);",
+                "default": " $buttons, $toggle"
+            },
+            "wpmem_register_form": {
+                "linenr": 732,
+                "line": "apply_filters('wpmem_register_form', $form, $toggle, $rows, $hidden);",
+                "default": " $form, $toggle, $rows, $hidden"
+            },
+            "wpmem_inc_changepassword_inputs": {
+                "linenr": 789,
+                "line": "apply_filters('wpmem_inc_changepassword_inputs', $default_inputs);",
+                "default": " $default_inputs"
+            },
+            "wpmem_inc_changepassword_args": {
+                "linenr": 805,
+                "line": "apply_filters('wpmem_inc_changepassword_args', '');",
+                "default": " ''"
+            },
+            "wpmem_inc_resetpassword_inputs": {
+                "linenr": 852,
+                "line": "apply_filters('wpmem_inc_resetpassword_inputs', $default_inputs);",
+                "default": " $default_inputs"
+            },
+            "wpmem_inc_resetpassword_args": {
+                "linenr": 868,
+                "line": "apply_filters('wpmem_inc_resetpassword_args', '');",
+                "default": " ''"
+            }
+        }
+    },
+    "inc\/reviews.php": {
+        "filters": {
+            "madeit_reviews_card_class": {
+                "linenr": 321,
+                "line": "apply_filters('madeit_reviews_card_class', ['card', 'border-0', 'h-100']);",
+                "default": " ['card', 'border-0', 'h-100']"
+            }
+        }
+    },
+    "index.php": {
+        "filters": {
+            "madeit_index_page_title": {
+                "linenr": 33,
+                "line": "apply_filters('madeit_index_page_title', __('Posts', 'madeit'));",
+                "default": " __('Posts', 'madeit')"
+            },
+            "madeit_index_post_template": {
+                "linenr": 49,
+                "line": "apply_filters('madeit_index_post_template', 'template-parts\/post\/content'), get_post_format());",
+                "default": " 'template-parts\/post\/content'), get_post_format()"
+            }
+        }
+    },
+    "sidebar.php": {
+        "filters": {
+            "madeit_sidebar_class": {
+                "linenr": 13,
+                "line": "apply_filters('madeit_sidebar_class', ['col-12', 'col-lg-3', 'col-md-4']);",
+                "default": " ['col-12', 'col-lg-3', 'col-md-4']"
+            }
+        }
+    },
+    "template-parts\/footer\/footer-widgets.php": {
+        "filters": {
+            "madeit_footer_widget_container_class": {
+                "linenr": 14,
+                "line": "apply_filters('madeit_footer_widget_container_class', ['container']);",
+                "default": " ['container']"
+            }
+        }
+    },
+    "template-parts\/footer\/site-info.php": {
+        "filters": {
+            "madeit_powered_by_text": {
+                "linenr": 15,
+                "line": "apply_filters('madeit_powered_by_text', sprintf(__('Proudly powered by %s', 'madeit'), 'Made I.T.'));",
+                "default": " sprintf(__('Proudly powered by %s', 'madeit'), 'Made I.T.')"
+            }
+        }
+    },
+    "template-parts\/navigation\/navigation-top.php": {
+        "filters": {
+            "madeit_navbar_class": {
+                "linenr": 7,
+                "line": "apply_filters('madeit_navbar_class', ['navbar', 'navbar-expand-md', 'bg-white', 'fixed-top', 'd-block']);",
+                "default": " ['navbar', 'navbar-expand-md', 'bg-white', 'fixed-top', 'd-block']"
+            },
+            "madeit_navbar_container_class": {
+                "linenr": 8,
+                "line": "apply_filters('madeit_navbar_container_class', ['container']);",
+                "default": " ['container']"
+            },
+            "madeit_navbar_menu_class": {
+                "linenr": 9,
+                "line": "apply_filters('madeit_navbar_menu_class', ['menu', 'nav', 'navbar-nav', 'ml-auto', 'ms-auto', 'align-items-md-center']);",
+                "default": " ['menu', 'nav', 'navbar-nav', 'ml-auto', 'ms-auto', 'align-items-md-center']"
+            }
+        }
+    },
+    "template-parts\/navigation\/navigation-upper-bottom.php": {
+        "filters": {
+            "madeit_upper_bottom_navbar_class": {
+                "linenr": 7,
+                "line": "apply_filters('madeit_upper_bottom_navbar_class', ['container-fluid', 'd-none', 'd-lg-block', 'pb-1', 'font-weight-light', 'upper-bottom-navbar', ' navbar', 'navbar-expand', 'border-bottom', 'border-dark']);",
+                "default": " ['container-fluid', 'd-none', 'd-lg-block', 'pb-1', 'font-weight-light', 'upper-bottom-navbar', ' navbar', 'navbar-expand', 'border-bottom', 'border-dark']"
+            },
+            "madeit_upper_bottom_navbar_container_class": {
+                "linenr": 8,
+                "line": "apply_filters('madeit_upper_bottom_navbar_container_class', ['container', 'p-0']);",
+                "default": " ['container', 'p-0']"
+            }
+        }
+    },
+    "template-parts\/navigation\/navigation-upper-top.php": {
+        "filters": {
+            "madeit_upper_navbar_class": {
+                "linenr": 7,
+                "line": "apply_filters('madeit_upper_navbar_class', ['container-fluid', 'd-none', 'd-lg-block', 'mb-2', 'pb-1', 'font-weight-light', 'upper-top-navbar']);",
+                "default": " ['container-fluid', 'd-none', 'd-lg-block', 'mb-2', 'pb-1', 'font-weight-light', 'upper-top-navbar']"
+            },
+            "madeit_upper_navbar_container_class": {
+                "linenr": 8,
+                "line": "apply_filters('madeit_upper_navbar_container_class', ['container']);",
+                "default": " ['container']"
+            },
+            "madeit_upper_navbar_left_col_position": {
+                "linenr": 9,
+                "line": "apply_filters('madeit_upper_navbar_left_col_position', 'left');",
+                "default": " 'left'"
+            }
+        }
+    },
+    "template-parts\/page\/content-front-page-gutenberg.php": {
+        "filters": {
+            "wpml_object_id": {
+                "linenr": 12,
+                "line": "apply_filters('wpml_object_id', $post->ID, $post->post_type, true, apply_filters('wpml_default_language', 'nl'));",
+                "default": " $post->ID, $post->post_type, true, apply_filters('wpml_default_language', 'nl')"
+            }
+        }
+    },
+    "template-parts\/post\/content-audio.php": {
+        "filters": {
+            "the_content": {
+                "linenr": 10,
+                "line": "apply_filters('the_content', get_the_content());",
+                "default": " get_the_content()"
+            }
+        }
+    },
+    "template-parts\/post\/content-link.php": {
+        "filters": {
+            "the_content": {
+                "linenr": 10,
+                "line": "apply_filters('the_content', get_the_content()));",
+                "default": " get_the_content())"
+            }
+        }
+    },
+    "template-parts\/post\/content-video.php": {
+        "filters": {
+            "the_content": {
+                "linenr": 10,
+                "line": "apply_filters('the_content', get_the_content());",
+                "default": " get_the_content()"
+            }
+        }
+    },
+    "woocommerce\/archive-product.php": {
+        "filters": {
+            "madeit_woo_product_column_class": {
+                "linenr": 74,
+                "line": "apply_filters('madeit_woo_product_column_class', ['col-12', 'col-md-6', 'col-lg-4']);",
+                "default": " ['col-12', 'col-md-6', 'col-lg-4']"
+            }
+        }
+    },
+    "woocommerce\/cart\/cart-empty.php": {
+        "filters": {
+            "woocommerce_return_to_shop_redirect": {
+                "linenr": 30,
+                "line": "apply_filters('woocommerce_return_to_shop_redirect', wc_get_page_permalink('shop')));",
+                "default": " wc_get_page_permalink('shop'))"
+            }
+        }
+    },
+    "woocommerce\/cart\/cart-shipping.php": {
+        "filters": {
+            "woocommerce_shipping_estimate_html": {
+                "linenr": 55,
+                "line": "apply_filters('woocommerce_shipping_estimate_html', __('Shipping options will be updated during checkout.', 'woocommerce')));",
+                "default": " __('Shipping options will be updated during checkout.', 'woocommerce'))"
+            },
+            "woocommerce_shipping_not_enabled_on_cart_html": {
+                "linenr": 63,
+                "line": "apply_filters('woocommerce_shipping_not_enabled_on_cart_html', __('Shipping costs are calculated during checkout.', 'woocommerce')));",
+                "default": " __('Shipping costs are calculated during checkout.', 'woocommerce'))"
+            },
+            "woocommerce_shipping_may_be_available_html": {
+                "linenr": 65,
+                "line": "apply_filters('woocommerce_shipping_may_be_available_html', __('Enter your address to view shipping options.', 'woocommerce')));",
+                "default": " __('Enter your address to view shipping options.', 'woocommerce'))"
+            },
+            "woocommerce_no_shipping_available_html": {
+                "linenr": 68,
+                "line": "apply_filters('woocommerce_no_shipping_available_html', __('There are no shipping options available. Please ensure that your address has been entered correctly, or contact us if you need any help.', 'woocommerce')));",
+                "default": " __('There are no shipping options available. Please ensure that your address has been entered correctly, or contact us if you need any help.', 'woocommerce'))"
+            },
+            "woocommerce_cart_no_shipping_available_html": {
+                "linenr": 71,
+                "line": "apply_filters('woocommerce_cart_no_shipping_available_html', sprintf(esc_html__('No shipping options were found for %s.', 'woocommerce').' ', '<strong>'.esc_html($formatted_destination).'<\/strong>')));",
+                "default": " sprintf(esc_html__('No shipping options were found for %s.', 'woocommerce').' ', '<strong>'.esc_html($formatted_destination).'<\/strong>'))"
+            }
+        },
+        "actions": {
+            "woocommerce_after_shipping_rate": {
+                "linenr": 42,
+                "line": "do_action('woocommerce_after_shipping_rate', $method, $index);",
+                "default": " $method, $index"
+            }
+        }
+    },
+    "woocommerce\/cart\/cart.php": {
+        "filters": {
+            "woocommerce_cart_item_product": {
+                "linenr": 36,
+                "line": "apply_filters('woocommerce_cart_item_product', $cart_item['data'], $cart_item, $cart_item_key);",
+                "default": " $cart_item['data'], $cart_item, $cart_item_key"
+            },
+            "woocommerce_cart_item_product_id": {
+                "linenr": 37,
+                "line": "apply_filters('woocommerce_cart_item_product_id', $cart_item['product_id'], $cart_item, $cart_item_key);",
+                "default": " $cart_item['product_id'], $cart_item, $cart_item_key"
+            },
+            "woocommerce_cart_item_permalink": {
+                "linenr": 40,
+                "line": "apply_filters('woocommerce_cart_item_permalink', $_product->is_visible() ? $_product->get_permalink($cart_item) : '', $cart_item, $cart_item_key);",
+                "default": " $_product->is_visible() ? $_product->get_permalink($cart_item) : '', $cart_item, $cart_item_key"
+            },
+            "woocommerce_cart_item_class": {
+                "linenr": 41,
+                "line": "apply_filters('woocommerce_cart_item_class', 'cart_item', $cart_item, $cart_item_key));",
+                "default": " 'cart_item', $cart_item, $cart_item_key)"
+            },
+            "woocommerce_cart_item_thumbnail": {
+                "linenr": 56,
+                "line": "apply_filters('woocommerce_cart_item_thumbnail', $_product->get_image(), $cart_item, $cart_item_key);",
+                "default": " $_product->get_image(), $cart_item, $cart_item_key"
+            },
+            "woocommerce_cart_item_name": {
+                "linenr": 69,
+                "line": "apply_filters('woocommerce_cart_item_name', sprintf('<a href=\"%s\">%s<\/a>', esc_url($product_permalink), $_product->get_name()), $cart_item, $cart_item_key));",
+                "default": " sprintf('<a href=\"%s\">%s<\/a>', esc_url($product_permalink), $_product->get_name()), $cart_item, $cart_item_key)"
+            },
+            "woocommerce_cart_item_backorder_notification": {
+                "linenr": 79,
+                "line": "apply_filters('woocommerce_cart_item_backorder_notification', '<p class=\"backorder_notification\">'.esc_html__('Available on backorder', 'woocommerce').'<\/p>', $product_id));",
+                "default": " '<p class=\"backorder_notification\">'.esc_html__('Available on backorder', 'woocommerce').'<\/p>', $product_id)"
+            },
+            "woocommerce_cart_item_price": {
+                "linenr": 86,
+                "line": "apply_filters('woocommerce_cart_item_price', WC()->cart->get_product_price($_product), $cart_item, $cart_item_key);",
+                "default": " WC()->cart->get_product_price($_product), $cart_item, $cart_item_key"
+            },
+            "woocommerce_cart_item_quantity": {
+                "linenr": 103,
+                "line": "apply_filters('woocommerce_cart_item_quantity', $product_quantity, $cart_item_key, $cart_item);",
+                "default": " $product_quantity, $cart_item_key, $cart_item"
+            },
+            "woocommerce_cart_item_subtotal": {
+                "linenr": 108,
+                "line": "apply_filters('woocommerce_cart_item_subtotal', WC()->cart->get_product_subtotal($_product, $cart_item['quantity']), $cart_item, $cart_item_key);",
+                "default": " WC()->cart->get_product_subtotal($_product, $cart_item['quantity']), $cart_item, $cart_item_key"
+            }
+        },
+        "actions": {
+            "woocommerce_after_cart_item_name": {
+                "linenr": 72,
+                "line": "do_action('woocommerce_after_cart_item_name', $cart_item, $cart_item_key);",
+                "default": " $cart_item, $cart_item_key"
+            }
+        }
+    },
+    "woocommerce\/cart\/cross-sells.php": {
+        "filters": {
+            "woocommerce_product_cross_sells_products_heading": {
+                "linenr": 23,
+                "line": "apply_filters('woocommerce_product_cross_sells_products_heading', __('You may be interested in&hellip;', 'woocommerce'));",
+                "default": " __('You may be interested in&hellip;', 'woocommerce')"
+            }
+        }
+    },
+    "woocommerce\/cart\/mini-cart.php": {
+        "filters": {
+            "woocommerce_cart_item_product": {
+                "linenr": 32,
+                "line": "apply_filters('woocommerce_cart_item_product', $cart_item['data'], $cart_item, $cart_item_key);",
+                "default": " $cart_item['data'], $cart_item, $cart_item_key"
+            },
+            "woocommerce_cart_item_product_id": {
+                "linenr": 33,
+                "line": "apply_filters('woocommerce_cart_item_product_id', $cart_item['product_id'], $cart_item, $cart_item_key);",
+                "default": " $cart_item['product_id'], $cart_item, $cart_item_key"
+            },
+            "woocommerce_cart_item_name": {
+                "linenr": 36,
+                "line": "apply_filters('woocommerce_cart_item_name', $_product->get_name(), $cart_item, $cart_item_key);",
+                "default": " $_product->get_name(), $cart_item, $cart_item_key"
+            },
+            "woocommerce_cart_item_thumbnail": {
+                "linenr": 37,
+                "line": "apply_filters('woocommerce_cart_item_thumbnail', $_product->get_image(), $cart_item, $cart_item_key);",
+                "default": " $_product->get_image(), $cart_item, $cart_item_key"
+            },
+            "woocommerce_cart_item_price": {
+                "linenr": 38,
+                "line": "apply_filters('woocommerce_cart_item_price', WC()->cart->get_product_price($_product), $cart_item, $cart_item_key);",
+                "default": " WC()->cart->get_product_price($_product), $cart_item, $cart_item_key"
+            },
+            "woocommerce_cart_item_permalink": {
+                "linenr": 39,
+                "line": "apply_filters('woocommerce_cart_item_permalink', $_product->is_visible() ? $_product->get_permalink($cart_item) : '', $cart_item, $cart_item_key);",
+                "default": " $_product->is_visible() ? $_product->get_permalink($cart_item) : '', $cart_item, $cart_item_key"
+            },
+            "woocommerce_mini_cart_item_class": {
+                "linenr": 40,
+                "line": "apply_filters('woocommerce_mini_cart_item_class', 'mini_cart_item', $cart_item, $cart_item_key));",
+                "default": " 'mini_cart_item', $cart_item, $cart_item_key)"
+            },
+            "woocommerce_widget_cart_item_quantity": {
+                "linenr": 58,
+                "line": "apply_filters('woocommerce_widget_cart_item_quantity', '<span class=\"quantity\">'.sprintf('%s &times; %s', $cart_item['quantity'], $product_price).'<\/span>', $cart_item, $cart_item_key);",
+                "default": " '<span class=\"quantity\">'.sprintf('%s &times; %s', $cart_item['quantity'], $product_price).'<\/span>', $cart_item, $cart_item_key"
+            }
+        }
+    },
+    "woocommerce\/checkout\/form-billing.php": {
+        "filters": {
+            "woocommerce_create_account_default_checked": {
+                "linenr": 49,
+                "line": "apply_filters('woocommerce_create_account_default_checked', false))), true); ?> type=\"checkbox\" name=\"createaccount\" value=\"1\" \/> <span><?php esc_html_e('Create an account?', 'woocommerce');",
+                "default": " false))), true); ?> type=\"checkbox\" name=\"createaccount\" value=\"1\" \/> <span><?php esc_html_e('Create an account?', 'woocommerce'"
+            }
+        },
+        "actions": {
+            "woocommerce_before_checkout_billing_form": {
+                "linenr": 27,
+                "line": "do_action('woocommerce_before_checkout_billing_form', $checkout);",
+                "default": " $checkout"
+            },
+            "woocommerce_after_checkout_billing_form": {
+                "linenr": 40,
+                "line": "do_action('woocommerce_after_checkout_billing_form', $checkout);",
+                "default": " $checkout"
+            },
+            "woocommerce_before_checkout_registration_form": {
+                "linenr": 55,
+                "line": "do_action('woocommerce_before_checkout_registration_form', $checkout);",
+                "default": " $checkout"
+            },
+            "woocommerce_after_checkout_registration_form": {
+                "linenr": 68,
+                "line": "do_action('woocommerce_after_checkout_registration_form', $checkout);",
+                "default": " $checkout"
+            }
+        }
+    },
+    "woocommerce\/checkout\/form-checkout.php": {
+        "filters": {
+            "woocommerce_checkout_must_be_logged_in_message": {
+                "linenr": 21,
+                "line": "apply_filters('woocommerce_checkout_must_be_logged_in_message', __('You must be logged in to checkout.', 'woocommerce')));",
+                "default": " __('You must be logged in to checkout.', 'woocommerce'))"
+            }
+        },
+        "actions": {
+            "woocommerce_before_checkout_form": {
+                "linenr": 17,
+                "line": "do_action('woocommerce_before_checkout_form', $checkout);",
+                "default": " $checkout"
+            },
+            "woocommerce_after_checkout_form": {
+                "linenr": 58,
+                "line": "do_action('woocommerce_after_checkout_form', $checkout);",
+                "default": " $checkout"
+            }
+        }
+    },
+    "woocommerce\/checkout\/form-coupon.php": {
+        "filters": {
+            "woocommerce_checkout_coupon_message": {
+                "linenr": 21,
+                "line": "apply_filters('woocommerce_checkout_coupon_message', __('Have a coupon?', 'woocommerce').' <a href=\"#\" class=\"showcoupon\">'.__('Click here to enter your code', 'woocommerce').'<\/a>'), 'notice');",
+                "default": " __('Have a coupon?', 'woocommerce').' <a href=\"#\" class=\"showcoupon\">'.__('Click here to enter your code', 'woocommerce').'<\/a>'), 'notice'"
+            }
+        }
+    },
+    "woocommerce\/checkout\/form-login.php": {
+        "filters": {
+            "woocommerce_checkout_login_message": {
+                "linenr": 26,
+                "line": "apply_filters('woocommerce_checkout_login_message', esc_html__('Returning customer?', 'woocommerce')).' <a href=\"#\" class=\"showlogin\">'.esc_html__('Click here to login', 'woocommerce').'<\/a>', 'notice');",
+                "default": " esc_html__('Returning customer?', 'woocommerce')).' <a href=\"#\" class=\"showlogin\">'.esc_html__('Click here to login', 'woocommerce').'<\/a>', 'notice'"
+            }
+        }
+    },
+    "woocommerce\/checkout\/form-pay.php": {
+        "filters": {
+            "woocommerce_order_item_class": {
+                "linenr": 39,
+                "line": "apply_filters('woocommerce_order_item_class', 'order_item', $item, $order));",
+                "default": " 'order_item', $item, $order)"
+            },
+            "woocommerce_order_item_name": {
+                "linenr": 42,
+                "line": "apply_filters('woocommerce_order_item_name', $item->get_name(), $item, false));",
+                "default": " $item->get_name(), $item, false)"
+            },
+            "woocommerce_order_item_quantity_html": {
+                "linenr": 51,
+                "line": "apply_filters('woocommerce_order_item_quantity_html', ' <strong class=\"product-quantity\">'.sprintf('&times; %s', esc_html($item->get_quantity())).'<\/strong>', $item);",
+                "default": " ' <strong class=\"product-quantity\">'.sprintf('&times; %s', esc_html($item->get_quantity())).'<\/strong>', $item"
+            },
+            "woocommerce_pay_order_button_html": {
+                "linenr": 90,
+                "line": "apply_filters('woocommerce_pay_order_button_html', '<button type=\"submit\" class=\"button alt'.esc_attr(wc_wp_theme_get_element_class_name('button') ? ' '.wc_wp_theme_get_element_class_name('button') : '').'\" id=\"place_order\" value=\"'.esc_attr($order_button_text).'\" data-value=\"'.esc_attr($order_button_text).'\">'.esc_html($order_button_text).'<\/button>');",
+                "default": " '<button type=\"submit\" class=\"button alt'.esc_attr(wc_wp_theme_get_element_class_name('button') ? ' '.wc_wp_theme_get_element_class_name('button') : '').'\" id=\"place_order\" value=\"'.esc_attr($order_button_text).'\" data-value=\"'.esc_attr($order_button_text).'\">'.esc_html($order_button_text).'<\/button>'"
+            }
+        },
+        "actions": {
+            "woocommerce_order_item_meta_start": {
+                "linenr": 44,
+                "line": "do_action('woocommerce_order_item_meta_start', $item_id, $item, $order, false);",
+                "default": " $item_id, $item, $order, false"
+            },
+            "woocommerce_order_item_meta_end": {
+                "linenr": 48,
+                "line": "do_action('woocommerce_order_item_meta_end', $item_id, $item, $order, false);",
+                "default": " $item_id, $item, $order, false"
+            }
+        }
+    },
+    "woocommerce\/checkout\/form-shipping.php": {
+        "filters": {
+            "woocommerce_ship_to_different_address_checked": {
+                "linenr": 27,
+                "line": "apply_filters('woocommerce_ship_to_different_address_checked', 'shipping' === get_option('woocommerce_ship_to_destination') ? 1 : 0), 1); ?> type=\"checkbox\" name=\"ship_to_different_address\" value=\"1\" \/> <span><?php esc_html_e('Ship to a different address?', 'woocommerce');",
+                "default": " 'shipping' === get_option('woocommerce_ship_to_destination') ? 1 : 0), 1); ?> type=\"checkbox\" name=\"ship_to_different_address\" value=\"1\" \/> <span><?php esc_html_e('Ship to a different address?', 'woocommerce'"
+            }
+        },
+        "actions": {
+            "woocommerce_before_checkout_shipping_form": {
+                "linenr": 33,
+                "line": "do_action('woocommerce_before_checkout_shipping_form', $checkout);",
+                "default": " $checkout"
+            },
+            "woocommerce_after_checkout_shipping_form": {
+                "linenr": 45,
+                "line": "do_action('woocommerce_after_checkout_shipping_form', $checkout);",
+                "default": " $checkout"
+            },
+            "woocommerce_before_order_notes": {
+                "linenr": 52,
+                "line": "do_action('woocommerce_before_order_notes', $checkout);",
+                "default": " $checkout"
+            },
+            "woocommerce_after_order_notes": {
+                "linenr": 70,
+                "line": "do_action('woocommerce_after_order_notes', $checkout);",
+                "default": " $checkout"
+            }
+        }
+    },
+    "woocommerce\/checkout\/payment.php": {
+        "filters": {
+            "woocommerce_order_button_html": {
+                "linenr": 42,
+                "line": "apply_filters('woocommerce_order_button_html', '<button type=\"submit\" class=\"button alt'.esc_attr(wc_wp_theme_get_element_class_name('button') ? ' '.wc_wp_theme_get_element_class_name('button') : '').'\" name=\"woocommerce_checkout_place_order\" id=\"place_order\" value=\"'.esc_attr($order_button_text).'\" data-value=\"'.esc_attr($order_button_text).'\">'.esc_html($order_button_text).'<\/button>');",
+                "default": " '<button type=\"submit\" class=\"button alt'.esc_attr(wc_wp_theme_get_element_class_name('button') ? ' '.wc_wp_theme_get_element_class_name('button') : '').'\" name=\"woocommerce_checkout_place_order\" id=\"place_order\" value=\"'.esc_attr($order_button_text).'\" data-value=\"'.esc_attr($order_button_text).'\">'.esc_html($order_button_text).'<\/button>'"
+            }
+        }
+    },
+    "woocommerce\/checkout\/review-order.php": {
+        "filters": {
+            "woocommerce_cart_item_product": {
+                "linenr": 35,
+                "line": "apply_filters('woocommerce_cart_item_product', $cart_item['data'], $cart_item, $cart_item_key);",
+                "default": " $cart_item['data'], $cart_item, $cart_item_key"
+            },
+            "woocommerce_cart_item_class": {
+                "linenr": 38,
+                "line": "apply_filters('woocommerce_cart_item_class', 'cart_item', $cart_item, $cart_item_key));",
+                "default": " 'cart_item', $cart_item, $cart_item_key)"
+            },
+            "woocommerce_checkout_cart_item_quantity": {
+                "linenr": 41,
+                "line": "apply_filters('woocommerce_checkout_cart_item_quantity', ' <strong class=\"product-quantity\">'.sprintf('&times;&nbsp;%s', $cart_item['quantity']).'<\/strong>', $cart_item, $cart_item_key);",
+                "default": " ' <strong class=\"product-quantity\">'.sprintf('&times;&nbsp;%s', $cart_item['quantity']).'<\/strong>', $cart_item, $cart_item_key"
+            },
+            "woocommerce_cart_item_subtotal": {
+                "linenr": 45,
+                "line": "apply_filters('woocommerce_cart_item_subtotal', WC()->cart->get_product_subtotal($_product, $cart_item['quantity']), $cart_item, $cart_item_key);",
+                "default": " WC()->cart->get_product_subtotal($_product, $cart_item['quantity']), $cart_item, $cart_item_key"
+            }
+        }
+    },
+    "woocommerce\/checkout\/terms.php": {
+        "filters": {
+            "woocommerce_terms_is_checked_default": {
+                "linenr": 26,
+                "line": "apply_filters('woocommerce_terms_is_checked_default', isset($_POST['terms'])), true);",
+                "default": " isset($_POST['terms'])), true"
+            }
+        }
+    },
+    "woocommerce\/checkout\/thankyou.php": {
+        "filters": {
+            "woocommerce_thankyou_order_received_text": {
+                "linenr": 87,
+                "line": "apply_filters('woocommerce_thankyou_order_received_text', esc_html__('Thank you. Your order has been received.', 'woocommerce'), null);",
+                "default": " esc_html__('Thank you. Your order has been received.', 'woocommerce'), null"
+            }
+        },
+        "actions": {
+            "woocommerce_before_thankyou": {
+                "linenr": 25,
+                "line": "do_action('woocommerce_before_thankyou', $order->get_id());",
+                "default": " $order->get_id()"
+            },
+            "woocommerce_thankyou": {
+                "linenr": 82,
+                "line": "do_action('woocommerce_thankyou', $order->get_id());",
+                "default": " $order->get_id()"
+            }
+        }
+    },
+    "woocommerce\/content-product-cat.php": {
+        "filters": {
+            "madeit_woo_category_column_class": {
+                "linenr": 21,
+                "line": "apply_filters('madeit_woo_category_column_class', ['col-12', 'col-md-6', 'col-lg-4']);",
+                "default": " ['col-12', 'col-md-6', 'col-lg-4']"
+            },
+            "madeit_woo_category_product_image_container_class": {
+                "linenr": 22,
+                "line": "apply_filters('madeit_woo_category_product_image_container_class', ['mt-auto', 'mb-auto']);",
+                "default": " ['mt-auto', 'mb-auto']"
+            }
+        },
+        "actions": {
+            "woocommerce_before_subcategory_title": {
+                "linenr": 35,
+                "line": "do_action('woocommerce_before_subcategory_title', $category);",
+                "default": " $category"
+            },
+            "woocommerce_before_subcategory": {
+                "linenr": 46,
+                "line": "do_action('woocommerce_before_subcategory', $category);",
+                "default": " $category"
+            },
+            "woocommerce_shop_loop_subcategory_title": {
+                "linenr": 53,
+                "line": "do_action('woocommerce_shop_loop_subcategory_title', $category);",
+                "default": " $category"
+            },
+            "woocommerce_after_subcategory_title": {
+                "linenr": 58,
+                "line": "do_action('woocommerce_after_subcategory_title', $category);",
+                "default": " $category"
+            }
+        }
+    },
+    "woocommerce\/content-product.php": {
+        "filters": {
+            "madeit_woo_category_product_image_container_class": {
+                "linenr": 19,
+                "line": "apply_filters('madeit_woo_category_product_image_container_class', ['d-block', 'mt-auto', 'mb-auto']);",
+                "default": " ['d-block', 'mt-auto', 'mb-auto']"
+            },
+            "madeit_woo_category_product_content_container_class": {
+                "linenr": 20,
+                "line": "apply_filters('madeit_woo_category_product_content_container_class', ['card-body', 'text-center', 'd-flex', 'justify-content-between', 'flex-column']);",
+                "default": " ['card-body', 'text-center', 'd-flex', 'justify-content-between', 'flex-column']"
+            },
+            "madeit_woo_btn_class": {
+                "linenr": 41,
+                "line": "apply_filters('madeit_woo_btn_class', ['btn', 'btn-success']);",
+                "default": " ['btn', 'btn-success']"
+            }
+        }
+    },
+    "woocommerce\/content-single-product.php": {
+        "filters": {
+            "madeit_woo_single_product_col_1_class": {
+                "linenr": 31,
+                "line": "apply_filters('madeit_woo_single_product_col_1_class', ['col-md', 'order-last', 'order-md-first']);",
+                "default": " ['col-md', 'order-last', 'order-md-first']"
+            },
+            "madeit_woo_single_product_col_2_class": {
+                "linenr": 32,
+                "line": "apply_filters('madeit_woo_single_product_col_2_class', ['col-md']);",
+                "default": " ['col-md']"
+            }
+        }
+    },
+    "woocommerce\/content-widget-product.php": {
+        "actions": {
+            "woocommerce_widget_product_item_start": {
+                "linenr": 31,
+                "line": "do_action('woocommerce_widget_product_item_start', $args);",
+                "default": " $args"
+            },
+            "woocommerce_widget_product_item_end": {
+                "linenr": 44,
+                "line": "do_action('woocommerce_widget_product_item_end', $args);",
+                "default": " $args"
+            }
+        }
+    },
+    "woocommerce\/emails\/admin-cancelled-order.php": {
+        "actions": {
+            "woocommerce_email_header": {
+                "linenr": 24,
+                "line": "do_action('woocommerce_email_header', $email_heading, $email);",
+                "default": " $email_heading, $email"
+            },
+            "woocommerce_email_order_details": {
+                "linenr": 36,
+                "line": "do_action('woocommerce_email_order_details', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_order_meta": {
+                "linenr": 40,
+                "line": "do_action('woocommerce_email_order_meta', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_customer_details": {
+                "linenr": 45,
+                "line": "do_action('woocommerce_email_customer_details', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_footer": {
+                "linenr": 57,
+                "line": "do_action('woocommerce_email_footer', $email);",
+                "default": " $email"
+            }
+        }
+    },
+    "woocommerce\/emails\/admin-failed-order.php": {
+        "actions": {
+            "woocommerce_email_header": {
+                "linenr": 25,
+                "line": "do_action('woocommerce_email_header', $email_heading, $email);",
+                "default": " $email_heading, $email"
+            },
+            "woocommerce_email_order_details": {
+                "linenr": 37,
+                "line": "do_action('woocommerce_email_order_details', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_order_meta": {
+                "linenr": 41,
+                "line": "do_action('woocommerce_email_order_meta', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_customer_details": {
+                "linenr": 46,
+                "line": "do_action('woocommerce_email_customer_details', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_footer": {
+                "linenr": 58,
+                "line": "do_action('woocommerce_email_footer', $email);",
+                "default": " $email"
+            }
+        }
+    },
+    "woocommerce\/emails\/admin-new-order.php": {
+        "actions": {
+            "woocommerce_email_header": {
+                "linenr": 22,
+                "line": "do_action('woocommerce_email_header', $email_heading, $email);",
+                "default": " $email_heading, $email"
+            },
+            "woocommerce_email_order_details": {
+                "linenr": 34,
+                "line": "do_action('woocommerce_email_order_details', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_order_meta": {
+                "linenr": 39,
+                "line": "do_action('woocommerce_email_order_meta', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_customer_details": {
+                "linenr": 45,
+                "line": "do_action('woocommerce_email_customer_details', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_footer": {
+                "linenr": 57,
+                "line": "do_action('woocommerce_email_footer', $email);",
+                "default": " $email"
+            }
+        }
+    },
+    "woocommerce\/emails\/customer-completed-order.php": {
+        "actions": {
+            "woocommerce_email_header": {
+                "linenr": 24,
+                "line": "do_action('woocommerce_email_header', $email_heading, $email);",
+                "default": " $email_heading, $email"
+            },
+            "woocommerce_email_order_details": {
+                "linenr": 38,
+                "line": "do_action('woocommerce_email_order_details', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_order_meta": {
+                "linenr": 43,
+                "line": "do_action('woocommerce_email_order_meta', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_customer_details": {
+                "linenr": 49,
+                "line": "do_action('woocommerce_email_customer_details', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_footer": {
+                "linenr": 61,
+                "line": "do_action('woocommerce_email_footer', $email);",
+                "default": " $email"
+            }
+        }
+    },
+    "woocommerce\/emails\/customer-invoice.php": {
+        "actions": {
+            "woocommerce_email_header": {
+                "linenr": 26,
+                "line": "do_action('woocommerce_email_header', $email_heading, $email);",
+                "default": " $email_heading, $email"
+            },
+            "woocommerce_email_order_details": {
+                "linenr": 69,
+                "line": "do_action('woocommerce_email_order_details', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_order_meta": {
+                "linenr": 76,
+                "line": "do_action('woocommerce_email_order_meta', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_customer_details": {
+                "linenr": 84,
+                "line": "do_action('woocommerce_email_customer_details', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_footer": {
+                "linenr": 98,
+                "line": "do_action('woocommerce_email_footer', $email);",
+                "default": " $email"
+            }
+        }
+    },
+    "woocommerce\/emails\/customer-new-account.php": {
+        "actions": {
+            "woocommerce_email_header": {
+                "linenr": 19,
+                "line": "do_action('woocommerce_email_header', $email_heading, $email);",
+                "default": " $email_heading, $email"
+            },
+            "woocommerce_email_footer": {
+                "linenr": 38,
+                "line": "do_action('woocommerce_email_footer', $email);",
+                "default": " $email"
+            }
+        }
+    },
+    "woocommerce\/emails\/customer-note.php": {
+        "actions": {
+            "woocommerce_email_header": {
+                "linenr": 24,
+                "line": "do_action('woocommerce_email_header', $email_heading, $email);",
+                "default": " $email_heading, $email"
+            },
+            "woocommerce_email_order_details": {
+                "linenr": 42,
+                "line": "do_action('woocommerce_email_order_details', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_order_meta": {
+                "linenr": 47,
+                "line": "do_action('woocommerce_email_order_meta', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_customer_details": {
+                "linenr": 53,
+                "line": "do_action('woocommerce_email_customer_details', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_footer": {
+                "linenr": 65,
+                "line": "do_action('woocommerce_email_footer', $email);",
+                "default": " $email"
+            }
+        }
+    },
+    "woocommerce\/emails\/customer-on-hold-order.php": {
+        "actions": {
+            "woocommerce_email_header": {
+                "linenr": 22,
+                "line": "do_action('woocommerce_email_header', $email_heading, $email);",
+                "default": " $email_heading, $email"
+            },
+            "woocommerce_email_order_details": {
+                "linenr": 36,
+                "line": "do_action('woocommerce_email_order_details', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_order_meta": {
+                "linenr": 41,
+                "line": "do_action('woocommerce_email_order_meta', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_customer_details": {
+                "linenr": 47,
+                "line": "do_action('woocommerce_email_customer_details', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_footer": {
+                "linenr": 59,
+                "line": "do_action('woocommerce_email_footer', $email);",
+                "default": " $email"
+            }
+        }
+    },
+    "woocommerce\/emails\/customer-processing-order.php": {
+        "actions": {
+            "woocommerce_email_header": {
+                "linenr": 24,
+                "line": "do_action('woocommerce_email_header', $email_heading, $email);",
+                "default": " $email_heading, $email"
+            },
+            "woocommerce_email_order_details": {
+                "linenr": 39,
+                "line": "do_action('woocommerce_email_order_details', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_order_meta": {
+                "linenr": 44,
+                "line": "do_action('woocommerce_email_order_meta', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_customer_details": {
+                "linenr": 50,
+                "line": "do_action('woocommerce_email_customer_details', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_footer": {
+                "linenr": 62,
+                "line": "do_action('woocommerce_email_footer', $email);",
+                "default": " $email"
+            }
+        }
+    },
+    "woocommerce\/emails\/customer-refunded-order.php": {
+        "actions": {
+            "woocommerce_email_header": {
+                "linenr": 22,
+                "line": "do_action('woocommerce_email_header', $email_heading, $email);",
+                "default": " $email_heading, $email"
+            },
+            "woocommerce_email_order_details": {
+                "linenr": 46,
+                "line": "do_action('woocommerce_email_order_details', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_order_meta": {
+                "linenr": 51,
+                "line": "do_action('woocommerce_email_order_meta', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_customer_details": {
+                "linenr": 57,
+                "line": "do_action('woocommerce_email_customer_details', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_footer": {
+                "linenr": 69,
+                "line": "do_action('woocommerce_email_footer', $email);",
+                "default": " $email"
+            }
+        }
+    },
+    "woocommerce\/emails\/customer-reset-password.php": {
+        "actions": {
+            "woocommerce_email_header": {
+                "linenr": 23,
+                "line": "do_action('woocommerce_email_header', $email_heading, $email);",
+                "default": " $email_heading, $email"
+            },
+            "woocommerce_email_footer": {
+                "linenr": 46,
+                "line": "do_action('woocommerce_email_footer', $email);",
+                "default": " $email"
+            }
+        }
+    },
+    "woocommerce\/emails\/email-footer.php": {
+        "filters": {
+            "woocommerce_email_footer_text": {
+                "linenr": 42,
+                "line": "apply_filters('woocommerce_email_footer_text', get_option('woocommerce_email_footer_text')))));",
+                "default": " get_option('woocommerce_email_footer_text'))))"
+            }
+        }
+    },
+    "woocommerce\/emails\/email-order-details.php": {
+        "actions": {
+            "woocommerce_email_before_order_table": {
+                "linenr": 21,
+                "line": "do_action('woocommerce_email_before_order_table', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_after_order_table": {
+                "linenr": 88,
+                "line": "do_action('woocommerce_email_after_order_table', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            }
+        }
+    },
+    "woocommerce\/emails\/email-order-items.php": {
+        "filters": {
+            "woocommerce_order_item_class": {
+                "linenr": 37,
+                "line": "apply_filters('woocommerce_order_item_class', 'order_item', $item, $order));",
+                "default": " 'order_item', $item, $order)"
+            },
+            "woocommerce_order_item_thumbnail": {
+                "linenr": 43,
+                "line": "apply_filters('woocommerce_order_item_thumbnail', $image, $item));",
+                "default": " $image, $item)"
+            },
+            "woocommerce_order_item_name": {
+                "linenr": 47,
+                "line": "apply_filters('woocommerce_order_item_name', $item->get_name(), $item, false));",
+                "default": " $item->get_name(), $item, false)"
+            },
+            "woocommerce_email_order_item_quantity": {
+                "linenr": 77,
+                "line": "apply_filters('woocommerce_email_order_item_quantity', $qty_display, $item));",
+                "default": " $qty_display, $item)"
+            }
+        },
+        "actions": {
+            "woocommerce_order_item_meta_start": {
+                "linenr": 55,
+                "line": "do_action('woocommerce_order_item_meta_start', $item_id, $item, $order, $plain_text);",
+                "default": " $item_id, $item, $order, $plain_text"
+            },
+            "woocommerce_order_item_meta_end": {
+                "linenr": 65,
+                "line": "do_action('woocommerce_order_item_meta_end', $item_id, $item, $order, $plain_text);",
+                "default": " $item_id, $item, $order, $plain_text"
+            }
+        }
+    },
+    "woocommerce\/emails\/plain\/admin-cancelled-order.php": {
+        "filters": {
+            "woocommerce_email_footer_text": {
+                "linenr": 57,
+                "line": "apply_filters('woocommerce_email_footer_text', get_option('woocommerce_email_footer_text')));",
+                "default": " get_option('woocommerce_email_footer_text'))"
+            }
+        },
+        "actions": {
+            "woocommerce_email_order_details": {
+                "linenr": 32,
+                "line": "do_action('woocommerce_email_order_details', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_order_meta": {
+                "linenr": 39,
+                "line": "do_action('woocommerce_email_order_meta', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_customer_details": {
+                "linenr": 45,
+                "line": "do_action('woocommerce_email_customer_details', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            }
+        }
+    },
+    "woocommerce\/emails\/plain\/admin-failed-order.php": {
+        "filters": {
+            "woocommerce_email_footer_text": {
+                "linenr": 57,
+                "line": "apply_filters('woocommerce_email_footer_text', get_option('woocommerce_email_footer_text')));",
+                "default": " get_option('woocommerce_email_footer_text'))"
+            }
+        },
+        "actions": {
+            "woocommerce_email_order_details": {
+                "linenr": 32,
+                "line": "do_action('woocommerce_email_order_details', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_order_meta": {
+                "linenr": 39,
+                "line": "do_action('woocommerce_email_order_meta', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_customer_details": {
+                "linenr": 45,
+                "line": "do_action('woocommerce_email_customer_details', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            }
+        }
+    },
+    "woocommerce\/emails\/plain\/admin-new-order.php": {
+        "filters": {
+            "woocommerce_email_footer_text": {
+                "linenr": 57,
+                "line": "apply_filters('woocommerce_email_footer_text', get_option('woocommerce_email_footer_text')));",
+                "default": " get_option('woocommerce_email_footer_text'))"
+            }
+        },
+        "actions": {
+            "woocommerce_email_order_details": {
+                "linenr": 32,
+                "line": "do_action('woocommerce_email_order_details', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_order_meta": {
+                "linenr": 39,
+                "line": "do_action('woocommerce_email_order_meta', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_customer_details": {
+                "linenr": 45,
+                "line": "do_action('woocommerce_email_customer_details', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            }
+        }
+    },
+    "woocommerce\/emails\/plain\/customer-completed-order.php": {
+        "filters": {
+            "woocommerce_email_footer_text": {
+                "linenr": 59,
+                "line": "apply_filters('woocommerce_email_footer_text', get_option('woocommerce_email_footer_text')));",
+                "default": " get_option('woocommerce_email_footer_text'))"
+            }
+        },
+        "actions": {
+            "woocommerce_email_order_details": {
+                "linenr": 34,
+                "line": "do_action('woocommerce_email_order_details', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_order_meta": {
+                "linenr": 41,
+                "line": "do_action('woocommerce_email_order_meta', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_customer_details": {
+                "linenr": 47,
+                "line": "do_action('woocommerce_email_customer_details', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            }
+        }
+    },
+    "woocommerce\/emails\/plain\/customer-invoice.php": {
+        "filters": {
+            "woocommerce_email_footer_text": {
+                "linenr": 78,
+                "line": "apply_filters('woocommerce_email_footer_text', get_option('woocommerce_email_footer_text')));",
+                "default": " get_option('woocommerce_email_footer_text'))"
+            }
+        },
+        "actions": {
+            "woocommerce_email_order_details": {
+                "linenr": 49,
+                "line": "do_action('woocommerce_email_order_details', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_order_meta": {
+                "linenr": 58,
+                "line": "do_action('woocommerce_email_order_meta', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_customer_details": {
+                "linenr": 66,
+                "line": "do_action('woocommerce_email_customer_details', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            }
+        }
+    },
+    "woocommerce\/emails\/plain\/customer-new-account.php": {
+        "filters": {
+            "woocommerce_email_footer_text": {
+                "linenr": 45,
+                "line": "apply_filters('woocommerce_email_footer_text', get_option('woocommerce_email_footer_text')));",
+                "default": " get_option('woocommerce_email_footer_text'))"
+            }
+        }
+    },
+    "woocommerce\/emails\/plain\/customer-note.php": {
+        "filters": {
+            "woocommerce_email_footer_text": {
+                "linenr": 66,
+                "line": "apply_filters('woocommerce_email_footer_text', get_option('woocommerce_email_footer_text')));",
+                "default": " get_option('woocommerce_email_footer_text'))"
+            }
+        },
+        "actions": {
+            "woocommerce_email_order_details": {
+                "linenr": 41,
+                "line": "do_action('woocommerce_email_order_details', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_order_meta": {
+                "linenr": 48,
+                "line": "do_action('woocommerce_email_order_meta', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_customer_details": {
+                "linenr": 54,
+                "line": "do_action('woocommerce_email_customer_details', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            }
+        }
+    },
+    "woocommerce\/emails\/plain\/customer-on-hold-order.php": {
+        "actions": {
+            "woocommerce_email_order_details": {
+                "linenr": 33,
+                "line": "do_action('woocommerce_email_order_details', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_order_meta": {
+                "linenr": 40,
+                "line": "do_action('woocommerce_email_order_meta', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_customer_details": {
+                "linenr": 46,
+                "line": "do_action('woocommerce_email_customer_details', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            }
+        }
+    },
+    "woocommerce\/emails\/plain\/customer-processing-order.php": {
+        "filters": {
+            "woocommerce_email_footer_text": {
+                "linenr": 59,
+                "line": "apply_filters('woocommerce_email_footer_text', get_option('woocommerce_email_footer_text')));",
+                "default": " get_option('woocommerce_email_footer_text'))"
+            }
+        },
+        "actions": {
+            "woocommerce_email_order_details": {
+                "linenr": 34,
+                "line": "do_action('woocommerce_email_order_details', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_order_meta": {
+                "linenr": 41,
+                "line": "do_action('woocommerce_email_order_meta', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_customer_details": {
+                "linenr": 47,
+                "line": "do_action('woocommerce_email_customer_details', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            }
+        }
+    },
+    "woocommerce\/emails\/plain\/customer-refunded-order.php": {
+        "filters": {
+            "woocommerce_email_footer_text": {
+                "linenr": 64,
+                "line": "apply_filters('woocommerce_email_footer_text', get_option('woocommerce_email_footer_text')));",
+                "default": " get_option('woocommerce_email_footer_text'))"
+            }
+        },
+        "actions": {
+            "woocommerce_email_order_details": {
+                "linenr": 39,
+                "line": "do_action('woocommerce_email_order_details', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_order_meta": {
+                "linenr": 46,
+                "line": "do_action('woocommerce_email_order_meta', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_customer_details": {
+                "linenr": 52,
+                "line": "do_action('woocommerce_email_customer_details', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            }
+        }
+    },
+    "woocommerce\/emails\/plain\/customer-reset-password.php": {
+        "filters": {
+            "woocommerce_email_footer_text": {
+                "linenr": 42,
+                "line": "apply_filters('woocommerce_email_footer_text', get_option('woocommerce_email_footer_text')));",
+                "default": " get_option('woocommerce_email_footer_text'))"
+            }
+        }
+    },
+    "woocommerce\/emails\/plain\/email-order-details.php": {
+        "actions": {
+            "woocommerce_email_before_order_table": {
+                "linenr": 19,
+                "line": "do_action('woocommerce_email_before_order_table', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            },
+            "woocommerce_email_after_order_table": {
+                "linenr": 53,
+                "line": "do_action('woocommerce_email_after_order_table', $order, $sent_to_admin, $plain_text, $email);",
+                "default": " $order, $sent_to_admin, $plain_text, $email"
+            }
+        }
+    },
+    "woocommerce\/emails\/plain\/email-order-items.php": {
+        "filters": {
+            "woocommerce_order_item_name": {
+                "linenr": 33,
+                "line": "apply_filters('woocommerce_order_item_name', $item->get_name(), $item, false));",
+                "default": " $item->get_name(), $item, false)"
+            },
+            "woocommerce_email_order_item_quantity": {
+                "linenr": 37,
+                "line": "apply_filters('woocommerce_email_order_item_quantity', $item->get_quantity(), $item);",
+                "default": " $item->get_quantity(), $item"
+            }
+        },
+        "actions": {
+            "woocommerce_order_item_meta_start": {
+                "linenr": 42,
+                "line": "do_action('woocommerce_order_item_meta_start', $item_id, $item, $order, $plain_text);",
+                "default": " $item_id, $item, $order, $plain_text"
+            },
+            "woocommerce_order_item_meta_end": {
+                "linenr": 58,
+                "line": "do_action('woocommerce_order_item_meta_end', $item_id, $item, $order, $plain_text);",
+                "default": " $item_id, $item, $order, $plain_text"
+            }
+        }
+    },
+    "woocommerce\/loop\/sale-flash.php": {
+        "filters": {
+            "woocommerce_sale_flash": {
+                "linenr": 28,
+                "line": "apply_filters('woocommerce_sale_flash', '<div class=\"product-onsale\"><span>'.esc_html__('Sale!', 'woocommerce').'<\/span><\/div>', $post, $product);",
+                "default": " '<div class=\"product-onsale\"><span>'.esc_html__('Sale!', 'woocommerce').'<\/span><\/div>', $post, $product"
+            }
+        }
+    },
+    "woocommerce\/myaccount\/downloads.php": {
+        "filters": {
+            "woocommerce_return_to_shop_redirect": {
+                "linenr": 45,
+                "line": "apply_filters('woocommerce_return_to_shop_redirect', wc_get_page_permalink('shop')));",
+                "default": " wc_get_page_permalink('shop'))"
+            }
+        },
+        "actions": {
+            "woocommerce_before_account_downloads": {
+                "linenr": 28,
+                "line": "do_action('woocommerce_before_account_downloads', $has_downloads);",
+                "default": " $has_downloads"
+            },
+            "woocommerce_available_downloads": {
+                "linenr": 37,
+                "line": "do_action('woocommerce_available_downloads', $downloads);",
+                "default": " $downloads"
+            },
+            "woocommerce_after_account_downloads": {
+                "linenr": 52,
+                "line": "do_action('woocommerce_after_account_downloads', $has_downloads);",
+                "default": " $has_downloads"
+            }
+        }
+    },
+    "woocommerce\/myaccount\/form-edit-address.php": {
+        "filters": {
+            "woocommerce_my_account_edit_address_title": {
+                "linenr": 29,
+                "line": "apply_filters('woocommerce_my_account_edit_address_title', $page_title, $load_address);",
+                "default": " $page_title, $load_address"
+            }
+        }
+    },
+    "woocommerce\/myaccount\/form-lost-password.php": {
+        "filters": {
+            "woocommerce_lost_password_message": {
+                "linenr": 17,
+                "line": "apply_filters('woocommerce_lost_password_message', esc_html__('Lost your password? Please enter your username or email address. You will receive a link to create a new password via email.', 'woocommerce'));",
+                "default": " esc_html__('Lost your password? Please enter your username or email address. You will receive a link to create a new password via email.', 'woocommerce')"
+            }
+        }
+    },
+    "woocommerce\/myaccount\/form-reset-password.php": {
+        "filters": {
+            "woocommerce_reset_password_message": {
+                "linenr": 24,
+                "line": "apply_filters('woocommerce_reset_password_message', esc_html__('Enter a new password below.', 'woocommerce'));",
+                "default": " esc_html__('Enter a new password below.', 'woocommerce')"
+            }
+        }
+    },
+    "woocommerce\/myaccount\/lost-password-confirmation.php": {
+        "filters": {
+            "woocommerce_lost_password_confirmation_message": {
+                "linenr": 24,
+                "line": "apply_filters('woocommerce_lost_password_confirmation_message', esc_html__('A password reset email has been sent to the email address on file for your account, but may take several minutes to show up in your inbox. Please wait at least 10 minutes before attempting another reset.', 'woocommerce')));",
+                "default": " esc_html__('A password reset email has been sent to the email address on file for your account, but may take several minutes to show up in your inbox. Please wait at least 10 minutes before attempting another reset.', 'woocommerce'))"
+            }
+        }
+    },
+    "woocommerce\/myaccount\/my-address.php": {
+        "filters": {
+            "woocommerce_my_account_my_address_description": {
+                "linenr": 30,
+                "line": "apply_filters('woocommerce_my_account_my_address_description', __('The following addresses will be used on the checkout page by default.', 'woocommerce'));",
+                "default": " __('The following addresses will be used on the checkout page by default.', 'woocommerce')"
+            }
+        }
+    },
+    "woocommerce\/myaccount\/orders.php": {
+        "filters": {
+            "woocommerce_return_to_shop_redirect": {
+                "linenr": 104,
+                "line": "apply_filters('woocommerce_return_to_shop_redirect', wc_get_page_permalink('shop')));",
+                "default": " wc_get_page_permalink('shop'))"
+            }
+        },
+        "actions": {
+            "woocommerce_before_account_orders": {
+                "linenr": 21,
+                "line": "do_action('woocommerce_before_account_orders', $has_orders);",
+                "default": " $has_orders"
+            },
+            "woocommerce_after_account_orders": {
+                "linenr": 111,
+                "line": "do_action('woocommerce_after_account_orders', $has_orders);",
+                "default": " $has_orders"
+            }
+        }
+    },
+    "woocommerce\/myaccount\/payment-methods.php": {
+        "actions": {
+            "woocommerce_before_account_payment_methods": {
+                "linenr": 29,
+                "line": "do_action('woocommerce_before_account_payment_methods', $has_methods);",
+                "default": " $has_methods"
+            },
+            "woocommerce_after_account_payment_methods": {
+                "linenr": 77,
+                "line": "do_action('woocommerce_after_account_payment_methods', $has_methods);",
+                "default": " $has_methods"
+            }
+        }
+    },
+    "woocommerce\/myaccount\/view-order.php": {
+        "actions": {
+            "woocommerce_view_order": {
+                "linenr": 56,
+                "line": "do_action('woocommerce_view_order', $order_id);",
+                "default": " $order_id"
+            }
+        }
+    },
+    "woocommerce\/order\/order-details-customer.php": {
+        "actions": {
+            "woocommerce_order_details_after_customer_details": {
+                "linenr": 63,
+                "line": "do_action('woocommerce_order_details_after_customer_details', $order);",
+                "default": " $order"
+            }
+        }
+    },
+    "woocommerce\/order\/order-details-item.php": {
+        "filters": {
+            "woocommerce_order_item_class": {
+                "linenr": 25,
+                "line": "apply_filters('woocommerce_order_item_class', 'woocommerce-table__line-item order_item', $item, $order));",
+                "default": " 'woocommerce-table__line-item order_item', $item, $order)"
+            },
+            "woocommerce_order_item_permalink": {
+                "linenr": 30,
+                "line": "apply_filters('woocommerce_order_item_permalink', $is_visible ? $product->get_permalink($item) : '', $item, $order);",
+                "default": " $is_visible ? $product->get_permalink($item) : '', $item, $order"
+            },
+            "woocommerce_order_item_name": {
+                "linenr": 32,
+                "line": "apply_filters('woocommerce_order_item_name', $product_permalink ? sprintf('<a href=\"%s\">%s<\/a>', $product_permalink, $item->get_name()) : $item->get_name(), $item, $is_visible));",
+                "default": " $product_permalink ? sprintf('<a href=\"%s\">%s<\/a>', $product_permalink, $item->get_name()) : $item->get_name(), $item, $is_visible)"
+            },
+            "woocommerce_order_item_quantity_html": {
+                "linenr": 43,
+                "line": "apply_filters('woocommerce_order_item_quantity_html', ' <strong class=\"product-quantity\">'.sprintf('&times;&nbsp;%s', $qty_display).'<\/strong>', $item);",
+                "default": " ' <strong class=\"product-quantity\">'.sprintf('&times;&nbsp;%s', $qty_display).'<\/strong>', $item"
+            }
+        },
+        "actions": {
+            "woocommerce_order_item_meta_start": {
+                "linenr": 45,
+                "line": "do_action('woocommerce_order_item_meta_start', $item_id, $item, $order, false);",
+                "default": " $item_id, $item, $order, false"
+            },
+            "woocommerce_order_item_meta_end": {
+                "linenr": 49,
+                "line": "do_action('woocommerce_order_item_meta_end', $item_id, $item, $order, false);",
+                "default": " $item_id, $item, $order, false"
+            }
+        }
+    },
+    "woocommerce\/order\/order-details.php": {
+        "filters": {
+            "woocommerce_purchase_order_item_types": {
+                "linenr": 25,
+                "line": "apply_filters('woocommerce_purchase_order_item_types', 'line_item'));",
+                "default": " 'line_item')"
+            },
+            "woocommerce_purchase_note_order_statuses": {
+                "linenr": 26,
+                "line": "apply_filters('woocommerce_purchase_note_order_statuses', ['completed', 'processing']));",
+                "default": " ['completed', 'processing'])"
+            }
+        },
+        "actions": {
+            "woocommerce_order_details_before_order_table": {
+                "linenr": 42,
+                "line": "do_action('woocommerce_order_details_before_order_table', $order);",
+                "default": " $order"
+            },
+            "woocommerce_order_details_before_order_table_items": {
+                "linenr": 58,
+                "line": "do_action('woocommerce_order_details_before_order_table_items', $order);",
+                "default": " $order"
+            },
+            "woocommerce_order_details_after_order_table_items": {
+                "linenr": 76,
+                "line": "do_action('woocommerce_order_details_after_order_table_items', $order);",
+                "default": " $order"
+            },
+            "woocommerce_order_details_after_order_table": {
+                "linenr": 102,
+                "line": "do_action('woocommerce_order_details_after_order_table', $order);",
+                "default": " $order"
+            },
+            "woocommerce_after_order_details": {
+                "linenr": 113,
+                "line": "do_action('woocommerce_after_order_details', $order);",
+                "default": " $order"
+            }
+        }
+    },
+    "woocommerce\/order\/tracking.php": {
+        "actions": {
+            "woocommerce_view_order": {
+                "linenr": 54,
+                "line": "do_action('woocommerce_view_order', $order->get_id());",
+                "default": " $order->get_id()"
+            }
+        }
+    },
+    "woocommerce\/single-product-reviews.php": {
+        "filters": {
+            "woocommerce_reviews_title": {
+                "linenr": 34,
+                "line": "apply_filters('woocommerce_reviews_title', $reviews_title, $count, $product);",
+                "default": " $reviews_title, $count, $product"
+            },
+            "woocommerce_product_review_list_args": {
+                "linenr": 43,
+                "line": "apply_filters('woocommerce_product_review_list_args', ['callback' => 'woocommerce_comments']));",
+                "default": " ['callback' => 'woocommerce_comments'])"
+            },
+            "woocommerce_product_review_comment_form_args": {
+                "linenr": 135,
+                "line": "apply_filters('woocommerce_product_review_comment_form_args', $comment_form));",
+                "default": " $comment_form)"
+            }
+        }
+    },
+    "woocommerce\/single-product\/add-to-cart\/external.php": {
+        "filters": {
+            "madeit_woo_btn_class": {
+                "linenr": 16,
+                "line": "apply_filters('madeit_woo_btn_class', ['btn', 'btn-success']);",
+                "default": " ['btn', 'btn-success']"
+            }
+        }
+    },
+    "woocommerce\/single-product\/add-to-cart\/grouped.php": {
+        "filters": {
+            "woocommerce_add_to_cart_form_action": {
+                "linenr": 23,
+                "line": "apply_filters('woocommerce_add_to_cart_form_action', $product->get_permalink()));",
+                "default": " $product->get_permalink())"
+            },
+            "woocommerce_grouped_product_list_link": {
+                "linenr": 86,
+                "line": "apply_filters('woocommerce_grouped_product_list_link', $grouped_product_child->get_permalink(), $grouped_product_child->get_id())).'\">'.$grouped_product_child->get_name().'<\/a>' : $grouped_product_child->get_name();",
+                "default": " $grouped_product_child->get_permalink(), $grouped_product_child->get_id())).'\">'.$grouped_product_child->get_name().'<\/a>' : $grouped_product_child->get_name("
+            },
+            "madeit_woo_btn_class": {
+                "linenr": 117,
+                "line": "apply_filters('madeit_woo_btn_class', ['btn', 'btn-success']);",
+                "default": " ['btn', 'btn-success']"
+            }
+        },
+        "actions": {
+            "woocommerce_grouped_product_list_before": {
+                "linenr": 40,
+                "line": "do_action('woocommerce_grouped_product_list_before', $grouped_product_columns, $quantites_required, $product);",
+                "default": " $grouped_product_columns, $quantites_required, $product"
+            },
+            "woocommerce_grouped_product_list_after": {
+                "linenr": 107,
+                "line": "do_action('woocommerce_grouped_product_list_after', $grouped_product_columns, $quantites_required, $product);",
+                "default": " $grouped_product_columns, $quantites_required, $product"
+            }
+        }
+    },
+    "woocommerce\/single-product\/add-to-cart\/simple.php": {
+        "filters": {
+            "woocommerce_add_to_cart_form_action": {
+                "linenr": 21,
+                "line": "apply_filters('woocommerce_add_to_cart_form_action', $product->get_permalink()));",
+                "default": " $product->get_permalink())"
+            },
+            "madeit_woo_btn_class": {
+                "linenr": 33,
+                "line": "apply_filters('madeit_woo_btn_class', ['btn', 'btn-success']);",
+                "default": " ['btn', 'btn-success']"
+            }
+        }
+    },
+    "woocommerce\/single-product\/add-to-cart\/variable.php": {
+        "filters": {
+            "woocommerce_add_to_cart_form_action": {
+                "linenr": 27,
+                "line": "apply_filters('woocommerce_add_to_cart_form_action', $product->get_permalink())); ?>\" method=\"post\" enctype='multipart\/form-data' data-product_id=\"<?php echo absint($product->get_id());",
+                "default": " $product->get_permalink())); ?>\" method=\"post\" enctype='multipart\/form-data' data-product_id=\"<?php echo absint($product->get_id()"
+            },
+            "woocommerce_out_of_stock_message": {
+                "linenr": 31,
+                "line": "apply_filters('woocommerce_out_of_stock_message', __('This product is currently out of stock and unavailable.', 'woocommerce')));",
+                "default": " __('This product is currently out of stock and unavailable.', 'woocommerce'))"
+            }
+        }
+    },
+    "woocommerce\/single-product\/add-to-cart\/variation-add-to-cart-button.php": {
+        "filters": {
+            "madeit_woo_btn_class": {
+                "linenr": 26,
+                "line": "apply_filters('madeit_woo_btn_class', ['btn', 'btn-success']);",
+                "default": " ['btn', 'btn-success']"
+            }
+        }
+    },
+    "woocommerce\/single-product\/product-image.php": {
+        "filters": {
+            "woocommerce_product_thumbnails_columns": {
+                "linenr": 25,
+                "line": "apply_filters('woocommerce_product_thumbnails_columns', 4);",
+                "default": " 4"
+            },
+            "woocommerce_single_product_image_thumbnail_html": {
+                "linenr": 47,
+                "line": "apply_filters('woocommerce_single_product_image_thumbnail_html', wc_get_gallery_image_html($post_thumbnail_id), $post_thumbnail_id);",
+                "default": " wc_get_gallery_image_html($post_thumbnail_id), $post_thumbnail_id"
+            }
+        }
+    },
+    "woocommerce\/single-product\/product-thumbnails.php": {
+        "filters": {
+            "woocommerce_single_product_image_thumbnail_html": {
+                "linenr": 28,
+                "line": "apply_filters('woocommerce_single_product_image_thumbnail_html', wc_get_gallery_image_html($attachment_id), $attachment_id);",
+                "default": " wc_get_gallery_image_html($attachment_id), $attachment_id"
+            }
+        }
+    },
+    "woocommerce\/single-product\/related.php": {
+        "filters": {
+            "woocommerce_product_related_products_heading": {
+                "linenr": 26,
+                "line": "apply_filters('woocommerce_product_related_products_heading', __('Related products', 'woocommerce'));",
+                "default": " __('Related products', 'woocommerce')"
+            }
+        }
+    },
+    "woocommerce\/single-product\/review.php": {
+        "actions": {
+            "woocommerce_review_before": {
+                "linenr": 35,
+                "line": "do_action('woocommerce_review_before', $comment);",
+                "default": " $comment"
+            },
+            "woocommerce_review_before_comment_meta": {
+                "linenr": 46,
+                "line": "do_action('woocommerce_review_before_comment_meta', $comment);",
+                "default": " $comment"
+            },
+            "woocommerce_review_meta": {
+                "linenr": 54,
+                "line": "do_action('woocommerce_review_meta', $comment);",
+                "default": " $comment"
+            },
+            "woocommerce_review_before_comment_text": {
+                "linenr": 56,
+                "line": "do_action('woocommerce_review_before_comment_text', $comment);",
+                "default": " $comment"
+            },
+            "woocommerce_review_comment_text": {
+                "linenr": 63,
+                "line": "do_action('woocommerce_review_comment_text', $comment);",
+                "default": " $comment"
+            },
+            "woocommerce_review_after_comment_text": {
+                "linenr": 65,
+                "line": "do_action('woocommerce_review_after_comment_text', $comment);",
+                "default": " $comment"
+            }
+        }
+    },
+    "woocommerce\/single-product\/sale-flash.php": {
+        "filters": {
+            "woocommerce_sale_flash": {
+                "linenr": 28,
+                "line": "apply_filters('woocommerce_sale_flash', '<div class=\"product-onsale\"><span>'.esc_html__('Sale!', 'woocommerce').'<\/span><\/div>', $post, $product);",
+                "default": " '<div class=\"product-onsale\"><span>'.esc_html__('Sale!', 'woocommerce').'<\/span><\/div>', $post, $product"
+            }
+        }
+    },
+    "woocommerce\/single-product\/short-description.php": {
+        "filters": {
+            "woocommerce_short_description": {
+                "linenr": 23,
+                "line": "apply_filters('woocommerce_short_description', $post->post_excerpt);",
+                "default": " $post->post_excerpt"
+            }
+        }
+    },
+    "woocommerce\/single-product\/tabs\/additional-information.php": {
+        "filters": {
+            "woocommerce_product_additional_information_heading": {
+                "linenr": 25,
+                "line": "apply_filters('woocommerce_product_additional_information_heading', __('Additional information', 'woocommerce')));",
+                "default": " __('Additional information', 'woocommerce'))"
+            }
+        },
+        "actions": {
+            "woocommerce_product_additional_information": {
+                "linenr": 33,
+                "line": "do_action('woocommerce_product_additional_information', $product);",
+                "default": " $product"
+            }
+        }
+    },
+    "woocommerce\/single-product\/tabs\/description.php": {
+        "filters": {
+            "woocommerce_product_description_heading": {
+                "linenr": 25,
+                "line": "apply_filters('woocommerce_product_description_heading', __('Description', 'woocommerce')));",
+                "default": " __('Description', 'woocommerce'))"
+            }
+        }
+    },
+    "woocommerce\/single-product\/tabs\/tabs.php": {
+        "filters": {
+            "woocommerce_product_tabs": {
+                "linenr": 28,
+                "line": "apply_filters('woocommerce_product_tabs', []);",
+                "default": " []"
+            }
+        }
+    },
+    "functions.php": {
+        "defined": {
+            "MADEIT_VERSION": {
+                "linenr": 13,
+                "line": "define('MADEIT_VERSION', '2.8.0');",
+                "default": " '2.8.0'"
+            },
+            "MADEIT_CUSTOM_COLOR": {
+                "linenr": 17,
+                "line": "define('MADEIT_CUSTOM_COLOR', false);",
+                "default": " false"
+            },
+            "MADEIT_ADVANCED_BLOCKS": {
+                "linenr": 20,
+                "line": "define('MADEIT_ADVANCED_BLOCKS', false);",
+                "default": " false"
+            },
+            "MADEIT_TEXT_COLOR": {
+                "linenr": 23,
+                "line": "define('MADEIT_TEXT_COLOR', '#212529');",
+                "default": " '#212529'"
+            },
+            "MADEIT_BACKGROUND_COLOR": {
+                "linenr": 26,
+                "line": "define('MADEIT_BACKGROUND_COLOR', '#ffffff');",
+                "default": " '#ffffff'"
+            },
+            "MADEIT_PRIMARY_COLOR": {
+                "linenr": 29,
+                "line": "define('MADEIT_PRIMARY_COLOR', '#0051A8');",
+                "default": " '#0051A8'"
+            },
+            "MADEIT_SECONDARY_COLOR": {
+                "linenr": 32,
+                "line": "define('MADEIT_SECONDARY_COLOR', '#868e96');",
+                "default": " '#868e96'"
+            },
+            "MADEIT_SUCCESS_COLOR": {
+                "linenr": 35,
+                "line": "define('MADEIT_SUCCESS_COLOR', '#28a745');",
+                "default": " '#28a745'"
+            },
+            "MADEIT_INFO_COLOR": {
+                "linenr": 38,
+                "line": "define('MADEIT_INFO_COLOR', '#17a2b8');",
+                "default": " '#17a2b8'"
+            },
+            "MADEIT_WARNING_COLOR": {
+                "linenr": 41,
+                "line": "define('MADEIT_WARNING_COLOR', '#ffc107');",
+                "default": " '#ffc107'"
+            },
+            "MADEIT_DANGER_COLOR": {
+                "linenr": 44,
+                "line": "define('MADEIT_DANGER_COLOR', '#dc3545');",
+                "default": " '#dc3545'"
+            },
+            "SHOW_LOGIN_IN_FOOTER": {
+                "linenr": 47,
+                "line": "define('SHOW_LOGIN_IN_FOOTER', false);",
+                "default": " false"
+            },
+            "SHOW_MADEIT_IN_FOOTER": {
+                "linenr": 50,
+                "line": "define('SHOW_MADEIT_IN_FOOTER', true);",
+                "default": " true"
+            },
+            "HEADER_UPPER_TOP": {
+                "linenr": 53,
+                "line": "define('HEADER_UPPER_TOP', false);",
+                "default": " false"
+            },
+            "HEADER_UPPER_BOTTOM": {
+                "linenr": 56,
+                "line": "define('HEADER_UPPER_BOTTOM', false);",
+                "default": " false"
+            },
+            "POST_AUTHOR": {
+                "linenr": 59,
+                "line": "define('POST_AUTHOR', false);",
+                "default": " false"
+            },
+            "POST_EDIT_TIME": {
+                "linenr": 62,
+                "line": "define('POST_EDIT_TIME', false);",
+                "default": " false"
+            },
+            "POST_TIME_FORMAT": {
+                "linenr": 65,
+                "line": "define('POST_TIME_FORMAT', 'long');",
+                "default": " 'long'"
+            },
+            "WOO_SHOPING_CART_MENU_STYLE": {
+                "linenr": 69,
+                "line": "define('WOO_SHOPING_CART_MENU_STYLE', 2);",
+                "default": " 2"
+            },
+            "SHOW_SINGLE_SIDEBAR": {
+                "linenr": 73,
+                "line": "define('SHOW_SINGLE_SIDEBAR', true);",
+                "default": " true"
+            },
+            "DISABLE_VER_URL": {
+                "linenr": 77,
+                "line": "define('DISABLE_VER_URL', true);",
+                "default": " true"
+            },
+            "WWW_REDIRECT": {
+                "linenr": 81,
+                "line": "define('WWW_REDIRECT', false);",
+                "default": " false"
+            },
+            "MADEIT_REVIEWS": {
+                "linenr": 85,
+                "line": "define('MADEIT_REVIEWS', false);",
+                "default": " false"
+            },
+            "MADEIT_FONTAWESOME": {
+                "linenr": 91,
+                "line": "define('MADEIT_FONTAWESOME', 4.7);",
+                "default": " 4.7"
+            },
+            "MADEIT_BOOTSTRAP_VERSION": {
+                "linenr": 95,
+                "line": "define('MADEIT_BOOTSTRAP_VERSION', 4);",
+                "default": " 4"
+            },
+            "MADEIT_ADD_DATEPICKER": {
+                "linenr": 99,
+                "line": "define('MADEIT_ADD_DATEPICKER', false);",
+                "default": " false"
+            },
+            "MADEIT_BOOTSTRAP_POPPER": {
+                "linenr": 102,
+                "line": "define('MADEIT_BOOTSTRAP_POPPER', false);",
+                "default": " false"
+            }
+        },
+        "filters": {
+            "madeit_starter_content": {
+                "linenr": 300,
+                "line": "apply_filters('madeit_starter_content', $starter_content);",
+                "default": " $starter_content"
+            },
+            "madeit_content_width": {
+                "linenr": 425,
+                "line": "apply_filters('madeit_content_width', $content_width);",
+                "default": " $content_width"
+            },
+            "madeit_infinite_navselector": {
+                "linenr": 738,
+                "line": "apply_filters('madeit_infinite_navselector', '.woocommerce-pagination, .pagination');",
+                "default": " '.woocommerce-pagination, .pagination'"
+            },
+            "madeit_infinite_nextselector": {
+                "linenr": 739,
+                "line": "apply_filters('madeit_infinite_nextselector', 'ul.page-numbers a.next, .pagination .next');",
+                "default": " 'ul.page-numbers a.next, .pagination .next'"
+            },
+            "madeit_infinite_itemselector": {
+                "linenr": 740,
+                "line": "apply_filters('madeit_infinite_itemselector', 'div.row.columns-3 .col, div.row.columns-3 .col-12, #primary .card-columns .card, .content-wrapper > div');",
+                "default": " 'div.row.columns-3 .col, div.row.columns-3 .col-12, #primary .card-columns .card, .content-wrapper > div'"
+            },
+            "madeit_infinite_contentselector": {
+                "linenr": 741,
+                "line": "apply_filters('madeit_infinite_contentselector', 'div.row.columns-3, #primary .card-columns, .content-wrapper');",
+                "default": " 'div.row.columns-3, #primary .card-columns, .content-wrapper'"
+            },
+            "default_checkout_country": {
+                "linenr": 1280,
+                "line": "apply_filters('default_checkout_country', (WC()->customer->get_shipping_country()) ? WC()->customer->get_shipping_country() : WC()->countries->get_base_country());",
+                "default": " (WC()->customer->get_shipping_country()) ? WC()->customer->get_shipping_country() : WC()->countries->get_base_country()"
+            },
+            "madeit_cookie_law_default_settings": {
+                "linenr": 1631,
+                "line": "apply_filters('madeit_cookie_law_default_settings', $settings);",
+                "default": " $settings"
+            },
+            "active_plugins": {
+                "linenr": 1845,
+                "line": "apply_filters('active_plugins', get_option('active_plugins'));",
+                "default": " get_option('active_plugins')"
+            }
+        }
+    }
+}
