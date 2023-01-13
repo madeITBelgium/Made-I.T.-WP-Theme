@@ -420,14 +420,12 @@ function review_widget($atts)
 {
     ob_start();
 
-    if(is_array($atts) === false) {
+    if (is_array($atts) === false) {
         $atts = [
             'name' => 'name & rate field is required',
             'rate' => 5,
         ];
-    }
-
-    ?>
+    } ?>
     <div class="d-flex align-items-center">
         <div>
             <svg xmlns="http://www.w3.org/2000/svg" width="35.28" height="36" viewBox="0 0 35.28 36">
