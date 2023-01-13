@@ -420,6 +420,13 @@ function review_widget($atts)
 {
     ob_start();
 
+    if(is_array($atts) === false) {
+        $atts = [
+            'name' => 'name & rate field is required',
+            'rate' => 5,
+        ];
+    }
+
     ?>
     <div class="d-flex align-items-center">
         <div>
