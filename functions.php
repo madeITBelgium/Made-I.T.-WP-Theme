@@ -712,8 +712,7 @@ if (!function_exists('madeit_scripts')) {
             if (MADEIT_BOOTSTRAP_POPPER) {
                 wp_enqueue_script('popper', get_theme_file_uri('/assets/bootstrap-5/popper.js'), ['bootstrap'], MADEIT_VERSION, true);
             }
-            if(MADEIT_POPUPS) {
-
+            if (MADEIT_POPUPS) {
                 wp_enqueue_script('popup', get_theme_file_uri('/assets/bootstrap-5/popup.js'), ['bootstrap'], MADEIT_VERSION, true);
             }
         } else {
@@ -1062,7 +1061,7 @@ if (!function_exists('madeit_register_required_plugins')) {
                 'name'     => 'WooCommerce PDF Invoices & Packing Slips',
                 'slug'     => 'woocommerce-pdf-invoices-packing-slips',
                 'required' => false,
-            ]
+            ],
         ];
 
         $config = [
@@ -1881,7 +1880,6 @@ if (defined('MADEIT_REVIEWS') && MADEIT_REVIEWS && class_exists('ACF')) {
     require get_parent_theme_file_path('/inc/reviews.php');
 }
 
-
-if(defined('MADEIT_POPUPS') && MADEIT_POPUPS && class_exists('ACF')) {
+if (defined('MADEIT_POPUPS') && MADEIT_POPUPS && class_exists('ACF')) {
     require get_parent_theme_file_path('/inc/popup.php');
 }
