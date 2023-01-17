@@ -20,13 +20,14 @@ if (!defined('ABSPATH')) {
 
 $classes = apply_filters('madeit_woo_category_column_class', ['col-12', 'col-md-6', 'col-lg-4']);
 $productImageContainer = apply_filters('madeit_woo_category_product_image_container_class', ['mt-auto', 'mb-auto']);
+$productInnerContainer = apply_filters('madeit_woo_category_product_inner_container_class', ['card', 'h-100', 'p-4', 'border-0', 'd-flex', 'justify-content-between']);
+$productButtonContainer = apply_filters('madeit_woo_category_btn_class', ['stretched-link']);
 ?>
 <div class="<?php echo implode(' ', $classes); ?>">
     <div <?php wc_product_cat_class('mb-4 h-100 pb-4', $category); ?>>
-        <div class="card h-100 p-4 border-0 d-flex justify-content-between">
+        <div class="<?php echo implode(' ', $productInnerContainer); ?>">
             <div class="<?php echo implode(' ', $productImageContainer); ?>">
                 <?php
-
                 /**
                  * The woocommerce_before_subcategory_title hook.
                  *
@@ -36,7 +37,7 @@ $productImageContainer = apply_filters('madeit_woo_category_product_image_contai
                 ?>
             </div>
             <div class="card-body text-center" style="flex: initial; -ms-flex: initial;">
-                <a href="<?php echo esc_url(get_term_link($category, 'product_cat')); ?>" class="stretched-link">
+                <a href="<?php echo esc_url(get_term_link($category, 'product_cat')); ?>" class="<?php echo implode(' ', $productButtonContainer); ?>">
                 <?php
                 /**
                  * The woocommerce_before_subcategory hook.

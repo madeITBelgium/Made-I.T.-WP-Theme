@@ -18,9 +18,10 @@ if (empty($product) || !$product->is_visible()) {
 }
 $productImageContainer = apply_filters('madeit_woo_category_product_image_container_class', ['d-block', 'mt-auto', 'mb-auto']);
 $productContentContainer = apply_filters('madeit_woo_category_product_content_container_class', ['card-body', 'text-center', 'd-flex', 'justify-content-between', 'flex-column']);
+$productInnerContainer = apply_filters('madeit_woo_product_inner_container_class', ['card', 'h-100', 'p-4', 'border-0', 'd-flex', 'justify-content-between']);
 ?>
 <div <?php wc_product_class('mb-4 h-100 pb-4', $product); ?>>
-    <div class="card h-100 d-flex justify-content-between">
+    <div class="<?php echo implode(' ', $productInnerContainer); ?>">
         <a href="<?php echo get_the_permalink(); ?>" class="<?php echo implode(' ', $productImageContainer); ?>">
             <?php
             /**
@@ -33,14 +34,18 @@ $productContentContainer = apply_filters('madeit_woo_category_product_content_co
             ?>
         </a>
         <div class="<?php echo implode(' ', $productContentContainer); ?>" style="flex: initial; -ms-flex: initial;">
+            <?php do_action('madeit_woo_before_product_title'); ?>
             <h4 class="card-title">
                 <a href="<?php echo get_the_permalink(); ?>"><?php echo get_the_title(); ?></a>
             </h4>
+            <?php do_action('madeit_woo_before_price'); ?>
             <div class="h5"><?php wc_get_template('loop/price.php'); ?></div>
+            <?php do_action('madeit_woo_before_button'); ?>
             <?php
             $wooButtonClass = apply_filters('madeit_woo_btn_class', ['btn', 'btn-success']);
             woocommerce_template_loop_add_to_cart(['class' => is_array($wooButtonClass) ? implode(' ', $wooButtonClass) : $wooButtonClass]);
             ?>
+            <?php do_action('madeit_woo_after_button'); ?>
         </div>
         <div class="card-footer d-none">
             <?php wc_get_template('loop/rating.php'); ?>

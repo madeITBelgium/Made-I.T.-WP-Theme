@@ -1043,6 +1043,16 @@ LearnDash
     }
 }
 
+@media (min-width: 1400px) {
+    .wp-block-madeit-block-content-column.keep-max-container-size:first-child {
+        padding-left: calc((100vw - 1320px) / 2 + 15px);
+    }
+    .wp-block-madeit-block-content-column.keep-max-container-size:last-child {
+        padding-right: calc((100vw - 1320px) / 2 + 15px);
+    }
+}
+
+
 .navbar-toggler {
     border: none !important;
 }
