@@ -26,7 +26,7 @@ $leftCollPostition = apply_filters('madeit_upper_navbar_left_col_position', 'lef
                                 'depth'             => 2,
                                 'container'         => 'nav',
                                 'container_id'      => 'secondary-navigation',
-                                'container_class'   => 'secondary-navigation '.($leftCollPostition !== 'left' ? 'ml-auto' : ''),
+                                'container_class'   => 'secondary-navigation '.($leftCollPostition !== 'left' ? 'ms-auto ml-auto' : ''),
                                 'menu_class'        => 'menu nav navbar-nav',
                                 'fallback_cb'       => 'wp_bootstrap_navwalker::fallback',
                                 'walker'            => new wp_bootstrap_navwalker(),
@@ -36,7 +36,7 @@ $leftCollPostition = apply_filters('madeit_upper_navbar_left_col_position', 'lef
                     <?php echo do_action('madeit_upper_top_navbar_between_col'); ?>
                     
                     <?php if (has_nav_menu('social')) { ?>
-                        <div class="col text-right social-menu">
+                        <div class="col text-right text-end social-menu">
                             <nav class="social-upper-navigation" role="navigation" aria-label="<?php esc_attr_e('Social Links Menu', 'madeit'); ?>">
                                 <?php
                                     wp_nav_menu([
