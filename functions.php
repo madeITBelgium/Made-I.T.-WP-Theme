@@ -727,7 +727,7 @@ if (!function_exists('madeit_scripts')) {
         wp_enqueue_script('script', get_template_directory_uri().'/assets/js/script.js', ['bootstrap'], MADEIT_VERSION, true);
         wp_enqueue_script('madeit-aos', get_template_directory_uri().'/assets/js/aos.js', [], MADEIT_VERSION, true);
 
-        if(defined('MADEIT_INFINITE_SCROLL') && MADEIT_INFINITE_SCROLL) {
+        if (defined('MADEIT_INFINITE_SCROLL') && MADEIT_INFINITE_SCROLL) {
             wp_enqueue_script('madeit-infinitescroll', get_template_directory_uri().'/assets/js/infinitescroll.js', ['jquery'], MADEIT_VERSION, true);
             madeit_infinite_options_to_script();
         }
