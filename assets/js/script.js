@@ -363,3 +363,76 @@ getScollPosition();
 window.addEventListener('scroll', function() {
     getScollPosition();
 });
+
+var maxScrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+var fold = document.documentElement.clientHeight;
+var wasBelowFold = false;
+var percentagesArr = [25,50,75,100];
+const showed = {};
+let timeout;
+let previousPercentage;
+window.addEventListener("scroll", function (event) {
+    var scrollVal = this.scrollY;
+    var scrollPercentage = Math.round(scrollVal / maxScrollHeight * 100);
+    let currentPercentage = 0;
+    let i = 0;
+
+    if(scrollVal > fold && !wasBelowFold) {
+        track('belowFold', 'true');
+        wasBelowFold = true;
+    }
+
+    while(percentagesArr[i] <= scrollPercentage) {
+      currentPercentage = percentagesArr[i++];
+    }
+    if (previousPercentage !== currentPercentage) {
+        clearTimeout(timeout);
+        timeout = currentPercentage !== 0 && !showed[currentPercentage]
+          ? setTimeout(() => {
+            track('scroll', currentPercentage);
+              showed[currentPercentage] = true;
+            }, 500)
+          : null;
+        previousPercentage = currentPercentage;
+    }
+});
+
+window.addEventListener("resize", () => {
+    maxScrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+});
+
+window.addEventListener('click', function(e) {
+    var target = e.target;
+    var element = target.tagName;
+    if(element === 'A') {
+        track('click', target.textContent, target.href);
+    } else if(element === 'BUTTON') {
+        track('click', target.textContent, target.value);
+    } else if(element === 'INPUT') {
+        track('click', target.value, target.value);
+    } else if(element === 'IMG') {
+        track('click', target.alt, target.src);
+    } else {
+        track('click', element, target.textContent);
+    }
+});
+
+jQuery(function($) {
+	$('.madeit-forms-noajax').submit(function(e) {
+		track('conversion', 'form_submit');
+	});
+});
+
+document.addEventListener("madeit-forms-quiz-next", function(e) {
+	track('click', 'quiz', e.detail);
+});
+
+function track(type, value, extraValue = null) {
+    //track to gtag if available
+    if(gtag !== undefined) {
+        gtag('event', type, {
+            'event_category': value,
+            'event_label': extraValue,
+        });
+    }
+}

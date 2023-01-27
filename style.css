@@ -4,7 +4,7 @@ Theme URI: https://www.madeit.be
 Author: Made I.T.
 Author URI: https://wordpress.org/
 Description: 
-Version: 2.7.1
+Version: 2.8.0
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: madeit
@@ -1112,4 +1112,35 @@ mark, .mark {
         margin-right: 0;
         margin-left: 0;
     }
+}
+
+.btn, button, .wp-block-button__link {
+    transition: all 0.2s ease-in-out;
+}
+.btn:active, button:active, .wp-block-button__link:active {
+    transform: translateY(1px);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2);
+}
+.btn:hover, button:hover, .wp-block-button__link:hover {
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+
+.btn-primary:active, .btn-primary:hover, .btn-outline-primary:active, .btn-outline-primary:hover, .wp-block-button__link.has-primary-background-color:active, .wp-block-button__link.has-primary-background-color:hover {
+    box-shadow: 0 0 0 3px rgba(var(--wp--preset--color--primary-rgb), 0.2);
+}
+.btn-secondary:active, .btn-secondary:hover, .btn-outline-secondary:active, .btn-outline-secondary:hover, .wp-block-button__link.has-secondary-background-color:active, .wp-block-button__link.has-secondary-background-color:hover {
+    box-shadow: 0 0 0 3px rgba(var(--wp--preset--color--secondary-rgb), 0.2);
+}
+.btn-success:active, .btn-success:hover, .btn-outline-success:active, .btn-outline-success:hover, .wp-block-button__link.has-success-background-color:active, .wp-block-button__link.has-success-background-color:hover {
+    box-shadow: 0 0 0 3px rgba(var(--wp--preset--color--success-rgb), 0.2);
+}
+.btn-info:active, .btn-info:hover, .btn-outline-info:active, .btn-outline-info:hover, .wp-block-button__link.has-info-background-color:active, .wp-block-button__link.has-info-background-color:hover {
+    box-shadow: 0 0 0 3px rgba(var(--wp--preset--color--info-rgb), 0.2);
+}
+.btn-warning:active, .btn-warning:hover, .btn-outline-warning:active, .btn-outline-warning:hover, .wp-block-button__link.has-warning-background-color:active, .wp-block-button__link.has-warning-background-color:hover {
+    box-shadow: 0 0 0 3px rgba(var(--wp--preset--color--warning-rgb), 0.2);
+}
+.btn-danger:active, .btn-danger:hover, .btn-outline-danger:active, .btn-outline-danger:hover, .wp-block-button__link.has-danger-background-color:active, .wp-block-button__link.has-danger-background-color:hover {
+    box-shadow: 0 0 0 3px rgba(var(--wp--preset--color--danger-rgb), 0.2);
 }

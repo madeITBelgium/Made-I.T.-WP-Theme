@@ -1854,6 +1854,28 @@ if(!function_exists('madeit_user_analytics')) {
     add_action('wp_head', 'madeit_user_analytics', 10);
 }
 
+/*
+ * Display custom color CSS.
+ */
+if (!function_exists('madeit_rgb_colors_inline')) {
+    function madeit_rgb_colors_inline()
+    {
+        wp_register_style('madeit-color-rgb', false);
+        wp_enqueue_style( 'madeit-color-rgb' );
+
+        $css = "body {\n";
+        
+            foreach(get_theme_support('editor-color-palette')[0] as $color) {
+                list($r, $g, $b) = sscanf($color['color'], "#%02x%02x%02x");
+
+                $css .= "--wp--preset--color--" . $color['slug'] . "-rgb: " . $r . "," . $g . "," . $b . ";\n";
+            }
+        $css .= "}";
+        wp_add_inline_style('madeit-color-rgb', $css);
+    }
+    add_action('wp_enqueue_scripts', 'madeit_rgb_colors_inline');
+}
+
 /**
  * CSS Cache mechanisme.
  */
