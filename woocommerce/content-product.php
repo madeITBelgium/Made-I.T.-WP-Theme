@@ -42,7 +42,7 @@ $productInnerContainer = apply_filters('madeit_woo_product_inner_container_class
             <div class="h5"><?php wc_get_template('loop/price.php'); ?></div>
             <?php do_action('madeit_woo_before_button'); ?>
             <?php
-            $wooButtonClass = apply_filters('madeit_woo_btn_class', ['btn', 'btn-success']);
+            $wooButtonClass = apply_filters('madeit_woo_btn_class', ['btn', 'btn-success', 'add_to_cart_button']);
             woocommerce_template_loop_add_to_cart(['class' => is_array($wooButtonClass) ? implode(' ', $wooButtonClass) : $wooButtonClass]);
             ?>
             <?php do_action('madeit_woo_after_button'); ?>
