@@ -429,7 +429,7 @@ document.addEventListener("madeit-forms-quiz-next", function(e) {
 
 function track(type, value, extraValue = null) {
     //track to gtag if available
-    if(gtag !== undefined) {
+    if(typeof gtag !== 'undefined') {
         gtag('event', type, {
             'event_category': value,
             'event_label': extraValue,
