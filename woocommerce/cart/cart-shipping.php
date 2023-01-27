@@ -77,11 +77,11 @@ $calculator_text = '';
                 apply_filters(
                     'woocommerce_cart_no_shipping_available_html',
                     // Translators: $s shipping destination.
-                    sprintf( esc_html__( 'No shipping options were found for %s.', 'woocommerce' ) . ' ', '<strong>' . esc_html( $formatted_destination ) . '</strong>' ),
+                    sprintf(esc_html__('No shipping options were found for %s.', 'woocommerce').' ', '<strong>'.esc_html($formatted_destination).'</strong>'),
                     $formatted_destination
                 )
             );
-            $calculator_text = esc_html__( 'Enter a different address', 'woocommerce' );
+            $calculator_text = esc_html__('Enter a different address', 'woocommerce');
         } else {
             // Translators: $s shipping destination.
             echo wp_kses_post(apply_filters('woocommerce_cart_no_shipping_available_html', sprintf(esc_html__('No shipping options were found for %s.', 'woocommerce').' ', '<strong>'.esc_html($formatted_destination).'</strong>')));
