@@ -1790,10 +1790,63 @@ Wp Rocket settings
 if (!function_exists('madeit_wprocket_pre_get_rocket_option_delay_js_exclusions')) {
     function madeit_wprocket_pre_get_rocket_option_delay_js_exclusions($optie, $default)
     {
-        //mail('tjebbe.lievens@madeit.be', 'Test', print_r($files, true));
         return ['aos.js'] + $default;
     }
     add_filter('pre_get_rocket_option_delay_js_exclusions', 'madeit_wprocket_pre_get_rocket_option_delay_js_exclusions', 10, 2);
+}
+
+if(!function_exists('madeit_user_analytics')) {
+    function madeit_user_analytics() {
+        if(defined('MADEIT_ANALYTICS_GA')) {
+            $tags = apply_filters('madeit_analtyics_ga', explode(",", MADEIT_ANALYTICS_GA));
+            ?>
+            <!-- Google tag (gtag.js) -->
+            <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $tags[0]; ?>"></script>
+            <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            <?php foreach($tags as $tag) { ?>
+            gtag('config', '<?php echo $tag; ?>');
+            <?php } ?>
+            </script>
+            <?php
+        }
+
+        if(defined('MADEIT_ANALYTICS_TM')) {
+            ?>
+            <!-- Google Tag Manager -->
+            <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','<?php echo MADEIT_ANALYTICS_TM; ?>');</script>
+            <!-- End Google Tag Manager -->
+            <?php
+        }
+
+        if(defined('MADEIT_ANALYTICS_FB')) {
+            ?>
+            <!-- Meta Pixel Code -->
+            <script>
+            !function(f,b,e,v,n,t,s)
+            {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+            n.queue=[];t=b.createElement(e);t.async=!0;
+            t.src=v;s=b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t,s)}(window, document,'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init', '<?php echo MADEIT_ANALYTICS_FB; ?>');
+            fbq('track', 'PageView');
+            </script>
+            <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=<?php echo MADEIT_ANALYTICS_FB; ?>&ev=PageView&noscript=1"
+            /></noscript>
+            <!-- End Meta Pixel Code -->
+            <?php
+        }
+    }
+    add_action('wp_head', 'madeit_user_analytics', 10);
 }
 
 /**
