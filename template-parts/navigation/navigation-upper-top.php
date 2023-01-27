@@ -16,6 +16,7 @@ $leftCollPostition = apply_filters('madeit_upper_navbar_left_col_position', 'lef
             <div class="<?php echo is_array($containerClass) ? implode(' ', $containerClass) : $containerClass; ?>">
                 <?php } ?>
                 <div class="row w-100 no-gutters">
+                    <?php echo do_action('madeit_upper_top_navbar_before_col'); ?>
                     <?php if (has_nav_menu('upper-top')) { ?>
                         <div class="col <?php echo $leftCollPostition !== 'left' ? 'd-flex' : ''; ?>">
                             <?php
@@ -32,6 +33,7 @@ $leftCollPostition = apply_filters('madeit_upper_navbar_left_col_position', 'lef
                             ]); ?>
                         </div>
                     <?php } ?>
+                    <?php echo do_action('madeit_upper_top_navbar_between_col'); ?>
                     
                     <?php if (has_nav_menu('social')) { ?>
                         <div class="col text-right text-end social-menu">
@@ -48,6 +50,7 @@ $leftCollPostition = apply_filters('madeit_upper_navbar_left_col_position', 'lef
                             </nav><!-- .social-navigation -->
                         </div>
                     <?php } ?>
+                    <?php echo do_action('madeit_upper_top_navbar_after_col'); ?>
                 </div>
     <?php if (!in_array('container', $navBarClass)) { ?>
             </div>

@@ -106,6 +106,10 @@ if (!defined('MADEIT_POPUPS')) {
     define('MADEIT_POPUPS', false);
 }
 
+if (!defined('MADEIT_INFINITE_SCROLL')) {
+    define('MADEIT_INFINITE_SCROLL', true);
+}
+
 if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
     require get_template_directory().'/inc/back-compat.php';
 
@@ -712,8 +716,7 @@ if (!function_exists('madeit_scripts')) {
             if (MADEIT_BOOTSTRAP_POPPER) {
                 wp_enqueue_script('popper', get_theme_file_uri('/assets/bootstrap-5/popper.js'), ['bootstrap'], MADEIT_VERSION, true);
             }
-            if(MADEIT_POPUPS) {
-
+            if (MADEIT_POPUPS) {
                 wp_enqueue_script('popup', get_theme_file_uri('/assets/bootstrap-5/popup.js'), ['bootstrap'], MADEIT_VERSION, true);
             }
         } else {
@@ -724,8 +727,10 @@ if (!function_exists('madeit_scripts')) {
         wp_enqueue_script('script', get_template_directory_uri().'/assets/js/script.js', ['bootstrap'], MADEIT_VERSION, true);
         wp_enqueue_script('madeit-aos', get_template_directory_uri().'/assets/js/aos.js', [], MADEIT_VERSION, true);
 
-        wp_enqueue_script('madeit-infinitescroll', get_template_directory_uri().'/assets/js/infinitescroll.js', ['jquery'], MADEIT_VERSION, true);
-        madeit_infinite_options_to_script();
+        if(defined('MADEIT_INFINITE_SCROLL') && MADEIT_INFINITE_SCROLL) {
+            wp_enqueue_script('madeit-infinitescroll', get_template_directory_uri().'/assets/js/infinitescroll.js', ['jquery'], MADEIT_VERSION, true);
+            madeit_infinite_options_to_script();
+        }
 
         if (MADEIT_ADD_DATEPICKER) {
             wp_enqueue_script('bootstrap-datepicker', get_theme_file_uri('/assets/js/bootstrap-datepicker.min.js'), ['jquery'], MADEIT_VERSION, true);
@@ -1062,7 +1067,7 @@ if (!function_exists('madeit_register_required_plugins')) {
                 'name'     => 'WooCommerce PDF Invoices & Packing Slips',
                 'slug'     => 'woocommerce-pdf-invoices-packing-slips',
                 'required' => false,
-            ]
+            ],
         ];
 
         $config = [
@@ -1934,7 +1939,6 @@ if (defined('MADEIT_REVIEWS') && MADEIT_REVIEWS && class_exists('ACF')) {
     require get_parent_theme_file_path('/inc/reviews.php');
 }
 
-
-if(defined('MADEIT_POPUPS') && MADEIT_POPUPS && class_exists('ACF')) {
+if (defined('MADEIT_POPUPS') && MADEIT_POPUPS && class_exists('ACF')) {
     require get_parent_theme_file_path('/inc/popup.php');
 }
