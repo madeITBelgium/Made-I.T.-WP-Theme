@@ -727,7 +727,7 @@ if (!function_exists('madeit_scripts')) {
         wp_enqueue_script('script', get_template_directory_uri().'/assets/js/script.js', ['bootstrap'], MADEIT_VERSION, true);
         wp_enqueue_script('madeit-aos', get_template_directory_uri().'/assets/js/aos.js', [], MADEIT_VERSION, true);
 
-        if(defined('MADEIT_INFINITE_SCROLL') && MADEIT_INFINITE_SCROLL) {
+        if (defined('MADEIT_INFINITE_SCROLL') && MADEIT_INFINITE_SCROLL) {
             wp_enqueue_script('madeit-infinitescroll', get_template_directory_uri().'/assets/js/infinitescroll.js', ['jquery'], MADEIT_VERSION, true);
             madeit_infinite_options_to_script();
         }
@@ -1800,25 +1800,25 @@ if (!function_exists('madeit_wprocket_pre_get_rocket_option_delay_js_exclusions'
     add_filter('pre_get_rocket_option_delay_js_exclusions', 'madeit_wprocket_pre_get_rocket_option_delay_js_exclusions', 10, 2);
 }
 
-if(!function_exists('madeit_user_analytics')) {
-    function madeit_user_analytics() {
-        if(defined('MADEIT_ANALYTICS_GA')) {
-            $tags = apply_filters('madeit_analtyics_ga', explode(",", MADEIT_ANALYTICS_GA));
-            ?>
+if (!function_exists('madeit_user_analytics')) {
+    function madeit_user_analytics()
+    {
+        if (defined('MADEIT_ANALYTICS_GA')) {
+            $tags = apply_filters('madeit_analtyics_ga', explode(',', MADEIT_ANALYTICS_GA)); ?>
             <!-- Google tag (gtag.js) -->
             <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $tags[0]; ?>"></script>
             <script>
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            <?php foreach($tags as $tag) { ?>
+            <?php foreach ($tags as $tag) { ?>
             gtag('config', '<?php echo $tag; ?>');
             <?php } ?>
             </script>
             <?php
         }
 
-        if(defined('MADEIT_ANALYTICS_TM')) {
+        if (defined('MADEIT_ANALYTICS_TM')) {
             ?>
             <!-- Google Tag Manager -->
             <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -1830,7 +1830,7 @@ if(!function_exists('madeit_user_analytics')) {
             <?php
         }
 
-        if(defined('MADEIT_ANALYTICS_FB')) {
+        if (defined('MADEIT_ANALYTICS_FB')) {
             ?>
             <!-- Meta Pixel Code -->
             <script>
@@ -1861,16 +1861,16 @@ if (!function_exists('madeit_rgb_colors_inline')) {
     function madeit_rgb_colors_inline()
     {
         wp_register_style('madeit-color-rgb', false);
-        wp_enqueue_style( 'madeit-color-rgb' );
+        wp_enqueue_style('madeit-color-rgb');
 
         $css = "body {\n";
-        
-            foreach(get_theme_support('editor-color-palette')[0] as $color) {
-                list($r, $g, $b) = sscanf($color['color'], "#%02x%02x%02x");
 
-                $css .= "--wp--preset--color--" . $color['slug'] . "-rgb: " . $r . "," . $g . "," . $b . ";\n";
-            }
-        $css .= "}";
+        foreach (get_theme_support('editor-color-palette')[0] as $color) {
+            list($r, $g, $b) = sscanf($color['color'], '#%02x%02x%02x');
+
+            $css .= '--wp--preset--color--'.$color['slug'].'-rgb: '.$r.','.$g.','.$b.";\n";
+        }
+        $css .= '}';
         wp_add_inline_style('madeit-color-rgb', $css);
     }
     add_action('wp_enqueue_scripts', 'madeit_rgb_colors_inline');
