@@ -6,6 +6,7 @@ for(let popup of popups) {
     var delay = popup.getAttribute('data-delay');
     var action = popup.getAttribute('data-action');
     var session = popup.getAttribute('data-sessies');
+    var popupElementId = popup.getAttribute('id');
 
     console.log(id);
     console.log(delay);
@@ -67,9 +68,9 @@ for(let popup of popups) {
             continue;
         }
 
-        const myModal = new bootstrap.Modal(popup, {});
+        
         setTimeout(function() {
-            myModal.show();
+            jQuery('#' + popupElementId).modal('show');
             setPopupCookie('popup_' + id + '_today', opensToday + 1, 1);
             setPopupCookie('popup_' + id + '_total', opensTotal + 1, expireDays);
         }, delay);

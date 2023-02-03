@@ -227,27 +227,53 @@ function madeit_add_popup()
     ]);
 
     foreach ($popups as $popup) {
-        ?>
-        <!-- Modal -->
-        <div class="modal fade madeit-popup" data-id="<?php echo $popup->ID; ?>" id="popup-<?php echo $popup->ID; ?>" tabindex="-1" aria-labelledby="popupModalLabel<?php echo $popup->ID; ?>" aria-hidden="true" data-action="<?php echo get_field('actie', $popup); ?>" data-delay="<?php echo get_field('delay', $popup); ?>" data-sessies="<?php echo get_field('sessies', $popup); ?>">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="popupModalLabel<?php echo $popup->ID; ?>"><?php echo $popup->post_title; ?></h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <?php
-                        $content = $popup->post_content;
-        echo apply_filters('the_content', $content); ?>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?php _e('Close'); ?></button>
+        if(MADEIT_BOOTSTRAP_VERSION === 5) {
+            ?>
+            <!-- Modal -->
+            <div class="modal fade madeit-popup" data-id="<?php echo $popup->ID; ?>" id="popup-<?php echo $popup->ID; ?>" tabindex="-1" aria-labelledby="popupModalLabel<?php echo $popup->ID; ?>" aria-hidden="true" data-action="<?php echo get_field('actie', $popup); ?>" data-delay="<?php echo get_field('delay', $popup); ?>" data-sessies="<?php echo get_field('sessies', $popup); ?>">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="popupModalLabel<?php echo $popup->ID; ?>"><?php echo $popup->post_title; ?></h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <?php
+                            $content = $popup->post_content;
+            echo apply_filters('the_content', $content); ?>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?php _e('Close'); ?></button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <?php
+            <?php
+        } else {
+            ?>
+            <!-- Modal -->
+            <div class="modal fade madeit-popup" data-id="<?php echo $popup->ID; ?>" id="popup-<?php echo $popup->ID; ?>" tabindex="-1" aria-labelledby="popupModalLabel<?php echo $popup->ID; ?>" aria-hidden="true" data-action="<?php echo get_field('actie', $popup); ?>" data-delay="<?php echo get_field('delay', $popup); ?>" data-sessies="<?php echo get_field('sessies', $popup); ?>">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="popupModalLabel<?php echo $popup->ID; ?>"><?php echo $popup->post_title; ?></h1>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <?php
+                            $content = $popup->post_content;
+            echo apply_filters('the_content', $content); ?>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal"><?php _e('Close'); ?></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php
+        }
     }
 }
 add_action('wp_footer', 'madeit_add_popup');

@@ -18,12 +18,17 @@ $menuClass = apply_filters('madeit_navbar_menu_class', ['menu', 'nav', 'navbar-n
     <div class="<?php echo is_array($containerClass) ? implode(' ', $containerClass) : $containerClass; ?>">
         <?php get_template_part('template-parts/header/site', 'branding'); ?>
 
+        <?php do_action('madeit_before_navbar_toggler'); ?>
+
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#site-navigation" data-bs-toggle="collapse" data-bs-target="#site-navigation" aria-expanded="false" aria-label="<?php _e('Menu', 'madeit'); ?>">
             <span class="sr-only"><?php _e('Menu', 'madeit'); ?></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
+
+
+        <?php do_action('madeit_after_navbar_toggler'); ?>
         
         <?php
         wp_nav_menu([
