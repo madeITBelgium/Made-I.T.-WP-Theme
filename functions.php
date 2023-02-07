@@ -84,7 +84,7 @@ if (!defined('WWW_REDIRECT')) {
 if (!defined('MADEIT_REVIEWS')) {
     define('MADEIT_REVIEWS', false);
 }
-if (MADEIT_REVIEWS) {
+if (MADEIT_REVIEWS && !defined('MADEIT_FONTAWESOME')) {
     define('MADEIT_FONTAWESOME', 5);
 }
 if (!defined('MADEIT_FONTAWESOME')) {
@@ -1971,3 +1971,5 @@ if (defined('MADEIT_REVIEWS') && MADEIT_REVIEWS && class_exists('ACF')) {
 if (defined('MADEIT_POPUPS') && MADEIT_POPUPS && class_exists('ACF')) {
     require get_parent_theme_file_path('/inc/popup.php');
 }
+
+require get_parent_theme_file_path('/inc/call.php');
