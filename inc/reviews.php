@@ -45,8 +45,8 @@ function madeit_load_google_reviews()
     foreach ($reviews['result']['reviews'] as $review) {
         $reviewExists = get_posts([
             'post_status' => 'any',
-            'post_type'  => 'review',
-            'meta_query' => [
+            'post_type'   => 'review',
+            'meta_query'  => [
                 [
                     'key'     => 'google_id',
                     'value'   => $review['time'],
