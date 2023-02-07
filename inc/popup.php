@@ -227,7 +227,7 @@ function madeit_add_popup()
     ]);
 
     foreach ($popups as $popup) {
-        if(MADEIT_BOOTSTRAP_VERSION === 5) {
+        if (MADEIT_BOOTSTRAP_VERSION === 5) {
             ?>
             <!-- Modal -->
             <div class="modal fade madeit-popup" data-id="<?php echo $popup->ID; ?>" id="popup-<?php echo $popup->ID; ?>" tabindex="-1" aria-labelledby="popupModalLabel<?php echo $popup->ID; ?>" aria-hidden="true" data-action="<?php echo get_field('actie', $popup); ?>" data-delay="<?php echo get_field('delay', $popup); ?>" data-sessies="<?php echo get_field('sessies', $popup); ?>">
