@@ -2,7 +2,7 @@
 Contributors: madeit
 Requires at least: WordPress 5.0
 Tested up to: 6.0.2
-Version: 2.8.0
+Version: 2.9.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: madeit, bootstrap, bootstrap4, made i.t., Made I.T.
@@ -55,6 +55,9 @@ License: CC0 1.0 Universal (CC0 1.0)
 Source: https://unsplash.com/@englr?photo=bIhpiQA009k
 
 == Changelog ==
+= 2.9.0 =
+* Adjust navigation menu on tablet
+
 = 2.8.0 =
 * Review support
 * WooCommerce 7.0 & 7.1, 7.2, 7.3
