@@ -144,7 +144,7 @@ do_action('woocommerce_before_cart'); ?>
 
 <?php do_action('woocommerce_before_cart_collaterals'); ?>
 
-<div class="row mt-3">
+<div class="row mt-5">
     <?php
         /**
          * Cart collaterals hook.

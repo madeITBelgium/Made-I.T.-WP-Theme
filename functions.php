@@ -10,7 +10,7 @@
  * Made I.T. Theme only works in WordPress 4.7 or later.
  */
 if (!defined('MADEIT_VERSION')) {
-    define('MADEIT_VERSION', '2.8.0');
+    define('MADEIT_VERSION', '2.9.0');
 }
 /* Default colors */
 if (!defined('MADEIT_CUSTOM_COLOR')) {
@@ -84,7 +84,7 @@ if (!defined('WWW_REDIRECT')) {
 if (!defined('MADEIT_REVIEWS')) {
     define('MADEIT_REVIEWS', false);
 }
-if (MADEIT_REVIEWS) {
+if (MADEIT_REVIEWS && !defined('MADEIT_FONTAWESOME')) {
     define('MADEIT_FONTAWESOME', 5);
 }
 if (!defined('MADEIT_FONTAWESOME')) {
@@ -100,6 +100,14 @@ if (!defined('MADEIT_ADD_DATEPICKER')) {
 }
 if (!defined('MADEIT_BOOTSTRAP_POPPER')) {
     define('MADEIT_BOOTSTRAP_POPPER', false);
+}
+
+if (!defined('MADEIT_POPUPS')) {
+    define('MADEIT_POPUPS', true);
+}
+
+if (!defined('MADEIT_INFINITE_SCROLL')) {
+    define('MADEIT_INFINITE_SCROLL', true);
 }
 
 if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
@@ -708,16 +716,25 @@ if (!function_exists('madeit_scripts')) {
             if (MADEIT_BOOTSTRAP_POPPER) {
                 wp_enqueue_script('popper', get_theme_file_uri('/assets/bootstrap-5/popper.js'), ['bootstrap'], MADEIT_VERSION, true);
             }
+            if (MADEIT_POPUPS) {
+                wp_enqueue_script('popup', get_theme_file_uri('/assets/bootstrap-5/popup.js'), ['bootstrap'], MADEIT_VERSION, true);
+            }
         } else {
             wp_enqueue_script('popper', get_theme_file_uri('/assets/bootstrap-46/popper.min.js'), ['jquery'], MADEIT_VERSION, true);
             wp_enqueue_script('bootstrap', get_theme_file_uri('/assets/bootstrap-46/script.js'), ['jquery', 'popper'], MADEIT_VERSION, true);
+
+            if (MADEIT_POPUPS) {
+                wp_enqueue_script('popup', get_theme_file_uri('/assets/bootstrap-46/popup.js'), ['bootstrap'], MADEIT_VERSION, true);
+            }
         }
 
         wp_enqueue_script('script', get_template_directory_uri().'/assets/js/script.js', ['bootstrap'], MADEIT_VERSION, true);
         wp_enqueue_script('madeit-aos', get_template_directory_uri().'/assets/js/aos.js', [], MADEIT_VERSION, true);
 
-        wp_enqueue_script('madeit-infinitescroll', get_template_directory_uri().'/assets/js/infinitescroll.js', ['jquery'], MADEIT_VERSION, true);
-        madeit_infinite_options_to_script();
+        if (defined('MADEIT_INFINITE_SCROLL') && MADEIT_INFINITE_SCROLL) {
+            wp_enqueue_script('madeit-infinitescroll', get_template_directory_uri().'/assets/js/infinitescroll.js', ['jquery'], MADEIT_VERSION, true);
+            madeit_infinite_options_to_script();
+        }
 
         if (MADEIT_ADD_DATEPICKER) {
             wp_enqueue_script('bootstrap-datepicker', get_theme_file_uri('/assets/js/bootstrap-datepicker.min.js'), ['jquery'], MADEIT_VERSION, true);
@@ -1782,10 +1799,85 @@ Wp Rocket settings
 if (!function_exists('madeit_wprocket_pre_get_rocket_option_delay_js_exclusions')) {
     function madeit_wprocket_pre_get_rocket_option_delay_js_exclusions($optie, $default)
     {
-        //mail('tjebbe.lievens@madeit.be', 'Test', print_r($files, true));
         return ['aos.js'] + $default;
     }
     add_filter('pre_get_rocket_option_delay_js_exclusions', 'madeit_wprocket_pre_get_rocket_option_delay_js_exclusions', 10, 2);
+}
+
+if (!function_exists('madeit_user_analytics')) {
+    function madeit_user_analytics()
+    {
+        if (defined('MADEIT_ANALYTICS_GA')) {
+            $tags = apply_filters('madeit_analtyics_ga', explode(',', MADEIT_ANALYTICS_GA)); ?>
+            <!-- Google tag (gtag.js) -->
+            <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $tags[0]; ?>"></script>
+            <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            <?php foreach ($tags as $tag) { ?>
+            gtag('config', '<?php echo $tag; ?>');
+            <?php } ?>
+            </script>
+            <?php
+        }
+
+        if (defined('MADEIT_ANALYTICS_TM')) {
+            ?>
+            <!-- Google Tag Manager -->
+            <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','<?php echo MADEIT_ANALYTICS_TM; ?>');</script>
+            <!-- End Google Tag Manager -->
+            <?php
+        }
+
+        if (defined('MADEIT_ANALYTICS_FB')) {
+            ?>
+            <!-- Meta Pixel Code -->
+            <script>
+            !function(f,b,e,v,n,t,s)
+            {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+            n.queue=[];t=b.createElement(e);t.async=!0;
+            t.src=v;s=b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t,s)}(window, document,'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init', '<?php echo MADEIT_ANALYTICS_FB; ?>');
+            fbq('track', 'PageView');
+            </script>
+            <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=<?php echo MADEIT_ANALYTICS_FB; ?>&ev=PageView&noscript=1"
+            /></noscript>
+            <!-- End Meta Pixel Code -->
+            <?php
+        }
+    }
+    add_action('wp_head', 'madeit_user_analytics', 10);
+}
+
+/*
+ * Display custom color CSS.
+ */
+if (!function_exists('madeit_rgb_colors_inline')) {
+    function madeit_rgb_colors_inline()
+    {
+        wp_register_style('madeit-color-rgb', false);
+        wp_enqueue_style('madeit-color-rgb');
+
+        $css = "body {\n";
+
+        foreach (get_theme_support('editor-color-palette')[0] as $color) {
+            list($r, $g, $b) = sscanf($color['color'], '#%02x%02x%02x');
+
+            $css .= '--wp--preset--color--'.$color['slug'].'-rgb: '.$r.','.$g.','.$b.";\n";
+        }
+        $css .= '}';
+        wp_add_inline_style('madeit-color-rgb', $css);
+    }
+    add_action('wp_enqueue_scripts', 'madeit_rgb_colors_inline');
 }
 
 /**
@@ -1845,6 +1937,8 @@ require get_parent_theme_file_path('/gutenberg-v2/gutenberg.php');
 $activePlugins = apply_filters('active_plugins', get_option('active_plugins'));
 if (in_array('woocommerce/woocommerce.php', $activePlugins)) {
     require get_parent_theme_file_path('/inc/woocommerce.php');
+
+    require get_parent_theme_file_path('/inc/add-to-cart-ajax.php');
 }
 
 if (in_array('woocommerce/woocommerce.php', $activePlugins) && in_array('sfwd-lms/sfwd_lms.php', $activePlugins)) {
@@ -1869,6 +1963,12 @@ require get_parent_theme_file_path('/inc/generate-theme-json.php');
 /**
  * MADE I.T Reviews.
  */
-if (defined('MADEIT_REVIEWS') && MADEIT_REVIEWS) {
+if (defined('MADEIT_REVIEWS') && MADEIT_REVIEWS && class_exists('ACF')) {
     require get_parent_theme_file_path('/inc/reviews.php');
 }
+
+if (defined('MADEIT_POPUPS') && MADEIT_POPUPS && class_exists('ACF')) {
+    require get_parent_theme_file_path('/inc/popup.php');
+}
+
+require get_parent_theme_file_path('/inc/call.php');

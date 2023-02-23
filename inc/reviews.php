@@ -44,8 +44,9 @@ function madeit_load_google_reviews()
 
     foreach ($reviews['result']['reviews'] as $review) {
         $reviewExists = get_posts([
-            'post_type'  => 'review',
-            'meta_query' => [
+            'post_status' => 'any',
+            'post_type'   => 'review',
+            'meta_query'  => [
                 [
                     'key'     => 'google_id',
                     'value'   => $review['time'],
@@ -415,3 +416,46 @@ function list_reviews()
     return ob_get_clean();
 }
 add_shortcode('list_reviews', 'list_reviews');
+
+function review_widget($atts)
+{
+    ob_start();
+
+    if (is_array($atts) === false) {
+        $atts = [
+            'name' => 'name & rate field is required',
+            'rate' => 5,
+        ];
+    } ?>
+    <div class="d-flex align-items-center">
+        <div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="35.28" height="36" viewBox="0 0 35.28 36">
+                <path id="__TEMP__SVG__" d="M18.36,15.428V21.6H28.569c-.413,2.647-3.084,7.761-10.209,7.761a11.363,11.363,0,0,1,0-22.722,10.137,10.137,0,0,1,7.178,2.773L30.419,4.7A17.275,17.275,0,0,0,18.36,0a18,18,0,0,0,0,36c10.389,0,17.28-7.3,17.28-17.589a16.5,16.5,0,0,0-.283-2.984h-17Z" transform="translate(-0.36)"/>
+            </svg>
+        </div>
+        <div class="ms-2">
+            <h4 class="mb-0"><?php echo $atts['name']; ?></h4>
+            <div class="d-flex">
+                <span class="h6 mb-0"><?php echo $atts['rate']; ?></span>
+                <div class="ms-1">
+                    <?php
+                    for ($i = 1; $i <= 5; $i++) {
+                        if ($i <= $atts['rate']) {
+                            ?>
+                            <i class="fas fa-star text-gold"></i>
+                            <?php
+                        } else {
+                            ?>
+                            <i class="far fa-star text-gold"></i>
+                            <?php
+                        }
+                    } ?>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php
+
+    return ob_get_clean();
+}
+add_shortcode('review_widget', 'review_widget');
