@@ -10,6 +10,7 @@ if(version_compare(MADEIT_VERSION, '2.9.0', '>=')) {
 }
 $navBarClass = apply_filters('madeit_navbar_class', $classes);
 $containerClass = apply_filters('madeit_navbar_container_class', ['container']);
+$menuContainerClass = apply_filters('madeit_navbar_menu_container_class', ['collapse', 'navbar-collapse', 'main-navigation']);
 $menuClass = apply_filters('madeit_navbar_menu_class', ['menu', 'nav', 'navbar-nav', 'ml-auto', 'ms-auto', 'align-items-md-center']);
 ?>
 <nav class="<?php echo is_array($navBarClass) ? implode(' ', $navBarClass) : $navBarClass; ?>">
@@ -35,17 +36,19 @@ $menuClass = apply_filters('madeit_navbar_menu_class', ['menu', 'nav', 'navbar-n
         <?php do_action('madeit_after_navbar_toggler'); ?>
         
         <?php
-        wp_nav_menu([
+        wp_nav_menu(apply_filters('madeit_top_nav_menu_options', [
             'theme_location'    => 'top',
             'menu_id'           => 'top-menu',
             'depth'             => 3,
             'container'         => 'nav',
             'container_id'      => 'site-navigation',
-            'container_class'   => 'collapse navbar-collapse main-navigation',
+            'container_class'   => is_array($menuContainerClass) ? implode(' ', $menuContainerClass) : $menuContainerClass,
             'menu_class'        => is_array($menuClass) ? implode(' ', $menuClass) : $menuClass,
             'fallback_cb'       => 'wp_bootstrap_navwalker::fallback',
             'walker'            => new wp_bootstrap_navwalker(),
-        ]); ?>
+        ])); ?>
+
+        <?php do_action('madeit_after_navbar_menu'); ?>
     </div>
         <?php
         if (HEADER_UPPER_BOTTOM === 'sticky') {
