@@ -57,6 +57,7 @@ Source: https://unsplash.com/@englr?photo=bIhpiQA009k
 == Changelog ==
 = 2.9.0 =
 * Adjust navigation menu on tablet
+* Improve content block margin & paddings
 
 = 2.8.0 =
 * Review support
