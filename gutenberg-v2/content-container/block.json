@@ -28,29 +28,11 @@
             "type": "string",
             "default": "container"
         },
-        "containerMarginBottom": {
-            "type": "number",
-            "default": 0
+        "containerMargin": {
+            "type": "object"
         },
-        "containerMarginTop": {
-            "type": "number",
-            "default": 0
-        },
-        "containerPaddingTop": {
-            "type": "number",
-            "default": 0
-        },
-        "containerPaddingBottom": {
-            "type": "number",
-            "default": 0
-        },
-        "containerPaddingLeft": {
-            "type": "number",
-            "default": 0
-        },
-        "containerPaddingRight": {
-            "type": "number",
-            "default": 0
+        "containerPadding": {
+            "type": "object"
         },
         "rowBackgroundColor": {
             "type": "string"
@@ -64,29 +46,11 @@
         "customRowTextColor": {
             "type": "string"
         },
-        "rowMarginBottom": {
-            "type": "number",
-            "default": 0
+        "rowMargin": {
+            "type": "object"
         },
-        "rowMarginTop": {
-            "type": "number",
-            "default": 0
-        },
-        "rowPaddingTop": {
-            "type": "number",
-            "default": 0
-        },
-        "rowPaddingBottom": {
-            "type": "number",
-            "default": 0
-        },
-        "rowPaddingLeft": {
-            "type": "number",
-            "default": 0
-        },
-        "rowPaddingRight": {
-            "type": "number",
-            "default": 0
+        "rowPadding": {
+            "type": "object"
         }
     }
 }

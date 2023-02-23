@@ -29,7 +29,7 @@ export const getColumnsTemplate = memoize( ( columns ) => {
  */
 export const toWidthPrecision = ( value ) =>
     Number.isFinite( value ) ?
-        parseFloat( value.toFixed( 2 ) ) :
+        parseFloat( value.toFixed( 0 ) ) :
         undefined;
 
 /**
@@ -60,7 +60,7 @@ export function getAdjacentBlocks( blocks, clientId ) {
  * @return {number} Effective column width.
  */
 export function getEffectiveColumnWidth( block, totalBlockCount ) {
-    const { width = 100 / totalBlockCount } = block.attributes;
+    const { width = 12 / totalBlockCount } = block.attributes;
     return toWidthPrecision( width );
 }
 

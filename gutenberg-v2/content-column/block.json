@@ -7,11 +7,36 @@
 	"category": "madeit",
 	"icon": "smiley",
 	"description": "Example block written with ESNext standard and JSX support – build step required.",
-	"supports": {
-		"html": false
-	},
 	"textdomain": "content-column",
 	"editorScript": "file:./build/index.js",
 	"editorStyle": "file:./build/index.css",
-	"style": "file:./build/style-index.css"
+	"style": "file:./build/style-index.css",
+    "attributes": {
+        "verticalAlignment": {
+            "type": "string"
+        },
+        "width": {
+            "type": "number",
+            "min": 0,
+            "max": 12
+        },
+        "backgroundColor": {
+            "type": "string"
+        },
+        "customBackgroundColor": {
+            "type": "string"
+        },
+        "textColor": {
+            "type": "string"
+        },
+        "customTextColor": {
+            "type": "string"
+        },
+        "margin": {
+            "type": "object"
+        },
+        "padding": {
+            "type": "object"
+        }
+    }
 }

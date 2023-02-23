@@ -31,22 +31,14 @@ export default function save( props ) {
         containerBackgroundColor,
         customContainerBackgroundColor,
         size,
-        containerMarginTop,
-        containerMarginBottom,
-        containerPaddingTop,
-        containerPaddingBottom,
-        containerPaddingLeft,
-        containerPaddingRight,
-        rowMarginTop,
-        rowMarginBottom,
-        rowPaddingTop,
-        rowPaddingBottom,
-        rowPaddingLeft,
-        rowPaddingRight,
         rowBackgroundColor,
         rowTextColor,
         customRowBackgroundColor,
         customRowTextColor,
+        containerMargin,
+        containerPadding,
+        rowMargin,
+        rowPadding,
     } = props.attributes;
     
     const {
@@ -88,24 +80,23 @@ export default function save( props ) {
         backgroundColor: containerBackgroundColorClass ? undefined : customContainerBackgroundColor,
     };
     
-    if(containerMarginTop > 0) {
-        style.marginTop = containerMarginTop + 'px';
+    if(containerMargin !== undefined && containerMargin.top !== undefined) {
+        style.marginTop = containerMargin.top;
     }
-    if(containerMarginBottom > 0) {
-        style.marginBottom = containerMarginBottom + 'px';
+    if(containerMargin !== undefined && containerMargin.bottom !== undefined) {
+        style.marginBottom = containerMargin.bottom;
     }
-    
-    if(containerPaddingTop > 0) {
-        style.paddingTop = containerPaddingTop + 'px';
+    if(containerPadding !== undefined && containerPadding.top !== undefined ) {
+        style.paddingTop = containerPadding.top;
     }
-    if(containerPaddingBottom > 0) {
-        style.paddingBottom = containerPaddingBottom + 'px';
+    if(containerPadding !== undefined && containerPadding.bottom !== undefined) {
+        style.paddingBottom = containerPadding.bottom;
     }
-    if(containerPaddingLeft > 0) {
-        style.paddingLeft = containerPaddingLeft + 'px';
+    if(containerPadding !== undefined && containerPadding.left !== undefined) {
+        style.paddingLeft = containerPadding.left;
     }
-    if(containerPaddingRight > 0) {
-        style.paddingRight = containerPaddingRight + 'px';
+    if(containerPadding !== undefined && containerPadding.right !== undefined) {
+        style.paddingRight = containerPadding.right;
     }
     
     var styleChild = {};
@@ -121,25 +112,24 @@ export default function save( props ) {
             backgroundColor: rowBackgroundColorClass ? undefined : rowBackgroundColor,
             color: rowTextColorClass ? undefined : rowTextColorClass
         };
-        
-        if(rowMarginTop > 0) {
-            styleChild.marginTop = rowMarginTop + 'px';
-        }
-        if(rowMarginBottom > 0) {
-            styleChild.marginBottom = rowMarginBottom + 'px';
-        }
 
-        if(rowPaddingTop > 0) {
-            styleChild.paddingTop = rowPaddingTop + 'px';
+        if(rowMargin !== undefined && rowMargin.top !== undefined) {
+            style.marginTop = rowMargin.top;
         }
-        if(rowPaddingBottom > 0) {
-            styleChild.paddingBottom = rowPaddingBottom + 'px';
+        if(rowMargin !== undefined && rowMargin.bottom !== undefined) {
+            style.marginBottom = rowMargin.bottom;
         }
-        if(rowPaddingLeft > 0) {
-            styleChild.paddingLeft = rowPaddingLeft + 'px';
+        if(rowPadding !== undefined && rowPadding.top !== undefined ) {
+            style.paddingTop = rowPadding.top;
         }
-        if(rowPaddingRight > 0) {
-            styleChild.paddingRight = rowPaddingRight + 'px';
+        if(rowPadding !== undefined && rowPadding.bottom !== undefined) {
+            style.paddingBottom = rowPadding.bottom;
+        }
+        if(rowPadding !== undefined && rowPadding.left !== undefined) {
+            style.paddingLeft = rowPadding.left;
+        }
+        if(rowPadding !== undefined && rowPadding.right !== undefined) {
+            style.paddingRight = rowPadding.right;
         }
     }
     else {

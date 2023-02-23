@@ -121,9 +121,9 @@ const variations = [
             </SVG>
         ),
         innerBlocks: [
-            [ 'madeit/block-content-column' ],
-            [ 'madeit/block-content-column' ],
-            [ 'madeit/block-content-column' ],
+            [ 'madeit/block-content-column', { width: 4 }  ],
+            [ 'madeit/block-content-column', { width: 4 }  ],
+            [ 'madeit/block-content-column', { width: 4 }  ],
         ],
         scope: [ 'block' ],
     },

@@ -17,12 +17,8 @@ export default function save( props ) {
         backgroundColor,
         customTextColor,
         textColor,
-        marginTop,
-        marginBottom,
-        paddingTop,
-        paddingBottom,
-        paddingLeft,
-        paddingRight,
+        margin,
+        padding,
     } = props.attributes;
     
     const {
@@ -31,12 +27,13 @@ export default function save( props ) {
     
     const backgroundColorClass = backgroundColor ? getColorClassName( 'background-color', backgroundColor ) : undefined;
 	const textColorClass = textColor ? getColorClassName( 'color', textColor ) : undefined;
-    
-    
+
+    var widthRounded = Math.round(width);
+
     var wrapperClasses = classnames( className, {
         [ `is-vertically-aligned-${ verticalAlignment }` ]: verticalAlignment,
         [ `col-12` ]: true,
-        [ `col-lg-${width}` ]: width,
+        [ `col-lg-${widthRounded}` ]: widthRounded,
     } );
     
     wrapperClasses = classnames(wrapperClasses, {
@@ -45,39 +42,36 @@ export default function save( props ) {
         [ backgroundColorClass ]: backgroundColorClass,
         [ textColorClass ]: textColorClass,
     } );
-    
+
     var style = {
         backgroundColor: backgroundColorClass ? undefined : customBackgroundColor,
         color: textColorClass ? undefined : customTextColor,
     };
 
-    if(marginTop > 0) {
-        style.marginTop = (marginTop + 28) + 'px';
+    if(margin !== undefined && margin.top !== undefined) {
+        style.marginTop = margin.top;
     }
-    if(marginBottom > 0) {
-        style.marginBottom = (marginBottom + 28) + 'px';
+    if(margin !== undefined && margin.bottom !== undefined) {
+        style.marginBottom = margin.bottom;
     }
-    
-    if(paddingTop > 0) {
-        style.paddingTop = paddingTop + 'px';
+    if(padding !== undefined && padding.top !== undefined ) {
+        style.paddingTop = padding.top;
     }
-    if(paddingBottom > 0) {
-        style.paddingBottom = paddingBottom + 'px';
+    if(padding !== undefined && padding.bottom !== undefined) {
+        style.paddingBottom = padding.bottom;
     }
-    if(paddingLeft > 0) {
-        style.paddingLeft = paddingLeft + 'px';
+    if(padding !== undefined && padding.left !== undefined) {
+        style.paddingLeft = padding.left;
     }
-    if(paddingRight > 0) {
-        style.paddingRight = paddingRight + 'px';
+    if(padding !== undefined && padding.right !== undefined) {
+        style.paddingRight = padding.right;
     }
-    
     
     const blockProps = useBlockProps.save( {
         className: wrapperClasses,
         style: style,
     });
     
-
     return (
         <div { ...blockProps }>
             <InnerBlocks.Content />
