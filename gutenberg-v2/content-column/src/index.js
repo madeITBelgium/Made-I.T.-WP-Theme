@@ -7,9 +7,7 @@ import classnames from 'classnames';
 import { registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
 
-import { InnerBlocks } from "@wordpress/block-editor";
-
-
+import { InnerBlocks, useBlockProps, getColorClassName } from "@wordpress/block-editor";
 
 /**
  * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
@@ -81,40 +79,221 @@ registerBlockType( metadata, {
         customTextColor: {
             type: 'string',
         },
-        marginBottom: {
-            type: 'number',
-            default: 0
+        margin: {
+            type: 'object'
         },
-        marginTop: {
-            type: 'number',
-            default: 0
-        },
-        paddingTop: {
-            type: 'number',
-            default: 0
-        },
-        paddingBottom: {
-            type: 'number',
-            default: 0
-        },
-        paddingLeft: {
-            type: 'number',
-            default: 0
-        },
-        paddingRight: {
-            type: 'number',
-            default: 0
-        },
+        padding: {
+            type: 'object'
+        }
     },
     
     // The "edit" property must be a valid function.
     edit: edit,
 
     // The "save" property must be  valid function.
-    save: save,
+    save,
     
     deprecated: [
+
         {
+            supports: {
+                inserter: false,
+                reusable: false,
+                html: false,
+            },
+
+            attributes: {
+                verticalAlignment: {
+                    type: "string"
+                },
+                width: {
+                    "type": "number",
+                    "min": 0,
+                    "max": 12
+                },
+                backgroundColor: {
+                    type: 'string',
+                },
+                customBackgroundColor: {
+                    type: 'string',
+                },
+                textColor: {
+                    type: 'string',
+                },
+                customTextColor: {
+                    type: 'string',
+                },
+                marginBottom: {
+                    type: 'number',
+                    default: 0
+                },
+                marginTop: {
+                    type: 'number',
+                    default: 0
+                },
+                paddingTop: {
+                    type: 'number',
+                    default: 0
+                },
+                paddingBottom: {
+                    type: 'number',
+                    default: 0
+                },
+                paddingLeft: {
+                    type: 'number',
+                    default: 0
+                },
+                paddingRight: {
+                    type: 'number',
+                    default: 0
+                },
+            },
+
+            migrate( attributes ) {
+                return {
+                    padding: {
+                        top: attributes.paddingTop !== null && attributes.paddingTop !== undefined ? (attributes.paddingTop + 'px') : 0,
+                        bottom: attributes.paddingBottom !== null && attributes.paddingBottom !== undefined ? (attributes.paddingBottom + 'px') : 0,
+                        left: attributes.paddingLeft !== null && attributes.paddingLeft !== undefined ? (attributes.paddingLeft + 'px') : 0,
+                        right: attributes.paddingRight !== null && attributes.paddingRight !== undefined ? (attributes.paddingRight + 'px') : 0,
+                    },
+                    margin: {
+                        top: attributes.marginTop !== null && attributes.marginTop !== undefined ? (attributes.marginTop + 'px') : 0,
+                        bottom: attributes.marginBottom !== null && attributes.marginBottom !== undefined ? (attributes.marginBottom + 'px') : 0,
+                        left: 0,
+                        right: 0,
+                    }
+                };
+            },
+
+            save: function( props ) {
+                const { 
+                    verticalAlignment,
+                    width,
+                    customBackgroundColor,
+                    backgroundColor,
+                    customTextColor,
+                    textColor,
+                    marginTop,
+                    marginBottom,
+                    paddingTop,
+                    paddingBottom,
+                    paddingLeft,
+                    paddingRight,
+                } = props.attributes;
+
+                const {
+                    className
+                } = props
+                
+                const backgroundColorClass = backgroundColor ? getColorClassName( 'background-color', backgroundColor ) : undefined;
+                const textColorClass = textColor ? getColorClassName( 'color', textColor ) : undefined;
+                
+                var widthRounded = Math.round(width);
+                
+                var wrapperClasses = classnames( className, {
+                    [ `is-vertically-aligned-${ verticalAlignment }` ]: verticalAlignment,
+                    [ `col-12` ]: true,
+                    [ `col-lg-${widthRounded}` ]: widthRounded,
+                } );
+                
+                wrapperClasses = classnames(wrapperClasses, {
+                    'has-text-color': textColorClass,
+                    'has-background': backgroundColorClass,
+                    [ backgroundColorClass ]: backgroundColorClass,
+                    [ textColorClass ]: textColorClass,
+                } );
+                
+                var style = {
+                    backgroundColor: backgroundColorClass ? undefined : customBackgroundColor,
+                    color: textColorClass ? undefined : customTextColor,
+                };
+
+                if(marginTop > 0) {
+                    style.marginTop = (marginTop + 28) + 'px';
+                }
+                if(marginBottom > 0) {
+                    style.marginBottom = (marginBottom + 28) + 'px';
+                }
+                
+                if(paddingTop > 0) {
+                    style.paddingTop = paddingTop + 'px';
+                }
+                if(paddingBottom > 0) {
+                    style.paddingBottom = paddingBottom + 'px';
+                }
+                if(paddingLeft > 0) {
+                    style.paddingLeft = paddingLeft + 'px';
+                }
+                if(paddingRight > 0) {
+                    style.paddingRight = paddingRight + 'px';
+                }
+                
+                const blockProps = useBlockProps.save( {
+                    className: wrapperClasses,
+                    style: style,
+                });
+                
+                return (
+                    <div { ...blockProps }>
+                        <InnerBlocks.Content />
+                    </div>
+                );
+            },
+        },
+
+        {
+            supports: {
+                inserter: false,
+                reusable: false,
+                html: false,
+            },
+            attributes: {
+                verticalAlignment: {
+                    type: "string"
+                },
+                width: {
+                    "type": "number",
+                    "min": 0,
+                    "max": 12
+                },
+                backgroundColor: {
+                    type: 'string',
+                },
+                customBackgroundColor: {
+                    type: 'string',
+                },
+                textColor: {
+                    type: 'string',
+                },
+                customTextColor: {
+                    type: 'string',
+                },
+                marginBottom: {
+                    type: 'number',
+                    default: 0
+                },
+                marginTop: {
+                    type: 'number',
+                    default: 0
+                },
+                paddingTop: {
+                    type: 'number',
+                    default: 0
+                },
+                paddingBottom: {
+                    type: 'number',
+                    default: 0
+                },
+                paddingLeft: {
+                    type: 'number',
+                    default: 0
+                },
+                paddingRight: {
+                    type: 'number',
+                    default: 0
+                },
+            },
             save: function( { attributes } ) {
                 const { verticalAlignment, width } = attributes;
 
@@ -124,9 +303,6 @@ registerBlockType( metadata, {
                 } );
 
                 let style;
-                /*if ( Number.isFinite( width ) ) {
-                    style = { flexBasis: width + '%' };
-                }*/
 
                 return (
                     <div className={ wrapperClasses } style={ style }>

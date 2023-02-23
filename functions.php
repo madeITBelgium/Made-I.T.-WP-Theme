@@ -10,7 +10,7 @@
  * Made I.T. Theme only works in WordPress 4.7 or later.
  */
 if (!defined('MADEIT_VERSION')) {
-    define('MADEIT_VERSION', '2.8.0');
+    define('MADEIT_VERSION', '2.9.0');
 }
 /* Default colors */
 if (!defined('MADEIT_CUSTOM_COLOR')) {
@@ -84,7 +84,7 @@ if (!defined('WWW_REDIRECT')) {
 if (!defined('MADEIT_REVIEWS')) {
     define('MADEIT_REVIEWS', false);
 }
-if (MADEIT_REVIEWS) {
+if (MADEIT_REVIEWS && !defined('MADEIT_FONTAWESOME')) {
     define('MADEIT_FONTAWESOME', 5);
 }
 if (!defined('MADEIT_FONTAWESOME')) {
@@ -103,7 +103,7 @@ if (!defined('MADEIT_BOOTSTRAP_POPPER')) {
 }
 
 if (!defined('MADEIT_POPUPS')) {
-    define('MADEIT_POPUPS', false);
+    define('MADEIT_POPUPS', true);
 }
 
 if (!defined('MADEIT_INFINITE_SCROLL')) {
@@ -722,12 +722,16 @@ if (!function_exists('madeit_scripts')) {
         } else {
             wp_enqueue_script('popper', get_theme_file_uri('/assets/bootstrap-46/popper.min.js'), ['jquery'], MADEIT_VERSION, true);
             wp_enqueue_script('bootstrap', get_theme_file_uri('/assets/bootstrap-46/script.js'), ['jquery', 'popper'], MADEIT_VERSION, true);
+
+            if (MADEIT_POPUPS) {
+                wp_enqueue_script('popup', get_theme_file_uri('/assets/bootstrap-46/popup.js'), ['bootstrap'], MADEIT_VERSION, true);
+            }
         }
 
         wp_enqueue_script('script', get_template_directory_uri().'/assets/js/script.js', ['bootstrap'], MADEIT_VERSION, true);
         wp_enqueue_script('madeit-aos', get_template_directory_uri().'/assets/js/aos.js', [], MADEIT_VERSION, true);
 
-        if(defined('MADEIT_INFINITE_SCROLL') && MADEIT_INFINITE_SCROLL) {
+        if (defined('MADEIT_INFINITE_SCROLL') && MADEIT_INFINITE_SCROLL) {
             wp_enqueue_script('madeit-infinitescroll', get_template_directory_uri().'/assets/js/infinitescroll.js', ['jquery'], MADEIT_VERSION, true);
             madeit_infinite_options_to_script();
         }
@@ -1800,25 +1804,25 @@ if (!function_exists('madeit_wprocket_pre_get_rocket_option_delay_js_exclusions'
     add_filter('pre_get_rocket_option_delay_js_exclusions', 'madeit_wprocket_pre_get_rocket_option_delay_js_exclusions', 10, 2);
 }
 
-if(!function_exists('madeit_user_analytics')) {
-    function madeit_user_analytics() {
-        if(defined('MADEIT_ANALYTICS_GA')) {
-            $tags = apply_filters('madeit_analtyics_ga', explode(",", MADEIT_ANALYTICS_GA));
-            ?>
+if (!function_exists('madeit_user_analytics')) {
+    function madeit_user_analytics()
+    {
+        if (defined('MADEIT_ANALYTICS_GA')) {
+            $tags = apply_filters('madeit_analtyics_ga', explode(',', MADEIT_ANALYTICS_GA)); ?>
             <!-- Google tag (gtag.js) -->
             <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $tags[0]; ?>"></script>
             <script>
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            <?php foreach($tags as $tag) { ?>
+            <?php foreach ($tags as $tag) { ?>
             gtag('config', '<?php echo $tag; ?>');
             <?php } ?>
             </script>
             <?php
         }
 
-        if(defined('MADEIT_ANALYTICS_TM')) {
+        if (defined('MADEIT_ANALYTICS_TM')) {
             ?>
             <!-- Google Tag Manager -->
             <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -1830,7 +1834,7 @@ if(!function_exists('madeit_user_analytics')) {
             <?php
         }
 
-        if(defined('MADEIT_ANALYTICS_FB')) {
+        if (defined('MADEIT_ANALYTICS_FB')) {
             ?>
             <!-- Meta Pixel Code -->
             <script>
@@ -1861,16 +1865,16 @@ if (!function_exists('madeit_rgb_colors_inline')) {
     function madeit_rgb_colors_inline()
     {
         wp_register_style('madeit-color-rgb', false);
-        wp_enqueue_style( 'madeit-color-rgb' );
+        wp_enqueue_style('madeit-color-rgb');
 
         $css = "body {\n";
-        
-            foreach(get_theme_support('editor-color-palette')[0] as $color) {
-                list($r, $g, $b) = sscanf($color['color'], "#%02x%02x%02x");
 
-                $css .= "--wp--preset--color--" . $color['slug'] . "-rgb: " . $r . "," . $g . "," . $b . ";\n";
-            }
-        $css .= "}";
+        foreach (get_theme_support('editor-color-palette')[0] as $color) {
+            list($r, $g, $b) = sscanf($color['color'], '#%02x%02x%02x');
+
+            $css .= '--wp--preset--color--'.$color['slug'].'-rgb: '.$r.','.$g.','.$b.";\n";
+        }
+        $css .= '}';
         wp_add_inline_style('madeit-color-rgb', $css);
     }
     add_action('wp_enqueue_scripts', 'madeit_rgb_colors_inline');
@@ -1966,3 +1970,5 @@ if (defined('MADEIT_REVIEWS') && MADEIT_REVIEWS && class_exists('ACF')) {
 if (defined('MADEIT_POPUPS') && MADEIT_POPUPS && class_exists('ACF')) {
     require get_parent_theme_file_path('/inc/popup.php');
 }
+
+require get_parent_theme_file_path('/inc/call.php');

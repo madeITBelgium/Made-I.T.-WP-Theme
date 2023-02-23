@@ -31,7 +31,10 @@ import { createBlock } from '@wordpress/blocks';
 import { useState, useEffect } from "@wordpress/element";
 import { compose } from "@wordpress/compose";
 import { withDispatch, useDispatch, useSelect } from "@wordpress/data";
-import { PanelBody, RangeControl, SVG, Path, SelectControl} from "@wordpress/components";
+import { PanelBody, RangeControl, SVG, Path, SelectControl,
+    __experimentalBoxControl as BoxControl,
+    __experimentalToolsPanel as ToolsPanel,
+	__experimentalToolsPanelItem as ToolsPanelItem} from "@wordpress/components";
 
 /**
  * Internal dependencies
@@ -81,18 +84,10 @@ export function ColumnsEditContainer( props ) {
     const {
         verticalAlignment, 
         size,
-        containerMarginTop,
-        containerMarginBottom,
-        containerPaddingTop,
-        containerPaddingBottom,
-        containerPaddingLeft,
-        containerPaddingRight,
-        rowMarginTop,
-        rowMarginBottom,
-        rowPaddingTop,
-        rowPaddingBottom,
-        rowPaddingLeft,
-        rowPaddingRight,
+        containerMargin,
+        containerPadding,
+        rowMargin,
+        rowPadding,
     } = attributes;
     
     const containerSizes = [
@@ -122,29 +117,52 @@ export function ColumnsEditContainer( props ) {
         [ `container` ]: 'container' === size || 'container-content-boxed' === size,
         [ `container-fluid` ]: 'container-fluid' === size,
     });
+
+    const setContainerPadding = ( containerPadding ) => {
+        setAttributes( { containerPadding } );
+    }
+
+    const setContainerMargin = ( containerMargin ) => {
+        setAttributes( { containerMargin } );
+    }
+
+    const setRowPadding = ( rowPadding ) => {
+        setAttributes( { rowPadding } );
+    }
+
+    const setRowMargin = ( rowMargin ) => {
+        setAttributes( { rowMargin } );
+    }
+    const resetAllContainer = () => {
+		setContainerPadding( undefined );
+		setContainerMargin( undefined );
+	};
+    const resetAllRow = () => {
+		setRowPadding( undefined );
+		setRowMargin( undefined );
+	};
     
     var style = {
         backgroundColor: containerBackgroundColor.color,
     };
     
-    if(containerMarginTop > 0) {
-        style.marginTop = (containerMarginTop + 28) + 'px';
+    if(containerMargin !== undefined && containerMargin.top !== undefined) {
+        style.marginTop = containerMargin.top;
     }
-    if(containerMarginBottom > 0) {
-        style.marginBottom = (containerMarginBottom + 28) + 'px';
+    if(containerMargin !== undefined && containerMargin.bottom !== undefined) {
+        style.marginBottom = containerMargin.bottom;
     }
-    
-    if(containerPaddingTop > 0) {
-        style.paddingTop = containerPaddingTop + 'px';
+    if(containerPadding !== undefined && containerPadding.top !== undefined) {
+        style.paddingTop = containerPadding.top;
     }
-    if(containerPaddingBottom > 0) {
-        style.paddingBottom = containerPaddingBottom + 'px';
+    if(containerPadding !== undefined && containerPadding.bottom !== undefined) {
+        style.paddingBottom = containerPadding.bottom;
     }
-    if(containerPaddingLeft > 0) {
-        style.paddingLeft = containerPaddingLeft + 'px';
+    if(containerPadding !== undefined && containerPadding.left !== undefined) {
+        style.paddingLeft = containerPadding.left;
     }
-    if(containerPaddingRight > 0) {
-        style.paddingRight = containerPaddingRight + 'px';
+    if(containerPadding !== undefined && containerPadding.right !== undefined) {
+        style.paddingRight = containerPadding.right;
     }
     
     var styleChild = {};
@@ -154,25 +172,23 @@ export function ColumnsEditContainer( props ) {
             color: rowTextColor.color
         };
         
-        
-        if(rowMarginTop > 0) {
-            styleChild.marginTop = rowMarginTop + 'px';
+        if(rowMargin !== undefined && rowMargin.top !== undefined) {
+            styleChild.marginTop = rowMargin.top;
         }
-        if(rowMarginBottom > 0) {
-            styleChild.marginBottom = rowMarginBottom + 'px';
+        if(rowMargin !== undefined && rowMargin.bottom !== undefined) {
+            styleChild.marginBottom = rowMargin.bottom;
         }
-
-        if(rowPaddingTop > 0) {
-            styleChild.paddingTop = rowPaddingTop + 'px';
+        if(rowPadding !== undefined && rowPadding.top !== undefined) {
+            styleChild.paddingTop = rowPadding.top;
         }
-        if(rowPaddingBottom > 0) {
-            styleChild.paddingBottom = rowPaddingBottom + 'px';
+        if(rowPadding !== undefined && rowPadding.bottom !== undefined) {
+            styleChild.paddingBottom = rowPadding.bottom;
         }
-        if(rowPaddingLeft > 0) {
-            styleChild.paddingLeft = rowPaddingLeft + 'px';
+        if(rowPadding !== undefined && rowPadding.left !== undefined) {
+            styleChild.paddingLeft = rowPadding.left;
         }
-        if(rowPaddingRight > 0) {
-            styleChild.paddingRight = rowPaddingRight + 'px';
+        if(rowPadding !== undefined && rowPadding.right !== undefined) {
+            styleChild.paddingRight = rowPadding.right;
         }
     }
     else {
@@ -198,68 +214,35 @@ export function ColumnsEditContainer( props ) {
                         } ) ) }
                         onChange={ ( newSize ) => setAttributes( { size: newSize } ) }
                     />
-                    <PanelBody
-                        title={__('Margin')}
-                        initialOpen={ false }>
-                        <RangeControl
-                            label={ __( 'Top' ) }
-                            value={ containerMarginTop }
-                            min='0'
-                            max='100'
-                            onChange={ ( value ) => {
-                                setAttributes( { containerMarginTop: value } )
-                            } }
-                        />
-                        <RangeControl
-                            label={ __( 'Bottom' ) }
-                            value={ containerMarginBottom }
-                            min='0'
-                            max='100'
-                            onChange={ ( value ) => {
-                                setAttributes( { containerMarginBottom: value } )
-                            } }
-                        />
-                    </PanelBody>
-                    <PanelBody
-                        title={__('Padding')}
-                        initialOpen={ false }>
-                        <RangeControl
-                            label={ __( 'Top' ) }
-                            value={ containerPaddingTop }
-                            min='0'
-                            max='100'
-                            onChange={ ( value ) => {
-                                setAttributes( { containerPaddingTop: value } )
-                            } }
-                        />
-                        <RangeControl
-                            label={ __( 'Bottom' ) }
-                            value={ containerPaddingBottom }
-                            min='0'
-                            max='100'
-                            onChange={ ( value ) => {
-                                setAttributes( { containerPaddingBottom: value } )
-                            } }
-                        />
-                        <RangeControl
-                            label={ __( 'Left' ) }
-                            value={ containerPaddingLeft }
-                            min='0'
-                            max='100'
-                            onChange={ ( value ) => {
-                                setAttributes( { containerPaddingLeft: value } )
-                            } }
-                        />
-                        <RangeControl
-                            label={ __( 'Right' ) }
-                            value={ containerPaddingRight }
-                            min='0'
-                            max='100'
-                            onChange={ ( value ) => {
-                                setAttributes( { containerPaddingRight: value } )
-                            } }
-                        />
-                    </PanelBody>
+                    
+                    <ToolsPanel label={ __( 'Dimensions' ) } resetAll={ resetAllContainer }>
+                        <ToolsPanelItem
+                            hasValue={ () => !! containerPadding }
+                            label={ __( 'Padding' ) }
+                            onDeselect={ () => setContainerPadding( undefined ) }
+                        >
+                            <BoxControl
+                                label={ __( 'Padding' ) }
+                                onChange={ setContainerPadding }
+                                values={ containerPadding }
+                                allowReset={ false }
+                            />
+                        </ToolsPanelItem>
+                        <ToolsPanelItem
+                            hasValue={ () => !! containerMargin }
+                            label={ __( 'Margin' ) }
+                            onDeselect={ () => setContainerMargin( undefined ) }
+                        >
+                            <BoxControl
+                                label={ __( 'Margin' ) }
+                                onChange={ setContainerMargin }
+                                values={ containerMargin }
+                                allowReset={ false }
+                                sides={ [ 'bottom', 'top' ] }
+                            />
+                        </ToolsPanelItem>
+                    </ToolsPanel>
+
                     { size !== 'container-content-boxed' && (
                         <PanelColorSettings
                             title={ __( 'Container Color Settings' ) }
@@ -322,68 +305,33 @@ export function ColumnsEditContainer( props ) {
                         />
                         { size === 'container-content-boxed' && (
                             <div>
-                                <PanelBody
-                                    title={__('Margin')}
-                                    initialOpen={ false }>
-                                    <RangeControl
-                                        label={ __( 'Top' ) }
-                                        value={ rowMarginTop }
-                                        min='0'
-                                        max='100'
-                                        onChange={ ( value ) => {
-                                            setAttributes( { rowMarginTop: value } )
-                                        } }
-                                    />
-                                    <RangeControl
-                                        label={ __( 'Bottom' ) }
-                                        value={ rowMarginBottom }
-                                        min='0'
-                                        max='100'
-                                        onChange={ ( value ) => {
-                                            setAttributes( { rowMarginBottom: value } )
-                                        } }
-                                    />
-                                </PanelBody>
-                                <PanelBody
-                                    title={__('Padding')}
-                                    initialOpen={ false }>
-                                    <RangeControl
-                                        label={ __( 'Top' ) }
-                                        value={ rowPaddingTop }
-                                        min='0'
-                                        max='100'
-                                        onChange={ ( value ) => {
-                                            setAttributes( { rowPaddingTop: value } )
-                                        } }
-                                    />
-                                    <RangeControl
-                                        label={ __( 'Bottom' ) }
-                                        value={ rowPaddingBottom }
-                                        min='0'
-                                        max='100'
-                                        onChange={ ( value ) => {
-                                            setAttributes( { rowPaddingBottom: value } )
-                                        } }
-                                    />
-                                    <RangeControl
-                                        label={ __( 'Left' ) }
-                                        value={ rowPaddingLeft }
-                                        min='0'
-                                        max='100'
-                                        onChange={ ( value ) => {
-                                            setAttributes( { rowPaddingLeft: value } )
-                                        } }
-                                    />
-                                    <RangeControl
-                                        label={ __( 'Right' ) }
-                                        value={ rowPaddingRight }
-                                        min='0'
-                                        max='100'
-                                        onChange={ ( value ) => {
-                                            setAttributes( { rowPaddingRight: value } )
-                                        } }
-                                    />
-                                </PanelBody>
+                                <ToolsPanel label={ __( 'Dimensions' ) } resetAll={ resetAllRow }>
+                                    <ToolsPanelItem
+                                        hasValue={ () => !! rowPadding }
+                                        label={ __( 'Padding' ) }
+                                        onDeselect={ () => setRowPadding( undefined ) }
+                                    >
+                                        <BoxControl
+                                            label={ __( 'Padding' ) }
+                                            onChange={ setRowPadding }
+                                            values={ rowPadding }
+                                            allowReset={ false }
+                                        />
+                                    </ToolsPanelItem>
+                                    <ToolsPanelItem
+                                        hasValue={ () => !! rowMargin }
+                                        label={ __( 'Margin' ) }
+                                        onDeselect={ () => setRowMargin( undefined ) }
+                                    >
+                                        <BoxControl
+                                            label={ __( 'Margin' ) }
+                                            onChange={ setRowMargin }
+                                            values={ rowMargin }
+                                            allowReset={ false }
+                                            sides={ [ 'bottom', 'top' ] }
+                                        />
+                                    </ToolsPanelItem>
+                                </ToolsPanel>
                                 <PanelColorSettings
                                     title={ __( 'Row Color Settings' ) }
                                     initialOpen={ false }
