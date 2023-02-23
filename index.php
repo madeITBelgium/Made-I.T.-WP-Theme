@@ -15,9 +15,12 @@
 get_header();
 
 do_action('madeit_before_index_page');
+
+
+$class = apply_filters('madeit_index_container_class', ['container', 'voffset6']);
 ?>
 
-<div class="container voffset6">
+<div class="<?php echo is_array($class) ? implode(' ', $class) : $class; ?>">
     <div class="row">
         <div id="primary" class="col" id="main" role="main">
             <?php
@@ -36,7 +39,7 @@ do_action('madeit_before_index_page');
             
             <?php
             if (have_posts()) {
-
+                $i = 0;
                 /* Start the Loop */
                 while (have_posts()) {
                     the_post();
@@ -47,6 +50,7 @@ do_action('madeit_before_index_page');
                      * called content-___.php (where ___ is the Post Format name) and that will be used instead.
                      */
                     get_template_part(apply_filters('madeit_index_post_template', 'template-parts/post/content'), get_post_format());
+                    $i++;
                 }
 
                 madeit_page_pagination();

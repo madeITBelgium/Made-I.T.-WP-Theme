@@ -35,7 +35,7 @@ $menuClass = apply_filters('madeit_navbar_menu_class', ['menu', 'nav', 'navbar-n
         <?php do_action('madeit_after_navbar_toggler'); ?>
         
         <?php
-        wp_nav_menu([
+        wp_nav_menu(apply_filters('madeit_top_nav_menu_options', [
             'theme_location'    => 'top',
             'menu_id'           => 'top-menu',
             'depth'             => 3,
@@ -45,7 +45,7 @@ $menuClass = apply_filters('madeit_navbar_menu_class', ['menu', 'nav', 'navbar-n
             'menu_class'        => is_array($menuClass) ? implode(' ', $menuClass) : $menuClass,
             'fallback_cb'       => 'wp_bootstrap_navwalker::fallback',
             'walker'            => new wp_bootstrap_navwalker(),
-        ]); ?>
+        ])); ?>
     </div>
         <?php
         if (HEADER_UPPER_BOTTOM === 'sticky') {
