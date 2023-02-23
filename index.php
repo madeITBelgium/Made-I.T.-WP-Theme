@@ -16,7 +16,6 @@ get_header();
 
 do_action('madeit_before_index_page');
 
-
 $class = apply_filters('madeit_index_container_class', ['container', 'voffset6']);
 ?>
 
