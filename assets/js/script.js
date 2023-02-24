@@ -436,3 +436,20 @@ function track(type, value, extraValue = null) {
         });
     }
 }
+
+
+jQuery(document).ready( function( $ ) {
+    $('.keep-max-container-size').each(function() {
+        var orderLgFirst = $(this).parent().find('.order-lg-first');
+        if(orderLgFirst.length > 0) {
+            var lgFirstIndex = $(orderLgFirst).index();
+            var thisIndex = $(this).index();
+
+            console.log(lgFirstIndex, thisIndex);
+            console.log('FOUND');
+            if(thisIndex !== lgFirstIndex) {
+                $(this).addClass('max-end-size');
+            }
+        }
+    });
+});
