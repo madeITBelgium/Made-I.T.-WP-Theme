@@ -445,10 +445,19 @@ jQuery(document).ready( function( $ ) {
             var lgFirstIndex = $(orderLgFirst).index();
             var thisIndex = $(this).index();
 
-            console.log(lgFirstIndex, thisIndex);
-            console.log('FOUND');
             if(thisIndex !== lgFirstIndex) {
                 $(this).addClass('max-end-size');
+            }
+        }
+
+
+        var orderLgLast = $(this).parent().find('.order-lg-last');
+        if(orderLgLast.length > 0) {
+            var lgLastIndex = $(orderLgLast).index();
+            var thisIndex = $(this).index();
+
+            if(thisIndex !== lgLastIndex) {
+                $(this).addClass('max-start-size');
             }
         }
     });
