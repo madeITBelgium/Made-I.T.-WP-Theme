@@ -52,6 +52,10 @@ export default function save( props ) {
     var classes = className;
     var classesChild = '';
     
+    if(size !== 'container' && size !== 'container-fluid' && size !== 'container-content-boxed') {
+        size = 'container';
+    }
+    
     classes = classnames( classes, {
         [ `container` ]: 'container' === size,
         [ `container-fluid` ]: 'container-fluid' === size || 'container-content-boxed' === size,
