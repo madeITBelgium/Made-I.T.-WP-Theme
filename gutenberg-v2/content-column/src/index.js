@@ -162,7 +162,13 @@ registerBlockType( metadata, {
                         bottom: attributes.marginBottom !== null && attributes.marginBottom !== undefined ? (attributes.marginBottom + 'px') : 0,
                         left: 0,
                         right: 0,
-                    }
+                    },
+                    verticalAlignment: attributes.verticalAlignment,
+                    width: attributes.width,
+                    backgroundColor: attributes.backgroundColor,
+                    customBackgroundColor: attributes.customBackgroundColor,
+                    textColor: attributes.textColor,
+                    customTextColor: attributes.customTextColor,
                 };
             },
 

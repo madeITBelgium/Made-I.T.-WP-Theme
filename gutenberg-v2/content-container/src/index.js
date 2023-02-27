@@ -173,7 +173,6 @@ registerBlockType( metadata, {
             },
 
             migrate( attributes ) {
-                console.log(attributes);
                 return {
                     containerPadding: {
                         top: attributes.containerPaddingTop !== null && attributes.containerPaddingTop !== undefined ? (attributes.containerPaddingTop + 'px') : 0,
@@ -199,6 +198,10 @@ registerBlockType( metadata, {
                         left: 0,
                         right: 0,
                     },
+                    size: attributes.size,
+                    verticalAlignment: attributes.verticalAlignment,
+                    containerBackgroundColor: attributes.containerBackgroundColor,
+                    customContainerBackgroundColor: attributes.customContainerBackgroundColor
                 };
             },
 
