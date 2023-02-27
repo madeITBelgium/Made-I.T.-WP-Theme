@@ -436,3 +436,29 @@ function track(type, value, extraValue = null) {
         });
     }
 }
+
+
+jQuery(document).ready( function( $ ) {
+    $('.keep-max-container-size').each(function() {
+        var orderLgFirst = $(this).parent().find('.order-lg-first');
+        if(orderLgFirst.length > 0) {
+            var lgFirstIndex = $(orderLgFirst).index();
+            var thisIndex = $(this).index();
+
+            if(thisIndex !== lgFirstIndex) {
+                $(this).addClass('max-end-size');
+            }
+        }
+
+
+        var orderLgLast = $(this).parent().find('.order-lg-last');
+        if(orderLgLast.length > 0) {
+            var lgLastIndex = $(orderLgLast).index();
+            var thisIndex = $(this).index();
+
+            if(thisIndex !== lgLastIndex) {
+                $(this).addClass('max-start-size');
+            }
+        }
+    });
+});
