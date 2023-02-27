@@ -52,27 +52,31 @@ export default function save( props ) {
     var classes = className;
     var classesChild = '';
     
-    if(size !== 'container' && size !== 'container-fluid' && size !== 'container-content-boxed') {
-        size = 'container';
-    }
-    
+
     console.log(size);
     
+    var defaultSize = size;
+    if(defaultSize !== 'container' && defaultSize !== 'container-fluid' && defaultSize !== 'container-content-boxed') {
+        defaultSize = 'container';
+    }
+    
+    console.log(defaultSize);
+    
     classes = classnames( classes, {
-        [ `container` ]: 'container' === size,
-        [ `container-fluid` ]: 'container-fluid' === size || 'container-content-boxed' === size,
+        [ `container` ]: 'container' === defaultSize,
+        [ `container-fluid` ]: 'container-fluid' === defaultSize || 'container-content-boxed' === defaultSize,
     } );
     
-    if(size !== 'container-content-boxed') {
+    if(defaultSize !== 'container-content-boxed') {
         classes = classnames( classes, {
-            [ `are-vertically-aligned-${ verticalAlignment }` ]: verticalAlignment && size !== 'container-content-boxed',
+            [ `are-vertically-aligned-${ verticalAlignment }` ]: verticalAlignment && defaultSize !== 'container-content-boxed',
         } );
     }
     
     classesChild = classnames( classesChild, {
-        [ `are-vertically-aligned-${ verticalAlignment }` ]: verticalAlignment && size === 'container-content-boxed',
-        [ `container` ]: 'container' === size || 'container-content-boxed' === size,
-        [ `container-fluid` ]: 'container-fluid' === size,
+        [ `are-vertically-aligned-${ verticalAlignment }` ]: verticalAlignment && defaultSize === 'container-content-boxed',
+        [ `container` ]: 'container' === defaultSize || 'container-content-boxed' === defaultSize,
+        [ `container-fluid` ]: 'container-fluid' === defaultSize,
     } );
     
     classes = classnames(classes, {
@@ -106,7 +110,7 @@ export default function save( props ) {
     }
     
     var styleChild = {};
-    if(size === 'container-content-boxed') {
+    if(defaultSize === 'container-content-boxed') {
         classesChild = classnames(classesChild, {
             'has-text-color': rowTextColor !== undefined,
             'has-background': rowBackgroundColor !== undefined,
