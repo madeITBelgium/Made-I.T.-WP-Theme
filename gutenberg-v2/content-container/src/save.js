@@ -56,6 +56,8 @@ export default function save( props ) {
         size = 'container';
     }
     
+    console.log(size);
+    
     classes = classnames( classes, {
         [ `container` ]: 'container' === size,
         [ `container-fluid` ]: 'container-fluid' === size || 'container-content-boxed' === size,
