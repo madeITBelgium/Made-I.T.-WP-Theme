@@ -152,16 +152,16 @@ registerBlockType( metadata, {
             migrate( attributes ) {
                 return {
                     padding: {
-                        top: attributes.paddingTop !== null && attributes.paddingTop !== undefined ? (attributes.paddingTop + 'px') : 0,
-                        bottom: attributes.paddingBottom !== null && attributes.paddingBottom !== undefined ? (attributes.paddingBottom + 'px') : 0,
-                        left: attributes.paddingLeft !== null && attributes.paddingLeft !== undefined ? (attributes.paddingLeft + 'px') : 0,
-                        right: attributes.paddingRight !== null && attributes.paddingRight !== undefined ? (attributes.paddingRight + 'px') : 0,
+                        top: attributes.paddingTop !== null && attributes.paddingTop !== undefined ? (attributes.paddingTop + 'px') : undefined,
+                        bottom: attributes.paddingBottom !== null && attributes.paddingBottom !== undefined ? (attributes.paddingBottom + 'px') : undefined,
+                        left: attributes.paddingLeft !== null && attributes.paddingLeft !== undefined ? (attributes.paddingLeft + 'px') : undefined,
+                        right: attributes.paddingRight !== null && attributes.paddingRight !== undefined ? (attributes.paddingRight + 'px') : undefined,
                     },
                     margin: {
-                        top: attributes.marginTop !== null && attributes.marginTop !== undefined ? (attributes.marginTop + 'px') : 0,
-                        bottom: attributes.marginBottom !== null && attributes.marginBottom !== undefined ? (attributes.marginBottom + 'px') : 0,
-                        left: 0,
-                        right: 0,
+                        top: attributes.marginTop !== null && attributes.marginTop !== undefined ? (attributes.marginTop + 'px') : undefined,
+                        bottom: attributes.marginBottom !== null && attributes.marginBottom !== undefined ? (attributes.marginBottom + 'px') : undefined,
+                        left: undefined,
+                        right: undefined,
                     },
                     verticalAlignment: attributes.verticalAlignment,
                     width: attributes.width,
