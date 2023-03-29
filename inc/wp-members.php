@@ -241,7 +241,6 @@ function wpmem_login_form($page, $arr)
     $form = $form.apply_filters('wpmem_login_form_buttons', $buttons_before.$n.$buttons.$buttons_after.$n, $action);
 
     if ((WPMEM_MSURL != null || $page == 'members') && $action == 'login') {
-
         /**
          * Filter the forgot password link.
          *
@@ -255,7 +254,6 @@ function wpmem_login_form($page, $arr)
     }
 
     if ((WPMEM_REGURL != null) && $action == 'login') {
-
         /*
          * Filter the link to the registration page.
          *
@@ -263,11 +261,11 @@ function wpmem_login_form($page, $arr)
          *
          * @param string The registration page link.
           */
-    /*
-        $link = apply_filters( 'wpmem_reg_link', WPMEM_REGURL );
-        $str  = __( 'New User?', 'wp-members' ) . '&nbsp;<a href="' . $link . '">' . __( 'Click here to register', 'wp-members' ) . '</a>';
-        $form = $form . $link_before . apply_filters( 'wpmem_reg_link_str', $str ) . $link_after . $n;
-    */
+        /*
+            $link = apply_filters( 'wpmem_reg_link', WPMEM_REGURL );
+            $str  = __( 'New User?', 'wp-members' ) . '&nbsp;<a href="' . $link . '">' . __( 'Click here to register', 'wp-members' ) . '</a>';
+            $form = $form . $link_before . apply_filters( 'wpmem_reg_link_str', $str ) . $link_after . $n;
+        */
     }
 
     // apply the heading
@@ -454,14 +452,13 @@ function wpmem_inc_registration($toggle = 'new', $heading = '')
         $do_row = ($toggle == 'edit' && in_array($field[2], $pass_arr)) ? false : true;
 
         // skips tos, makes tos field hidden on user edit page, unless they haven't got a value for tos
-        if ($field[2] == 'tos' && $toggle == 'edit' && (get_user_meta($userdata->ID, 'tos', true))) {
+        if ($field[2] == 'tos' && $toggle == 'edit' && get_user_meta($userdata->ID, 'tos', true)) {
             $do_row = false;
             $hidden_tos = wpmem_create_formfield($field[2], 'hidden', get_user_meta($userdata->ID, 'tos', true));
         }
 
         // if the field is set to display and we aren't skipping, construct the row
         if ($field[4] == 'y' && $do_row == true) {
-
             // label for all but TOS
             if ($field[2] != 'tos') {
                 $class = ($field[3] == 'password') ? 'text' : $field[3];
@@ -506,7 +503,7 @@ function wpmem_inc_registration($toggle = 'new', $heading = '')
 
                 // determine if TOS is a WP page or not...
                 $tos_content = stripslashes(get_option('wpmembers_tos'));
-                if ((wpmem_test_shortcode($tos_content, 'wp-members'))) {
+                if (wpmem_test_shortcode($tos_content, 'wp-members')) {
                     $link = do_shortcode($tos_content);
                     $tos_pop = '<a href="'.$link.'" target="_blank">';
                 } else {
@@ -527,7 +524,6 @@ function wpmem_inc_registration($toggle = 'new', $heading = '')
                 $field_before = ($wrap_inputs) ? '<div class="col-sm-offset-4 col-sm-8">' : '';
                 $field_after = ($wrap_inputs) ? '</div>' : '';
             } else {
-
                 // for checkboxes
                 if ($field[3] == 'checkbox') {
                     $valtochk = $val;
@@ -618,7 +614,6 @@ function wpmem_inc_registration($toggle = 'new', $heading = '')
 
     // do recaptcha if enabled
     if (WPMEM_CAPTCHA == 1 && $toggle != 'edit') { // don't show on edit page!
-
         // get the captcha options
         $wpmem_captcha = get_option('wpmembers_captcha');
 

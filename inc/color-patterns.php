@@ -951,7 +951,6 @@ function madeit_color_luminance($hex, $a, $b, $c)
 
 function madeit_change_color($hex, $default)
 {
-
     // validate hex string
     $hex = substr($hex, 1, strlen($hex) - 1);
     $hex = preg_replace('/[^0-9a-f]/i', '', $hex);
@@ -1006,9 +1005,9 @@ function madeit_hex2hsl($hex)
     // Split input by color
     $hex = str_split($hex, 2);
     // Convert color values to value between 0 and 1
-    $r = (hexdec($hex[0])) / 255;
-    $g = (hexdec($hex[1])) / 255;
-    $b = (hexdec($hex[2])) / 255;
+    $r = hexdec($hex[0]) / 255;
+    $g = hexdec($hex[1]) / 255;
+    $b = hexdec($hex[2]) / 255;
 
     return madeit_rgb2hsl([$r, $g, $b]);
 }
@@ -1043,7 +1042,7 @@ function madeit_rgb2hsl($rgb)
     else {
         switch ($max) {
             case $r:
-                $h_ = fmod((($g - $b) / $chroma), 6);
+                $h_ = fmod(($g - $b) / $chroma, 6);
                 if ($h_ < 0) {
                     $h_ = (6 - fmod(abs($h_), 6));
                 } // Bugfix: fmod() returns wrong values for negative numbers
@@ -1087,22 +1086,22 @@ function madeit_hsl2rgb($hsl)
     else {
         $chroma = (1 - abs(2 * $l - 1)) * $s;
         $h_ = $h * 6;
-        $x = $chroma * (1 - abs((fmod($h_, 2)) - 1)); // Note: fmod because % (modulo) returns int value!!
+        $x = $chroma * (1 - abs(fmod($h_, 2) - 1)); // Note: fmod because % (modulo) returns int value!!
         $m = $l - round($chroma / 2, 10); // Bugfix for strange float behaviour (e.g. $l=0.17 and $s=1)
 
-             if ($h_ >= 0 && $h_ < 1) {
-                 $rgb = [($chroma + $m), ($x + $m), $m];
-             } elseif ($h_ >= 1 && $h_ < 2) {
-                 $rgb = [($x + $m), ($chroma + $m), $m];
-             } elseif ($h_ >= 2 && $h_ < 3) {
-                 $rgb = [$m, ($chroma + $m), ($x + $m)];
-             } elseif ($h_ >= 3 && $h_ < 4) {
-                 $rgb = [$m, ($x + $m), ($chroma + $m)];
-             } elseif ($h_ >= 4 && $h_ < 5) {
-                 $rgb = [($x + $m), $m, ($chroma + $m)];
-             } elseif ($h_ >= 5 && $h_ < 6) {
-                 $rgb = [($chroma + $m), $m, ($x + $m)];
-             }
+        if ($h_ >= 0 && $h_ < 1) {
+            $rgb = [$chroma + $m, $x + $m, $m];
+        } elseif ($h_ >= 1 && $h_ < 2) {
+            $rgb = [$x + $m, $chroma + $m, $m];
+        } elseif ($h_ >= 2 && $h_ < 3) {
+            $rgb = [$m, $chroma + $m, $x + $m];
+        } elseif ($h_ >= 3 && $h_ < 4) {
+            $rgb = [$m, $x + $m, $chroma + $m];
+        } elseif ($h_ >= 4 && $h_ < 5) {
+            $rgb = [$x + $m, $m, $chroma + $m];
+        } elseif ($h_ >= 5 && $h_ < 6) {
+            $rgb = [$chroma + $m, $m, $x + $m];
+        }
     }
 
     return $rgb;
