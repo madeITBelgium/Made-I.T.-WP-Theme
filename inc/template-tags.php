@@ -12,7 +12,6 @@ if (!function_exists('madeit_posted_on')) {
      */
     function madeit_posted_on()
     {
-
         // Get the author name; wrap it in a link.
         $byline = sprintf(
             /* translators: %s: post author */
@@ -41,7 +40,7 @@ if (!function_exists('madeit_time_link')) {
         // Wrap the time string in a link, and preface it with 'Posted on'.
         $result = '<span class="published-on">'.sprintf(
             /* translators: %s: post date */
-            (POST_TIME_FORMAT === 'long' ? __('<span>Posted on</span> %s', 'madeit') : '%s'),
+            POST_TIME_FORMAT === 'long' ? __('<span>Posted on</span> %s', 'madeit') : '%s',
             '<a href="'.esc_url(get_permalink()).'" rel="bookmark">'.$time_string.'</a>'
         ).'</span> ';
 
