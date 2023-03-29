@@ -49,6 +49,10 @@
     $( document ).on( 'click', '.single_add_to_cart_button', function(e) {
         e.preventDefault();
 
+        if($(this).hasClass('disabled')) {
+            return;
+        }
+
         thisbutton = $(this),
         $form = thisbutton.closest('form.cart'),
         id = thisbutton.val(),
