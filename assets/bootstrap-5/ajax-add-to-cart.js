@@ -53,12 +53,32 @@
             return;
         }
 
-        thisbutton = $(this),
+        var thisbutton = $(this),
         $form = thisbutton.closest('form.cart'),
         id = thisbutton.val(),
         product_qty = $form.find('input[name=quantity]').val() || 1,
         product_id = $form.find('input[name=product_id]').val() || id,
-        variation_id = $form.find('input[name=variation_id]').val() || 0;
+        variation_id = $form.find('input[name=variation_id]').val() || 0,
+        attributes = [];
+
+        if($form.find('[name^=attribute]').length > 0) {
+            for(var i = 0; i < $form.find('[name^=attribute]').length; i++) {
+                var attribute = $form.find('[name^=attribute]').eq(i);
+                if(attribute.is('select')) {
+                    attributes.push({
+                        name: attribute.attr('name'),
+                        value: attribute.find('option:selected').val(),
+                    });
+                    //attributes[attribute.attr('name')] = attribute.find('option:selected').val();
+                } else {
+                    attributes.push({
+                        name: attribute.attr('name'),
+                        value: attribute.val(),
+                    });
+                    //attributes[attribute.attr('name')] = attribute.val();
+                }
+            }
+        }
 
         var data = {
             action: 'woocommerce_ajax_add_to_cart',
@@ -66,6 +86,7 @@
             product_sku: '',
             quantity: product_qty,
             variation_id: variation_id,
+            attributes: attributes,
         };
 
         $(document.body).trigger('adding_to_cart', [thisbutton, data]);
