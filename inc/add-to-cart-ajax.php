@@ -20,7 +20,14 @@ function madeit_woocommerce_ajax_add_to_cart()
     $passed_validation = apply_filters('woocommerce_add_to_cart_validation', true, $product_id, $quantity);
     $product_status = get_post_status($product_id);
 
-    if ($passed_validation && WC()->cart->add_to_cart($product_id, $quantity, $variation_id) && 'publish' === $product_status) {
+    $attributes = null;
+    if(isset($_POST['attributes']) && is_array($_POST['attributes'])) {
+        foreach($_POST['attributes'] as $key => $value) {
+            $attributes[$value['name']] = $value['value'];
+        }
+    }
+
+    if ($passed_validation && WC()->cart->add_to_cart($product_id, $quantity, $variation_id, $attributes) && 'publish' === $product_status) {
         do_action('woocommerce_ajax_added_to_cart', $product_id);
 
         if ('yes' === get_option('woocommerce_cart_redirect_after_add')) {
