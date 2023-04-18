@@ -4,9 +4,10 @@
  *
  * @see 	    https://docs.woocommerce.com/document/template-structure/
  *
- * @author 		Made I.T.
+ * @version 7.4.0
  *
- * @version 7.2.1
+ * @var bool   $readonly If the input should be set to readonly mode.
+ * @var string $type     The input type attribute.
  */
 defined('ABSPATH') || exit;
 

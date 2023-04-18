@@ -286,6 +286,12 @@ div.product div.woocommerce-product-gallery--columns-6 .woocommerce-product-gall
     float: right;
 }
 
+
+::selection {
+    background: var(--wp--preset--color--primary);
+    color: #FFF;
+}
+
 /* Header */
 .single-featured-image-header {
 	position: relative;
