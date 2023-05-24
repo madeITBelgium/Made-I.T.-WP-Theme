@@ -63,6 +63,7 @@ export const save = ( props ) => {
                 className={'nav-link ' + active} 
                 id={ 'tab-' + tabid}
                 data-toggle="tab"
+                data-bs-toggle="tab"
                 href={'#' + tabid }
                 role="tab"
                 aria-controls={ tabid }
@@ -100,6 +101,37 @@ registerBlockType( 'madeit/block-tabs-title', {
     },
     
     deprecated: [
+        {
+            save: function( props ) {
+                const {
+                    tabid,
+                    content
+                } = props.attributes;
+                
+                const {
+                    className
+                } = props
+                
+                var classN = className !== undefined ? className : '';
+                var active = tabid == 0 ? 'active' : '';
+                
+                return (
+                    <li className={ 'nav-item ' + classN }>
+                        <RichText.Content
+                            tagName="a"
+                            className={'nav-link ' + active} 
+                            id={ 'tab-' + tabid}
+                            data-toggle="tab"
+                            href={'#' + tabid }
+                            role="tab"
+                            aria-controls={ tabid }
+                            aria-selected="true"
+                            value={ content }
+                        />
+                    </li>
+                );
+            },
+        },
         {
             save: function( props ) {
                 const {
