@@ -12,6 +12,7 @@ $containerClass = apply_filters('madeit_upper_bottom_navbar_container_class', ['
     <?php if (!in_array('container', $navBarClass)) { ?>
     <div class="row vw-100">
         <div class="col">
+            <?php do_action('madeit_upper_bottom_navbar_col_start'); ?>
             <div class="<?php echo is_array($containerClass) ? implode(' ', $containerClass) : $containerClass; ?>">
                 <?php } ?>
                 <div class="row w-100 no-gutters justify-content-center">
