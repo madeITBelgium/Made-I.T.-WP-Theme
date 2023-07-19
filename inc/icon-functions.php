@@ -28,10 +28,10 @@ add_action('wp_footer', 'madeit_include_svg_icons', 9999);
  * @param array $args {
  *                    Parameters needed to display an SVG.
  *
- *     @var string $icon  Required SVG icon filename.
- *     @var string $title Optional SVG title.
- *     @var string $desc  Optional SVG description.
- * }
+ * @var string $icon  Required SVG icon filename.
+ * @var string $title Optional SVG title.
+ * @var string $desc  Optional SVG description.
+ *             }
  *
  * @return string SVG markup.
  */
