@@ -12,6 +12,7 @@
 $footerClass = apply_filters('madeit_footer_class', ['container-fluid', 'site-footer']);
 $footerWidgetRow = apply_filters('madeit_footer_widget_row_class', ['row', 'mt-5', 'mb-5', 'mx-2']);
 $footerContainerClass = apply_filters('madeit_footer_container_class', ['container']);
+$siteInfoClass = apply_filters('madeit_site_info_class', ['site-info', 'text-center', 'col-sm']);
 ?>
 <?php do_action('madeit_end_grow'); ?>
 </div>
@@ -25,6 +26,7 @@ $footerContainerClass = apply_filters('madeit_footer_container_class', ['contain
     </div>
     <?php do_action('madeit_between_footer'); ?>
     <div class="<?php echo is_array($footerContainerClass) ? implode(' ', $footerContainerClass) : $footerContainerClass; ?>">
+        <?php do_action('madeit_footer_before_siteinfo_row'); ?>
         <div class="row">
             <?php
             if (has_nav_menu('social')) { ?>
@@ -42,7 +44,7 @@ $footerContainerClass = apply_filters('madeit_footer_container_class', ['contain
                     </nav><!-- .social-navigation -->
                 </div>
             <?php } ?>
-            <div class="col-sm site-info text-center">
+            <div class="<?php echo is_array($siteInfoClass) ? implode(' ', $siteInfoClass) : $siteInfoClass; ?>">
                 <?php get_template_part('template-parts/footer/site', 'info'); ?>
             </div>
         </div>
