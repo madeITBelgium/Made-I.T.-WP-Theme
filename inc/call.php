@@ -61,6 +61,10 @@ function madeit_cron_daily()
                 'MADEIT_BOOTSTRAP_POPPER'     => defined('MADEIT_BOOTSTRAP_POPPER') ? MADEIT_BOOTSTRAP_POPPER : null,
                 'MADEIT_POPUPS'               => defined('MADEIT_POPUPS') ? MADEIT_POPUPS : null,
                 'MADEIT_INFINITE_SCROLL'      => defined('MADEIT_INFINITE_SCROLL') ? MADEIT_INFINITE_SCROLL : null,
+                'MADEIT_WOOCOMMERCE_ADD_PRODUCT_AJAX' => defined('MADEIT_WOOCOMMERCE_ADD_PRODUCT_AJAX') ? MADEIT_WOOCOMMERCE_ADD_PRODUCT_AJAX : null,
+                'MADEIT_ANALYTICS_GA'         => defined('MADEIT_ANALYTICS_GA') ? MADEIT_ANALYTICS_GA : null,
+                'MADEIT_ANALYTICS_TM'         => defined('MADEIT_ANALYTICS_TM') ? MADEIT_ANALYTICS_TM : null,
+                'MADEIT_ANALYTICS_FB'         => defined('MADEIT_ANALYTICS_FB') ? MADEIT_ANALYTICS_FB : null,
             ],
         ],
     ];
@@ -73,7 +77,7 @@ function madeit_cron_daily()
 
     //get response in json
     $response = json_decode(wp_remote_retrieve_body($response), true);
-    print_r($response);
+    //print_r($response);
 }
 
 //wp cli command
