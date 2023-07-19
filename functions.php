@@ -1013,13 +1013,18 @@ if (!function_exists('madeit_register_required_plugins')) {
                 'required' => true,
             ],
             [
-                'name'     => 'WP Security By Made I.T.',
-                'slug'     => 'wp-security-by-made-it',
+                'name'     => 'Wordfence Security',
+                'slug'     => 'wordfence',
                 'required' => false,
             ],
             [
                 'name'     => 'WooCommerce',
                 'slug'     => 'woocommerce',
+                'required' => false,
+            ],
+            [
+                'name'     => 'MainWP Child',
+                'slug'     => 'mainwp-child',
                 'required' => false,
             ],
             [
@@ -1035,6 +1040,11 @@ if (!function_exists('madeit_register_required_plugins')) {
             [
                 'name'     => 'Redirection',
                 'slug'     => 'redirection',
+                'required' => false,
+            ],
+            [
+                'name'     => 'Duplicator',
+                'slug'     => 'duplicator',
                 'required' => false,
             ],
             [
