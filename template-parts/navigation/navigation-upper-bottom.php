@@ -26,7 +26,7 @@ $containerClass = apply_filters('madeit_upper_bottom_navbar_container_class', ['
                             'container_id'      => 'secondary-bottom-navigation',
                             'container_class'   => 'secondary-bottom-navigation',
                             'menu_class'        => 'menu nav navbar-nav',
-                            'fallback_cb'       => 'wp_bootstrap_navwalker::fallback',
+                            'fallback_cb'       => 'wp_bootstrap_navwalker::empty',
                             'walker'            => new wp_bootstrap_navwalker(),
                         ]); ?>
                     </div>
