@@ -229,4 +229,9 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu
             echo $fb_output;
         }
     }
+
+    public static function empty($args)
+    {
+        
+    }
 }
