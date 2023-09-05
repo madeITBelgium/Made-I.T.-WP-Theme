@@ -53,9 +53,11 @@ $menuClass = apply_filters('madeit_navbar_menu_class', ['menu', 'nav', 'navbar-n
         <?php
         if (HEADER_UPPER_BOTTOM === 'sticky') {
             ?>
-            <div class="row">
-                <div class="col p-0">
-                <?php get_template_part('template-parts/navigation/navigation', 'upper-bottom'); ?>
+            <div class="container-fluid d-block">
+                <div class="row">
+                    <div class="col p-0">
+                    <?php get_template_part('template-parts/navigation/navigation', 'upper-bottom'); ?>
+                    </div>
                 </div>
             </div>
             <?php
