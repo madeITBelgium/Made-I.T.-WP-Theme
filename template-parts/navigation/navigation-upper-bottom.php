@@ -11,7 +11,7 @@ $rowClass = apply_filters('madeit_upper_bottom_navbar_row_class', ['row', 'vw-10
 
 <div class="<?php echo is_array($navBarClass) ? implode(' ', $navBarClass) : $navBarClass; ?>" id="secondary-bottom-navigation-container">
     <?php if (!in_array('container', $navBarClass)) { ?>
-    <div class="<?php echo is_array($rowClass) ? implode(' ', $rowClass) : $rowClass; ?>0">
+    <div class="<?php echo is_array($rowClass) ? implode(' ', $rowClass) : $rowClass; ?>">
         <div class="col">
             <?php do_action('madeit_upper_bottom_navbar_col_start'); ?>
             
