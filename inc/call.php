@@ -81,6 +81,8 @@ function madeit_cron_daily()
                 'MADEIT_ANALYTICS_GA'                 => defined('MADEIT_ANALYTICS_GA') ? MADEIT_ANALYTICS_GA : null,
                 'MADEIT_ANALYTICS_TM'                 => defined('MADEIT_ANALYTICS_TM') ? MADEIT_ANALYTICS_TM : null,
                 'MADEIT_ANALYTICS_FB'                 => defined('MADEIT_ANALYTICS_FB') ? MADEIT_ANALYTICS_FB : null,
+                'MADEIT_REVIEWS_GOOGLE_ID'            => defined('MADEIT_REVIEWS_GOOGLE_ID') ? MADEIT_REVIEWS_GOOGLE_ID : null,
+                'MADEIT_REVIEWS_GOOGLE_API'           => defined('MADEIT_REVIEWS_GOOGLE_API') ? MADEIT_REVIEWS_GOOGLE_API : null,
             ],
         ],
     ];
