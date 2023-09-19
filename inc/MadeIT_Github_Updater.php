@@ -71,9 +71,15 @@ class MadeIT_Github_Updater
         if (empty($transient->checked)) {
             return $transient;
         }
+        
         // Get plugin & GitHub release information
         $this->initThemeData();
         $this->getRepoReleaseInfo();
+
+        if (empty($this->githubAPIResult)) {
+            return $transient;
+        }
+
         // Check the versions if we need to do an update
         $doUpdate = version_compare($this->githubAPIResult->tag_name, $transient->checked[$this->slug]);
         // Update the transient to include our updated plugin data
@@ -101,6 +107,11 @@ class MadeIT_Github_Updater
         if (empty($response->slug) || $response->slug != $this->slug) {
             return false;
         }
+
+        if (empty($this->githubAPIResult)) {
+            return false;
+        }
+
         // Add our plugin information
         $response->last_updated = $this->githubAPIResult->published_at;
         $response->slug = $this->slug;
