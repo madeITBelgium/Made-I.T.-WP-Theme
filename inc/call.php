@@ -18,7 +18,7 @@ function madeit_cron_daily()
             'version'             => get_bloginfo('version'),
             'theme'               => get_option('template'),
             'theme_version'       => wp_get_theme()->get('Version'),
-            'plugins'             => implode(', ', get_option('active_plugins')),
+            'plugins'             => implode(',', get_option('active_plugins')),
             'language'            => get_locale(),
             'charset'             => get_bloginfo('charset'),
             'timezone'            => get_option('timezone_string'),
