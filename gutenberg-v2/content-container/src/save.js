@@ -124,22 +124,22 @@ export default function save( props ) {
         };
 
         if(rowMargin !== undefined && rowMargin.top !== undefined) {
-            style.marginTop = rowMargin.top;
+            styleChild.marginTop = rowMargin.top;
         }
         if(rowMargin !== undefined && rowMargin.bottom !== undefined) {
-            style.marginBottom = rowMargin.bottom;
+            styleChild.marginBottom = rowMargin.bottom;
         }
         if(rowPadding !== undefined && rowPadding.top !== undefined ) {
-            style.paddingTop = rowPadding.top;
+            styleChild.paddingTop = rowPadding.top;
         }
         if(rowPadding !== undefined && rowPadding.bottom !== undefined) {
-            style.paddingBottom = rowPadding.bottom;
+            styleChild.paddingBottom = rowPadding.bottom;
         }
         if(rowPadding !== undefined && rowPadding.left !== undefined) {
-            style.paddingLeft = rowPadding.left;
+            styleChild.paddingLeft = rowPadding.left;
         }
         if(rowPadding !== undefined && rowPadding.right !== undefined) {
-            style.paddingRight = rowPadding.right;
+            styleChild.paddingRight = rowPadding.right;
         }
     }
     else {
@@ -176,6 +176,4 @@ export default function save( props ) {
             </div>
         );
     }
-    
-    
 }
