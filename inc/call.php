@@ -7,6 +7,21 @@ function madeit_cron_daily()
     global $wpdb;
     // Do something
 
+    $plugins = get_option('active_plugins');
+
+    //get name and version of plugins
+    $plugins = get_option('active_plugins');
+    $plugins_data = [];
+    foreach ($plugins as $plugin) {
+        $plugin_data = get_plugin_data(WP_PLUGIN_DIR . '/' . $plugin);
+        $plugins_data[$plugin] = [
+            'name'    => $plugin_data['Name'],
+            'version' => $plugin_data['Version'],
+            'latest'  => get_site_transient('update_plugins')->checked[$plugin],
+            'has_update' => get_site_transient('update_plugins')->checked[$plugin] != $plugin_data['Version'],
+        ];
+    }
+
     //Do post call to url
     $url = 'https://portal.madeit.be/api/theme/madeit';
     $args = [
@@ -19,6 +34,7 @@ function madeit_cron_daily()
             'theme'               => get_option('template'),
             'theme_version'       => wp_get_theme()->get('Version'),
             'plugins'             => implode(',', get_option('active_plugins')),
+            'plugins_info'        => $plugins_data,
             'language'            => get_locale(),
             'charset'             => get_bloginfo('charset'),
             'timezone'            => get_option('timezone_string'),
