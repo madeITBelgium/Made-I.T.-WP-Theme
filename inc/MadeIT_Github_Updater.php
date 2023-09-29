@@ -71,7 +71,7 @@ class MadeIT_Github_Updater
         if (empty($transient->checked)) {
             return $transient;
         }
-        
+
         // Get plugin & GitHub release information
         $this->initThemeData();
         $this->getRepoReleaseInfo();
