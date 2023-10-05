@@ -13,11 +13,11 @@ function madeit_cron_daily()
     $plugins = get_option('active_plugins');
     $plugins_data = [];
     foreach ($plugins as $plugin) {
-        $plugin_data = get_plugin_data(WP_PLUGIN_DIR . '/' . $plugin);
+        $plugin_data = get_plugin_data(WP_PLUGIN_DIR.'/'.$plugin);
         $plugins_data[$plugin] = [
-            'name'    => $plugin_data['Name'],
-            'version' => $plugin_data['Version'],
-            'latest'  => get_site_transient('update_plugins')->checked[$plugin],
+            'name'       => $plugin_data['Name'],
+            'version'    => $plugin_data['Version'],
+            'latest'     => get_site_transient('update_plugins')->checked[$plugin],
             'has_update' => get_site_transient('update_plugins')->checked[$plugin] != $plugin_data['Version'],
         ];
     }
