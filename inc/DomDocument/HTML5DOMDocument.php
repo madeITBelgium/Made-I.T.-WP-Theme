@@ -1,20 +1,19 @@
 <?php
 
-include_once __DIR__ . '/HTML5DOMElement.php';
-include_once __DIR__ . '/HTML5DOMNodeList.php';
-include_once __DIR__ . '/HTML5DOMTokenList.php';
-include_once __DIR__ . '/QuerySelectors.php';
+include_once __DIR__.'/HTML5DOMElement.php';
+include_once __DIR__.'/HTML5DOMNodeList.php';
+include_once __DIR__.'/HTML5DOMTokenList.php';
+include_once __DIR__.'/QuerySelectors.php';
 
 /**
  * Represents a live (can be manipulated) representation of a HTML5 document.
- * 
- * @method HTML5DOMElement|false createElement(string $localName, string $value = '') Create new element node.
+ *
+ * @method HTML5DOMElement|false createElement(string $localName, string $value = '')                           Create new element node.
  * @method HTML5DOMElement|false createElementNS(?string $namespace, string $qualifiedName, string $value = '') Create new element node with an associated namespace.
- * @method ?HTML5DOMElement getElementById(string $elementId) Searches for an element with a certain id.
+ * @method ?HTML5DOMElement      getElementById(string $elementId)                                              Searches for an element with a certain id.
  */
 class HTML5DOMDocument extends \DOMDocument
 {
-
     use QuerySelectors;
 
     /**
@@ -53,22 +52,21 @@ class HTML5DOMDocument extends \DOMDocument
     const FIX_DUPLICATE_STYLES = 64;
 
     /**
-     *
      * @var array
      */
-    static private $newObjectsCache = [];
+    private static $newObjectsCache = [];
 
     /**
      * Indicates whether an HTML code is loaded.
      *
-     * @var boolean
+     * @var bool
      */
     private $loaded = false;
 
     /**
      * Creates a new HTML5DOMDocument object.
      *
-     * @param string $version The version number of the document as part of the XML declaration.
+     * @param string $version  The version number of the document as part of the XML declaration.
      * @param string $encoding The encoding of the document as part of the XML declaration.
      */
     public function __construct(string $version = '1.0', string $encoding = '')
@@ -81,9 +79,10 @@ class HTML5DOMDocument extends \DOMDocument
     /**
      * Load HTML from a string.
      *
-     * @param string $source The HTML code.
-     * @param integer $options Additional Libxml parameters.
-     * @return boolean TRUE on success or FALSE on failure.
+     * @param string $source  The HTML code.
+     * @param int    $options Additional Libxml parameters.
+     *
+     * @return bool TRUE on success or FALSE on failure.
      */
     #[\ReturnTypeWillChange] // While supporting PHP 7
     public function loadHTML($source, $options = 0)
@@ -103,7 +102,7 @@ class HTML5DOMDocument extends \DOMDocument
             $matches[0] = array_unique($matches[0]);
             foreach ($matches[0] as $match) {
                 if (substr($match, -2, 1) !== '/') { // check if ends with />
-                    $source = str_replace($match, $match . '<![CDATA[-html5-dom-document-internal-cdata', $source); // Add CDATA after the open tag
+                    $source = str_replace($match, $match.'<![CDATA[-html5-dom-document-internal-cdata', $source); // Add CDATA after the open tag
                 }
             }
         }
@@ -127,7 +126,7 @@ class HTML5DOMDocument extends \DOMDocument
 
         // Add body tag if missing
         if ($autoAddHtmlAndBodyTags && $source !== '' && preg_match('/\<!DOCTYPE.*?\>/', $source) === 0 && preg_match('/\<html.*?\>/', $source) === 0 && preg_match('/\<body.*?\>/', $source) === 0 && preg_match('/\<head.*?\>/', $source) === 0) {
-            $source = '<html><body>' . $source . '</body></html>';
+            $source = '<html><body>'.$source.'</body></html>';
         }
 
         // Adds temporary head tag
@@ -138,14 +137,14 @@ class HTML5DOMDocument extends \DOMDocument
         $removeHtmlTag = false;
         if (isset($matches[0])) { // has head tag
             $insertPosition = strpos($source, $matches[0]) + strlen($matches[0]);
-            $source = substr($source, 0, $insertPosition) . $charsetTag . substr($source, $insertPosition);
+            $source = substr($source, 0, $insertPosition).$charsetTag.substr($source, $insertPosition);
         } else {
             $matches = [];
             preg_match('/\<html.*?\>/', $source, $matches);
             if (isset($matches[0])) { // has html tag
-                $source = str_replace($matches[0], $matches[0] . '<head>' . $charsetTag . '</head>', $source);
+                $source = str_replace($matches[0], $matches[0].'<head>'.$charsetTag.'</head>', $source);
             } else {
-                $source = '<html><head>' . $charsetTag . '</head></html>' . $source;
+                $source = '<html><head>'.$charsetTag.'</head></html>'.$source;
                 $removeHtmlTag = true;
             }
             $removeHeadTag = true;
@@ -157,10 +156,10 @@ class HTML5DOMDocument extends \DOMDocument
 
         // Add DOCTYPE if missing
         if ($autoAddDoctype && strtoupper(substr($source, 0, 9)) !== '<!DOCTYPE') {
-            $source = "<!DOCTYPE html>\n" . $source;
+            $source = "<!DOCTYPE html>\n".$source;
         }
 
-        $result = parent::loadHTML('<?xml encoding="utf-8" ?>' . $source, $options);
+        $result = parent::loadHTML('<?xml encoding="utf-8" ?>'.$source, $options);
         if ($internalErrorsOptionValue === false) {
             libxml_use_internal_errors(false);
         }
@@ -202,7 +201,7 @@ class HTML5DOMDocument extends \DOMDocument
                                 $id = $child->getAttribute('id');
                                 if ($id !== '') {
                                     if (isset($elementIDs[$id])) {
-                                        throw new \Exception('A DOM node with an ID value "' . $id . '" already exists! Pass the HTML5DOMDocument::ALLOW_DUPLICATE_IDS option to disable this check.');
+                                        throw new \Exception('A DOM node with an ID value "'.$id.'" already exists! Pass the HTML5DOMDocument::ALLOW_DUPLICATE_IDS option to disable this check.');
                                     } else {
                                         $elementIDs[$id] = true;
                                     }
@@ -217,15 +216,17 @@ class HTML5DOMDocument extends \DOMDocument
         }
 
         $this->loaded = true;
+
         return true;
     }
 
     /**
      * Load HTML from a file.
-     * 
+     *
      * @param string $filename The path to the HTML file.
-     * @param integer $options Additional Libxml parameters.
-     * @return boolean
+     * @param int    $options  Additional Libxml parameters.
+     *
+     * @return bool
      */
     #[\ReturnTypeWillChange] // While supporting PHP 7
     public function loadHTMLFile($filename, $options = 0)
@@ -236,7 +237,7 @@ class HTML5DOMDocument extends \DOMDocument
     /**
      * Adds the HTML tag to the document if missing.
      *
-     * @return boolean TRUE on success, FALSE otherwise.
+     * @return bool TRUE on success, FALSE otherwise.
      */
     private function addHtmlElementIfMissing(): bool
     {
@@ -244,16 +245,18 @@ class HTML5DOMDocument extends \DOMDocument
             if (!isset(self::$newObjectsCache['htmlelement'])) {
                 self::$newObjectsCache['htmlelement'] = new \DOMElement('html');
             }
-            $this->appendChild(clone (self::$newObjectsCache['htmlelement']));
+            $this->appendChild(clone self::$newObjectsCache['htmlelement']);
+
             return true;
         }
+
         return false;
     }
 
     /**
      * Adds the HEAD tag to the document if missing.
      *
-     * @return boolean TRUE on success, FALSE otherwise.
+     * @return bool TRUE on success, FALSE otherwise.
      */
     private function addHeadElementIfMissing(): bool
     {
@@ -262,21 +265,23 @@ class HTML5DOMDocument extends \DOMDocument
             if (!isset(self::$newObjectsCache['headelement'])) {
                 self::$newObjectsCache['headelement'] = new \DOMElement('head');
             }
-            $headElement = clone (self::$newObjectsCache['headelement']);
+            $headElement = clone self::$newObjectsCache['headelement'];
             if ($htmlElement->firstChild === null) {
                 $htmlElement->appendChild($headElement);
             } else {
                 $htmlElement->insertBefore($headElement, $htmlElement->firstChild);
             }
+
             return true;
         }
+
         return false;
     }
 
     /**
      * Adds the BODY tag to the document if missing.
      *
-     * @return boolean TRUE on success, FALSE otherwise.
+     * @return bool TRUE on success, FALSE otherwise.
      */
     private function addBodyElementIfMissing(): bool
     {
@@ -284,9 +289,11 @@ class HTML5DOMDocument extends \DOMDocument
             if (!isset(self::$newObjectsCache['bodyelement'])) {
                 self::$newObjectsCache['bodyelement'] = new \DOMElement('body');
             }
-            $this->getElementsByTagName('html')->item(0)->appendChild(clone (self::$newObjectsCache['bodyelement']));
+            $this->getElementsByTagName('html')->item(0)->appendChild(clone self::$newObjectsCache['bodyelement']);
+
             return true;
         }
+
         return false;
     }
 
@@ -294,6 +301,7 @@ class HTML5DOMDocument extends \DOMDocument
      * Dumps the internal document into a string using HTML formatting.
      *
      * @param \DOMNode $node Optional parameter to output a subset of the document.
+     *
      * @return string The document (or node) HTML code as string.
      */
     public function saveHTML(\DOMNode $node = null): string
@@ -307,15 +315,15 @@ class HTML5DOMDocument extends \DOMDocument
             if (!isset(self::$newObjectsCache['html5domdocument'])) {
                 self::$newObjectsCache['html5domdocument'] = new HTML5DOMDocument();
             }
-            $tempDomDocument = clone (self::$newObjectsCache['html5domdocument']);
+            $tempDomDocument = clone self::$newObjectsCache['html5domdocument'];
             if ($node->nodeName === 'html') {
                 $tempDomDocument->loadHTML('<!DOCTYPE html>');
-                $tempDomDocument->appendChild($tempDomDocument->importNode(clone ($node), true));
+                $tempDomDocument->appendChild($tempDomDocument->importNode(clone $node, true));
                 $html = $tempDomDocument->saveHTML();
                 $html = substr($html, 16); // remove the DOCTYPE + the new line after
             } elseif ($node->nodeName === 'head' || $node->nodeName === 'body') {
                 $tempDomDocument->loadHTML("<!DOCTYPE html>\n<html></html>");
-                $tempDomDocument->childNodes[1]->appendChild($tempDomDocument->importNode(clone ($node), true));
+                $tempDomDocument->childNodes[1]->appendChild($tempDomDocument->importNode(clone $node, true));
                 $html = $tempDomDocument->saveHTML();
                 $html = substr($html, 22, -7); // remove the DOCTYPE + the new line after + html tag
             } else {
@@ -333,8 +341,8 @@ class HTML5DOMDocument extends \DOMDocument
                         break;
                     }
                 }
-                $tempDomDocument->loadHTML("<!DOCTYPE html>\n<html>" . ($isInHead ? '<head></head>' : '<body></body>') . '</html>');
-                $tempDomDocument->childNodes[1]->childNodes[0]->appendChild($tempDomDocument->importNode(clone ($node), true));
+                $tempDomDocument->loadHTML("<!DOCTYPE html>\n<html>".($isInHead ? '<head></head>' : '<body></body>').'</html>');
+                $tempDomDocument->childNodes[1]->childNodes[0]->appendChild($tempDomDocument->importNode(clone $node, true));
                 $html = $tempDomDocument->saveHTML();
                 $html = substr($html, 28, -14); // remove the DOCTYPE + the new line + html + body or head tags
             }
@@ -380,7 +388,7 @@ class HTML5DOMDocument extends \DOMDocument
                 'html5-dom-document-internal-content',
                 '<meta data-html5-dom-document-internal-attribute="charset-meta" http-equiv="content-type" content="text/html; charset=utf-8">',
                 '</area>', '</base>', '</br>', '</col>', '</command>', '</embed>', '</hr>', '</img>', '</input>', '</keygen>', '</link>', '</meta>', '</param>', '</source>', '</track>', '</wbr>',
-                '<![CDATA[-html5-dom-document-internal-cdata', '-html5-dom-document-internal-cdata]]>', '-html5-dom-document-internal-cdata-endtagfix'
+                '<![CDATA[-html5-dom-document-internal-cdata', '-html5-dom-document-internal-cdata]]>', '-html5-dom-document-internal-cdata-endtagfix',
             ];
             if ($removeHeadElement) {
                 $codeToRemove[] = '<head></head>';
@@ -391,13 +399,15 @@ class HTML5DOMDocument extends \DOMDocument
 
             $html = str_replace($codeToRemove, '', $html);
         }
+
         return $html;
     }
 
     /**
      * Dumps the internal document into a file using HTML formatting.
-     * 
+     *
      * @param string $filename The path to the saved HTML document.
+     *
      * @return int|false the number of bytes written or FALSE if an error occurred.
      */
     #[\ReturnTypeWillChange] // Return type "int|false" is invalid in older supported versions.
@@ -412,6 +422,7 @@ class HTML5DOMDocument extends \DOMDocument
         if ($bytesWritten === strlen($result)) {
             return $bytesWritten;
         }
+
         return false;
     }
 
@@ -419,8 +430,10 @@ class HTML5DOMDocument extends \DOMDocument
      * Returns the first document element matching the selector.
      *
      * @param string $selector A CSS query selector. Available values: *, tagname, tagname#id, #id, tagname.classname, .classname, tagname.classname.classname2, .classname.classname2, tagname[attribute-selector], [attribute-selector], "div, p", div p, div > p, div + p and p ~ ul.
-     * @return HTML5DOMElement|null The result DOMElement or null if not found.
+     *
      * @throws \InvalidArgumentException
+     *
+     * @return HTML5DOMElement|null The result DOMElement or null if not found.
      */
     public function querySelector(string $selector)
     {
@@ -431,8 +444,10 @@ class HTML5DOMDocument extends \DOMDocument
      * Returns a list of document elements matching the selector.
      *
      * @param string $selector A CSS query selector. Available values: *, tagname, tagname#id, #id, tagname.classname, .classname, tagname.classname.classname2, .classname.classname2, tagname[attribute-selector], [attribute-selector], "div, p", div p, div > p, div + p and p ~ ul.
-     * @return HTML5DOMNodeList Returns a list of DOMElements matching the criteria.
+     *
      * @throws \InvalidArgumentException
+     *
+     * @return HTML5DOMNodeList Returns a list of DOMElements matching the criteria.
      */
     public function querySelectorAll(string $selector)
     {
@@ -443,6 +458,7 @@ class HTML5DOMDocument extends \DOMDocument
      * Creates an element that will be replaced by the new body in insertHTML.
      *
      * @param string $name The name of the insert target.
+     *
      * @return HTML5DOMElement A new DOMElement that must be set in the place where the new body will be inserted.
      */
     public function createInsertTarget(string $name)
@@ -452,6 +468,7 @@ class HTML5DOMDocument extends \DOMDocument
         }
         $element = $this->createElement('html5-dom-document-insert-target');
         $element->setAttribute('name', $name);
+
         return $element;
     }
 
@@ -470,6 +487,7 @@ class HTML5DOMDocument extends \DOMDocument
      * Inserts multiple HTML documents into the current document. The elements from the head and the body will be moved to their proper locations.
      *
      * @param array $sources An array containing the source of the document to be inserted in the following format: [ ['source'=>'', 'target'=>''], ['source'=>'', 'target'=>''], ... ]
+     *
      * @throws \Exception
      */
     public function insertHTMLMulti(array $sources)
@@ -512,7 +530,7 @@ class HTML5DOMDocument extends \DOMDocument
             $source = $sourceData['source'];
             $target = isset($sourceData['target']) ? $sourceData['target'] : 'beforeBodyEnd';
 
-            $domDocument = clone (self::$newObjectsCache['html5domdocument']);
+            $domDocument = clone self::$newObjectsCache['html5domdocument'];
             $domDocument->loadHTML($source, self::ALLOW_DUPLICATE_IDS);
 
             $htmlElement = $domDocument->getElementsByTagName('html')->item(0);
@@ -609,18 +627,17 @@ class HTML5DOMDocument extends \DOMDocument
 
     /**
      * Applies the modifications specified to the DOM document.
-     * 
-     * @param integer $modifications The modifications to apply. Available values:
-     *  - HTML5DOMDocument::FIX_MULTIPLE_TITLES - removes all but the last title elements.
-     *  - HTML5DOMDocument::FIX_DUPLICATE_METATAGS - removes all but the last metatags with matching name or property attributes.
-     *  - HTML5DOMDocument::FIX_MULTIPLE_HEADS - merges multiple head elements.
-     *  - HTML5DOMDocument::FIX_MULTIPLE_BODIES - merges multiple body elements.
-     *  - HTML5DOMDocument::OPTIMIZE_HEAD - moves charset metatag and title elements first.
-     *  - HTML5DOMDocument::FIX_DUPLICATE_STYLES - removes all but first styles with duplicate content.
+     *
+     * @param int $modifications The modifications to apply. Available values:
+     *                           - HTML5DOMDocument::FIX_MULTIPLE_TITLES - removes all but the last title elements.
+     *                           - HTML5DOMDocument::FIX_DUPLICATE_METATAGS - removes all but the last metatags with matching name or property attributes.
+     *                           - HTML5DOMDocument::FIX_MULTIPLE_HEADS - merges multiple head elements.
+     *                           - HTML5DOMDocument::FIX_MULTIPLE_BODIES - merges multiple body elements.
+     *                           - HTML5DOMDocument::OPTIMIZE_HEAD - moves charset metatag and title elements first.
+     *                           - HTML5DOMDocument::FIX_DUPLICATE_STYLES - removes all but first styles with duplicate content.
      */
     public function modify($modifications = 0)
     {
-
         $fixMultipleTitles = ($modifications & self::FIX_MULTIPLE_TITLES) !== 0;
         $fixDuplicateMetatags = ($modifications & self::FIX_DUPLICATE_METATAGS) !== 0;
         $fixMultipleHeads = ($modifications & self::FIX_MULTIPLE_HEADS) !== 0;
@@ -648,7 +665,6 @@ class HTML5DOMDocument extends \DOMDocument
         }
 
         foreach ($headElements as $headElement) {
-
             if ($fixMultipleTitles) { // Remove all title elements except the last one.
                 $titleTags = $headElement->getElementsByTagName('title');
                 $titleTagsCount = $titleTags->length;
@@ -666,11 +682,11 @@ class HTML5DOMDocument extends \DOMDocument
                     foreach ($metaTags as $metaTag) {
                         $id = $metaTag->getAttribute('name');
                         if ($id !== '') {
-                            $id = 'name:' . $id;
+                            $id = 'name:'.$id;
                         } else {
                             $id = $metaTag->getAttribute('property');
                             if ($id !== '') {
-                                $id = 'property:' . $id;
+                                $id = 'property:'.$id;
                             } else {
                                 $id = $metaTag->getAttribute('charset');
                                 if ($id !== '') {
