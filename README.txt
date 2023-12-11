@@ -1,8 +1,8 @@
 === Made I.T. ===
 Contributors: madeit
 Requires at least: WordPress 5.0
-Tested up to: 6.0.2
-Version: 2.9.0
+Tested up to: 6.4.2
+Version: 2.9.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: madeit, bootstrap, bootstrap4, made i.t., Made I.T.
@@ -58,7 +58,9 @@ Source: https://unsplash.com/@englr?photo=bIhpiQA009k
 = 2.9.0 =
 * Adjust navigation menu on tablet
 * Improve content block margin & paddings
-* WooCommerce 7.4, 7.5
+* WooCommerce 7.4 - 8.3
+* Review form
+
 
 = 2.8.0 =
 * Review support
