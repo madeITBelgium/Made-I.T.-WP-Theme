@@ -2,26 +2,29 @@
 
 trait QuerySelectors
 {
-
     /**
      * Returns the first element matching the selector.
-     * 
+     *
      * @param string $selector A CSS query selector. Available values: *, tagname, tagname#id, #id, tagname.classname, .classname, tagname[attribute-selector] and [attribute-selector].
+     *
      * @return HTML5DOMElement|null The result DOMElement or null if not found
      */
     private function internalQuerySelector(string $selector)
     {
         $result = $this->internalQuerySelectorAll($selector, 1);
+
         return $result->item(0);
     }
 
     /**
      * Returns a list of document elements matching the selector.
-     * 
-     * @param string $selector A CSS query selector. Available values: *, tagname, tagname#id, #id, tagname.classname, .classname, tagname[attribute-selector] and [attribute-selector].
+     *
+     * @param string   $selector       A CSS query selector. Available values: *, tagname, tagname#id, #id, tagname.classname, .classname, tagname[attribute-selector] and [attribute-selector].
      * @param int|null $preferredLimit Preferred maximum number of elements to return.
-     * @return DOMNodeList Returns a list of DOMElements matching the criteria.
+     *
      * @throws \InvalidArgumentException
+     *
+     * @return DOMNodeList Returns a list of DOMElements matching the criteria.
      */
     private function internalQuerySelectorAll(string $selector, $preferredLimit = null)
     {
@@ -49,6 +52,7 @@ trait QuerySelectors
                         }
                     };
                     $process($context);
+
                     return $result;
                 };
                 if ($this === $context) {
@@ -79,11 +83,14 @@ trait QuerySelectors
                 $walkChildren($context, $tagName !== null ? [$tagName] : null, function ($element) use ($id, &$foundElement) {
                     if ($element->attributes->length > 0 && $element->getAttribute('id') === $id) {
                         $foundElement = $element;
+
                         return true;
                     }
                 });
+
                 return $foundElement;
             }
+
             return null;
         };
 
@@ -126,13 +133,13 @@ trait QuerySelectors
                     $attributeSelectorMatches = null;
                     if (preg_match('/^(.+?)(=|~=|\|=|\^=|\$=|\*=)\"(.+?)\"$/', $attributeSelector, $attributeSelectorMatches) === 1) {
                         $attributeSelectors[$i] = [
-                            'name' => strtolower($attributeSelectorMatches[1]),
-                            'value' => $attributeSelectorMatches[3],
-                            'operator' => $attributeSelectorMatches[2]
+                            'name'     => strtolower($attributeSelectorMatches[1]),
+                            'value'    => $attributeSelectorMatches[3],
+                            'operator' => $attributeSelectorMatches[2],
                         ];
                     } else {
                         $attributeSelectors[$i] = [
-                            'name' => $attributeSelector
+                            'name' => $attributeSelector,
                         ];
                     }
                 }
@@ -158,7 +165,7 @@ trait QuerySelectors
                                         break;
 
                                     case '|=':
-                                        if ($attributeValue === $valueToMatch || strpos($attributeValue, $valueToMatch . '-') === 0) {
+                                        if ($attributeValue === $valueToMatch || strpos($attributeValue, $valueToMatch.'-') === 0) {
                                             $isMatch = true;
                                         }
                                         break;
@@ -190,8 +197,10 @@ trait QuerySelectors
                                 return false;
                             }
                         }
+
                         return true;
                     }
+
                     return false;
                 };
                 if ($mode === 'validate') {
@@ -267,7 +276,7 @@ trait QuerySelectors
             }
             $check = function ($element) use ($rawData) {
                 if ($element->attributes->length > 0) {
-                    $classAttribute = ' ' . $element->getAttribute('class') . ' ';
+                    $classAttribute = ' '.$element->getAttribute('class').' ';
                     $tagName = $element->tagName;
                     foreach ($rawData as $rawMatch) {
                         if ($rawMatch[0] !== null && $tagName !== $rawMatch[0]) {
@@ -275,7 +284,7 @@ trait QuerySelectors
                         }
                         $allClassesFound = true;
                         foreach ($rawMatch[1] as $class) {
-                            if (strpos($classAttribute, ' ' . $class . ' ') === false) {
+                            if (strpos($classAttribute, ' '.$class.' ') === false) {
                                 $allClassesFound = false;
                                 break;
                             }
@@ -285,6 +294,7 @@ trait QuerySelectors
                         }
                     }
                 }
+
                 return false;
             };
             if ($mode === 'validate') {
@@ -302,7 +312,7 @@ trait QuerySelectors
         $isMatchingElement = function (\DOMNode $context, string $selector) use ($simpleSelectors) {
             foreach ($simpleSelectors as $simpleSelector => $callback) {
                 $match = null;
-                if (preg_match('/^' . (str_replace('?:', '', $simpleSelector)) . '$/', $selector, $match) === 1) {
+                if (preg_match('/^'.str_replace('?:', '', $simpleSelector).'$/', $selector, $match) === 1) {
                     return call_user_func($callback, 'validate', [$match], $context);
                 }
             }
@@ -311,21 +321,20 @@ trait QuerySelectors
         $complexSelectors = [];
 
         $getMatchingElements = function (\DOMNode $context, string $selector, $preferredLimit = null) use (&$simpleSelectors, &$complexSelectors) {
-
             $processSelector = function (string $mode, string $selector, $operator = null) use (&$processSelector, $simpleSelectors, $complexSelectors, $context, $preferredLimit) {
                 $supportedSimpleSelectors = array_keys($simpleSelectors);
-                $supportedSimpleSelectorsExpression = '(?:(?:' . implode(')|(?:', $supportedSimpleSelectors) . '))';
+                $supportedSimpleSelectorsExpression = '(?:(?:'.implode(')|(?:', $supportedSimpleSelectors).'))';
                 $supportedSelectors = $supportedSimpleSelectors;
                 $supportedComplexOperators = array_keys($complexSelectors);
                 if ($operator === null) {
                     $operator = ',';
                     foreach ($supportedComplexOperators as $complexOperator) {
-                        array_unshift($supportedSelectors, '(?:(?:(?:' . $supportedSimpleSelectorsExpression . '\s*\\' . $complexOperator . '\s*))+' . $supportedSimpleSelectorsExpression . ')');
+                        array_unshift($supportedSelectors, '(?:(?:(?:'.$supportedSimpleSelectorsExpression.'\s*\\'.$complexOperator.'\s*))+'.$supportedSimpleSelectorsExpression.')');
                     }
                 }
-                $supportedSelectorsExpression = '(?:(?:' . implode(')|(?:', $supportedSelectors) . '))';
+                $supportedSelectorsExpression = '(?:(?:'.implode(')|(?:', $supportedSelectors).'))';
 
-                $vallidationExpression = '/^(?:(?:' . $supportedSelectorsExpression . '\s*\\' . $operator . '\s*))*' . $supportedSelectorsExpression . '$/';
+                $vallidationExpression = '/^(?:(?:'.$supportedSelectorsExpression.'\s*\\'.$operator.'\s*))*'.$supportedSelectorsExpression.'$/';
                 if (preg_match($vallidationExpression, $selector) !== 1) {
                     return false;
                 }
@@ -347,6 +356,7 @@ trait QuerySelectors
                                 return true;
                             }
                         }
+
                         return false;
                     };
                 }
@@ -363,13 +373,13 @@ trait QuerySelectors
                 };
                 for ($i = 0; $i < 100000; $i++) {
                     $matches = null;
-                    preg_match('/^(?<subselector>' . $supportedSelectorsExpression . ')\s*\\' . $operator . '\s*/', $selector, $matches); // getting the next subselector
+                    preg_match('/^(?<subselector>'.$supportedSelectorsExpression.')\s*\\'.$operator.'\s*/', $selector, $matches); // getting the next subselector
                     if (isset($matches['subselector'])) {
                         $subSelector = $matches['subselector'];
                         $selectorFound = false;
                         foreach ($simpleSelectors as $simpleSelector => $callback) {
                             $match = null;
-                            if (preg_match('/^' . (str_replace('?:', '', $simpleSelector)) . '$/', $subSelector, $match) === 1) { // if simple selector
+                            if (preg_match('/^'.str_replace('?:', '', $simpleSelector).'$/', $subSelector, $match) === 1) { // if simple selector
                                 if ($mode === 'parse') {
                                     $result[] = $match[0];
                                 } else {
@@ -392,7 +402,7 @@ trait QuerySelectors
                             }
                         }
                         if (!$selectorFound) {
-                            throw new \Exception('Internal error for selector "' . $selector . '"!');
+                            throw new \Exception('Internal error for selector "'.$selector.'"!');
                         }
                         $selector = substr($selector, strlen($matches[0])); // remove the matched subselector and continue parsing
                         if (strlen($selector) === 0) {
@@ -407,6 +417,7 @@ trait QuerySelectors
                         call_user_func($complexSelectors[$selectorToCall[1]], $selectorToCall[2][0], $context, $add); // todo optimize and send all arguments
                     }
                 }
+
                 return $result;
             };
 
@@ -503,8 +514,9 @@ trait QuerySelectors
 
         $result = $getMatchingElements($this, $selector, $preferredLimit);
         if ($result === false) {
-            throw new \InvalidArgumentException('Unsupported selector (' . $selector . ')');
+            throw new \InvalidArgumentException('Unsupported selector ('.$selector.')');
         }
+
         return new HTML5DOMNodeList($result);
     }
 }
