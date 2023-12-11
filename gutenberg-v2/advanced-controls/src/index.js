@@ -1,16 +1,17 @@
 function madeit_hide_block_mobile(settings, name) {
     if (typeof settings.attributes !== 'undefined') {
        settings.attributes = Object.assign(settings.attributes, {
-                hideOnMobile: {
-                    type: 'boolean',
-                },
-                hideOnDesktop: {
-                    type: 'boolean',
-                },
-                aosFade: {
-                    type: 'string'
-                }
-            });
+            hideOnMobile: {
+                type: 'boolean',
+            },
+            hideOnDesktop: {
+                type: 'boolean',
+            },
+            aosFade: {
+                type: 'string'
+            }
+        });
+
         if (name === 'core/image') {
             settings.attributes = Object.assign(settings.attributes, {
                 lightbox: {
@@ -31,10 +32,17 @@ function madeit_hide_block_mobile(settings, name) {
                 }
             });
         }
-
         if (name === 'madeit/block-content') {
             settings.attributes = Object.assign(settings.attributes, {
                 appendMarginToColumnsMobile: {
+                    type: 'boolean',
+                }
+            });
+        }
+
+        if (name === 'core/group') {
+            settings.attributes = Object.assign(settings.attributes, {
+                lockContent: {
                     type: 'boolean',
                 }
             });
@@ -221,6 +229,13 @@ const madeitAdvancedControls = wp.compose.createHigherOrderComponent((BlockEdit)
                                 onChange={(newval) => setAttributes({ appendMarginToColumnsMobile: !attributes.appendMarginToColumnsMobile })}
                             />
                         }
+                        {props.name == 'core/group' && 
+                            <ToggleControl
+                                label={wp.i18n.__('Blokkeer de inhoud.', 'madeit')}
+                                checked={!!attributes.lockContent}
+                                onChange={(newval) => setAttributes({ lockContent: !attributes.lockContent })}
+                            />
+                        }
                         <SelectControl
                             label={ wp.i18n.__( 'Animation', 'madeit' ) }
                             value={ attributes.aosFade }
@@ -237,7 +252,7 @@ const madeitAdvancedControls = wp.compose.createHigherOrderComponent((BlockEdit)
 wp.hooks.addFilter('editor.BlockEdit', 'madeit/advanced-control', madeitAdvancedControls);
 
 function madeitApplyExtraClass(extraProps, blockType, attributes) {
-    const { hideOnMobile, hideOnDesktop, lightbox, orderFirst, orderLast, maxContainerSize, aosFade, appendMarginToColumnsMobile } = attributes;
+    const { hideOnMobile, hideOnDesktop, lightbox, orderFirst, orderLast, maxContainerSize, aosFade, appendMarginToColumnsMobile, lockContent } = attributes;
     
     var showDesktop = true;
     var showMobile = true;
@@ -251,43 +266,66 @@ function madeitApplyExtraClass(extraProps, blockType, attributes) {
     }
     
     if(!showMobile && showDesktop) {
-        extraProps.className = extraProps.className + ' d-none d-lg-block';
+        if(extraProps.className.indexOf('d-none d-lg-block') === -1) {
+            extraProps.className = extraProps.className + ' d-none d-lg-block';
+        }
     }
     else if(!showMobile && !showDesktop) {
-        extraProps.className = extraProps.className + ' d-none';
+        if(extraProps.className.indexOf('d-none') === -1) {
+            extraProps.className = extraProps.className + ' d-none';
+        }
     }
     else if(showMobile && !showDesktop) {
-        extraProps.className = extraProps.className + ' d-lg-none';
+        if(extraProps.className.indexOf('d-lg-none') === -1) {
+            extraProps.className = extraProps.className + ' d-lg-none';
+        }
     }
 
     if(typeof appendMarginToColumnsMobile !== 'undefined' && appendMarginToColumnsMobile) {
-        extraProps.className  = extraProps.className + ' margin-column-mobile';
+        if(extraProps.className.indexOf('margin-column-mobile') === -1) {
+            extraProps.className  = extraProps.className + ' margin-column-mobile';
+        }
     }
     
     if (typeof lightbox !== 'undefined' && lightbox) {
-        extraProps.className = extraProps.className + ' do-lightbox';
+        if(extraProps.className.indexOf('do-lightbox') === -1) {
+            extraProps.className = extraProps.className + ' do-lightbox';
+        }
     }
     
     
     if (typeof lightbox !== 'undefined' && lightbox) {
-        extraProps.className = extraProps.className + ' do-lightbox';
+        if(extraProps.className.indexOf('do-lightbox') === -1) {
+            extraProps.className = extraProps.className + ' do-lightbox';
+        }
     }
     
     if (typeof orderFirst !== 'undefined' && orderFirst) {
-        extraProps.className = extraProps.className + ' order-first order-lg-last';
+        if(extraProps.className.indexOf('order-first order-lg-last') === -1) {
+            extraProps.className = extraProps.className + ' order-first order-lg-last';
+        }
     }
     
     if (typeof orderLast !== 'undefined' && orderLast) {
-        extraProps.className = extraProps.className + ' order-last order-lg-first';
+        if(extraProps.className.indexOf('order-last order-lg-first') === -1) {
+            extraProps.className = extraProps.className + ' order-last order-lg-first';
+        }
     }
 
     if(typeof maxContainerSize !== 'undefined' && maxContainerSize) {
-        extraProps.className = extraProps.className + ' keep-max-container-size';
+        if(extraProps.className.indexOf('keep-max-container-size') === -1) {
+            extraProps.className = extraProps.className + ' keep-max-container-size';
+        }
+    }
+
+    if (typeof lockContent !== 'undefined' && lockContent) {
+        if(extraProps.className.indexOf('madeit-lock-content') === -1) {
+            extraProps.className = extraProps.className + ' madeit-lock-content';
+        }
     }
     
     if (typeof aosFade !== 'undefined' && aosFade !== '' && aosFade !== null ) {
-        extraProps['data-aos']=aosFade;
-        //extraProps.className = extraProps.className + ' aos-fade-' + aosFade;
+        extraProps['data-aos'] = aosFade;
     }
     return extraProps;
 }

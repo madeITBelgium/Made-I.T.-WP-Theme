@@ -110,6 +110,10 @@ if (!defined('MADEIT_INFINITE_SCROLL')) {
     define('MADEIT_INFINITE_SCROLL', true);
 }
 
+if (!defined('MADEIT_RECEIVE_REVIEWS')) {
+    define('MADEIT_RECEIVE_REVIEWS', false);
+}
+
 
 if(!defined('MADEIT_WOOCOMMERCE_ADD_PRODUCT_AJAX')) {
     define('MADEIT_WOOCOMMERCE_ADD_PRODUCT_AJAX', true);
@@ -2024,4 +2028,10 @@ if (defined('MADEIT_POPUPS') && MADEIT_POPUPS && class_exists('ACF')) {
     require get_parent_theme_file_path('/inc/popup.php');
 }
 
+if (defined('MADEIT_RECEIVE_REVIEWS') && MADEIT_RECEIVE_REVIEWS && defined('MADEIT_REVIEWS') && MADEIT_REVIEWS && class_exists('ACF')) {
+    require get_parent_theme_file_path('/inc/review-form.php');
+}
+
 require get_parent_theme_file_path('/inc/call.php');
+
+require get_parent_theme_file_path('/inc/lock-content.php');

@@ -437,7 +437,6 @@ function track(type, value, extraValue = null) {
     }
 }
 
-
 jQuery(document).ready( function( $ ) {
     $('.keep-max-container-size').each(function() {
         var orderLgFirst = $(this).parent().find('.order-lg-first');
@@ -462,3 +461,81 @@ jQuery(document).ready( function( $ ) {
         }
     });
 });
+
+jQuery(document).ready( function( $ ) {
+    $('#madeit-unlock-form').submit(function(e) {
+        e.preventDefault();
+
+        var email = $('#madeit-unlock-email').val();
+        var newsletter = $('#madeit-unlock-newsletter').is(':checked') ? 1 : 0;
+        var lead = $('#madeit-unlock-lead').val();
+        var post_id = $('#madeit-unlock-postid').val();
+
+        if(email.length > 0) {
+            //loading state
+            $('#madeit-unlock-form').hide();
+            $('#madeit-unlock-loading').show();
+
+            $.ajax({
+                url: '/wp-admin/admin-ajax.php',
+                type: 'POST',
+                data: {
+                    action: 'madeit_unlock_content',
+                    post_id: post_id,
+                    email: email,
+                    newsletter: newsletter,
+                    lead: lead
+                },
+                success: function(response) {
+                    $('#madeit-unlock-loading').hide();
+
+                    //redirect to url
+                    if(response.url) {
+                        window.location.href = response.url;
+                    }
+                }
+            });
+        }
+    });
+});
+
+
+jQuery(document).ready( function( $ ) {
+    $('#madeit-review-form').submit(function(e) {
+        e.preventDefault();
+
+        var name = $(this).find('[name="reviewer-name"]').val();
+        var email = $(this).find('[name="reviewer-email"]').val();
+        var rating = $(this).find('[name="review-rating"]:checked').val();
+        var title = $(this).find('[name="review-title"]').val();
+        var description = $(this).find('[name="review-description"]').val();
+
+        $(this).find('.loading').show();
+        $(this).find('.form').hide();
+
+        $.ajax({
+            url: '/wp-admin/admin-ajax.php',
+            type: 'POST',
+            data: {
+                action: 'madeit_submit_review',
+                reviewer_name: name,
+                email: email,
+                rating: rating,
+                title: title,
+                description: description
+            },
+            success: function(response) {
+                //stop loading
+                $('#madeit-review-form').find('.loading').hide();
+
+                //start success
+                $('#madeit-review-form').find('.alert-success').show();
+
+                if(rating >= 4) {
+                    $('#madeit-review-form').find('.forward').show();
+                }
+            }
+        });
+    });
+});
+
