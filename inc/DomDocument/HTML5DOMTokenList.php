@@ -2,13 +2,12 @@
 
 /**
  * Represents a set of space-separated tokens of an element attribute.
- * 
+ *
  * @property-read int $length The number of tokens.
  * @property-read string $value A space-separated list of the tokens.
  */
 class HTML5DOMTokenList
 {
-
     /**
      * @var string
      */
@@ -31,9 +30,9 @@ class HTML5DOMTokenList
 
     /**
      * Creates a list of space-separated tokens based on the attribute value of an element.
-     * 
-     * @param DOMElement $element The DOM element.
-     * @param string $attributeName The name of the attribute.
+     *
+     * @param DOMElement $element       The DOM element.
+     * @param string     $attributeName The name of the attribute.
      */
     public function __construct(DOMElement $element, string $attributeName)
     {
@@ -45,8 +44,9 @@ class HTML5DOMTokenList
 
     /**
      * Adds the given tokens to the list.
-     * 
+     *
      * @param string[] $tokens The tokens you want to add to the list.
+     *
      * @return void
      */
     public function add(string ...$tokens)
@@ -65,8 +65,9 @@ class HTML5DOMTokenList
 
     /**
      * Removes the specified tokens from the list. If the string does not exist in the list, no error is thrown.
-     * 
+     *
      * @param string[] $tokens The token you want to remove from the list.
+     *
      * @return void
      */
     public function remove(string ...$tokens)
@@ -89,8 +90,9 @@ class HTML5DOMTokenList
 
     /**
      * Returns an item in the list by its index (returns null if the number is greater than or equal to the length of the list).
-     * 
+     *
      * @param int $index The zero-based index of the item you want to return.
+     *
      * @return null|string
      */
     public function item(int $index)
@@ -99,14 +101,16 @@ class HTML5DOMTokenList
         if ($index >= count($this->tokens)) {
             return null;
         }
+
         return $this->tokens[$index];
     }
 
     /**
      * Removes a given token from the list and returns false. If token doesn't exist it's added and the function returns true.
-     * 
+     *
      * @param string $token The token you want to toggle.
-     * @param bool $force A Boolean that, if included, turns the toggle into a one way-only operation. If set to false, the token will only be removed but not added again. If set to true, the token will only be added but not removed again.
+     * @param bool   $force A Boolean that, if included, turns the toggle into a one way-only operation. If set to false, the token will only be removed but not added again. If set to true, the token will only be added but not removed again.
+     *
      * @return bool false if the token is not in the list after the call, or true if the token is in the list after the call.
      */
     public function toggle(string $token, bool $force = null): bool
@@ -134,26 +138,30 @@ class HTML5DOMTokenList
             }
         }
         $this->setAttributeValue();
+
         return $isThereAfter;
     }
 
     /**
      * Returns true if the list contains the given token, otherwise false.
-     * 
+     *
      * @param string $token The token you want to check for the existence of in the list.
+     *
      * @return bool true if the list contains the given token, otherwise false.
      */
     public function contains(string $token): bool
     {
         $this->tokenize();
+
         return in_array($token, $this->tokens);
     }
 
     /**
      * Replaces an existing token with a new token.
-     * 
+     *
      * @param string $old The token you want to replace.
      * @param string $new The token you want to replace $old with.
+     *
      * @return void
      */
     public function replace(string $old, string $new)
@@ -175,46 +183,50 @@ class HTML5DOMTokenList
     }
 
     /**
-     * 
      * @return string
      */
     public function __toString(): string
     {
         $this->tokenize();
+
         return implode(' ', $this->tokens);
     }
 
     /**
      * Returns an iterator allowing you to go through all tokens contained in the list.
-     * 
+     *
      * @return ArrayIterator
      */
     public function entries(): ArrayIterator
     {
         $this->tokenize();
+
         return new ArrayIterator($this->tokens);
     }
 
     /**
-     * Returns the value for the property specified
+     * Returns the value for the property specified.
      *
      * @param string $name The name of the property
-     * @return string The value of the property specified
+     *
      * @throws \Exception
+     *
+     * @return string The value of the property specified
      */
     public function __get(string $name)
     {
         if ($name === 'length') {
             $this->tokenize();
+
             return count($this->tokens);
         } elseif ($name === 'value') {
             return $this->__toString();
         }
-        throw new \Exception('Undefined property: HTML5DOMTokenList::$' . $name);
+
+        throw new \Exception('Undefined property: HTML5DOMTokenList::$'.$name);
     }
 
     /**
-     * 
      * @return void
      */
     private function tokenize()
@@ -239,7 +251,6 @@ class HTML5DOMTokenList
     }
 
     /**
-     * 
      * @return void
      */
     private function setAttributeValue()
