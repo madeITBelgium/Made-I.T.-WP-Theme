@@ -1,32 +1,29 @@
 <?php
 
-include_once __DIR__ . '/QuerySelectors.php';
+include_once __DIR__.'/QuerySelectors.php';
 /**
  * Represents a live (can be manipulated) representation of an element in a HTML5 document.
- * 
- * @property string $innerHTML The HTML code inside the element.
- * @property string $outerHTML The HTML code for the element including the code inside.
+ *
+ * @property string            $innerHTML The HTML code inside the element.
+ * @property string            $outerHTML The HTML code for the element including the code inside.
  * @property HTML5DOMTokenList $classList A collection of the class attributes of the element.
  */
 class HTML5DOMElement extends \DOMElement
 {
-
     use QuerySelectors;
 
     /**
-     *
      * @var array
      */
-    static private $foundEntitiesCache = [[], []];
+    private static $foundEntitiesCache = [[], []];
 
     /**
-     *
      * @var array
      */
-    static private $newObjectsCache = [];
+    private static $newObjectsCache = [];
 
     /*
-     * 
+     *
      * @var HTML5DOMTokenList
      */
     private $classList = null;
@@ -35,8 +32,10 @@ class HTML5DOMElement extends \DOMElement
      * Returns the value for the property specified.
      *
      * @param string $name
-     * @return string
+     *
      * @throws \Exception
+     *
+     * @return string
      */
     public function __get(string $name)
     {
@@ -46,30 +45,35 @@ class HTML5DOMElement extends \DOMElement
             }
             $html = $this->ownerDocument->saveHTML($this);
             $nodeName = $this->nodeName;
-            return preg_replace('@^<' . $nodeName . '[^>]*>|</' . $nodeName . '>$@', '', $html);
+
+            return preg_replace('@^<'.$nodeName.'[^>]*>|</'.$nodeName.'>$@', '', $html);
         } elseif ($name === 'outerHTML') {
             if ($this->firstChild === null) {
                 $nodeName = $this->nodeName;
                 $attributes = $this->getAttributes();
-                $result = '<' . $nodeName . '';
+                $result = '<'.$nodeName.'';
                 foreach ($attributes as $name => $value) {
-                    $result .= ' ' . $name . '="' . htmlentities($value) . '"';
+                    $result .= ' '.$name.'="'.htmlentities($value).'"';
                 }
                 if (array_search($nodeName, ['area', 'base', 'br', 'col', 'command', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr']) === false) {
-                    $result .= '></' . $nodeName . '>';
+                    $result .= '></'.$nodeName.'>';
                 } else {
                     $result .= '/>';
                 }
+
                 return $result;
             }
+
             return $this->ownerDocument->saveHTML($this);
         } elseif ($name === 'classList') {
             if ($this->classList === null) {
                 $this->classList = new HTML5DOMTokenList($this, 'class');
             }
+
             return $this->classList;
         }
-        throw new \Exception('Undefined property: HTML5DOMElement::$' . $name);
+
+        throw new \Exception('Undefined property: HTML5DOMElement::$'.$name);
     }
 
     /**
@@ -77,6 +81,7 @@ class HTML5DOMElement extends \DOMElement
      *
      * @param string $name
      * @param string $value
+     *
      * @throws \Exception
      */
     public function __set(string $name, $value)
@@ -88,36 +93,41 @@ class HTML5DOMElement extends \DOMElement
             if (!isset(self::$newObjectsCache['html5domdocument'])) {
                 self::$newObjectsCache['html5domdocument'] = new HTML5DOMDocument();
             }
-            $tmpDoc = clone (self::$newObjectsCache['html5domdocument']);
-            $tmpDoc->loadHTML('<body>' . $value . '</body>', HTML5DOMDocument::ALLOW_DUPLICATE_IDS);
+            $tmpDoc = clone self::$newObjectsCache['html5domdocument'];
+            $tmpDoc->loadHTML('<body>'.$value.'</body>', HTML5DOMDocument::ALLOW_DUPLICATE_IDS);
             foreach ($tmpDoc->getElementsByTagName('body')->item(0)->childNodes as $node) {
                 $node = $this->ownerDocument->importNode($node, true);
                 $this->appendChild($node);
             }
+
             return;
         } elseif ($name === 'outerHTML') {
             if (!isset(self::$newObjectsCache['html5domdocument'])) {
                 self::$newObjectsCache['html5domdocument'] = new HTML5DOMDocument();
             }
-            $tmpDoc = clone (self::$newObjectsCache['html5domdocument']);
-            $tmpDoc->loadHTML('<body>' . $value . '</body>', HTML5DOMDocument::ALLOW_DUPLICATE_IDS);
+            $tmpDoc = clone self::$newObjectsCache['html5domdocument'];
+            $tmpDoc->loadHTML('<body>'.$value.'</body>', HTML5DOMDocument::ALLOW_DUPLICATE_IDS);
             foreach ($tmpDoc->getElementsByTagName('body')->item(0)->childNodes as $node) {
                 $node = $this->ownerDocument->importNode($node, true);
                 $this->parentNode->insertBefore($node, $this);
             }
             $this->parentNode->removeChild($this);
+
             return;
         } elseif ($name === 'classList') {
             $this->setAttribute('class', $value);
+
             return;
         }
-        throw new \Exception('Undefined property: HTML5DOMElement::$' . $name);
+
+        throw new \Exception('Undefined property: HTML5DOMElement::$'.$name);
     }
 
     /**
      * Updates the result value before returning it.
      *
      * @param string $value
+     *
      * @return string The updated value
      */
     private function updateResult(string $value): string
@@ -131,7 +141,7 @@ class HTML5DOMElement extends \DOMElement
             $matches[0] = array_unique($matches[0]);
             foreach ($matches[0] as $i => $match) {
                 $search[] = $match;
-                $replace[] = html_entity_decode(($matches[1][$i] === '1' ? '&' : '&#') . $matches[2][$i] . ';');
+                $replace[] = html_entity_decode(($matches[1][$i] === '1' ? '&' : '&#').$matches[2][$i].';');
             }
             $value = str_replace($search, $replace, $value);
             self::$foundEntitiesCache[0] = array_merge(self::$foundEntitiesCache[0], $search);
@@ -140,12 +150,13 @@ class HTML5DOMElement extends \DOMElement
             unset($replace);
             unset($matches);
         }
+
         return $value;
     }
 
     /**
-     * Returns the updated nodeValue Property
-     * 
+     * Returns the updated nodeValue Property.
+     *
      * @return string The updated $nodeValue
      */
     public function getNodeValue(): string
@@ -154,8 +165,8 @@ class HTML5DOMElement extends \DOMElement
     }
 
     /**
-     * Returns the updated $textContent Property
-     * 
+     * Returns the updated $textContent Property.
+     *
      * @return string The updated $textContent
      */
     public function getTextContent(): string
@@ -167,8 +178,10 @@ class HTML5DOMElement extends \DOMElement
      * Returns the value for the attribute name specified.
      *
      * @param string $name The attribute name.
-     * @return string The attribute value.
+     *
      * @throws \InvalidArgumentException
+     *
+     * @return string The attribute value.
      */
     public function getAttribute($name): string
     {
@@ -176,6 +189,7 @@ class HTML5DOMElement extends \DOMElement
             return '';
         }
         $value = parent::getAttribute($name);
+
         return $value !== '' ? (strstr($value, 'html5-dom-document-internal-entity') !== false ? $this->updateResult($value) : $value) : '';
     }
 
@@ -191,6 +205,7 @@ class HTML5DOMElement extends \DOMElement
             $value = $attribute->value;
             $attributes[$attributeName] = $value !== '' ? (strstr($value, 'html5-dom-document-internal-entity') !== false ? $this->updateResult($value) : $value) : '';
         }
+
         return $attributes;
     }
 
@@ -208,8 +223,10 @@ class HTML5DOMElement extends \DOMElement
      * Returns the first child element matching the selector.
      *
      * @param string $selector A CSS query selector. Available values: *, tagname, tagname#id, #id, tagname.classname, .classname, tagname.classname.classname2, .classname.classname2, tagname[attribute-selector], [attribute-selector], "div, p", div p, div > p, div + p and p ~ ul.
-     * @return HTML5DOMElement|null The result DOMElement or null if not found.
+     *
      * @throws \InvalidArgumentException
+     *
+     * @return HTML5DOMElement|null The result DOMElement or null if not found.
      */
     public function querySelector(string $selector)
     {
@@ -220,8 +237,10 @@ class HTML5DOMElement extends \DOMElement
      * Returns a list of children elements matching the selector.
      *
      * @param string $selector A CSS query selector. Available values: *, tagname, tagname#id, #id, tagname.classname, .classname, tagname.classname.classname2, .classname.classname2, tagname[attribute-selector], [attribute-selector], "div, p", div p, div > p, div + p and p ~ ul.
-     * @return HTML5DOMNodeList Returns a list of DOMElements matching the criteria.
+     *
      * @throws \InvalidArgumentException
+     *
+     * @return HTML5DOMNodeList Returns a list of DOMElements matching the criteria.
      */
     public function querySelectorAll(string $selector)
     {
