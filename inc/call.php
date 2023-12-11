@@ -91,12 +91,10 @@ function madeit_cron_daily()
     $response = wp_remote_post($url, $args);
     if (is_wp_error($response)) {
         $error_message = $response->get_error_message();
-        echo "Something went wrong: $error_message";
     }
 
     //get response in json
     $response = json_decode(wp_remote_retrieve_body($response), true);
-    //print_r($response);
 }
 
 //wp cli command
