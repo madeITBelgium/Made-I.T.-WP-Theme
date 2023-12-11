@@ -39,7 +39,7 @@ $menuClass = apply_filters('madeit_navbar_menu_class', ['menu', 'nav', 'navbar-n
         wp_nav_menu(apply_filters('madeit_top_nav_menu_options', [
             'theme_location'    => 'top',
             'menu_id'           => 'top-menu',
-            'depth'             => 3,
+            'depth'             => 4,
             'container'         => 'nav',
             'container_id'      => 'site-navigation',
             'container_class'   => is_array($menuContainerClass) ? implode(' ', $menuContainerClass) : $menuContainerClass,

@@ -60,7 +60,7 @@ function madeit_support_popup()
             <p>
                 Deze pagina is opgebouwd met de standaard Editor van WordPress. Made I.T. heeft enkele extra functies toegevoegt. Via deze popup kom je bij de nodige informatie om je verder te helpen met het aanpassen of bouwen van pagina's.
             </p>
-            
+            <?php echo file_get_contents('https://portal.madeit.be/support-pagebuilder?website=' .get_home_url()); ?>
         </div>
     </div>
 
