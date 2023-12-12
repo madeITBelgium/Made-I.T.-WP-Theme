@@ -59,6 +59,7 @@ Source: https://unsplash.com/@englr?photo=bIhpiQA009k
 * WooCommerce 8.3
 * Review form
 * Bug fixes
+* Bootstrap v5.3.2
 
 = 2.9.0 =
 * Adjust navigation menu on tablet
