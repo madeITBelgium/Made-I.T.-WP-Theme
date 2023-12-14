@@ -10,7 +10,7 @@
  * Made I.T. Theme only works in WordPress 4.7 or later.
  */
 if (!defined('MADEIT_VERSION')) {
-    define('MADEIT_VERSION', '2.9.0');
+    define('MADEIT_VERSION', '2.10.0');
 }
 /* Default colors */
 if (!defined('MADEIT_CUSTOM_COLOR')) {
@@ -722,9 +722,8 @@ if (!function_exists('madeit_scripts')) {
 
         if (MADEIT_BOOTSTRAP_VERSION === 5) {
             wp_enqueue_script('bootstrap', get_theme_file_uri('/assets/bootstrap-5/script.js'), [], MADEIT_VERSION, true);
-            if (MADEIT_BOOTSTRAP_POPPER) {
-                wp_enqueue_script('popper', get_theme_file_uri('/assets/bootstrap-5/popper.js'), ['bootstrap'], MADEIT_VERSION, true);
-            }
+            //wp_enqueue_script('popper', get_theme_file_uri('/assets/bootstrap-5/popper.js'), ['bootstrap'], MADEIT_VERSION, true);
+
             if (MADEIT_POPUPS) {
                 wp_enqueue_script('popup', get_theme_file_uri('/assets/bootstrap-5/popup.js'), ['bootstrap'], MADEIT_VERSION, true);
             }
