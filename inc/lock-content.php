@@ -76,9 +76,9 @@ function madeit_unlock_ajax()
     //set comment_author_email_
 
     $past = time() - YEAR_IN_SECONDS;
-    setcookie( 'comment_author_' . COOKIEHASH, '', time() + (86400 * 365), COOKIEPATH, COOKIE_DOMAIN );
-    setcookie( 'comment_author_email_' . COOKIEHASH, $email, time() + (86400 * 365), COOKIEPATH, COOKIE_DOMAIN );
-    setcookie( 'comment_author_url_' . COOKIEHASH, time() + (86400 * 365), COOKIEPATH, COOKIE_DOMAIN );
+    setcookie( 'comment_author_' . COOKIEHASH, '', time() + (86400 * 365));
+    setcookie( 'comment_author_email_' . COOKIEHASH, $email, time() + (86400 * 365));
+    setcookie( 'comment_author_url_' . COOKIEHASH, time() + (86400 * 365));
 
     //send mail
     $to = get_option('admin_email');

@@ -4,7 +4,7 @@ Theme URI: https://www.madeit.be
 Author: Made I.T.
 Author URI: https://wordpress.org/
 Description: 
-Version: 2.10.0
+Version: 2.10.1
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: madeit
@@ -1199,4 +1199,19 @@ mark, .mark {
     background-repeat: no-repeat;
     background-position: bottom;
     background-size: 100% 100%;
+}
+
+.rating {
+    direction: rtl;
+    unicode-bidi: bidi-override;
+    color: #ddd; 
+}
+.rating input {
+    display: none;
+}
+.rating label:hover,
+.rating label:hover ~ label,
+.rating input:checked + label,
+.rating input:checked + label ~ label {
+    color: #ffc107;
 }
