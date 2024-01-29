@@ -23,7 +23,7 @@ function madeit_review_form($atts = [])
         <div class="forward" style="display: none;">
             <?php if(defined('MADEIT_REVIEWS_GOOGLE_ID')) { ?>
                 <div class="card shadow my-3">
-                    <div class="card-body">
+                    <div class="card-body text-center">
                         Het zou ons helpen als je deze review ook op Google achterlaat. Klik op de knop hieronder om naar Google te gaan.<br>
                         <div class="text-center">
                             <a href="https://search.google.com/local/writereview?placeid=<?php echo MADEIT_REVIEWS_GOOGLE_ID; ?>" class="btn btn-primary mt-3">Review op Google achterlaten</a>
@@ -33,7 +33,7 @@ function madeit_review_form($atts = [])
             <?php } ?>
         </div>
 
-        <?php if(defined('MADEIT_REVIEWS_GOOGLE_ID') && isset($atts['style']) && $atts['style'] === 2) { ?>
+        <?php if(defined('MADEIT_REVIEWS_GOOGLE_ID') && isset($atts['style']) && $atts['style'] == 2) { ?>
             <div class="form">
                 <div class="row">
                     <div class="col-12 col-md-6 mb-5 pb-5">
@@ -85,7 +85,7 @@ function madeit_review_form($atts = [])
                         </div>
                     </div>
                 </div>
-        <?php } else if(defined('MADEIT_REVIEWS_GOOGLE_ID') && isset($atts['style']) && $atts['style'] === 3) { ?>
+        <?php } else if(defined('MADEIT_REVIEWS_GOOGLE_ID') && isset($atts['style']) && $atts['style'] == 3) { ?>
             <div class="form">
                 <div class="row justify-content-center">
                     <div class="col-12 col-md-6 border-left d-flex align-items-center mb-5 pb-5">
