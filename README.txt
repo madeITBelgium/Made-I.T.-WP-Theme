@@ -58,7 +58,7 @@ Source: https://unsplash.com/@englr?photo=bIhpiQA009k
 = 2.9.0 =
 * Adjust navigation menu on tablet
 * Improve content block margin & paddings
-* WooCommerce 7.4, 7.5
+* WooCommerce 7.4 - 8.6
 
 = 2.8.0 =
 * Review support
