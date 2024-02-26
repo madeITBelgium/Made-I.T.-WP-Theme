@@ -539,3 +539,10 @@ jQuery(document).ready( function( $ ) {
     });
 });
 
+//if berocket_ajax_products_loaded is triggered, we need to reinit the lightbox
+jQuery(document).ready( function( $ ) {
+    $(document).on('berocket_ajax_products_loaded', function() {
+        //scroll to top of product list
+        $('html, body').animate({scrollTop: $('.products').offset().top - ($('.navbar:eq(0)').height() * 2)}, 200);
+    });
+});

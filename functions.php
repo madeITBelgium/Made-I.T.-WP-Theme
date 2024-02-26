@@ -119,6 +119,10 @@ if(!defined('MADEIT_WOOCOMMERCE_ADD_PRODUCT_AJAX')) {
     define('MADEIT_WOOCOMMERCE_ADD_PRODUCT_AJAX', true);
 }
 
+if(defined('MADEIT_EMAILSERVICE_NEWSLETTER_LIST')) {
+    define('MADEIT_EMAILSERVICE_NEWSLETTER_LIST', false);
+}
+
 if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
     require get_template_directory().'/inc/back-compat.php';
 
@@ -2044,3 +2048,7 @@ if (defined('MADEIT_RECEIVE_REVIEWS') && MADEIT_RECEIVE_REVIEWS && defined('MADE
 require get_parent_theme_file_path('/inc/call.php');
 
 require get_parent_theme_file_path('/inc/lock-content.php');
+
+if (in_array('woocommerce/woocommerce.php', $activePlugins)) {
+    require get_parent_theme_file_path('/inc/email-service.php');
+};
