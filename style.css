@@ -1181,3 +1181,8 @@ mark, .mark {
 .btn-danger:active, .btn-danger:hover, .btn-outline-danger:active, .btn-outline-danger:hover, .wp-block-button__link.has-danger-background-color:active, .wp-block-button__link.has-danger-background-color:hover {
     box-shadow: 0 0 0 3px rgba(var(--wp--preset--color--danger-rgb), 0.2);
 }
+
+ul.alert {
+    list-style: none;
+    padding-left: 0;
+}
