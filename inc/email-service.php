@@ -1,13 +1,14 @@
 <?php
 
-function madeit_emailservice_woo_checkbox_field( $checkout ) {
+function madeit_emailservice_woo_checkbox_field( ) {
+    global $_POST;
     woocommerce_form_field('subscribed', [
         'type' => 'checkbox',
         'class' => array('form-row-wide'),
         'label' => __('Subscribe to our newsletter?', 'madeit'),
-    ], $checkout->get_value('subscribed'));
+    ], isset($_POST['subscribed']) ? $_POST['subscribed'] : 0);
 }
-add_action( 'woocommerce_after_order_notes', 'madeit_emailservice_woo_checkbox_field' );
+add_action( 'woocommerce_checkout_after_terms_and_conditions', 'madeit_emailservice_woo_checkbox_field' );
 
 function madeit_emailservice_woo_save_subscription_input( $order_id ) {
     if( !empty( $_POST['subscribed'] ) && $_POST['subscribed'] == 1 ) {
