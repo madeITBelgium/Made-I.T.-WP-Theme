@@ -13,11 +13,11 @@ function madeit_cron_daily()
     $plugins = get_option('active_plugins');
     $plugins_data = [];
     foreach ($plugins as $plugin) {
-        $plugin_data = get_plugin_data(WP_PLUGIN_DIR . '/' . $plugin);
+        $plugin_data = get_plugin_data(WP_PLUGIN_DIR.'/'.$plugin);
         $plugins_data[$plugin] = [
-            'name'    => $plugin_data['Name'],
-            'version' => $plugin_data['Version'],
-            'latest'  => get_site_transient('update_plugins')->checked[$plugin],
+            'name'       => $plugin_data['Name'],
+            'version'    => $plugin_data['Version'],
+            'latest'     => get_site_transient('update_plugins')->checked[$plugin],
             'has_update' => get_site_transient('update_plugins')->checked[$plugin] != $plugin_data['Version'],
         ];
     }
@@ -83,6 +83,7 @@ function madeit_cron_daily()
                 'MADEIT_ANALYTICS_FB'                 => defined('MADEIT_ANALYTICS_FB') ? MADEIT_ANALYTICS_FB : null,
                 'MADEIT_REVIEWS_GOOGLE_ID'            => defined('MADEIT_REVIEWS_GOOGLE_ID') ? MADEIT_REVIEWS_GOOGLE_ID : null,
                 'MADEIT_REVIEWS_GOOGLE_API'           => defined('MADEIT_REVIEWS_GOOGLE_API') ? MADEIT_REVIEWS_GOOGLE_API : null,
+                'MADEIT_RECEIVE_REVIEWS'              => defined('MADEIT_RECEIVE_REVIEWS') ? MADEIT_RECEIVE_REVIEWS : null,
             ],
         ],
     ];
@@ -90,12 +91,10 @@ function madeit_cron_daily()
     $response = wp_remote_post($url, $args);
     if (is_wp_error($response)) {
         $error_message = $response->get_error_message();
-        echo "Something went wrong: $error_message";
     }
 
     //get response in json
     $response = json_decode(wp_remote_retrieve_body($response), true);
-    //print_r($response);
 }
 
 //wp cli command
