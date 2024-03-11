@@ -21,6 +21,8 @@ $menuClass = apply_filters('madeit_navbar_menu_class', ['menu', 'nav', 'navbar-n
     }
     ?>
     <div class="<?php echo is_array($containerClass) ? implode(' ', $containerClass) : $containerClass; ?>">
+        <?php do_action('madeit_before_navbar_logo'); ?>
+
         <?php get_template_part('template-parts/header/site', 'branding'); ?>
 
         <?php do_action('madeit_before_navbar_toggler'); ?>
