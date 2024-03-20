@@ -1488,11 +1488,11 @@ if (!function_exists('madeit_woocommerce_shopping_cart_in_menu')) {
         if (WOO_SHOPING_CART_MENU_STYLE == 1) {
             if ($cart_contents_count == 0) {
                 ?>
-                <li class="menu-item nav-item"><a class="wc-menu-cart nav-link" href="<?php echo get_permalink(wc_get_page_id('shop')); ?>" title="<?php echo  __('Start shopping', 'madeit'); ?>">
+                <li class="menu-item nav-item shopping-menu-item"><a class="wc-menu-cart nav-link" href="<?php echo get_permalink(wc_get_page_id('shop')); ?>" title="<?php echo  __('Start shopping', 'madeit'); ?>">
                 <?php
             } else {
                 ?>
-                <li class="menu-item nav-item"><a class="wc-menu-cart nav-link" href="<?php echo wc_get_cart_url(); ?>" title="<?php __('View your shopping cart', 'madeit'); ?>">
+                <li class="menu-item nav-item shopping-menu-item"><a class="wc-menu-cart nav-link" href="<?php echo wc_get_cart_url(); ?>" title="<?php __('View your shopping cart', 'madeit'); ?>">
                 <?php
             } ?>
             <i class="fa fa-shopping-cart"></i>
@@ -1502,11 +1502,11 @@ if (!function_exists('madeit_woocommerce_shopping_cart_in_menu')) {
         } elseif (WOO_SHOPING_CART_MENU_STYLE == 2) {
             if ($cart_contents_count == 0) {
                 ?>
-                <li class="menu-item nav-item"><a class="wc-menu-cart nav-link d-flex" href="<?php echo get_permalink(wc_get_page_id('shop')); ?>" title="<?php echo  __('Start shopping', 'madeit'); ?>">
+                <li class="menu-item nav-item shopping-menu-item"><a class="wc-menu-cart nav-link d-flex" href="<?php echo get_permalink(wc_get_page_id('shop')); ?>" title="<?php echo  __('Start shopping', 'madeit'); ?>">
                 <?php
             } else {
                 ?>
-                <li class="menu-item nav-item"><a class="wc-menu-cart nav-link d-flex" href="<?php echo wc_get_cart_url(); ?>" title="<?php __('View your shopping cart', 'madeit'); ?>">
+                <li class="menu-item nav-item shopping-menu-item"><a class="wc-menu-cart nav-link d-flex" href="<?php echo wc_get_cart_url(); ?>" title="<?php __('View your shopping cart', 'madeit'); ?>">
                 <?php
             } ?>
                 <span class="shopping-cart-count"><?php echo $cart_contents_count; ?></span>
@@ -1515,7 +1515,7 @@ if (!function_exists('madeit_woocommerce_shopping_cart_in_menu')) {
             <?php
         } elseif (WOO_SHOPING_CART_MENU_STYLE == 3 && $cart_contents_count > 0) {
             ?>
-            <li class="menu-item nav-item">
+            <li class="menu-item nav-item shopping-menu-item">
                 <a class="wc-menu-cart nav-link d-flex" href="<?php echo wc_get_cart_url(); ?>" title="<?php __('View your shopping cart', 'madeit'); ?>">
                     <span class="shopping-cart-count"><?php echo $cart_contents_count; ?></span>
                     <svg xmlns="http://www.w3.org/2000/svg" style="display: block; height: 12px; align-self: center; margin-left: 5px;" viewBox="0 0 576 512"><path d="M175.1 416c-26.51 0-47.1 21.49-47.1 48S149.5 512 175.1 512s47.1-21.49 47.1-48S202.5 416 175.1 416zM463.1 416c-26.51 0-47.1 21.49-47.1 48s21.49 48 47.1 48s47.1-21.49 47.1-48S490.5 416 463.1 416zM569.5 44.73c-6.109-8.094-15.42-12.73-25.56-12.73H121.1L119.6 19.51C117.4 8.189 107.5 0 96 0H23.1C10.75 0 0 10.74 0 23.1C0 37.25 10.75 48 23.1 48h52.14l60.28 316.5C138.6 375.8 148.5 384 160 384H488c13.25 0 24-10.75 24-23.1C512 346.7 501.3 336 488 336H179.9L170.7 288h318.4c14.28 0 26.84-9.479 30.77-23.21l54.86-191.1C577.5 63.05 575.6 52.83 569.5 44.73zM477 240H161.6l-30.47-160h391.7L477 240z"/></svg>
@@ -1525,11 +1525,11 @@ if (!function_exists('madeit_woocommerce_shopping_cart_in_menu')) {
         } elseif (WOO_SHOPING_CART_MENU_STYLE == 4) {
             if ($cart_contents_count == 0) {
                 ?>
-                <li class="menu-item nav-item"><a class="wc-menu-cart nav-link d-flex" href="<?php echo get_permalink(wc_get_page_id('shop')); ?>" title="<?php echo  __('Start shopping', 'madeit'); ?>">
+                <li class="menu-item nav-item shopping-menu-item"><a class="wc-menu-cart nav-link d-flex" href="<?php echo get_permalink(wc_get_page_id('shop')); ?>" title="<?php echo  __('Start shopping', 'madeit'); ?>">
                 <?php
             } else {
                 ?>
-                <li class="menu-item nav-item"><a class="wc-menu-cart nav-link d-flex" href="<?php echo wc_get_cart_url(); ?>" title="<?php __('View your shopping cart', 'madeit'); ?>">
+                <li class="menu-item nav-item shopping-menu-item"><a class="wc-menu-cart nav-link d-flex" href="<?php echo wc_get_cart_url(); ?>" title="<?php __('View your shopping cart', 'madeit'); ?>">
                 <?php
             } ?>
                 <span class="shopping-cart-count"><?php echo $cart_contents_count; ?></span>
@@ -2051,4 +2051,8 @@ require get_parent_theme_file_path('/inc/lock-content.php');
 
 if (in_array('woocommerce/woocommerce.php', $activePlugins)) {
     require get_parent_theme_file_path('/inc/email-service.php');
+
+    if(defined('MADEIT_SHOPPING_MANAGER') && MADEIT_SHOPPING_MANAGER !== false) {
+        require get_parent_theme_file_path('/inc/shopping-manager.php');
+    }
 };
