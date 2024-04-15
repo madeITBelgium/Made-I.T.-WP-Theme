@@ -23,6 +23,19 @@ jQuery( document ).ready( function( $ ) {
         $( this ).removeClass( 'lightbox' );
     });
 
+	
+    $( '.do-lightbox' ).each( function( ) {
+        if ( $( this ).parent( ).hasClass( 'no-lightbox' ) || $( this ).parents( '.wp-block-image' ).hasClass( 'no-lightbox' ) ) {
+            return;
+        }
+        if ( ( undefined === $( this ).parent( ).tagName && 'a' === $( this ).parent( )[0].localName ) || 'a' === $( this ).parent( ).tagName ) {
+            $( this ).parent( ).addClass( 'click-lightbox' );
+        } else {
+            $( this ).wrap( '<a href="' + $( this ).attr( 'src' ) + '" class="click-lightbox"></a>' );
+        }
+        $( this ).removeClass( 'do-lightbox' );
+    });
+
     $( 'body' ).append( '<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" id="lightbox-modal"><div class="modal-dialog modal-lg"><div class="modal-content"></div></div></div>' );
 
     $( '.click-lightbox' ).click( function( e ) {
