@@ -5,7 +5,6 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-
 function madeit_tabs_block_assets()
 {
     wp_register_style('tabs-madeit-style-css', get_template_directory_uri().'/gutenberg/tabs/build/style-index.css', ['wp-editor'], null);
