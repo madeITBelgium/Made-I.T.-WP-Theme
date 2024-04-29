@@ -2,9 +2,7 @@
  * WordPress dependencies
  */
 
-const {
-    Path, SVG
-} = wp.components;
+import { Path, SVG } from "@wordpress/components";
 
 /** @typedef {import('@wordpress/element').WPComponent} WPComponent */
 
