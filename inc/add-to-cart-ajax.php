@@ -59,7 +59,7 @@ if (!function_exists('madeit_woocommerce_ajax_add_to_cart_popup')) {
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="popupModalLabelAddToCart"><?php echo __('Product toegevoegd aan winkelwagen', 'madeit'); ?></h1>
+                            <p class="h1 modal-title fs-5" id="popupModalLabelAddToCart"><?php echo __('Product toegevoegd aan winkelwagen', 'madeit'); ?></p>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">

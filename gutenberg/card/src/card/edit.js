@@ -1,26 +1,23 @@
 /**
  * External dependencies
  */
-import classnames from 'classnames';
-import { forEach, find, difference } from 'lodash';
 import HeadingLevelDropdown from './heading-level-dropdown';
 
 /**
  * WordPress dependencies
  */
-const {
-    InnerBlocks,
+import { InnerBlocks,
     InspectorControls,
     ContrastChecker,
     PanelColorSettings,
     withColors,
     RichText,
-    BlockControls
-} = wp.blockEditor;
-const { PanelBody, RangeControl, ToggleControl } = wp.components;
-const { withDispatch, withSelect } = wp.data;
-const { compose } = wp.compose;
-const { __ } = wp.i18n;
+    BlockControls } from '@wordpress/block-editor';
+
+import { PanelBody, RangeControl, ToggleControl } from "@wordpress/components";
+import { withDispatch, withSelect } from "@wordpress/data";
+import { compose } from "@wordpress/compose";
+import { __ } from '@wordpress/i18n';
 
 function CardEdit( props ) {
     const {

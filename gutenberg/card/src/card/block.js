@@ -12,9 +12,9 @@ import save from './save';
 import icon from './icon';
 import classnames from 'classnames';
 
-const { __ } = wp.i18n;
-const { registerBlockType } = wp.blocks;
-const { InnerBlocks } = wp.blockEditor;
+import { registerBlockType } from '@wordpress/blocks';
+import { __ } from '@wordpress/i18n';
+import { InnerBlocks } from '@wordpress/block-editor';
 
 /**
  * Register: aa Gutenberg Block.

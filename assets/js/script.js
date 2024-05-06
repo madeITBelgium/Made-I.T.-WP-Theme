@@ -23,6 +23,19 @@ jQuery( document ).ready( function( $ ) {
         $( this ).removeClass( 'lightbox' );
     });
 
+	
+    $( '.do-lightbox' ).each( function( ) {
+        if ( $( this ).parent( ).hasClass( 'no-lightbox' ) || $( this ).parents( '.wp-block-image' ).hasClass( 'no-lightbox' ) ) {
+            return;
+        }
+        if ( ( undefined === $( this ).parent( ).tagName && 'a' === $( this ).parent( )[0].localName ) || 'a' === $( this ).parent( ).tagName ) {
+            $( this ).parent( ).addClass( 'click-lightbox' );
+        } else {
+            $( this ).wrap( '<a href="' + $( this ).attr( 'src' ) + '" class="click-lightbox"></a>' );
+        }
+        $( this ).removeClass( 'do-lightbox' );
+    });
+
     $( 'body' ).append( '<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true" id="lightbox-modal"><div class="modal-dialog modal-lg"><div class="modal-content"></div></div></div>' );
 
     $( '.click-lightbox' ).click( function( e ) {
@@ -437,7 +450,6 @@ function track(type, value, extraValue = null) {
     }
 }
 
-
 jQuery(document).ready( function( $ ) {
     $('.keep-max-container-size').each(function() {
         var orderLgFirst = $(this).parent().find('.order-lg-first');
@@ -460,5 +472,90 @@ jQuery(document).ready( function( $ ) {
                 $(this).addClass('max-start-size');
             }
         }
+    });
+});
+
+jQuery(document).ready( function( $ ) {
+    $('#madeit-unlock-form').submit(function(e) {
+        e.preventDefault();
+
+        var email = $('#madeit-unlock-email').val();
+        var newsletter = $('#madeit-unlock-newsletter').is(':checked') ? 1 : 0;
+        var lead = $('#madeit-unlock-lead').val();
+        var post_id = $('#madeit-unlock-postid').val();
+
+        if(email.length > 0) {
+            //loading state
+            $('#madeit-unlock-form').hide();
+            $('#madeit-unlock-loading').show();
+
+            $.ajax({
+                url: '/wp-admin/admin-ajax.php',
+                type: 'POST',
+                data: {
+                    action: 'madeit_unlock_content',
+                    post_id: post_id,
+                    email: email,
+                    newsletter: newsletter,
+                    lead: lead
+                },
+                success: function(response) {
+                    $('#madeit-unlock-loading').hide();
+
+                    //redirect to url
+                    if(response.url) {
+                        window.location.href = response.url;
+                    }
+                }
+            });
+        }
+    });
+});
+
+
+jQuery(document).ready( function( $ ) {
+    $('#madeit-review-form').submit(function(e) {
+        e.preventDefault();
+
+        var name = $(this).find('[name="reviewer-name"]').val();
+        var email = $(this).find('[name="reviewer-email"]').val();
+        var rating = $(this).find('[name="review-rating"]:checked').val();
+        var title = $(this).find('[name="review-title"]').val();
+        var description = $(this).find('[name="review-description"]').val();
+
+        $(this).find('.loading').show();
+        $(this).find('.form').hide();
+
+        $.ajax({
+            url: '/wp-admin/admin-ajax.php',
+            type: 'POST',
+            data: {
+                action: 'madeit_submit_review',
+                reviewer_name: name,
+                email: email,
+                rating: rating,
+                title: title,
+                description: description
+            },
+            success: function(response) {
+                //stop loading
+                $('#madeit-review-form').find('.loading').hide();
+
+                //start success
+                $('#madeit-review-form').find('.alert-success').show();
+
+                if(rating >= 4) {
+                    $('#madeit-review-form').find('.forward').show();
+                }
+            }
+        });
+    });
+});
+
+//if berocket_ajax_products_loaded is triggered, we need to reinit the lightbox
+jQuery(document).ready( function( $ ) {
+    $(document).on('berocket_ajax_products_loaded', function() {
+        //scroll to top of product list
+        $('html, body').animate({scrollTop: $('.products').offset().top - ($('.navbar:eq(0)').height() * 2)}, 200);
     });
 });

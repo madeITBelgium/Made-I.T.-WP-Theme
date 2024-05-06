@@ -381,10 +381,11 @@ function list_reviews()
         'post_type' => 'review',
         //set number of posts to -1 to show all posts
         'numberposts' => -1,
-
     ];
 
-    $reviews = get_posts($args); ?>
+    $reviews = get_posts($args);
+    $reviews = array_merge($reviews, $reviews);
+    ?>
     <div class="row reviews">
         <?php foreach ($reviews as $i => $review) { ?>
             <div class="review-item col-12 mx-auto col-md-8 col-lg-7 mb-5">
