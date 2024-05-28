@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-05-28 13:55+0000\n"
+"POT-Creation-Date: 2024-02-26 14:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco https://localise.biz/"
 
-#: functions.php:1506
+#: functions.php:1499
 msgid "%d item"
 msgid_plural "%d items"
 msgstr[0] ""
@@ -36,18 +36,6 @@ msgctxt "1: date, 2: time"
 msgid "%1$s om %2$s"
 msgstr ""
 
-#: inc/class-wc-gateway-pay-invoice.php:144
-msgid "<b>Description:</b>"
-msgstr ""
-
-#: inc/class-wc-gateway-pay-invoice.php:132
-msgid "<b>Enable/Disable:</b>"
-msgstr ""
-
-#: inc/class-wc-gateway-pay-invoice.php:138
-msgid "<b>Title:</b>"
-msgstr ""
-
 #. %s: post date
 #: inc/template-tags.php:43
 #, php-format
@@ -60,12 +48,8 @@ msgstr ""
 msgid "<span>Updated on</span> %s"
 msgstr ""
 
-#: functions.php:1657
+#: functions.php:1650
 msgid "Accept"
-msgstr ""
-
-#: inc/woo-b2b.php:36
-msgid "Account aanmaken"
 msgstr ""
 
 #: inc/reviews.php:84
@@ -80,25 +64,21 @@ msgstr ""
 msgid "Add side menu with child pages"
 msgstr ""
 
-#: functions.php:585
+#: functions.php:578
 msgid "Add widgets here to appear below your blog/news list."
 msgstr ""
 
-#: functions.php:545 functions.php:555 functions.php:565 functions.php:575
+#: functions.php:538 functions.php:548 functions.php:558 functions.php:568
 msgid "Add widgets here to appear in your footer."
 msgstr ""
 
-#: functions.php:535
+#: functions.php:528
 msgid "Add widgets here to appear in your left sidebar."
 msgstr ""
 
-#: functions.php:525
+#: functions.php:518
 msgid ""
 "Add widgets here to appear in your sidebar on blog posts and archive pages."
-msgstr ""
-
-#: inc/woo-b2b.php:256
-msgid "Address"
 msgstr ""
 
 #: inc/reviews.php:83
@@ -109,7 +89,7 @@ msgstr ""
 msgid "Alle Popups"
 msgstr ""
 
-#: functions.php:370 inc/customizer.php:69
+#: functions.php:363 inc/customizer.php:69
 msgid "Background Color"
 msgstr ""
 
@@ -125,7 +105,7 @@ msgstr ""
 msgid "Bekijk winkelwagen"
 msgstr ""
 
-#: functions.php:583
+#: functions.php:576
 msgid "Below index blog"
 msgstr ""
 
@@ -133,7 +113,7 @@ msgstr ""
 msgid "Beschrijving"
 msgstr ""
 
-#: functions.php:360
+#: functions.php:353
 msgid "Black Color"
 msgstr ""
 
@@ -141,7 +121,7 @@ msgstr ""
 msgid "Blog Sidebar"
 msgstr ""
 
-#: functions.php:185
+#: functions.php:178
 msgid "Bottom of main menu"
 msgstr ""
 
@@ -151,7 +131,7 @@ msgstr ""
 msgid "by %s"
 msgstr ""
 
-#: functions.php:1569
+#: functions.php:1562
 #, php-format
 msgid ""
 "By using our website you are consenting to our use of cookies in accordance "
@@ -174,15 +154,7 @@ msgstr ""
 msgid "Choose the screen width of your content."
 msgstr ""
 
-#: inc/class-wc-gateway-pay-invoice.php:147
-msgid "Choose to pay later, we'll send you an invoice."
-msgstr ""
-
-#: inc/woo-b2b.php:258
-msgid "City"
-msgstr ""
-
-#: functions.php:1586 functions.php:1604
+#: functions.php:1579 functions.php:1597
 msgid "Close"
 msgstr ""
 
@@ -214,11 +186,7 @@ msgctxt "comments title"
 msgid "One Reply to &ldquo;%s&rdquo;"
 msgstr ""
 
-#: inc/woo-b2b.php:255
-msgid "Company"
-msgstr ""
-
-#: functions.php:995
+#: functions.php:988
 msgid "Continue reading"
 msgstr ""
 
@@ -229,13 +197,13 @@ msgid "Continue reading <span class=\"screen-reader-text\">\"%s\"</span>"
 msgstr ""
 
 #. %s: Name of current post
-#: functions.php:616 template-parts/page/content-front-page.php:38
+#: functions.php:609 template-parts/page/content-front-page.php:38
 #: template-parts/page/content-page.php:26
 #, php-format
 msgid "Continue reading<span class=\"screen-reader-text\"> \"%s\"</span>"
 msgstr ""
 
-#: functions.php:1667
+#: functions.php:1660
 msgid "Cookie settings"
 msgstr ""
 
@@ -247,10 +215,6 @@ msgstr ""
 msgid "Cookie warning position"
 msgstr ""
 
-#: inc/woo-b2b.php:259
-msgid "Country"
-msgstr ""
-
 #: inc/sfwd-lms.php:74 inc/sfwd-lms.php:106
 msgid "Courses"
 msgstr ""
@@ -259,7 +223,7 @@ msgstr ""
 msgid "Custom"
 msgstr ""
 
-#: functions.php:400 inc/customizer.php:142
+#: functions.php:393 inc/customizer.php:142
 msgid "Danger Color"
 msgstr ""
 
@@ -292,16 +256,7 @@ msgid "Edit Review"
 msgstr ""
 
 #. Name of the template
-#: page-elementor.php:2
 msgid "Elementor"
-msgstr ""
-
-#: inc/class-wc-gateway-pay-invoice.php:134
-msgid "Enable Pay Later Payment Gateway."
-msgstr ""
-
-#: inc/woo-b2b.php:195
-msgid "Favorieten"
 msgstr ""
 
 #: inc/popup.php:23
@@ -324,27 +279,23 @@ msgstr ""
 msgid "First"
 msgstr ""
 
-#: inc/woo-b2b.php:252
-msgid "First name"
-msgstr ""
-
 #: template-parts/footer/footer-widgets.php:30
 msgid "Footer"
 msgstr ""
 
-#: functions.php:543
+#: functions.php:536
 msgid "Footer 1"
 msgstr ""
 
-#: functions.php:553
+#: functions.php:546
 msgid "Footer 2"
 msgstr ""
 
-#: functions.php:563
+#: functions.php:556
 msgid "Footer 3"
 msgstr ""
 
-#: functions.php:573
+#: functions.php:566
 msgid "Footer 4"
 msgstr ""
 
@@ -394,7 +345,7 @@ msgstr ""
 msgid "https://www.madeit.be/"
 msgstr ""
 
-#: functions.php:390 inc/customizer.php:118
+#: functions.php:383 inc/customizer.php:118
 msgid "Info Color"
 msgstr ""
 
@@ -429,7 +380,6 @@ msgid "Laden..."
 msgstr ""
 
 #. Name of the template
-#: landingpage.php:2
 msgid "Landingpage"
 msgstr ""
 
@@ -437,18 +387,14 @@ msgstr ""
 msgid "Last"
 msgstr ""
 
-#: inc/woo-b2b.php:253
-msgid "Last name"
-msgstr ""
-
-#: sidebar-left.php:15 functions.php:533
+#: sidebar-left.php:15 functions.php:526
 msgid "Left Sidebar"
 msgstr ""
 
 #. If there are characters in your language that are not
 #. supported by Libre Franklin, translate this to 'off'. Do not translate
 #. into your own language.
-#: functions.php:470
+#: functions.php:463
 msgctxt "Libre Franklin font: on or off"
 msgid "on"
 msgstr ""
@@ -459,10 +405,6 @@ msgstr ""
 
 #: template-parts/footer/site-info.php:13
 msgid "Login"
-msgstr ""
-
-#: inc/woo-b2b.php:35
-msgid "Maak nu een account aan om prijzen te zien en bestellingen te plaatsen."
 msgstr ""
 
 #. Name of the theme
@@ -478,12 +420,12 @@ msgid ""
 "%s. Please upgrade and try again."
 msgstr ""
 
-#: functions.php:183
+#: functions.php:176
 msgid "Main Menu"
 msgstr ""
 
-#: template-parts/navigation/navigation-top.php:30
-#: template-parts/navigation/navigation-top.php:31
+#: template-parts/navigation/navigation-top.php:28
+#: template-parts/navigation/navigation-top.php:29
 msgid "Menu"
 msgstr ""
 
@@ -552,12 +494,10 @@ msgid "Page Width"
 msgstr ""
 
 #. Name of the template
-#: page-with-left-sidebar.php:2
 msgid "Page with left sidebar"
 msgstr ""
 
 #. Name of the template
-#: page-with-sidebar.php:2
 msgid "Page with right sidebar"
 msgstr ""
 
@@ -571,18 +511,6 @@ msgstr ""
 
 #: inc/custom-header.php:122
 msgid "Pause background video"
-msgstr ""
-
-#: inc/class-wc-gateway-pay-invoice.php:141
-msgid "Pay Later"
-msgstr ""
-
-#: inc/class-wc-gateway-pay-invoice.php:16
-msgid "Pay Later By Invoice"
-msgstr ""
-
-#: inc/woo-b2b.php:254
-msgid "Phone"
 msgstr ""
 
 #: inc/template-functions.php:127
@@ -642,10 +570,6 @@ msgstr ""
 msgid "Popup updated."
 msgstr ""
 
-#: inc/woo-b2b.php:257
-msgid "Postcode"
-msgstr ""
-
 #: index.php:35
 msgid "Posts"
 msgstr ""
@@ -658,11 +582,11 @@ msgstr ""
 msgid "Previous Post"
 msgstr ""
 
-#: functions.php:375 inc/customizer.php:81
+#: functions.php:368 inc/customizer.php:81
 msgid "Primary Color"
 msgstr ""
 
-#: functions.php:1673
+#: functions.php:1666
 msgid "Privacy & Cookies Policy"
 msgstr ""
 
@@ -679,7 +603,7 @@ msgstr ""
 msgid "Proudly powered by %s"
 msgstr ""
 
-#: functions.php:1660
+#: functions.php:1653
 msgid "Read More"
 msgstr ""
 
@@ -689,7 +613,7 @@ msgid ""
 "Ready to publish your first post? <a href=\"%1$s\">Get started here</a>."
 msgstr ""
 
-#: functions.php:1664
+#: functions.php:1657
 msgid "Reject"
 msgstr ""
 
@@ -749,7 +673,7 @@ msgstr ""
 msgid "Reviews list navigation"
 msgstr ""
 
-#: functions.php:523
+#: functions.php:516
 msgid "Right Sidebar"
 msgstr ""
 
@@ -770,7 +694,7 @@ msgstr ""
 msgid "Search..."
 msgstr ""
 
-#: functions.php:380 inc/customizer.php:93
+#: functions.php:373 inc/customizer.php:93
 msgid "Secondary Color"
 msgstr ""
 
@@ -803,7 +727,7 @@ msgid ""
 "image."
 msgstr ""
 
-#: functions.php:186 functions.php:317
+#: functions.php:179 functions.php:310
 #: template-parts/navigation/navigation-upper-top.php:40
 msgid "Social Links Menu"
 msgstr ""
@@ -814,7 +738,7 @@ msgid ""
 "different keywords."
 msgstr ""
 
-#: functions.php:1498 functions.php:1512 functions.php:1535
+#: functions.php:1491 functions.php:1505 functions.php:1528
 msgid "Start shopping"
 msgstr ""
 
@@ -826,11 +750,11 @@ msgstr ""
 msgid "Static top notice"
 msgstr ""
 
-#: inc/email-service.php:8
+#: inc/email-service.php:7
 msgid "Subscribe to our newsletter?"
 msgstr ""
 
-#: functions.php:385 inc/customizer.php:106
+#: functions.php:378 inc/customizer.php:106
 msgid "Success Color"
 msgstr ""
 
@@ -838,60 +762,48 @@ msgstr ""
 msgid "Tags"
 msgstr ""
 
-#: functions.php:365 inc/customizer.php:57
+#: functions.php:358 inc/customizer.php:57
 msgid "Text Color"
-msgstr ""
-
-#: inc/class-wc-gateway-pay-invoice.php:140
-msgid "The title which the user sees during checkout."
 msgstr ""
 
 #: inc/customizer.php:152
 msgid "Theme Options"
 msgstr ""
 
-#: functions.php:278
+#: functions.php:271
 msgctxt "Theme starter content"
 msgid "Inside"
 msgstr ""
 
-#: functions.php:270
+#: functions.php:263
 msgctxt "Theme starter content"
 msgid "Koffie Machien"
 msgstr ""
 
-#: functions.php:274
+#: functions.php:267
 msgctxt "Theme starter content"
 msgid "Outside"
 msgstr ""
 
-#: functions.php:282
+#: functions.php:275
 msgctxt "Theme starter content"
 msgid "Price table"
-msgstr ""
-
-#: inc/class-wc-gateway-pay-invoice.php:146
-msgid "This controls the description which the user sees during checkout."
 msgstr ""
 
 #: inc/review-form.php:65 inc/review-form.php:126
 msgid "Titel"
 msgstr ""
 
-#: functions.php:306
+#: functions.php:299
 msgid "Top Menu"
 msgstr ""
 
-#: functions.php:184
+#: functions.php:177
 msgid "Top of main menu"
 msgstr ""
 
 #: inc/customizer.php:169 inc/customizer.php:302
 msgid "Two Column"
-msgstr ""
-
-#: inc/woo-b2b.php:213
-msgid "U heeft nog geen favorieten."
 msgstr ""
 
 #: inc/MadeIT_Gitlab_Updater.php:217 inc/MadeIT_Github_Updater.php:224
@@ -914,11 +826,6 @@ msgstr ""
 msgid "Use as featured image for this Review"
 msgstr ""
 
-#: inc/woo-b2b.php:40
-msgid ""
-"Uw account is nog niet goedgekeurd. U kunt nog geen bestellingen plaatsen."
-msgstr ""
-
 #: inc/add-to-cart-ajax.php:68 inc/add-to-cart-ajax.php:90
 msgid "Verder winkelen"
 msgstr ""
@@ -935,7 +842,7 @@ msgstr ""
 msgid "View Reviews"
 msgstr ""
 
-#: functions.php:1502 functions.php:1516 functions.php:1526 functions.php:1539
+#: functions.php:1495 functions.php:1509 functions.php:1519 functions.php:1532
 msgid "View your shopping cart"
 msgstr ""
 
@@ -955,11 +862,11 @@ msgstr ""
 msgid "Vorige"
 msgstr ""
 
-#: functions.php:395 inc/customizer.php:130
+#: functions.php:388 inc/customizer.php:130
 msgid "Warning Color"
 msgstr ""
 
-#: functions.php:1670
+#: functions.php:1663
 msgid ""
 "We use cookies on our website to give you the most relevant experience by "
 "remembering your preferences and repeat visits. By clicking “Accept”, you "
@@ -977,7 +884,7 @@ msgid ""
 "content is in the other."
 msgstr ""
 
-#: functions.php:355
+#: functions.php:348
 msgid "White Color"
 msgstr ""
 

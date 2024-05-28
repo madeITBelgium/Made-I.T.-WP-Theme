@@ -119,8 +119,15 @@ if(!defined('MADEIT_WOOCOMMERCE_ADD_PRODUCT_AJAX')) {
     define('MADEIT_WOOCOMMERCE_ADD_PRODUCT_AJAX', true);
 }
 
-if(defined('MADEIT_EMAILSERVICE_NEWSLETTER_LIST')) {
+if(!defined('MADEIT_EMAILSERVICE_NEWSLETTER_LIST')) {
     define('MADEIT_EMAILSERVICE_NEWSLETTER_LIST', false);
+}
+
+if(!defined('MADEIT_WOO_B2B')) {
+    define('MADEIT_WOO_B2B', false);
+}
+if(!defined('MADEIT_WOO_B2B_ONLY')) {
+    define('MADEIT_WOO_B2B_ONLY', false);
 }
 
 if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
@@ -2048,4 +2055,8 @@ if (in_array('woocommerce/woocommerce.php', $activePlugins)) {
     if(defined('MADEIT_SHOPPING_MANAGER') && MADEIT_SHOPPING_MANAGER !== false) {
         require get_parent_theme_file_path('/inc/shopping-manager.php');
     }
-};
+
+    if(defined('MADEIT_WOO_B2B') && MADEIT_WOO_B2B) {
+        require get_parent_theme_file_path('/inc/woo-b2b.php');
+    }
+}
