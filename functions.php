@@ -119,8 +119,15 @@ if(!defined('MADEIT_WOOCOMMERCE_ADD_PRODUCT_AJAX')) {
     define('MADEIT_WOOCOMMERCE_ADD_PRODUCT_AJAX', true);
 }
 
-if(defined('MADEIT_EMAILSERVICE_NEWSLETTER_LIST')) {
+if(!defined('MADEIT_EMAILSERVICE_NEWSLETTER_LIST')) {
     define('MADEIT_EMAILSERVICE_NEWSLETTER_LIST', false);
+}
+
+if(!defined('MADEIT_WOO_B2B')) {
+    define('MADEIT_WOO_B2B', false);
+}
+if(!defined('MADEIT_WOO_B2B_ONLY')) {
+    define('MADEIT_WOO_B2B_ONLY', false);
 }
 
 if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
@@ -1846,19 +1853,16 @@ if (!function_exists('madeit_user_analytics')) {
 
         if (defined('MADEIT_ANALYTICS_TM')) {
             ?>
-            <!-- Google Tag Manager -->
             <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
             new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
             j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
             })(window,document,'script','dataLayer','<?php echo MADEIT_ANALYTICS_TM; ?>');</script>
-            <!-- End Google Tag Manager -->
             <?php
         }
 
         if (defined('MADEIT_ANALYTICS_FB')) {
             ?>
-            <!-- Meta Pixel Code -->
             <script>
             !function(f,b,e,v,n,t,s)
             {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -1871,9 +1875,6 @@ if (!function_exists('madeit_user_analytics')) {
             fbq('init', '<?php echo MADEIT_ANALYTICS_FB; ?>');
             fbq('track', 'PageView');
             </script>
-            <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=<?php echo MADEIT_ANALYTICS_FB; ?>&ev=PageView&noscript=1"
-            /></noscript>
-            <!-- End Meta Pixel Code -->
             <?php
         }
 
@@ -1895,7 +1896,6 @@ if (!function_exists('madeit_user_analytics')) {
             </script>
             <?php
         }
-        
         if(defined('MADEIT_ANALYTICS_TIKTOK')) {
             ?>
             <script>
@@ -2055,4 +2055,8 @@ if (in_array('woocommerce/woocommerce.php', $activePlugins)) {
     if(defined('MADEIT_SHOPPING_MANAGER') && MADEIT_SHOPPING_MANAGER !== false) {
         require get_parent_theme_file_path('/inc/shopping-manager.php');
     }
-};
+
+    if(defined('MADEIT_WOO_B2B') && MADEIT_WOO_B2B) {
+        require get_parent_theme_file_path('/inc/woo-b2b.php');
+    }
+}
