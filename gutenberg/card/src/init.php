@@ -12,8 +12,6 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-
-
 function madeit_card_block_assets()
 {
     wp_register_style('card-madeit-style-css', get_template_directory_uri().'/gutenberg/card/build/style-index.css', ['wp-editor'], null);
