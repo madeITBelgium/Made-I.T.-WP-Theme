@@ -159,8 +159,6 @@ function madeit_review_save_ajax()
 
     error_log('Review submitted: ' . $name . ' - ' . $email . ' - ' . $rating . ' - ' . $ip . ' - ' . $userAgent);
 
-    wp_mail($emailAdmin, 'Er is een nieuwe review op ' . get_bloginfo('name') . ' achtergelaten.', "Beste,\nEr is een nieuwe review op " . get_bloginfo('name') . " achtergelaten.\n\nNaam: " . $name . "\nE-mailadres: " . $email . "\nRating: " . $rating . "\nTitel: " . $title . "\nBeschrijving: " . $description . "\n\nIP: " . $ip . "\nUser agent: " . $userAgent);
-
     //create post
     $post = [
         'post_title'  => $name . (!empty($title) ? ' - ' . $title : ''),
@@ -172,6 +170,9 @@ function madeit_review_save_ajax()
     update_post_meta($postId, 'naam', $name);
     update_post_meta($postId, 'rating', $rating);
     update_post_meta($postId, 'bericht', $description);
+
+    $emailAdmin = apply_filters('madeit_review_email_admin', $emailAdmin);
+    wp_mail($emailAdmin, 'Er is een nieuwe review op ' . get_bloginfo('name') . ' achtergelaten.', "Beste,\nEr is een nieuwe review op " . get_bloginfo('name') . " achtergelaten.\n\nNaam: " . $name . "\nE-mailadres: " . $email . "\nRating: " . $rating . "\nTitel: " . $title . "\nBeschrijving: " . $description . "\n\nIP: " . $ip . "\nUser agent: " . $userAgent);
 
     wp_send_json_success(['success' => true]);
 }
