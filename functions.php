@@ -1128,7 +1128,10 @@ if (!function_exists('madeit_add_image_popup_class')) {
         if (strlen($content) > 0) {
             $document = new DOMDocument();
             libxml_use_internal_errors(true);
-            $document->loadHTML(utf8_decode($content));
+            //$content = mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8');
+            //mb_convert_encoding(): Handling HTML entities via mbstring is deprecated; use htmlspecialchars, htmlentities, or mb_encode_numericentity/mb_decode_numericentity instead in
+            $content = html_entity_decode($content, ENT_COMPAT, 'UTF-8');
+            $document->loadHTML($content);
 
             $imgs = $document->getElementsByTagName('img');
             foreach ($imgs as $img) {
