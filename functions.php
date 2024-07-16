@@ -1122,16 +1122,13 @@ if (!function_exists('madeit_register_required_plugins')) {
 if (!function_exists('madeit_add_image_popup_class')) {
     function madeit_add_image_popup_class($content)
     {
-        //$content = mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8');
-        //mb_convert_encoding is deprecated.
-        $content = html_entity_decode($content, ENT_COMPAT, 'UTF-8');
+        $content = mb_encode_numericentity($content, array(0x80, 0xFFFF, 0, 0xFFFF), 'UTF-8');
+
         if (strlen($content) > 0) {
             $document = new DOMDocument();
             libxml_use_internal_errors(true);
-            //$content = mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8');
-            //mb_convert_encoding(): Handling HTML entities via mbstring is deprecated; use htmlspecialchars, htmlentities, or mb_encode_numericentity/mb_decode_numericentity instead in
-            $content = html_entity_decode($content, ENT_COMPAT, 'UTF-8');
-            $document->loadHTML($content);
+            // Laad de HTML direct zonder extra encoding
+            $document->loadHTML('<?xml encoding="utf-8" ?>' . $content);
 
             $imgs = $document->getElementsByTagName('img');
             foreach ($imgs as $img) {
@@ -1142,6 +1139,7 @@ if (!function_exists('madeit_add_image_popup_class')) {
             }
             $html = $document->saveHTML();
 
+            // Verwijder onnodige tags
             $html = preg_replace('/(<!DOCTYPE.*>)|<html>|<body>|<\/body>|<\/html>/', '', $html);
 
             return $html;
