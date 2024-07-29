@@ -31,6 +31,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             //change far to fas in classList from i
                             $this.querySelector('i').classList.remove('far');
                             $this.querySelector('i').classList.add('fas');
+
+                            $this.querySelector('.txt').textContent = 'Verwijderen uit favorieten';
                         } else {
                             $this.classList.remove('b2b-madeit-remove-favorite');
                             $this.classList.add('b2b-madeit-add-favorite');
@@ -38,6 +40,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             //change fas to far in classList from i
                             $this.querySelector('i').classList.remove('fas');
                             $this.querySelector('i').classList.add('far');
+
+                            $this.querySelector('.txt').textContent = 'Toevoegen aan favorieten';
                         }
                     }
                 });

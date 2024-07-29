@@ -66,6 +66,21 @@ if(defined('MADEIT_WOO_B2B_ONLY') && MADEIT_WOO_B2B_ONLY) {
         return $price;
     }
     add_filter('woocommerce_get_price_html', 'madeit_b2b_woocommerce_get_price_html', 10, 2);
+
+    function madeit_remove_partial_product_structured_data( $markup_offer, $product ) {
+        $markup_offer = array(
+            'availability'  => 'https://schema.org/' . ( $product->is_in_stock() ? 'InStock' : 'OutOfStock' ),
+            'url'           => get_permalink( $product->get_id() ),
+            'seller'        => array(
+                '@type' => 'Organization',
+                'name'  => get_bloginfo( 'name' ),
+                'url'   => home_url(),
+            ),
+        );
+    
+        return $markup_offer;
+    }
+    add_filter( 'woocommerce_structured_data_product_offer', 'madeit_remove_partial_product_structured_data', 10, 2 );    
 }
 
 
@@ -98,9 +113,9 @@ function madeit_b2b_favorite_btn()
     
     $favorites = madeit_b2b_get_user_favorite_products();
     if(is_array($favorites) && in_array($product->get_id(), $favorites)) {
-        echo '<a href="#" class="btn btn-sm btn-outline-danger b2b-madeit-remove-favorite" data-product-id="' . $product->get_id() . '"><i class="fas fa-heart"></i></a>';
+        echo '<span class="d-block"><a href="#" class="btn btn-sm btn-outline-danger b2b-madeit-remove-favorite" data-product-id="' . $product->get_id() . '"><i class="fas fa-heart"></i> <span class="txt">Verwijderen uit favorieten</span></a>';
     } else {
-        echo '<a href="#" class="btn btn-sm btn-outline-danger b2b-madeit-add-favorite" data-product-id="' . $product->get_id() . '"><i class="far fa-heart"></i></a>';
+        echo '<span class="d-block"><a href="#" class="btn btn-sm btn-outline-danger b2b-madeit-add-favorite" data-product-id="' . $product->get_id() . '"><i class="far fa-heart"></i> <span class="txt">Toevoegen aan favorieten</span></a>';
     }
 }
 add_action('woocommerce_after_shop_loop_item', 'madeit_b2b_favorite_btn', 10);
