@@ -79,3 +79,14 @@ add_filter('woocommerce_after_checkout_shipping_form', 'madeit_woocommerce_after
 add_filter('woocommerce_after_order_notes', 'madeit_woocommerce_after_checkout_billing_form', 99);
 
 remove_action('woocommerce_cart_is_empty', 'wc_empty_cart_message', 10);
+
+function madeit_woocommerce_webhook_payload($payload, $resource, $resource_id, $id)
+{
+    $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+    if (strpos($user_agent, 'ShoppingManager') !== false) {
+        $payload['edit_source'] = 'ShoppingManager';
+    }
+
+    return $payload;
+}
+add_filter('woocommerce_webhook_payload', 'madeit_woocommerce_webhook_payload', 10, 4);

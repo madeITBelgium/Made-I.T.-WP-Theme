@@ -1122,11 +1122,13 @@ if (!function_exists('madeit_register_required_plugins')) {
 if (!function_exists('madeit_add_image_popup_class')) {
     function madeit_add_image_popup_class($content)
     {
-        $content = mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8');
+        $content = mb_encode_numericentity($content, array(0x80, 0xFFFF, 0, 0xFFFF), 'UTF-8');
+
         if (strlen($content) > 0) {
             $document = new DOMDocument();
             libxml_use_internal_errors(true);
-            $document->loadHTML(utf8_decode($content));
+            // Laad de HTML direct zonder extra encoding
+            $document->loadHTML('<?xml encoding="utf-8" ?>' . $content);
 
             $imgs = $document->getElementsByTagName('img');
             foreach ($imgs as $img) {
@@ -1137,6 +1139,7 @@ if (!function_exists('madeit_add_image_popup_class')) {
             }
             $html = $document->saveHTML();
 
+            // Verwijder onnodige tags
             $html = preg_replace('/(<!DOCTYPE.*>)|<html>|<body>|<\/body>|<\/html>/', '', $html);
 
             return $html;
@@ -1836,7 +1839,7 @@ if (!function_exists('madeit_wprocket_pre_get_rocket_option_delay_js_exclusions'
 if (!function_exists('madeit_user_analytics')) {
     function madeit_user_analytics()
     {
-        if (defined('MADEIT_ANALYTICS_GA')) {
+        if (defined('MADEIT_ANALYTICS_GA') && MADEIT_ANALYTICS_GA) {
             $tags = apply_filters('madeit_analtyics_ga', explode(',', MADEIT_ANALYTICS_GA)); ?>
             <!-- Google tag (gtag.js) -->
             <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $tags[0]; ?>"></script>
