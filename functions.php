@@ -10,7 +10,7 @@
  * Made I.T. Theme only works in WordPress 4.7 or later.
  */
 if (!defined('MADEIT_VERSION')) {
-    define('MADEIT_VERSION', '2.9.0');
+    define('MADEIT_VERSION', '2.10.0');
 }
 /* Default colors */
 if (!defined('MADEIT_CUSTOM_COLOR')) {
@@ -110,9 +110,24 @@ if (!defined('MADEIT_INFINITE_SCROLL')) {
     define('MADEIT_INFINITE_SCROLL', true);
 }
 
+if (!defined('MADEIT_RECEIVE_REVIEWS')) {
+    define('MADEIT_RECEIVE_REVIEWS', false);
+}
+
 
 if(!defined('MADEIT_WOOCOMMERCE_ADD_PRODUCT_AJAX')) {
     define('MADEIT_WOOCOMMERCE_ADD_PRODUCT_AJAX', true);
+}
+
+if(!defined('MADEIT_EMAILSERVICE_NEWSLETTER_LIST')) {
+    define('MADEIT_EMAILSERVICE_NEWSLETTER_LIST', false);
+}
+
+if(!defined('MADEIT_WOO_B2B')) {
+    define('MADEIT_WOO_B2B', false);
+}
+if(!defined('MADEIT_WOO_B2B_ONLY')) {
+    define('MADEIT_WOO_B2B_ONLY', false);
 }
 
 if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
@@ -718,9 +733,8 @@ if (!function_exists('madeit_scripts')) {
 
         if (MADEIT_BOOTSTRAP_VERSION === 5) {
             wp_enqueue_script('bootstrap', get_theme_file_uri('/assets/bootstrap-5/script.js'), [], MADEIT_VERSION, true);
-            if (MADEIT_BOOTSTRAP_POPPER) {
-                wp_enqueue_script('popper', get_theme_file_uri('/assets/bootstrap-5/popper.js'), ['bootstrap'], MADEIT_VERSION, true);
-            }
+            //wp_enqueue_script('popper', get_theme_file_uri('/assets/bootstrap-5/popper.js'), ['bootstrap'], MADEIT_VERSION, true);
+
             if (MADEIT_POPUPS) {
                 wp_enqueue_script('popup', get_theme_file_uri('/assets/bootstrap-5/popup.js'), ['bootstrap'], MADEIT_VERSION, true);
             }
@@ -1108,11 +1122,13 @@ if (!function_exists('madeit_register_required_plugins')) {
 if (!function_exists('madeit_add_image_popup_class')) {
     function madeit_add_image_popup_class($content)
     {
-        $content = mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8');
+        $content = mb_encode_numericentity($content, array(0x80, 0xFFFF, 0, 0xFFFF), 'UTF-8');
+
         if (strlen($content) > 0) {
             $document = new DOMDocument();
             libxml_use_internal_errors(true);
-            $document->loadHTML(utf8_decode($content));
+            // Laad de HTML direct zonder extra encoding
+            $document->loadHTML('<?xml encoding="utf-8" ?>' . $content);
 
             $imgs = $document->getElementsByTagName('img');
             foreach ($imgs as $img) {
@@ -1123,6 +1139,7 @@ if (!function_exists('madeit_add_image_popup_class')) {
             }
             $html = $document->saveHTML();
 
+            // Verwijder onnodige tags
             $html = preg_replace('/(<!DOCTYPE.*>)|<html>|<body>|<\/body>|<\/html>/', '', $html);
 
             return $html;
@@ -1481,11 +1498,11 @@ if (!function_exists('madeit_woocommerce_shopping_cart_in_menu')) {
         if (WOO_SHOPING_CART_MENU_STYLE == 1) {
             if ($cart_contents_count == 0) {
                 ?>
-                <li class="menu-item nav-item"><a class="wc-menu-cart nav-link" href="<?php echo get_permalink(wc_get_page_id('shop')); ?>" title="<?php echo  __('Start shopping', 'madeit'); ?>">
+                <li class="menu-item nav-item shopping-menu-item"><a class="wc-menu-cart nav-link" href="<?php echo get_permalink(wc_get_page_id('shop')); ?>" title="<?php echo  __('Start shopping', 'madeit'); ?>">
                 <?php
             } else {
                 ?>
-                <li class="menu-item nav-item"><a class="wc-menu-cart nav-link" href="<?php echo wc_get_cart_url(); ?>" title="<?php __('View your shopping cart', 'madeit'); ?>">
+                <li class="menu-item nav-item shopping-menu-item"><a class="wc-menu-cart nav-link" href="<?php echo wc_get_cart_url(); ?>" title="<?php __('View your shopping cart', 'madeit'); ?>">
                 <?php
             } ?>
             <i class="fa fa-shopping-cart"></i>
@@ -1495,11 +1512,11 @@ if (!function_exists('madeit_woocommerce_shopping_cart_in_menu')) {
         } elseif (WOO_SHOPING_CART_MENU_STYLE == 2) {
             if ($cart_contents_count == 0) {
                 ?>
-                <li class="menu-item nav-item"><a class="wc-menu-cart nav-link d-flex" href="<?php echo get_permalink(wc_get_page_id('shop')); ?>" title="<?php echo  __('Start shopping', 'madeit'); ?>">
+                <li class="menu-item nav-item shopping-menu-item"><a class="wc-menu-cart nav-link d-flex" href="<?php echo get_permalink(wc_get_page_id('shop')); ?>" title="<?php echo  __('Start shopping', 'madeit'); ?>">
                 <?php
             } else {
                 ?>
-                <li class="menu-item nav-item"><a class="wc-menu-cart nav-link d-flex" href="<?php echo wc_get_cart_url(); ?>" title="<?php __('View your shopping cart', 'madeit'); ?>">
+                <li class="menu-item nav-item shopping-menu-item"><a class="wc-menu-cart nav-link d-flex" href="<?php echo wc_get_cart_url(); ?>" title="<?php __('View your shopping cart', 'madeit'); ?>">
                 <?php
             } ?>
                 <span class="shopping-cart-count"><?php echo $cart_contents_count; ?></span>
@@ -1508,7 +1525,7 @@ if (!function_exists('madeit_woocommerce_shopping_cart_in_menu')) {
             <?php
         } elseif (WOO_SHOPING_CART_MENU_STYLE == 3 && $cart_contents_count > 0) {
             ?>
-            <li class="menu-item nav-item">
+            <li class="menu-item nav-item shopping-menu-item">
                 <a class="wc-menu-cart nav-link d-flex" href="<?php echo wc_get_cart_url(); ?>" title="<?php __('View your shopping cart', 'madeit'); ?>">
                     <span class="shopping-cart-count"><?php echo $cart_contents_count; ?></span>
                     <svg xmlns="http://www.w3.org/2000/svg" style="display: block; height: 12px; align-self: center; margin-left: 5px;" viewBox="0 0 576 512"><path d="M175.1 416c-26.51 0-47.1 21.49-47.1 48S149.5 512 175.1 512s47.1-21.49 47.1-48S202.5 416 175.1 416zM463.1 416c-26.51 0-47.1 21.49-47.1 48s21.49 48 47.1 48s47.1-21.49 47.1-48S490.5 416 463.1 416zM569.5 44.73c-6.109-8.094-15.42-12.73-25.56-12.73H121.1L119.6 19.51C117.4 8.189 107.5 0 96 0H23.1C10.75 0 0 10.74 0 23.1C0 37.25 10.75 48 23.1 48h52.14l60.28 316.5C138.6 375.8 148.5 384 160 384H488c13.25 0 24-10.75 24-23.1C512 346.7 501.3 336 488 336H179.9L170.7 288h318.4c14.28 0 26.84-9.479 30.77-23.21l54.86-191.1C577.5 63.05 575.6 52.83 569.5 44.73zM477 240H161.6l-30.47-160h391.7L477 240z"/></svg>
@@ -1518,11 +1535,11 @@ if (!function_exists('madeit_woocommerce_shopping_cart_in_menu')) {
         } elseif (WOO_SHOPING_CART_MENU_STYLE == 4) {
             if ($cart_contents_count == 0) {
                 ?>
-                <li class="menu-item nav-item"><a class="wc-menu-cart nav-link d-flex" href="<?php echo get_permalink(wc_get_page_id('shop')); ?>" title="<?php echo  __('Start shopping', 'madeit'); ?>">
+                <li class="menu-item nav-item shopping-menu-item"><a class="wc-menu-cart nav-link d-flex" href="<?php echo get_permalink(wc_get_page_id('shop')); ?>" title="<?php echo  __('Start shopping', 'madeit'); ?>">
                 <?php
             } else {
                 ?>
-                <li class="menu-item nav-item"><a class="wc-menu-cart nav-link d-flex" href="<?php echo wc_get_cart_url(); ?>" title="<?php __('View your shopping cart', 'madeit'); ?>">
+                <li class="menu-item nav-item shopping-menu-item"><a class="wc-menu-cart nav-link d-flex" href="<?php echo wc_get_cart_url(); ?>" title="<?php __('View your shopping cart', 'madeit'); ?>">
                 <?php
             } ?>
                 <span class="shopping-cart-count"><?php echo $cart_contents_count; ?></span>
@@ -1822,7 +1839,7 @@ if (!function_exists('madeit_wprocket_pre_get_rocket_option_delay_js_exclusions'
 if (!function_exists('madeit_user_analytics')) {
     function madeit_user_analytics()
     {
-        if (defined('MADEIT_ANALYTICS_GA')) {
+        if (defined('MADEIT_ANALYTICS_GA') && MADEIT_ANALYTICS_GA) {
             $tags = apply_filters('madeit_analtyics_ga', explode(',', MADEIT_ANALYTICS_GA)); ?>
             <!-- Google tag (gtag.js) -->
             <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $tags[0]; ?>"></script>
@@ -1882,13 +1899,11 @@ if (!function_exists('madeit_user_analytics')) {
             </script>
             <?php
         }
-
         if(defined('MADEIT_ANALYTICS_TIKTOK')) {
             ?>
             <script>
             !function (w, d, t) {
             w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var i="https://analytics.tiktok.com/i18n/pixel/events.js";ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=i,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};var o=document.createElement("script");o.type="text/javascript",o.async=!0,o.src=i+"?sdkid="+e+"&lib="+t;var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(o,a)};
-
             ttq.load('<?php echo MADEIT_ANALYTICS_TIKTOK; ?>');
             ttq.page();
             }(window, document, 'ttq');
@@ -2028,4 +2043,22 @@ if (defined('MADEIT_POPUPS') && MADEIT_POPUPS && class_exists('ACF')) {
     require get_parent_theme_file_path('/inc/popup.php');
 }
 
+if (defined('MADEIT_RECEIVE_REVIEWS') && MADEIT_RECEIVE_REVIEWS && defined('MADEIT_REVIEWS') && MADEIT_REVIEWS && class_exists('ACF')) {
+    require get_parent_theme_file_path('/inc/review-form.php');
+}
+
 require get_parent_theme_file_path('/inc/call.php');
+
+require get_parent_theme_file_path('/inc/lock-content.php');
+
+if (in_array('woocommerce/woocommerce.php', $activePlugins)) {
+    require get_parent_theme_file_path('/inc/email-service.php');
+
+    if(defined('MADEIT_SHOPPING_MANAGER') && MADEIT_SHOPPING_MANAGER !== false) {
+        require get_parent_theme_file_path('/inc/shopping-manager.php');
+    }
+
+    if(defined('MADEIT_WOO_B2B') && MADEIT_WOO_B2B) {
+        require get_parent_theme_file_path('/inc/woo-b2b.php');
+    }
+}

@@ -1,16 +1,27 @@
 {
-  "name": "content-cgb-guten-block",
+  "name": "card",
   "version": "1.1.0",
-  "private": true,
+  "description": "Example block written with ESNext standard and JSX support – build step required.",
+  "author": "The WordPress Contributors",
+  "license": "GPL-2.0-or-later",
+  "main": "build/index.js",
   "scripts": {
-    "start": "cgb-scripts start",
-    "build": "cgb-scripts build",
-    "eject": "cgb-scripts eject"
+    "build": "wp-scripts build",
+    "format": "wp-scripts format",
+    "lint:css": "wp-scripts lint-style",
+    "lint:js": "wp-scripts lint-js",
+    "start": "wp-scripts start",
+    "packages-update": "wp-scripts packages-update"
   },
   "dependencies": {
-    "cgb-scripts": "1.23.1",
-    "classnames": "^2.2.6",
-    "memize": "^1.1.0",
-    "tinycolor2": "^1.4.1"
+    "@wordpress/block-editor": "^12.24.0",
+    "@wordpress/blocks": "^12.33.0",
+    "@wordpress/i18n": "^4.56.0",
+    "classnames": "^2.5.1",
+    "lodash": "^4.17.21",
+    "memize": "^2.1.0"
+  },
+  "devDependencies": {
+    "@wordpress/scripts": "^27.7.0"
   }
 }

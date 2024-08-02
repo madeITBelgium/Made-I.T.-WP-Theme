@@ -263,7 +263,12 @@ function show_reviews()
                 <div class="carousel-item review-item col-md-4 <?php echo $i === 0 ? 'active' : ''; ?>">
                     <div class="<?php echo implode(' ', $reviewCardClass); ?>">
                         <div class="card-body p-3 d-flex flex-column">
+                            <?php do_action('madeit_review_before_title', $review); ?>
+
                             <h4 class="mb-2 text-center"><?php echo esc_html($review->post_title); ?></h4>
+
+                            <?php do_action('madeit_review_after_title', $review); ?>
+
                             <?php
                             $bericht = get_field('bericht', $review);
         if (mb_strlen($bericht) > 250) {
@@ -274,7 +279,14 @@ function show_reviews()
         } else { ?>
                                 <p class="text-center">"<?php echo str_replace(['<p>', '</p>'], '', $bericht); ?>"</p>
                             <?php } ?>
+
+
+                            <?php do_action('madeit_review_after_message', $review); ?>
+
                             <p class="text-center mt-auto">- <?php echo esc_html(get_field('naam', $review)); ?> -</p>
+
+                            <?php do_action('madeit_review_after_name', $review); ?>
+
                             <div class="text-center">
                                 <?php
                                 for ($i = 1; $i <= 5; $i++) {
@@ -289,6 +301,9 @@ function show_reviews()
                                     }
                                 } ?>
                             </div>
+
+                            <?php do_action('madeit_review_after_rating', $review); ?>
+                            
                         </div>
                     </div>
                 </div>
@@ -381,10 +396,11 @@ function list_reviews()
         'post_type' => 'review',
         //set number of posts to -1 to show all posts
         'numberposts' => -1,
-
     ];
 
-    $reviews = get_posts($args); ?>
+    $reviews = get_posts($args);
+    $reviews = array_merge($reviews, $reviews);
+    ?>
     <div class="row reviews">
         <?php foreach ($reviews as $i => $review) { ?>
             <div class="review-item col-12 mx-auto col-md-8 col-lg-7 mb-5">

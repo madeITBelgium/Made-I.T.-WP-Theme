@@ -60,7 +60,7 @@ function madeit_support_popup()
             <p>
                 Deze pagina is opgebouwd met de standaard Editor van WordPress. Made I.T. heeft enkele extra functies toegevoegt. Via deze popup kom je bij de nodige informatie om je verder te helpen met het aanpassen of bouwen van pagina's.
             </p>
-            
+            <?php echo file_get_contents('https://portal.madeit.be/support-pagebuilder?website=' .get_home_url()); ?>
         </div>
     </div>
 
@@ -80,7 +80,7 @@ add_action('admin_footer', 'madeit_support_popup');
 
 function madeit_support_ticket_store()
 {
-    wp_mail('support@madeit.be', 'Support Ticket '.$_POST['ms_subject'].' - '.get_home_url(), print_r($_POST, true));
+    wp_mail('support@madeit.be', 'Support Ticket '.$_POST['ms_subject'].' - '.get_home_url(), json_encode($_POST, JSON_PRETTY_PRINT));
     echo json_encode(['success' => true]);
     wp_die();
 }

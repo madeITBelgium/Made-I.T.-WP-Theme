@@ -12,70 +12,21 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-/**
- * Enqueue Gutenberg block assets for both frontend + backend.
- *
- * Assets enqueued:
- * 1. blocks.style.build.css - Frontend + Backend.
- * 2. blocks.build.js - Backend.
- * 3. blocks.editor.build.css - Backend.
- *
- * @uses {wp-blocks} for block type registration & related functions.
- * @uses {wp-element} for WP Element abstraction — structure of blocks.
- * @uses {wp-i18n} to internationalize the block's text.
- * @uses {wp-editor} for WP editor styles.
- *
- * @since 1.0.0
- */
-function card_cgb_block_assets()
-{ // phpcs:ignore
-    // Register block styles for both frontend + backend.
-    wp_register_style(
-        'card-cgb-style-css', // Handle.
-        get_template_directory_uri().'/gutenberg/card/dist/blocks.style.build.css', // Block style CSS.
-        ['wp-editor'], // Dependency to include the CSS after it.
-        null // filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.style.build.css' ) // Version: File modification time.
-    );
+function madeit_card_block_assets()
+{
+    wp_register_style('card-madeit-style-css', get_template_directory_uri().'/gutenberg/card/build/style-index.css', ['wp-editor'], null);
 
     // Register block editor script for backend.
-    wp_register_script(
-        'card-cgb-block-js', // Handle.
-        get_template_directory_uri().'/gutenberg/card/dist/blocks.build.js', // Block.build.js: We register the block here. Built with Webpack.
-        ['wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor'], // Dependencies, defined above.
-        null, // filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.build.js' ), // Version: filemtime — Gets file modification time.
-        true // Enqueue the script in the footer.
-    );
+    wp_register_script('card-madeit-block-js', get_template_directory_uri().'/gutenberg/card/build/index.js', ['wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor'], null, true);
 
     // Register block editor styles for backend.
-    wp_register_style(
-        'card-cgb-block-editor-css', // Handle.
-        get_template_directory_uri().'/gutenberg/card/dist/blocks.editor.build.css', // Block editor CSS.
-        ['wp-edit-blocks'], // Dependency to include the CSS after it.
-        null // filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.editor.build.css' ) // Version: File modification time.
-    );
+    wp_register_style('card-madeit-block-editor-css', get_template_directory_uri().'/gutenberg/card/build/index.css', ['wp-edit-blocks'], null);
 
-    /*
-     * Register Gutenberg block on server-side.
-     *
-     * Register the block on server-side to ensure that the block
-     * scripts and styles for both frontend and backend are
-     * enqueued when the editor loads.
-     *
-     * @link https://wordpress.org/gutenberg/handbook/blocks/writing-your-first-block-type#enqueuing-block-scripts
-     * @since 1.16.0
-     */
-    register_block_type(
-        'cgb/block-card',
-        [
-            // Enqueue blocks.style.build.css on both frontend & backend.
-            'style'         => 'card-cgb-style-css',
-            // Enqueue blocks.build.js in the editor only.
-            'editor_script' => 'card-cgb-block-js',
-            // Enqueue blocks.editor.build.css in the editor only.
-            'editor_style'  => 'card-cgb-block-editor-css',
-        ]
-    );
+    register_block_type('madeit/block-card', [
+        'style'         => 'card-madeit-style-css',
+        'editor_script' => 'card-madeit-block-js',
+        'editor_style'  => 'card-madeit-block-editor-css',
+    ]);
 }
 
-// Hook: Block assets.
-add_action('init', 'card_cgb_block_assets');
+add_action('init', 'madeit_card_block_assets');
