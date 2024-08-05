@@ -1,3 +1,4 @@
+
 <?php
 
 function getGoogleReviews($option)
@@ -251,6 +252,13 @@ function show_reviews()
 
     $args = [
         'post_type' => 'review',
+		'meta_query'  => [
+			[
+				'key'     => 'rating',
+				'value'   => 3,
+				'compare' => '>',
+			],
+		],
     ];
 
     $reviews = get_posts($args);
@@ -330,6 +338,13 @@ function reviews_single()
 
     $args = [
         'post_type' => 'review',
+		'meta_query'  => [
+			[
+				'key'     => 'rating',
+				'value'   => 3,
+				'compare' => '>',
+			],
+		],
     ];
 
     $reviews = get_posts($args);
@@ -396,6 +411,13 @@ function list_reviews()
         'post_type' => 'review',
         //set number of posts to -1 to show all posts
         'numberposts' => -1,
+		'meta_query'  => [
+			[
+				'key'     => 'rating',
+				'value'   => 3,
+				'compare' => '>',
+			],
+		],
     ];
 
     $reviews = get_posts($args);
