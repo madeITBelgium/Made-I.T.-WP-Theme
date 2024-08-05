@@ -22,41 +22,42 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu
     {
         $indent = str_repeat("\t", $depth);
 
-		// Default class.
-		$classes = array( 'dropdown-menu' );
+        // Default class.
+        $classes = ['dropdown-menu'];
 
-		/**
-		 * Filters the CSS class(es) applied to a menu list element.
-		 *
-		 * @since 4.8.0
-		 *
-		 * @param string[] $classes Array of the CSS classes that are applied to the menu `<ul>` element.
-		 * @param stdClass $args    An object of `wp_nav_menu()` arguments.
-		 * @param int      $depth   Depth of menu item. Used for padding.
-		 */
-		$class_names = implode( ' ', apply_filters( 'nav_menu_submenu_css_class', $classes, $args, $depth ) );
+        /**
+         * Filters the CSS class(es) applied to a menu list element.
+         *
+         * @since 4.8.0
+         *
+         * @param string[] $classes Array of the CSS classes that are applied to the menu `<ul>` element.
+         * @param stdClass $args    An object of `wp_nav_menu()` arguments.
+         * @param int      $depth   Depth of menu item. Used for padding.
+         */
+        $class_names = implode(' ', apply_filters('nav_menu_submenu_css_class', $classes, $args, $depth));
 
-		$atts          = array();
-		$atts['class'] = ! empty( $class_names ) ? $class_names : '';
+        $atts = [];
+        $atts['class'] = !empty($class_names) ? $class_names : '';
         $atts['role'] = 'menu';
 
-		/**
-		 * Filters the HTML attributes applied to a menu list element.
-		 *
-		 * @since 6.3.0
-		 *
-		 * @param array $atts {
-		 *     The HTML attributes applied to the `<ul>` element, empty strings are ignored.
-		 *
-		 *     @type string $class    HTML CSS class attribute.
-		 * }
-		 * @param stdClass $args      An object of `wp_nav_menu()` arguments.
-		 * @param int      $depth     Depth of menu item. Used for padding.
-		 */
-		$atts       = apply_filters( 'nav_menu_submenu_attributes', $atts, $args, $depth );
-		$attributes = $this->build_atts( $atts );
+        /**
+         * Filters the HTML attributes applied to a menu list element.
+         *
+         * @since 6.3.0
+         *
+         * @param array $atts {
+         *                    The HTML attributes applied to the `<ul>` element, empty strings are ignored.
+         *
+         * @var string $class    HTML CSS class attribute.
+         *             }
+         *
+         * @param stdClass $args  An object of `wp_nav_menu()` arguments.
+         * @param int      $depth Depth of menu item. Used for padding.
+         */
+        $atts = apply_filters('nav_menu_submenu_attributes', $atts, $args, $depth);
+        $attributes = $this->build_atts($atts);
 
-		$output .= "\n$indent<ul{$attributes}>\n";
+        $output .= "\n$indent<ul{$attributes}>\n";
     }
 
     /**
@@ -121,12 +122,12 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu
             $atts['rel'] = !empty($item->xfn) ? $item->xfn : '';
 
             // If item has_children add atts to a.
-            if(function_exists('get_field') && $depth === 0 && get_field('megamenu', $item->ID)) {
+            if (function_exists('get_field') && $depth === 0 && get_field('megamenu', $item->ID)) {
                 $atts['href'] = !empty($item->url) ? $item->url : '';
                 $atts['class'] = 'dropdown-toggle';
                 $atts['data-bs-toggle'] = 'dropdown';
                 $atts['aria-expanded'] = 'false';
-            } else if ($args->has_children && $depth === 0) {
+            } elseif ($args->has_children && $depth === 0) {
                 $atts['href'] = '#';
                 $atts['data-toggle'] = 'dropdown';
                 $atts['data-bs-toggle'] = 'dropdown';
@@ -201,55 +202,56 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu
      *
      * @return null Null on failure with no changes to parameters.
      */
-    public function display_element( $element, &$children_elements, $max_depth, $depth, $args, &$output ) {
-		if ( ! $element ) {
-			return;
-		}
+    public function display_element($element, &$children_elements, $max_depth, $depth, $args, &$output)
+    {
+        if (!$element) {
+            return;
+        }
 
-		$max_depth = (int) $max_depth;
-		$depth     = (int) $depth;
+        $max_depth = (int) $max_depth;
+        $depth = (int) $depth;
 
-		$id_field = $this->db_fields['id'];
-		$id       = $element->$id_field;
+        $id_field = $this->db_fields['id'];
+        $id = $element->$id_field;
 
-		// Display this element.
-		$this->has_children = ! empty( $children_elements[ $id ] );
-		if ( isset( $args[0] ) && is_array( $args[0] ) ) {
-			$args[0]['has_children'] = $this->has_children; // Back-compat.
-		}
+        // Display this element.
+        $this->has_children = !empty($children_elements[$id]);
+        if (isset($args[0]) && is_array($args[0])) {
+            $args[0]['has_children'] = $this->has_children; // Back-compat.
+        }
 
-		$this->start_el( $output, $element, $depth, ...array_values( $args ) );
+        $this->start_el($output, $element, $depth, ...array_values($args));
 
-        if($depth === 0 && function_exists('get_field') && get_field('megamenu', $element->ID)) {
+        if ($depth === 0 && function_exists('get_field') && get_field('megamenu', $element->ID)) {
             $classes = apply_filters('madeit_megamenu_dropdown_class', ['dropdown-menu', 'container'], $element);
-            $output .= '<div class="' . implode(' ', $classes) . '" role="menu">';
+            $output .= '<div class="'.implode(' ', $classes).'" role="menu">';
             $output .= '<div class="row">';
-            if(get_field('megamenu_stijl', $element->ID) === 'style_woo') {
+            if (get_field('megamenu_stijl', $element->ID) === 'style_woo') {
                 //First subitems
                 $classes = apply_filters('madeit_megamenu_style_woo_left_col', ['col-12 col-md-3'], $element);
-                $output .= '<div class="' . implode(' ', $classes) . '">';
+                $output .= '<div class="'.implode(' ', $classes).'">';
                 $output .= '<h3>Categories</h3>';
                 $output .= '<ul class="list-unstyled">';
-                foreach ( $children_elements[ $id ] as $child ) {
-                    $output .= '<li class="megamenu-h-item"><a href="' . $child->url . '" data-megamenu-subid="' . $child->ID . '">' . $child->title . '</a></li>';
+                foreach ($children_elements[$id] as $child) {
+                    $output .= '<li class="megamenu-h-item"><a href="'.$child->url.'" data-megamenu-subid="'.$child->ID.'">'.$child->title.'</a></li>';
                 }
                 $output .= '</ul>';
                 $output .= '</div>';
 
                 $classes = apply_filters('madeit_megamenu_style_woo_right_col', ['col-12 col-md-9'], $element);
-                $output .= '<div class="' . implode(' ', $classes) . '">';
-                foreach($children_elements[ $id ] as $child) {
-                    $output .= '<div class="megamenu-subitem d-none" id="megamenu-subitem-' . $child->ID . '">';
-                    $output .= '<h3>' . $child->title . '</h3>';
+                $output .= '<div class="'.implode(' ', $classes).'">';
+                foreach ($children_elements[$id] as $child) {
+                    $output .= '<div class="megamenu-subitem d-none" id="megamenu-subitem-'.$child->ID.'">';
+                    $output .= '<h3>'.$child->title.'</h3>';
 
                     $output .= '<div class="row">';
-                    
-                    foreach($children_elements[ $child->ID ] as $subchild) {
+
+                    foreach ($children_elements[$child->ID] as $subchild) {
                         $output .= '<div class="col-12 col-md-4">';
-                        $output .= '<h4><a href="' . $subchild->url . '">' . $subchild->title . '</a></h4>';
+                        $output .= '<h4><a href="'.$subchild->url.'">'.$subchild->title.'</a></h4>';
                         $output .= '<ul class="list-unstyled">';
-                        foreach($children_elements[ $subchild->ID ] as $subsubchild) {
-                            $output .= '<li><a href="' . $subsubchild->url . '">' . $subsubchild->title . '</a></li>';
+                        foreach ($children_elements[$subchild->ID] as $subsubchild) {
+                            $output .= '<li><a href="'.$subsubchild->url.'">'.$subsubchild->title.'</a></li>';
                         }
                         $output .= '</ul>';
                         $output .= '</div>';
@@ -264,29 +266,27 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu
             $output .= '</div>';
         } else {
             // Descend only when the depth is right and there are children for this element.
-            if ( ( 0 === $max_depth || $max_depth > $depth + 1 ) && isset( $children_elements[ $id ] ) ) {
-
-                foreach ( $children_elements[ $id ] as $child ) {
-
-                    if ( ! isset( $newlevel ) ) {
+            if ((0 === $max_depth || $max_depth > $depth + 1) && isset($children_elements[$id])) {
+                foreach ($children_elements[$id] as $child) {
+                    if (!isset($newlevel)) {
                         $newlevel = true;
                         // Start the child delimiter.
-                        $this->start_lvl( $output, $depth, ...array_values( $args ) );
+                        $this->start_lvl($output, $depth, ...array_values($args));
                     }
-                    $this->display_element( $child, $children_elements, $max_depth, $depth + 1, $args, $output );
+                    $this->display_element($child, $children_elements, $max_depth, $depth + 1, $args, $output);
                 }
-                unset( $children_elements[ $id ] );
+                unset($children_elements[$id]);
             }
 
-            if ( isset( $newlevel ) && $newlevel ) {
+            if (isset($newlevel) && $newlevel) {
                 // End the child delimiter.
-                $this->end_lvl( $output, $depth, ...array_values( $args ) );
+                $this->end_lvl($output, $depth, ...array_values($args));
             }
         }
 
-		// End this element.
-		$this->end_el( $output, $element, $depth, ...array_values( $args ) );
-	}
+        // End this element.
+        $this->end_el($output, $element, $depth, ...array_values($args));
+    }
 
     /**
      * Menu Fallback
