@@ -23,7 +23,7 @@ $rowClass = apply_filters('madeit_upper_bottom_navbar_row_class', ['row', 'vw-10
                         wp_nav_menu([
                             'theme_location'    => 'upper-bottom',
                             'menu_id'           => 'upper-bottom-menu',
-                            'depth'             => 3,
+                            'depth'             => 4,
                             'container'         => 'nav',
                             'container_id'      => 'secondary-bottom-navigation',
                             'container_class'   => 'secondary-bottom-navigation',

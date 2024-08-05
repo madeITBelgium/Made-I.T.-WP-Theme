@@ -2062,3 +2062,7 @@ if (in_array('woocommerce/woocommerce.php', $activePlugins)) {
         require get_parent_theme_file_path('/inc/woo-b2b.php');
     }
 }
+
+if(class_exists('ACF')) {
+    require get_parent_theme_file_path('/inc/megamenu.php');
+}

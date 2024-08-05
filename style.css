@@ -1232,3 +1232,39 @@ ul.alert {
     content: none;
     display: block;
 }
+
+
+/* Mega menu */
+.menu-item.megamenu > .dropdown-menu.show {
+    width: 100%;
+    left: 0;
+    right: 0;
+    margin: auto;
+    border: none !important;
+    border-radius: 0;
+    box-shadow: none;
+    height: auto;
+    padding: 0px 12px;
+}
+
+.menu-item.megamenu > .dropdown-menu.show .dropdown-menu {
+    display: block;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    border: none;
+    box-shadow: none;
+}
+.megamenu-h-item a:hover {
+    display: block;
+    background-color: white;
+    margin-left: -12px;
+    margin-right: -12px;
+}
+.megamenu-h-item.active a {
+    display: block;
+    background-color: white;
+    margin-left: -12px;
+    margin-right: -12px;
+    padding-left: 12px;
+}

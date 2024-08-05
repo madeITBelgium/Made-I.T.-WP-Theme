@@ -559,3 +559,28 @@ jQuery(document).ready( function( $ ) {
         $('html, body').animate({scrollTop: $('.products').offset().top - ($('.navbar:eq(0)').height() * 2)}, 200);
     });
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    //Hover or click on element [data-megamenu-subid] will show the sub menu
+    document.querySelectorAll('[data-megamenu-subid]').forEach(function(item) {
+        item.addEventListener('mouseenter', function() {
+            var subId = item.getAttribute('data-megamenu-subid');
+            var subMenu = document.querySelector('#megamenu-subitem-' + subId);
+            if(subMenu) {
+                document.querySelectorAll('.megamenu-subitem').forEach(function(s) {
+                    if(!s.classList.contains('d-none')) {
+                        s.classList.add('d-none');
+                    }
+                });
+
+                item.parentElement.parentElement.querySelectorAll('.active').forEach(function(a) {
+                    a.classList.remove('active');
+                });
+
+                item.parentElement.classList.add('active');
+
+                subMenu.classList.remove('d-none');
+            }
+        });
+    });
+});
