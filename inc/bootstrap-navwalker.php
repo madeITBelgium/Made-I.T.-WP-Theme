@@ -226,7 +226,7 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu
             $output .= '<div class="row">';
             if(get_field('megamenu_stijl', $element->ID) === 'style_woo') {
                 //First subitems
-                $classes = apply_filters('madeit_megamenu_style_woo_left_col', ['col-12 col-md-3'], $element);
+                $classes = apply_filters('madeit_megamenu_style_woo_left_col', ['col-12 col-md-3', 'bg-primary'], $element);
                 $output .= '<div class="' . implode(' ', $classes) . '">';
                 $output .= '<h3>Categories</h3>';
                 $output .= '<ul class="list-unstyled">';
