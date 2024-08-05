@@ -584,3 +584,35 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+
+$('#productSearchDropdown input').on('keyup', function(e) {
+    var $this = $(this);
+    var val = $this.val();
+    if(val.length > 2) {
+        $.post('/wp-admin/admin-ajax.php', {
+            action: 'madeit_search_products',
+            search: val
+        }, function(response) {
+            if(response.data.length === 0) {
+                $('#productSearchDropdown .dropdown-menu').html('<li><div class="dropdown-item">Geen producten gevonden</div></li>');
+            }
+            else {
+                var html = '';
+
+                for(var i = 0; i < response.data.length; i++) {
+                    if(response.data[i].price) {
+                        html += '<li><a class="dropdown-item" href="' + response.data[i].url + '"><div class="d-flex align-items-center"><img src="' + response.data[i].image + '" alt="' + response.data[i].name + '" class="img-fluid me-2" style="width: 50px;"><div><div>' + response.data[i].name + '</div><div class="text-muted">Vanaf ' + response.data[i].price + '</div></div></div></a></li>';
+                    } else {
+                        html += '<li><a class="dropdown-item" href="' + response.data[i].url + '"><div class="d-flex align-items-center"><img src="' + response.data[i].image + '" alt="' + response.data[i].name + '" class="img-fluid me-2" style="width: 50px;"><div>' + response.data[i].name + '</div></div></a></li>';
+                    }
+                }
+                $('#productSearchDropdown .dropdown-menu').html(html);
+            }
+
+            const dropdownElementList = document.querySelector('#productSearchDropdown .dropdown')
+            const dropdown = new bootstrap.Dropdown(dropdownElementList);
+            dropdown.show();
+        });
+    }
+});

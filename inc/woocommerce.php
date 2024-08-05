@@ -90,3 +90,50 @@ function madeit_woocommerce_webhook_payload($payload, $resource, $resource_id, $
     return $payload;
 }
 add_filter('woocommerce_webhook_payload', 'madeit_woocommerce_webhook_payload', 10, 4);
+
+function madeit_search_products()
+{
+    $search = $_POST['search'] ?? null;
+
+    //search wooCommerce products with name or description
+    $args = [
+        'post_type' => 'product',
+        'post_status' => 'publish',
+        'posts_per_page' => 10,
+        's' => $search,
+    ];
+    $products = new WP_Query($args);
+
+    $data = [];
+    if($products->have_posts()) {
+        while($products->have_posts()) {
+            $products->the_post();
+            $product = wc_get_product(get_the_ID());
+            $price = $product->get_price();
+
+            if(function_exists('madeit_b2b_is_purchasable')) {
+                if( madeit_b2b_is_purchasable($product->is_purchasable(), $product)) {
+                    $price = $product->get_price_html();
+                } else {
+                    $price = false;
+                }
+            }
+
+            $data[] = [
+                'id' => get_the_ID(),
+                'name' => get_the_title(),
+                'description' => get_the_excerpt(),
+                'price' => $price,
+                'url' => get_permalink(),
+                'image' => get_the_post_thumbnail_url(get_the_ID(), 'thumbnail'),
+            ];
+        }
+    }
+
+    wp_send_json([
+        'success' => true,
+        'data' => $data,
+    ]);
+}
+add_action('wp_ajax_nopriv_madeit_search_products', 'madeit_search_products');
+add_action('wp_ajax_madeit_search_products', 'madeit_search_products');

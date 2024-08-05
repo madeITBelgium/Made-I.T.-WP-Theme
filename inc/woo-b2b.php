@@ -236,6 +236,9 @@ function madeit_b2b_my_account_menu_item_content()
         }
 
         $product = wc_get_product($product_id);
+        if($product === false) {
+            continue;
+        }
         ?>
         <li class="list-group-item">
             <div class="d-flex flex-row align-items-center">

@@ -18,7 +18,7 @@ function madeit_megamenu_menuitems( $items, $args )
                 //Get WooCommerce categories
                 $args = [
                     'taxonomy' => 'product_cat',
-                    'hide_empty' => false,
+                    'hide_empty' => true,
                     'parent' => 0
                 ];
                 
@@ -45,6 +45,21 @@ function madeit_megamenu_menuitems( $items, $args )
                             'url' => get_term_link($product_subcategory),
                             'classes' => ['menu-item']
                         ];
+
+
+                        //get WooCommerce subcategories
+                        $args['parent'] = $product_subcategory->term_id;
+                        $product_subsubcategories = get_terms($args);
+                        foreach($product_subsubcategories as $product_subsubcategory) {
+                            $items[] = (object) [
+                                'title' => $product_subsubcategory->name,
+                                'menu_item_parent' => 'product_cat_'.$product_subcategory->term_id,
+                                'ID' => 'product_cat_'.$product_subsubcategory->term_id,
+                                'db_id' => '',
+                                'url' => get_term_link($product_subsubcategory),
+                                'classes' => ['menu-item']
+                            ];
+                        }
                     }
                 }
             }
