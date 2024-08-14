@@ -4,7 +4,7 @@ Theme URI: https://www.madeit.be
 Author: Made I.T.
 Author URI: https://wordpress.org/
 Description: 
-Version: 2.10.2
+Version: 2.10.5
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: madeit
@@ -1236,15 +1236,15 @@ ul.alert {
 
 /* Mega menu */
 .menu-item.megamenu > .dropdown-menu.show {
-    width: 100%;
+    width: 100vw;
     left: 0;
     right: 0;
     margin: auto;
     border: none !important;
     border-radius: 0;
-    box-shadow: none;
     height: auto;
     padding: 0px 12px;
+    box-shadow: var(--bs-box-shadow-sm);
 }
 
 .menu-item.megamenu > .dropdown-menu.show .dropdown-menu {
@@ -1267,4 +1267,8 @@ ul.alert {
     margin-left: -12px;
     margin-right: -12px;
     padding-left: 12px;
+}
+
+.row.products.columns-3 {
+    width: 100%;
 }

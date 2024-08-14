@@ -137,3 +137,17 @@ function madeit_search_products()
 }
 add_action('wp_ajax_nopriv_madeit_search_products', 'madeit_search_products');
 add_action('wp_ajax_madeit_search_products', 'madeit_search_products');
+
+
+function madeit_custom_sale_flash($text) {
+    global $product;
+
+    $shop_label = get_post_meta($product->get_id(), 'shop_label', true);
+
+    if($shop_label) {
+        return '<div class="product-onsale"><span>' . $shop_label . '</span></div>';
+        //return '<span class="onsale">'.$shop_label.'</span>';
+    }
+    return $text;
+}
+add_filter('woocommerce_sale_flash', 'madeit_custom_sale_flash');

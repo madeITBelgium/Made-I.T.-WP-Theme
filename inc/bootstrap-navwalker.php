@@ -229,7 +229,7 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu
                 $output .= '<div class="' . implode(' ', $classes) . '">';
                 $output .= '<ul class="list-unstyled">';
                 foreach ( $children_elements[ $id ] ?? [] as $i => $child ) {
-                    $output .= '<li class="megamenu-h-item' . ($i === 0 ? ' active': '') . '"><a href="' . $child->url . '" data-megamenu-subid="' . $child->ID . '">' . $child->title . '</a></li>';
+                    $output .= '<li class="megamenu-h-item' . ($i === 0 ? ' active': '') . '"><a href="' . $child->url . '" data-megamenu-subid="' . $child->ID . '" class="py-2 d-block">' . $child->title . '</a></li>';
                 }
                 $output .= '</ul>';
                 $output .= '</div>';

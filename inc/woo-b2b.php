@@ -48,24 +48,45 @@ if(defined('MADEIT_WOO_B2B_ONLY') && MADEIT_WOO_B2B_ONLY) {
     }
     add_filter('woocommerce_single_product_summary', 'madeit_b2b_woocommerce_single_product_summary', 30);
 
-    //change product price to -10% for b2b users
     function madeit_b2b_woocommerce_get_price_html($price, $product)
     {
         if(!madeit_b2b_is_purchasable($product->is_purchasable(), $product)) {
             return '';
         }
+
+
+        if ( ! $product->get_sale_price() || ! $product->get_regular_price() || $product->get_sale_price() >= $product->get_regular_price() ) {
+            return $price;
+        }
+
+        return wc_format_sale_price(
+                wc_get_price_to_display( $product, array( 'price' => $product->get_regular_price() ) ),
+                wc_get_price_to_display( $product, array( 'price' => $product->get_sale_price() ) )
+            ) . $product->get_price_suffix();
+    }
+    add_filter('woocommerce_get_price_html', 'madeit_b2b_woocommerce_get_price_html', 10, 2);
+
+    function madeit_b2b_woocommerce_get_price( $price, $product ) {
+        if(empty($price)) {
+            $price = $product->get_regular_price();
+        }
+
         $user = wp_get_current_user();
         $is_approved = get_user_meta($user->ID, 'active_b2b_user', true);
         if($is_approved) {
             $discount = get_user_meta($user->ID, 'b2b_discount', true);
             if($discount) {
-                $price = $product->get_price() - ($product->get_price() * $discount / 100);
-                $price = wc_price($price);
+                $price = $price - ($price * $discount / 100);
             }
         }
+
+        $price = apply_filters('madeit_b2b_woocommerce_get_price', $price, $product);
+
         return $price;
     }
-    add_filter('woocommerce_get_price_html', 'madeit_b2b_woocommerce_get_price_html', 10, 2);
+    add_filter('woocommerce_product_get_price', 'madeit_b2b_woocommerce_get_price', 99, 2 );
+    //add_filter('woocommerce_product_get_regular_price', 'madeit_b2b_woocommerce_get_price', 99, 2 );
+    add_filter('woocommerce_product_get_sale_price', 'madeit_b2b_woocommerce_get_price', 99, 2 );
 
     function madeit_remove_partial_product_structured_data( $markup_offer, $product ) {
         $markup_offer = array(
@@ -80,12 +101,24 @@ if(defined('MADEIT_WOO_B2B_ONLY') && MADEIT_WOO_B2B_ONLY) {
     
         return $markup_offer;
     }
-    add_filter( 'woocommerce_structured_data_product_offer', 'madeit_remove_partial_product_structured_data', 10, 2 );    
+    add_filter( 'woocommerce_structured_data_product_offer', 'madeit_remove_partial_product_structured_data', 10, 2 );
+
+    function ran_woocommerce_cart_product_price( $price_html, $product ) {
+        if ( ! $product->get_sale_price() || ! $product->get_regular_price() || $product->get_sale_price() >= $product->get_regular_price() ) {
+            return $price_html;
+        }
+
+        return wc_format_sale_price(
+                wc_get_price_to_display( $product, array( 'price' => $product->get_regular_price() ) ),
+                wc_get_price_to_display( $product, array( 'price' => $product->get_sale_price() ) )
+            ) . $product->get_price_suffix();
+    }
+    add_filter( 'woocommerce_cart_product_price', 'ran_woocommerce_cart_product_price', 20, 2 );
 }
 
 
 //Add button to product to add the product as a favorite
-function madeit_b2b_get_user_favorite_products()
+function madeit_b2b_get_user_favorite_products($addFilter = false)
 {
     //If user is loggedin use the b2b_products ACF repeater with product item. If not loggedin use the cookie
     $user = wp_get_current_user();
@@ -95,13 +128,19 @@ function madeit_b2b_get_user_favorite_products()
         $data = get_field('b2b_products', 'user_' . $user->ID);
         $favorites = [];
         foreach($data ?? [] as $item) {
-            foreach($item['product'] as $product) {
-                if($product === 0) {
-                    continue;
+            if(is_array($item['product'])) {
+                foreach($item['product'] as $product) {
+                    if($product === 0) {
+                        continue;
+                    }
+                    $favorites[] = $product;
                 }
-                $favorites[] = $product;
             }
         }
+    }
+
+    if($addFilter) {
+        $favorites = apply_filters('madeit_b2b_get_user_favorite_products', $favorites);
     }
 
     return $favorites;
@@ -113,9 +152,9 @@ function madeit_b2b_favorite_btn()
     
     $favorites = madeit_b2b_get_user_favorite_products();
     if(is_array($favorites) && in_array($product->get_id(), $favorites)) {
-        echo '<span class="d-block"><a href="#" class="btn btn-sm btn-outline-danger b2b-madeit-remove-favorite" data-product-id="' . $product->get_id() . '"><i class="fas fa-heart"></i> <span class="txt">Verwijderen uit favorieten</span></a>';
+        echo '<div class="d-block mb-2"><a href="#" class="btn btn-sm btn-outline-danger b2b-madeit-remove-favorite" data-product-id="' . $product->get_id() . '"><i class="fas fa-heart"></i> <span class="txt">Verwijderen uit favorieten</span></a></div>';
     } else {
-        echo '<span class="d-block"><a href="#" class="btn btn-sm btn-outline-danger b2b-madeit-add-favorite" data-product-id="' . $product->get_id() . '"><i class="far fa-heart"></i> <span class="txt">Toevoegen aan favorieten</span></a>';
+        echo '<div class="d-block mb-2"><a href="#" class="btn btn-sm btn-outline-danger b2b-madeit-add-favorite" data-product-id="' . $product->get_id() . '"><i class="far fa-heart"></i> <span class="txt">Toevoegen aan favorieten</span></a></div>';
     }
 }
 add_action('woocommerce_after_shop_loop_item', 'madeit_b2b_favorite_btn', 10);
@@ -143,11 +182,14 @@ function madeit_b2b_add_favorite()
         $data = get_field('b2b_products', 'user_' . $user->ID);
         $data[] = [
             'product' => [
-                [$product_id]
-            ]
+                $product_id
+            ],
+            'discount' => 0,
         ];
 
         update_field('b2b_products', $data, 'user_' . $user->ID);
+
+        do_action('madeit_b2b_favorite_added', $product_id, $user->ID);
     }
 
     wp_send_json_success();
@@ -179,6 +221,8 @@ function madeit_b2b_remove_favorite()
             }
         }
         update_field('b2b_products', $new_data, 'user_' . $user->ID);
+
+        do_action('madeit_b2b_favorite_removed', $product_id, $user->ID);
     }
     wp_send_json_success();
 }
@@ -223,7 +267,7 @@ add_action('init', 'madeit_b2b_my_account_menu_item_endpoint');
 
 function madeit_b2b_my_account_menu_item_content()
 {
-    $favorites = madeit_b2b_get_user_favorite_products();
+    $favorites = madeit_b2b_get_user_favorite_products(true);
     if(count($favorites) === 0) {
         echo '<p>' . __('U heeft nog geen favorieten.', 'madeit') . '</p>';
         return;
