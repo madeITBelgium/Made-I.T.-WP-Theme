@@ -220,31 +220,46 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu
 		$this->start_el( $output, $element, $depth, ...array_values( $args ) );
 
         if($depth === 0 && function_exists('get_field') && get_field('megamenu', $element->ID)) {
+            $rand = rand(1000, 9999);
             $classes = apply_filters('madeit_megamenu_dropdown_class', ['dropdown-menu', 'container'], $element);
             $output .= '<div class="' . implode(' ', $classes) . '" role="menu">';
-            $output .= '<div class="row">';
+            $output .= '<div class="row w-100 m-auto">';
             if(get_field('megamenu_stijl', $element->ID) === 'style_woo') {
-                //First subitems
-                $classes = apply_filters('madeit_megamenu_style_woo_left_col', ['col-12 col-md-3', 'bg-primary', 'py-3'], $element);
+                // First subitems
+                $classes = apply_filters('madeit_megamenu_style_woo_left_col', ['col-12', 'col-md-3', 'bg-primary', 'py-3'], $element);
                 $output .= '<div class="' . implode(' ', $classes) . '">';
-                $output .= '<ul class="list-unstyled">';
+                
                 foreach ( $children_elements[ $id ] ?? [] as $i => $child ) {
-                    $output .= '<li class="megamenu-h-item' . ($i === 0 ? ' active': '') . '"><a href="' . $child->url . '" data-megamenu-subid="' . $child->ID . '" class="py-2 d-block">' . $child->title . '</a></li>';
+                    $output .= '<ul class="list-unstyled">';
+                    $output .= '<li class="megamenu-h-item' . ($i === 0 ? ' active': '') . '"><h3><a href="' . $child->url . '" data-megamenu-subid="' . $rand . '_' . $child->ID . '" class="py-2 d-block">' . $child->title . '</a></h3></li>';                  
+
+                    //* Subcategories mobile
+                    foreach( $children_elements[ $child->ID ] as $subchild ) {
+                        $output .= '<div class="d-md-none col-12 col-md-4 mb-3">';
+                        $output .= '<p class="mb-0"><b><a href="' . $subchild->url . '">' . $subchild->title . '</a></b></p>';
+                        foreach($children_elements[ $subchild->ID ] ?? [] as $subsubchild) {
+                            $output .= '<ul class="list-unstyled">';
+                            $output .= '<li><a href="' . $subsubchild->url . '">' . $subsubchild->title . '</a></li>';
+                            $output .= '</ul>';
+                        }
+                        $output .= '</div>';
+                    }
+                    $output .= '</ul>';
                 }
-                $output .= '</ul>';
                 $output .= '</div>';
 
-                $classes = apply_filters('madeit_megamenu_style_woo_right_col', ['col-12 col-md-9', 'p-3'], $element);
+                // WooCommerce Subcategories
+                $classes = apply_filters('madeit_megamenu_style_woo_right_col', ['col-12', 'col-md-9', 'p-3', 'd-none', 'd-md-block'], $element);
                 $output .= '<div class="' . implode(' ', $classes) . '">';
-                foreach($children_elements[ $id ] ?? [] as $i => $child) {
-                    $output .= '<div class="megamenu-subitem ' . ($i === 0 ? '' : 'd-none') . '" id="megamenu-subitem-' . $child->ID . '">';
-                    $output .= '<h3>' . $child->title . '</h3>';
+                foreach( $children_elements[ $id ] ?? [] as $i => $child ) {
+                    $output .= '<div class="megamenu-subitem ' . ($i === 0 ? '' : 'd-none') . '" id="megamenu-subitem-' . $rand . '_' . $child->ID . '">';
+                    $output .= '<h3 class="mb-3">' . $child->title . '</h3>';
 
                     $output .= '<div class="row">';
                     
-                    foreach($children_elements[ $child->ID ] as $subchild) {
+                    foreach( $children_elements[ $child->ID ] as $subchild ) {
                         $output .= '<div class="col-12 col-md-4 mb-3">';
-                        $output .= '<h4 class="mb-0"><a class="text-primary" href="' . $subchild->url . '">' . $subchild->title . '</a></h4>';
+                        $output .= '<p class="mb-0"><b><a class="text-primary" href="' . $subchild->url . '">' . $subchild->title . '</a></b></p>';
                         $output .= '<ul class="list-unstyled">';
                         foreach($children_elements[ $subchild->ID ] ?? [] as $subsubchild) {
                             $output .= '<li><a href="' . $subsubchild->url . '">' . $subsubchild->title . '</a></li>';
