@@ -2066,3 +2066,12 @@ if (in_array('woocommerce/woocommerce.php', $activePlugins)) {
 if(class_exists('ACF')) {
     require get_parent_theme_file_path('/inc/megamenu.php');
 }
+
+
+if(MADEIT_BOOTSTRAP_VERSION === 5) {
+    //replace data-toggle with data-bs-toggle in the_content
+    add_filter('the_content', 'madeit_replace_data_toggle', 10);
+    function madeit_replace_data_toggle($content) {
+        return str_replace('data-toggle', 'data-bs-toggle', $content);
+    }
+}
