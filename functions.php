@@ -1715,7 +1715,7 @@ if (!function_exists('madeit_add_mobile_menu_items_to_main_menu') && function_ex
                         $extraItems = wp_get_nav_menu_items($theme_locations['upper-bottom']);
                         foreach ($extraItems as $extraItem) {
                             $extraItem->menu_order = $i++;
-                            $extraItem->classes[] = 'd-md-none';
+                            $extraItem->classes[] = apply_filters('madeit_mobile_menu_extra_breakpoint_class', 'd-lg-none');
                             $newItems[] = $extraItem;
                         }
                     }

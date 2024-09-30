@@ -71,20 +71,24 @@ get_header('shop'); ?>
 
             if (wc_get_loop_prop('total')) {
                 while (have_posts()) {
-                    $classes = apply_filters('madeit_woo_product_column_class', ['col-12', 'col-md-6', 'col-lg-4']); ?>
-                    <div class="<?php echo implode(' ', $classes); ?>">
-                        <?php
-                        the_post();
-                    /*
-                     * woocommerce_shop_loop hook.
-                     *
-                     * @hooked WC_Structured_Data::generate_product_data() - 10
-                     */
-                    do_action('woocommerce_shop_loop');
+                    the_post();
 
-                    wc_get_template_part('content', 'product'); ?>
-                    </div>
-                    <?php
+                    $product = wc_get_product(get_the_ID());
+                    if ($product->is_visible()) {
+                        $classes = apply_filters('madeit_woo_product_column_class', ['col-12', 'col-md-6', 'col-lg-4']); ?>
+                        <div class="<?php echo implode(' ', $classes); ?>">
+                        <?php
+                        /*
+                        * woocommerce_shop_loop hook.
+                        *
+                        * @hooked WC_Structured_Data::generate_product_data() - 10
+                        */
+                        do_action('woocommerce_shop_loop');
+
+                        wc_get_template_part('content', 'product'); ?>
+                        </div>
+                        <?php
+                    }
                 } // end of the loop.
             }
 

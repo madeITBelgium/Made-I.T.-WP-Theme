@@ -119,6 +119,10 @@ function madeit_search_products()
                 }
             }
 
+            if(!$product->is_visible()) {
+                continue;
+            }
+
             $data[] = [
                 'id' => get_the_ID(),
                 'name' => get_the_title(),

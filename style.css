@@ -4,7 +4,7 @@ Theme URI: https://www.madeit.be
 Author: Made I.T.
 Author URI: https://wordpress.org/
 Description: 
-Version: 2.10.5
+Version: 2.10.6
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: madeit
@@ -510,8 +510,10 @@ img {
 .navbar-toggler .icon-bar+.icon-bar {
     margin-top: 4px;
 }
-.dropdown-menu {
-    max-height: 70vh;
+@media(min-width: 992px) {
+    .dropdown-menu {
+        max-height: 70vh;
+    }
 }
 .dropdown-submenu {
   position: relative;
@@ -1235,38 +1237,41 @@ ul.alert {
 
 
 /* Mega menu */
-.menu-item.megamenu > .dropdown-menu.show {
-    width: 100vw;
-    left: 0;
-    right: 0;
-    margin: auto;
-    border: none !important;
-    border-radius: 0;
-    height: auto;
-    padding: 0px 12px;
-    box-shadow: var(--bs-box-shadow-sm);
-}
 
-.menu-item.megamenu > .dropdown-menu.show .dropdown-menu {
-    display: block;
-    width: 100%;
-    padding: 0;
-    margin: 0;
-    border: none;
-    box-shadow: none;
-}
-.megamenu-h-item a:hover {
-    display: block;
-    background-color: white;
-    margin-left: -12px;
-    margin-right: -12px;
-}
-.megamenu-h-item.active a {
-    display: block;
-    background-color: white;
-    margin-left: -12px;
-    margin-right: -12px;
-    padding-left: 12px;
+@media(min-width: 992px) {
+    .menu-item.megamenu > .dropdown-menu.show {
+        width: 100vw;
+        left: 0;
+        right: 0;
+        margin: auto;
+        border: none !important;
+        border-radius: 0;
+        height: auto;
+        padding: 0px 12px;
+        box-shadow: var(--bs-box-shadow-sm);
+        overflow: auto;
+    }
+    .menu-item.megamenu > .dropdown-menu.show .dropdown-menu {
+        display: block;
+        width: 100%;
+        padding: 0;
+        margin: 0;
+        border: none;
+        box-shadow: none;
+    }
+    .megamenu-h-item a:hover {
+        display: block;
+        background-color: white;
+        margin-left: -12px;
+        margin-right: -12px;
+    }
+    .megamenu-h-item.active a {
+        display: block;
+        background-color: white;
+        margin-left: -12px;
+        margin-right: -12px;
+        padding-left: 12px;
+    }
 }
 
 .row.products.columns-3 {

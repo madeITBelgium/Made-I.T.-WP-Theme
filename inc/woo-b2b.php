@@ -127,6 +127,9 @@ function madeit_b2b_get_user_favorite_products($addFilter = false)
     } else {
         $data = get_field('b2b_products', 'user_' . $user->ID);
         $favorites = [];
+        if(!is_array($data)) {
+            $data = [];
+        }
         foreach($data ?? [] as $item) {
             if(is_array($item['product'])) {
                 foreach($item['product'] as $product) {
@@ -212,6 +215,10 @@ function madeit_b2b_remove_favorite()
         $data = get_field('b2b_products', 'user_' . $user->ID);
         $new_data = [];
         foreach($data as $item) {
+            if(!is_array($item['product'])) {
+                error_log('No product array' . print_r($item, true));
+                continue;
+            }
             if(!in_array($product_id, $item['product']) && count($item['product']) === 1) {
                 $new_data[] = $item;
             } else if(!in_array($product_id, $item['product'])) {
@@ -273,7 +280,7 @@ function madeit_b2b_my_account_menu_item_content()
         return;
     }
 
-    echo '<ul class="list-group">';
+    $productList = [];
     foreach($favorites as $product_id) {
         if($product_id === 0) {
             continue;
@@ -283,6 +290,19 @@ function madeit_b2b_my_account_menu_item_content()
         if($product === false) {
             continue;
         }
+
+        $productList[] = $product;
+    }
+
+    //order by name
+    usort($productList, function($a, $b) {
+        return strcmp($a->get_name(), $b->get_name());
+    });
+
+    echo '<ul class="list-group">';
+
+    foreach($productList as $product) {
+        $product_id = $product->get_id();
         ?>
         <li class="list-group-item">
             <div class="d-flex flex-row align-items-center">

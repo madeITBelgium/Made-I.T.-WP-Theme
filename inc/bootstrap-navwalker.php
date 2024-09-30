@@ -211,7 +211,8 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu
 
 		$id_field = $this->db_fields['id'];
 		$id       = $element->$id_field;
-
+        $rand = rand(1000, 9999);
+        
 		// Display this element.
         if (is_object($args[0])) {
             $args[0]->has_children = !empty($children_elements[$element->$id_field]);
@@ -220,36 +221,53 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu
 		$this->start_el( $output, $element, $depth, ...array_values( $args ) );
 
         if($depth === 0 && function_exists('get_field') && get_field('megamenu', $element->ID)) {
-            $rand = rand(1000, 9999);
+            $output = str_replace('data-bs-toggle="dropdown" aria-expanded="false">' . apply_filters('the_title', $element->title, $element->ID), 'data-bs-toggle="dropdown" aria-expanded="false" id="navbarDropdown' . $rand . '">' . apply_filters('the_title', $element->title, $element->ID), $output);
             $classes = apply_filters('madeit_megamenu_dropdown_class', ['dropdown-menu', 'container'], $element);
-            $output .= '<div class="' . implode(' ', $classes) . '" role="menu">';
+            $output .= '<div class="' . implode(' ', $classes) . '" role="menu" aria-labelledby="navbarDropdown' . $rand . '">';
             $output .= '<div class="row w-100 m-auto">';
             if(get_field('megamenu_stijl', $element->ID) === 'style_woo') {
+                //Mobile
+                $classes = apply_filters('madeit_megamenu_style_woo_mobile', ['col-12', 'd-lg-none', 'list-unstyled'], $element);
+                $output .= '<ul class="' . implode(' ', $classes) . '">';
+                foreach ( $children_elements[ $id ] ?? [] as $i => $child ) {
+                    if(isset($children_elements[ $child->ID ])) {
+                        $output .= '<li class="nav-item menu-item dropdown">';
+                        $output .= '<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown' . $rand . '_' . $child->ID . '" role="button" data-bs-toggle="dropdown" aria-expanded="false">' . $child->title . '</a>';
+                        $output .= '<ul class="dropdown-menu" aria-labelledby="navbarDropdown' . $rand . '_' . $child->ID . '">';
+                        foreach($children_elements[ $child->ID ] ?? [] as $subchild) {
+                            if(isset($children_elements[$subchild->ID])) {
+                                $output .= '<li clas="nav-item menu-item dropdown">';
+                                $output .= '<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown' . $rand . '_' . $subchild->ID . '" role="button" data-bs-toggle="dropdown" aria-expanded="false">' . $subchild->title . '</a>';
+                                $output .= '<ul class="dropdown-menu" aria-labelledby="navbarDropdown' . $rand . '_' . $subchild->ID . '">';
+                                foreach($children_elements[ $subchild->ID ] ?? [] as $subsubchild) {
+                                    $output .= '<li><a class="nav-item menu-item" href="' . $subsubchild->url . '">' . $subsubchild->title . '</a></li>';
+                                }
+                                $output .= '</ul>';
+                                $output .= '</li>';
+                            } else {
+                                $output .= '<li><a class="nav-item menu-item" href="' . $subchild->url . '">' . $subchild->title . '</a></li>';
+                            }
+                        }
+                        $output .= '</ul>';
+                    }
+                    else {
+                        $output .= '<li class="nav-item"><a class="nav-link" href="' . $child->url . '">' . $child->title . '</a></li>';
+                    }
+                }
+                $output .= '</ul>';
+
                 // First subitems
-                $classes = apply_filters('madeit_megamenu_style_woo_left_col', ['col-12', 'col-md-3', 'bg-primary', 'py-3'], $element);
+                $classes = apply_filters('madeit_megamenu_style_woo_left_col', ['col-12', 'col-lg-3', 'bg-primary', 'py-3', 'd-none', 'd-lg-block'], $element);
                 $output .= '<div class="' . implode(' ', $classes) . '">';
-                
                 foreach ( $children_elements[ $id ] ?? [] as $i => $child ) {
                     $output .= '<ul class="list-unstyled">';
                     $output .= '<li class="megamenu-h-item' . ($i === 0 ? ' active': '') . '"><h3><a href="' . $child->url . '" data-megamenu-subid="' . $rand . '_' . $child->ID . '" class="py-2 d-block">' . $child->title . '</a></h3></li>';                  
-
-                    //* Subcategories mobile
-                    foreach( $children_elements[ $child->ID ] as $subchild ) {
-                        $output .= '<div class="d-md-none col-12 col-md-4 mb-3">';
-                        $output .= '<p class="mb-0"><b><a href="' . $subchild->url . '">' . $subchild->title . '</a></b></p>';
-                        foreach($children_elements[ $subchild->ID ] ?? [] as $subsubchild) {
-                            $output .= '<ul class="list-unstyled">';
-                            $output .= '<li><a href="' . $subsubchild->url . '">' . $subsubchild->title . '</a></li>';
-                            $output .= '</ul>';
-                        }
-                        $output .= '</div>';
-                    }
                     $output .= '</ul>';
                 }
                 $output .= '</div>';
 
                 // WooCommerce Subcategories
-                $classes = apply_filters('madeit_megamenu_style_woo_right_col', ['col-12', 'col-md-9', 'p-3', 'd-none', 'd-md-block'], $element);
+                $classes = apply_filters('madeit_megamenu_style_woo_right_col', ['col-12', 'col-lg-9', 'p-3', 'd-none', 'd-lg-block'], $element);
                 $output .= '<div class="' . implode(' ', $classes) . '">';
                 foreach( $children_elements[ $id ] ?? [] as $i => $child ) {
                     $output .= '<div class="megamenu-subitem ' . ($i === 0 ? '' : 'd-none') . '" id="megamenu-subitem-' . $rand . '_' . $child->ID . '">';

@@ -602,9 +602,10 @@ $('#productSearchDropdown input').on('keyup', function(e) {
 
                 for(var i = 0; i < response.data.length; i++) {
                     if(response.data[i].price) {
-                        html += '<li><a class="dropdown-item" href="' + response.data[i].url + '"><div class="d-flex align-items-center"><img src="' + response.data[i].image + '" alt="' + response.data[i].name + '" class="img-fluid me-2" style="width: 50px;"><div><div>' + response.data[i].name + '</div><div class="text-muted">Vanaf ' + response.data[i].price + '</div></div></div></a></li>';
+                        html += '<li><a class="dropdown-item" href="' + response.data[i].url + '"><div class="d-flex align-items-center"><img src="' + response.data[i].image + '" alt="' + response.data[i].name + '" class="img-fluid me-2" style="width: 50px;"><div><div style="text-wrap: auto;">' + response.data[i].name + '</div><div class="text-muted">Vanaf ' + response.data[i].price + '</div></div></div></a></li>';
+                        
                     } else {
-                        html += '<li><a class="dropdown-item" href="' + response.data[i].url + '"><div class="d-flex align-items-center"><img src="' + response.data[i].image + '" alt="' + response.data[i].name + '" class="img-fluid me-2" style="width: 50px;"><div>' + response.data[i].name + '</div></div></a></li>';
+                        html += '<li><a class="dropdown-item" href="' + response.data[i].url + '"><div class="d-flex align-items-center"><img src="' + response.data[i].image + '" alt="' + response.data[i].name + '" class="img-fluid me-2" style="width: 50px;"><div style="text-wrap: auto;">' + response.data[i].name + '</div></div></a></li>';
                     }
                 }
                 $('#productSearchDropdown .dropdown-menu').html(html);
@@ -615,4 +616,12 @@ $('#productSearchDropdown input').on('keyup', function(e) {
             dropdown.show();
         });
     }
+});
+
+
+//If child dropdown-toggle is clicked, prevent parent from closing
+document.querySelectorAll('.dropdown a.dropdown-toggle').forEach(function(item) {
+    item.addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
 });
