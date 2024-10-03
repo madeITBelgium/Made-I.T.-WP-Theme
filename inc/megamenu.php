@@ -14,7 +14,7 @@ function madeit_megamenu_menuitems( $items, $args )
         if($item->menu_item_parent == 0 && get_field('megamenu', $item->ID)) {
             $items[$k]->classes[] = 'megamenu';
 
-            if(get_field('megamenu_stijl', $item->ID) === 'style_woo') {
+            if(get_field('megamenu_stijl', $item->ID) === 'style_woo' || get_field('megamenu_stijl', $item->ID) === 'style_woo_2') {
                 //Get WooCommerce categories
                 $args = [
                     'taxonomy' => 'product_cat',
@@ -146,6 +146,7 @@ add_action( 'acf/include_fields', function() {
 				'style_2' => 'Verdeling in 4 kolommen',
 				'style_3' => 'Hoofditems links, met verdeling in 4 kolommen',
 				'style_woo' => 'WooCommerce categorieën',
+				'style_woo_2' => 'WooCommerce categorieën, style2',
 			),
 			'default_value' => 'style_1',
 			'return_format' => 'value',
@@ -169,6 +170,11 @@ add_action( 'acf/include_fields', function() {
 						'field' => 'field_66aca06063ed5',
 						'operator' => '!=',
 						'value' => 'style_woo',
+					),
+					array(
+						'field' => 'field_66aca06063ed5',
+						'operator' => '!=',
+						'value' => 'style_woo_2',
 					),
 				),
 			),
