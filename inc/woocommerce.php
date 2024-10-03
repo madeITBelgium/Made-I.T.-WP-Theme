@@ -97,61 +97,62 @@ function madeit_search_products()
 
     //search wooCommerce products with name or description
     $args = [
-        'post_type' => 'product',
-        'post_status' => 'publish',
+        'post_type'      => 'product',
+        'post_status'    => 'publish',
         'posts_per_page' => 10,
-        's' => $search,
+        's'              => $search,
     ];
     $products = new WP_Query($args);
 
     $data = [];
-    if($products->have_posts()) {
-        while($products->have_posts()) {
+    if ($products->have_posts()) {
+        while ($products->have_posts()) {
             $products->the_post();
             $product = wc_get_product(get_the_ID());
             $price = $product->get_price();
 
-            if(function_exists('madeit_b2b_is_purchasable')) {
-                if( madeit_b2b_is_purchasable($product->is_purchasable(), $product)) {
+            if (function_exists('madeit_b2b_is_purchasable')) {
+                if (madeit_b2b_is_purchasable($product->is_purchasable(), $product)) {
                     $price = $product->get_price_html();
                 } else {
                     $price = false;
                 }
             }
 
-            if(!$product->is_visible()) {
+            if (!$product->is_visible()) {
                 continue;
             }
 
             $data[] = [
-                'id' => get_the_ID(),
-                'name' => get_the_title(),
+                'id'          => get_the_ID(),
+                'name'        => get_the_title(),
                 'description' => get_the_excerpt(),
-                'price' => $price,
-                'url' => get_permalink(),
-                'image' => get_the_post_thumbnail_url(get_the_ID(), 'thumbnail'),
+                'price'       => $price,
+                'url'         => get_permalink(),
+                'image'       => get_the_post_thumbnail_url(get_the_ID(), 'thumbnail'),
             ];
         }
     }
 
     wp_send_json([
         'success' => true,
-        'data' => $data,
+        'data'    => $data,
     ]);
 }
 add_action('wp_ajax_nopriv_madeit_search_products', 'madeit_search_products');
 add_action('wp_ajax_madeit_search_products', 'madeit_search_products');
 
-
-function madeit_custom_sale_flash($text) {
+function madeit_custom_sale_flash($text)
+{
     global $product;
 
     $shop_label = get_post_meta($product->get_id(), 'shop_label', true);
 
-    if($shop_label) {
-        return '<div class="product-onsale"><span>' . $shop_label . '</span></div>';
+    if ($shop_label) {
+        return '<div class="product-onsale"><span>'.$shop_label.'</span></div>';
         //return '<span class="onsale">'.$shop_label.'</span>';
     }
+
     return $text;
 }
 add_filter('woocommerce_sale_flash', 'madeit_custom_sale_flash');

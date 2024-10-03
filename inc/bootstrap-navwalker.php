@@ -22,41 +22,42 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu
     {
         $indent = str_repeat("\t", $depth);
 
-		// Default class.
-		$classes = array( 'dropdown-menu' );
+        // Default class.
+        $classes = ['dropdown-menu'];
 
-		/**
-		 * Filters the CSS class(es) applied to a menu list element.
-		 *
-		 * @since 4.8.0
-		 *
-		 * @param string[] $classes Array of the CSS classes that are applied to the menu `<ul>` element.
-		 * @param stdClass $args    An object of `wp_nav_menu()` arguments.
-		 * @param int      $depth   Depth of menu item. Used for padding.
-		 */
-		$class_names = implode( ' ', apply_filters( 'nav_menu_submenu_css_class', $classes, $args, $depth ) );
+        /**
+         * Filters the CSS class(es) applied to a menu list element.
+         *
+         * @since 4.8.0
+         *
+         * @param string[] $classes Array of the CSS classes that are applied to the menu `<ul>` element.
+         * @param stdClass $args    An object of `wp_nav_menu()` arguments.
+         * @param int      $depth   Depth of menu item. Used for padding.
+         */
+        $class_names = implode(' ', apply_filters('nav_menu_submenu_css_class', $classes, $args, $depth));
 
-		$atts          = array();
-		$atts['class'] = ! empty( $class_names ) ? $class_names : '';
+        $atts = [];
+        $atts['class'] = !empty($class_names) ? $class_names : '';
         $atts['role'] = 'menu';
 
-		/**
-		 * Filters the HTML attributes applied to a menu list element.
-		 *
-		 * @since 6.3.0
-		 *
-		 * @param array $atts {
-		 *     The HTML attributes applied to the `<ul>` element, empty strings are ignored.
-		 *
-		 *     @type string $class    HTML CSS class attribute.
-		 * }
-		 * @param stdClass $args      An object of `wp_nav_menu()` arguments.
-		 * @param int      $depth     Depth of menu item. Used for padding.
-		 */
-		$atts       = apply_filters( 'nav_menu_submenu_attributes', $atts, $args, $depth );
-		$attributes = $this->build_atts( $atts );
+        /**
+         * Filters the HTML attributes applied to a menu list element.
+         *
+         * @since 6.3.0
+         *
+         * @param array $atts {
+         *                    The HTML attributes applied to the `<ul>` element, empty strings are ignored.
+         *
+         * @var string $class    HTML CSS class attribute.
+         *             }
+         *
+         * @param stdClass $args  An object of `wp_nav_menu()` arguments.
+         * @param int      $depth Depth of menu item. Used for padding.
+         */
+        $atts = apply_filters('nav_menu_submenu_attributes', $atts, $args, $depth);
+        $attributes = $this->build_atts($atts);
 
-		$output .= "\n$indent<ul{$attributes}>\n";
+        $output .= "\n$indent<ul{$attributes}>\n";
     }
 
     /**
@@ -121,12 +122,12 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu
             $atts['rel'] = !empty($item->xfn) ? $item->xfn : '';
 
             // If item has_children add atts to a.
-            if(function_exists('get_field') && $depth === 0 && get_field('megamenu', $item->ID)) {
+            if (function_exists('get_field') && $depth === 0 && get_field('megamenu', $item->ID)) {
                 $atts['href'] = !empty($item->url) ? $item->url : '';
                 $atts['class'] = 'dropdown-toggle';
                 $atts['data-bs-toggle'] = 'dropdown';
                 $atts['aria-expanded'] = 'false';
-            } else if ($args->has_children && $depth === 0) {
+            } elseif ($args->has_children && $depth === 0) {
                 $atts['href'] = '#';
                 $atts['data-toggle'] = 'dropdown';
                 $atts['data-bs-toggle'] = 'dropdown';
@@ -201,86 +202,86 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu
      *
      * @return null Null on failure with no changes to parameters.
      */
-    public function display_element( $element, &$children_elements, $max_depth, $depth, $args, &$output ) {
-		if ( ! $element ) {
-			return;
-		}
+    public function display_element($element, &$children_elements, $max_depth, $depth, $args, &$output)
+    {
+        if (!$element) {
+            return;
+        }
 
-		$max_depth = (int) $max_depth;
-		$depth     = (int) $depth;
+        $max_depth = (int) $max_depth;
+        $depth = (int) $depth;
 
-		$id_field = $this->db_fields['id'];
-		$id       = $element->$id_field;
+        $id_field = $this->db_fields['id'];
+        $id = $element->$id_field;
         $rand = rand(1000, 9999);
-        
-		// Display this element.
+
+        // Display this element.
         if (is_object($args[0])) {
             $args[0]->has_children = !empty($children_elements[$element->$id_field]);
         }
 
-		$this->start_el( $output, $element, $depth, ...array_values( $args ) );
+        $this->start_el($output, $element, $depth, ...array_values($args));
 
-        if($depth === 0 && function_exists('get_field') && get_field('megamenu', $element->ID)) {
-            $output = str_replace('data-bs-toggle="dropdown" aria-expanded="false">' . apply_filters('the_title', $element->title, $element->ID), 'data-bs-toggle="dropdown" aria-expanded="false" id="navbarDropdown' . $rand . '">' . apply_filters('the_title', $element->title, $element->ID), $output);
+        if ($depth === 0 && function_exists('get_field') && get_field('megamenu', $element->ID)) {
+            $output = str_replace('data-bs-toggle="dropdown" aria-expanded="false">'.apply_filters('the_title', $element->title, $element->ID), 'data-bs-toggle="dropdown" aria-expanded="false" id="navbarDropdown'.$rand.'">'.apply_filters('the_title', $element->title, $element->ID), $output);
             $classes = apply_filters('madeit_megamenu_dropdown_class', ['dropdown-menu', 'container'], $element);
-            $output .= '<div class="' . implode(' ', $classes) . '" role="menu" aria-labelledby="navbarDropdown' . $rand . '">';
+            $output .= '<div class="'.implode(' ', $classes).'" role="menu" aria-labelledby="navbarDropdown'.$rand.'">';
             $output .= '<div class="row w-100 m-auto">';
-            if(get_field('megamenu_stijl', $element->ID) === 'style_woo') {
+            if (get_field('megamenu_stijl', $element->ID) === 'style_woo') {
                 //Mobile
                 $classes = apply_filters('madeit_megamenu_style_woo_mobile', ['col-12', 'd-lg-none', 'list-unstyled'], $element);
-                $output .= '<ul class="' . implode(' ', $classes) . '">';
-                foreach ( $children_elements[ $id ] ?? [] as $i => $child ) {
-                    if(isset($children_elements[ $child->ID ])) {
+                $output .= '<ul class="'.implode(' ', $classes).'">';
+                foreach ($children_elements[$id] ?? [] as $i => $child) {
+                    if (isset($children_elements[$child->ID])) {
                         $output .= '<li class="nav-item menu-item dropdown">';
-                        $output .= '<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown' . $rand . '_' . $child->ID . '" role="button" data-bs-toggle="dropdown" aria-expanded="false">' . $child->title . '</a>';
-                        $output .= '<ul class="dropdown-menu" aria-labelledby="navbarDropdown' . $rand . '_' . $child->ID . '">';
-                        foreach($children_elements[ $child->ID ] ?? [] as $subchild) {
-                            if(isset($children_elements[$subchild->ID])) {
+                        $output .= '<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown'.$rand.'_'.$child->ID.'" role="button" data-bs-toggle="dropdown" aria-expanded="false">'.$child->title.'</a>';
+                        $output .= '<ul class="dropdown-menu" aria-labelledby="navbarDropdown'.$rand.'_'.$child->ID.'">';
+                        foreach ($children_elements[$child->ID] ?? [] as $subchild) {
+                            if (isset($children_elements[$subchild->ID])) {
                                 $output .= '<li clas="nav-item menu-item dropdown">';
-                                $output .= '<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown' . $rand . '_' . $subchild->ID . '" role="button" data-bs-toggle="dropdown" aria-expanded="false">' . $subchild->title . '</a>';
-                                $output .= '<ul class="dropdown-menu" aria-labelledby="navbarDropdown' . $rand . '_' . $subchild->ID . '">';
-                                foreach($children_elements[ $subchild->ID ] ?? [] as $subsubchild) {
-                                    $output .= '<li><a class="nav-item menu-item" href="' . $subsubchild->url . '">' . $subsubchild->title . '</a></li>';
+                                $output .= '<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown'.$rand.'_'.$subchild->ID.'" role="button" data-bs-toggle="dropdown" aria-expanded="false">'.$subchild->title.'</a>';
+                                $output .= '<ul class="dropdown-menu" aria-labelledby="navbarDropdown'.$rand.'_'.$subchild->ID.'">';
+                                foreach ($children_elements[$subchild->ID] ?? [] as $subsubchild) {
+                                    $output .= '<li><a class="nav-item menu-item" href="'.$subsubchild->url.'">'.$subsubchild->title.'</a></li>';
                                 }
                                 $output .= '</ul>';
                                 $output .= '</li>';
                             } else {
-                                $output .= '<li><a class="nav-item menu-item" href="' . $subchild->url . '">' . $subchild->title . '</a></li>';
+                                $output .= '<li><a class="nav-item menu-item" href="'.$subchild->url.'">'.$subchild->title.'</a></li>';
                             }
                         }
                         $output .= '</ul>';
-                    }
-                    else {
-                        $output .= '<li class="nav-item"><a class="nav-link" href="' . $child->url . '">' . $child->title . '</a></li>';
+                    } else {
+                        $output .= '<li class="nav-item"><a class="nav-link" href="'.$child->url.'">'.$child->title.'</a></li>';
                     }
                 }
                 $output .= '</ul>';
 
                 // First subitems
                 $classes = apply_filters('madeit_megamenu_style_woo_left_col', ['col-12', 'col-lg-3', 'bg-primary', 'py-3', 'd-none', 'd-lg-block'], $element);
-                $output .= '<div class="' . implode(' ', $classes) . '">';
-                foreach ( $children_elements[ $id ] ?? [] as $i => $child ) {
+                $output .= '<div class="'.implode(' ', $classes).'">';
+                foreach ($children_elements[$id] ?? [] as $i => $child) {
                     $output .= '<ul class="list-unstyled">';
-                    $output .= '<li class="megamenu-h-item' . ($i === 0 ? ' active': '') . '"><h3><a href="' . $child->url . '" data-megamenu-subid="' . $rand . '_' . $child->ID . '" class="py-2 d-block">' . $child->title . '</a></h3></li>';                  
+                    $output .= '<li class="megamenu-h-item'.($i === 0 ? ' active' : '').'"><h3><a href="'.$child->url.'" data-megamenu-subid="'.$rand.'_'.$child->ID.'" class="py-2 d-block">'.$child->title.'</a></h3></li>';
                     $output .= '</ul>';
                 }
                 $output .= '</div>';
 
                 // WooCommerce Subcategories
                 $classes = apply_filters('madeit_megamenu_style_woo_right_col', ['col-12', 'col-lg-9', 'p-3', 'd-none', 'd-lg-block'], $element);
-                $output .= '<div class="' . implode(' ', $classes) . '">';
-                foreach( $children_elements[ $id ] ?? [] as $i => $child ) {
-                    $output .= '<div class="megamenu-subitem ' . ($i === 0 ? '' : 'd-none') . '" id="megamenu-subitem-' . $rand . '_' . $child->ID . '">';
-                    $output .= '<h3 class="mb-3">' . $child->title . '</h3>';
+                $output .= '<div class="'.implode(' ', $classes).'">';
+                foreach ($children_elements[$id] ?? [] as $i => $child) {
+                    $output .= '<div class="megamenu-subitem '.($i === 0 ? '' : 'd-none').'" id="megamenu-subitem-'.$rand.'_'.$child->ID.'">';
+                    $output .= '<h3 class="mb-3">'.$child->title.'</h3>';
 
                     $output .= '<div class="row">';
-                    
-                    foreach( $children_elements[ $child->ID ] as $subchild ) {
+
+                    foreach ($children_elements[$child->ID] as $subchild) {
                         $output .= '<div class="col-12 col-md-4 mb-3">';
-                        $output .= '<p class="mb-0"><b><a class="text-primary" href="' . $subchild->url . '">' . $subchild->title . '</a></b></p>';
+                        $output .= '<p class="mb-0"><b><a class="text-primary" href="'.$subchild->url.'">'.$subchild->title.'</a></b></p>';
                         $output .= '<ul class="list-unstyled">';
-                        foreach($children_elements[ $subchild->ID ] ?? [] as $subsubchild) {
-                            $output .= '<li><a href="' . $subsubchild->url . '">' . $subsubchild->title . '</a></li>';
+                        foreach ($children_elements[$subchild->ID] ?? [] as $subsubchild) {
+                            $output .= '<li><a href="'.$subsubchild->url.'">'.$subsubchild->title.'</a></li>';
                         }
                         $output .= '</ul>';
                         $output .= '</div>';
@@ -292,55 +293,52 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu
                 $output .= '</div>';
             }
 
-            if(get_field('megamenu_stijl', $element->ID) === 'style_woo_2') {
+            if (get_field('megamenu_stijl', $element->ID) === 'style_woo_2') {
                 //Mobile
                 $classes = apply_filters('madeit_megamenu_style_woo_2_mobile', ['col-12', 'd-lg-none', 'list-unstyled'], $element);
-                $output .= '<ul class="' . implode(' ', $classes) . '">';
-                foreach ( $children_elements[ $id ] ?? [] as $i => $child ) {
-                    if(isset($children_elements[ $child->ID ])) {
+                $output .= '<ul class="'.implode(' ', $classes).'">';
+                foreach ($children_elements[$id] ?? [] as $i => $child) {
+                    if (isset($children_elements[$child->ID])) {
                         $output .= '<li class="nav-item menu-item dropdown">';
-                        $output .= '<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown' . $rand . '_' . $child->ID . '" role="button" data-bs-toggle="dropdown" aria-expanded="false">' . $child->title . '</a>';
-                        $output .= '<ul class="dropdown-menu" aria-labelledby="navbarDropdown' . $rand . '_' . $child->ID . '">';
-                        foreach($children_elements[ $child->ID ] ?? [] as $subchild) {
-                            if(isset($children_elements[$subchild->ID])) {
+                        $output .= '<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown'.$rand.'_'.$child->ID.'" role="button" data-bs-toggle="dropdown" aria-expanded="false">'.$child->title.'</a>';
+                        $output .= '<ul class="dropdown-menu" aria-labelledby="navbarDropdown'.$rand.'_'.$child->ID.'">';
+                        foreach ($children_elements[$child->ID] ?? [] as $subchild) {
+                            if (isset($children_elements[$subchild->ID])) {
                                 $output .= '<li clas="nav-item menu-item dropdown">';
-                                $output .= '<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown' . $rand . '_' . $subchild->ID . '" role="button" data-bs-toggle="dropdown" aria-expanded="false">' . $subchild->title . '</a>';
-                                $output .= '<ul class="dropdown-menu" aria-labelledby="navbarDropdown' . $rand . '_' . $subchild->ID . '">';
-                                foreach($children_elements[ $subchild->ID ] ?? [] as $subsubchild) {
-                                    $output .= '<li><a class="nav-item menu-item" href="' . $subsubchild->url . '">' . $subsubchild->title . '</a></li>';
+                                $output .= '<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown'.$rand.'_'.$subchild->ID.'" role="button" data-bs-toggle="dropdown" aria-expanded="false">'.$subchild->title.'</a>';
+                                $output .= '<ul class="dropdown-menu" aria-labelledby="navbarDropdown'.$rand.'_'.$subchild->ID.'">';
+                                foreach ($children_elements[$subchild->ID] ?? [] as $subsubchild) {
+                                    $output .= '<li><a class="nav-item menu-item" href="'.$subsubchild->url.'">'.$subsubchild->title.'</a></li>';
                                 }
                                 $output .= '</ul>';
                                 $output .= '</li>';
                             } else {
-                                $output .= '<li><a class="nav-item menu-item" href="' . $subchild->url . '">' . $subchild->title . '</a></li>';
+                                $output .= '<li><a class="nav-item menu-item" href="'.$subchild->url.'">'.$subchild->title.'</a></li>';
                             }
                         }
                         $output .= '</ul>';
-                    }
-                    else {
-                        $output .= '<li class="nav-item"><a class="nav-link" href="' . $child->url . '">' . $child->title . '</a></li>';
+                    } else {
+                        $output .= '<li class="nav-item"><a class="nav-link" href="'.$child->url.'">'.$child->title.'</a></li>';
                     }
                 }
                 $output .= '</ul>';
 
                 // First subitems
                 $classes = apply_filters('madeit_megamenu_style_woo_2_desktop', ['d-none', 'd-lg-block', 'col-12', 'my-3'], $element);
-                $output .= '<div class="' . implode(' ', $classes) . '">';
+                $output .= '<div class="'.implode(' ', $classes).'">';
                 $output .= '<div class="row">';
-                
 
-                foreach ( $children_elements[ $id ] ?? [] as $i => $child ) {
+                foreach ($children_elements[$id] ?? [] as $i => $child) {
                     $output .= '<div class="col-12 col-lg-3 col-md-4 mb-3">';
-                    $output .= '<h3><a href="' . $child->url . '">' . $child->title . '</a></h3>';
+                    $output .= '<h3><a href="'.$child->url.'">'.$child->title.'</a></h3>';
                     $output .= '<ul class="list-unstyled">';
-                    foreach( $children_elements[ $child->ID ] as $subchild ) {
-                        $output .= '<li><a class="text-primary" href="' . $subchild->url . '">' . $subchild->title . '</a></li>';
+                    foreach ($children_elements[$child->ID] as $subchild) {
+                        $output .= '<li><a class="text-primary" href="'.$subchild->url.'">'.$subchild->title.'</a></li>';
                     }
                     $output .= '</ul>';
 
                     $output .= '</div>';
                 }
-
 
                 $output .= '</div>';
                 $output .= '</div>';
@@ -349,29 +347,27 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu
             $output .= '</div>';
         } else {
             // Descend only when the depth is right and there are children for this element.
-            if ( ( 0 === $max_depth || $max_depth > $depth + 1 ) && isset( $children_elements[ $id ] ) ) {
-
-                foreach ( $children_elements[ $id ] as $child ) {
-
-                    if ( ! isset( $newlevel ) ) {
+            if ((0 === $max_depth || $max_depth > $depth + 1) && isset($children_elements[$id])) {
+                foreach ($children_elements[$id] as $child) {
+                    if (!isset($newlevel)) {
                         $newlevel = true;
                         // Start the child delimiter.
-                        $this->start_lvl( $output, $depth, ...array_values( $args ) );
+                        $this->start_lvl($output, $depth, ...array_values($args));
                     }
-                    $this->display_element( $child, $children_elements, $max_depth, $depth + 1, $args, $output );
+                    $this->display_element($child, $children_elements, $max_depth, $depth + 1, $args, $output);
                 }
-                unset( $children_elements[ $id ] );
+                unset($children_elements[$id]);
             }
 
-            if ( isset( $newlevel ) && $newlevel ) {
+            if (isset($newlevel) && $newlevel) {
                 // End the child delimiter.
-                $this->end_lvl( $output, $depth, ...array_values( $args ) );
+                $this->end_lvl($output, $depth, ...array_values($args));
             }
         }
 
-		// End this element.
-		$this->end_el( $output, $element, $depth, ...array_values( $args ) );
-	}
+        // End this element.
+        $this->end_el($output, $element, $depth, ...array_values($args));
+    }
 
     /**
      * Menu Fallback
