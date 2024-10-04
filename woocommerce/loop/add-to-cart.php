@@ -1,6 +1,6 @@
 <?php
 /**
- * Loop Add to Cart.
+ * Loop Add to Cart
  *
  * This template can be overridden by copying it to yourtheme/woocommerce/loop/add-to-cart.php.
  *
@@ -10,33 +10,36 @@
  * happen. When this occurs the version of the template file will be bumped and
  * the readme will list any important changes.
  *
- * @see 	    https://docs.woocommerce.com/document/template-structure/
- *
- * @author 		WooThemes
- *
- * @version     3.3.0
+ * @see         https://woocommerce.com/document/template-structure/
+ * @package     WooCommerce\Templates
+ * @version     9.2.0
  */
-if (!defined('ABSPATH')) {
-    exit;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
 global $product;
 
-$prefix = '';
-if (strpos($_SERVER['REQUEST_URI'], '/?s=') !== false) {
-    $prefix = get_permalink(wc_get_page_id('shop'));
-}
+$aria_describedby = isset( $args['aria-describedby_text'] ) ? sprintf( 'aria-describedby="woocommerce_loop_add_to_cart_link_describedby_%s"', esc_attr( $product->get_id() ) ) : '';
 
 echo apply_filters(
-    'woocommerce_loop_add_to_cart_link', // WPCS: XSS ok.
-    sprintf(
-        '<a href="%s" data-quantity="%s" class="%s" %s>%s</a>',
-        $prefix.esc_url($product->add_to_cart_url()),
-        esc_attr(isset($args['quantity']) ? $args['quantity'] : 1),
-        esc_attr(isset($args['class']) ? $args['class'] : 'button'),
-        isset($args['attributes']) ? wc_implode_html_attributes($args['attributes']) : '',
-        esc_html($product->add_to_cart_text())
-    ),
-    $product,
-    $args
+	'woocommerce_loop_add_to_cart_link', // WPCS: XSS ok.
+	sprintf(
+		'<a href="%s" %s data-quantity="%s" class="%s" %s>%s</a>',
+		esc_url( $product->add_to_cart_url() ),
+		$aria_describedby,
+		esc_attr( isset( $args['quantity'] ) ? $args['quantity'] : 1 ),
+		esc_attr( isset( $args['class'] ) ? $args['class'] : 'button' ),
+		isset( $args['attributes'] ) ? wc_implode_html_attributes( $args['attributes'] ) : '',
+		esc_html( $product->add_to_cart_text() )
+	),
+	$product,
+	$args
 );
+?>
+<?php if ( isset( $args['aria-describedby_text'] ) ) : ?>
+	<span id="woocommerce_loop_add_to_cart_link_describedby_<?php echo esc_attr( $product->get_id() ); ?>" class="screen-reader-text">
+		<?php echo esc_html( $args['aria-describedby_text'] ); ?>
+	</span>
+<?php endif; ?>

@@ -1,6 +1,6 @@
 <?php
 /**
- * Auth form login.
+ * Auth form login
  *
  * This template can be overridden by copying it to yourtheme/woocommerce/auth/form-login.php.
  *
@@ -10,15 +10,12 @@
  * happen. When this occurs the version of the template file will be bumped and
  * the readme will list any important changes.
  *
- * @see 	    https://docs.woocommerce.com/document/template-structure/
- *
- * @author  WooThemes
- *
- * @version 7.0.1
+ * @see     https://woocommerce.com/document/template-structure/
+ * @package WooCommerce\Templates\Auth
+ * @version 9.2.0
  */
-if (!defined('ABSPATH')) {
-    exit;
-}
+
+defined( 'ABSPATH' ) || exit;
 
 ?>
 
@@ -32,12 +29,12 @@ if (!defined('ABSPATH')) {
 
 <form method="post" class="wc-auth-login">
 	<p class="form-row form-row-wide">
-		<label for="username"><?php _e('Username or email address', 'woocommerce'); ?>&nbsp;<span class="required">*</span></label>
-		<input type="text" class="input-text form-control" name="username" id="username" value="<?php echo (!empty($_POST['username'])) ? esc_attr($_POST['username']) : ''; ?>" />
+		<label for="username"><?php _e('Username or email address', 'woocommerce'); ?>&nbsp;<span class="required" aria-hidden="true">*</span><span class="screen-reader-text"><?php esc_html_e( 'Required', 'woocommerce' ); ?></span></label>
+		<input type="text" class="input-text form-control" name="username" id="username" value="<?php echo (!empty($_POST['username'])) ? esc_attr($_POST['username']) : ''; ?>" required aria-required="true" />
 	</p>
 	<p class="form-row form-row-wide">
-		<label for="password"><?php _e('Password', 'woocommerce'); ?>&nbsp;<span class="required">*</span></label>
-		<input class="input-text form-control" type="password" name="password" id="password" />
+		<label for="password"><?php _e('Password', 'woocommerce'); ?>&nbsp;<span class="required" aria-hidden="true">*</span><span class="screen-reader-text"><?php esc_html_e( 'Required', 'woocommerce' ); ?></span></label>
+		<input class="input-text form-control" type="password" name="password" id="password" required aria-required="true" />
 	</p>
 	<p class="wc-auth-actions">
 		<?php wp_nonce_field('woocommerce-login', 'woocommerce-login-nonce'); ?>

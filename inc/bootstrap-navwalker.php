@@ -333,7 +333,7 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu
                     $output .= '<div class="col-12 col-lg-3 col-md-4 mb-3">';
                     $output .= '<h3><a href="' . $child->url . '">' . $child->title . '</a></h3>';
                     $output .= '<ul class="list-unstyled">';
-                    foreach( $children_elements[ $child->ID ] as $subchild ) {
+                    foreach( $children_elements[ $child->ID ] ?? [] as $subchild ) {
                         $output .= '<li><a class="text-primary" href="' . $subchild->url . '">' . $subchild->title . '</a></li>';
                     }
                     $output .= '</ul>';

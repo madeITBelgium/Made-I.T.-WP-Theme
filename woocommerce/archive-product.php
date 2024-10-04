@@ -1,55 +1,53 @@
 <?php
 /**
- * The Template for displaying product archives, including the main shop page which is a post type archive.
+ * The Template for displaying product archives, including the main shop page which is a post type archive
  *
+ * This template can be overridden by copying it to yourtheme/woocommerce/archive-product.php.
  *
- * @see 	    https://docs.woocommerce.com/document/template-structure/
+ * HOWEVER, on occasion WooCommerce will need to update template files and you
+ * (the theme developer) will need to copy the new files to your theme to
+ * maintain compatibility. We try to do this as little as possible, but it does
+ * happen. When this occurs the version of the template file will be bumped and
+ * the readme will list any important changes.
  *
- * @author      Made I.T.
- *
- * @version     3.4.0
+ * @see https://woocommerce.com/document/template-structure/
+ * @package WooCommerce\Templates
+ * @version 8.6.0
  */
-if (!defined('ABSPATH')) {
-    exit; // Exit if accessed directly
-}
 
-get_header('shop'); ?>
+defined( 'ABSPATH' ) || exit;
 
-<?php
-    /**
-     * woocommerce_before_main_content hook.
-     *
-     * @hooked woocommerce_output_content_wrapper - 10 (outputs opening divs for the content)
-     * @hooked woocommerce_breadcrumb - 20
-     * @hooked WC_Structured_Data::generate_website_data() - 30
-     */
-    do_action('woocommerce_before_main_content');
+get_header( 'shop' );
+
+/**
+ * Hook: woocommerce_before_main_content.
+ *
+ * @hooked woocommerce_output_content_wrapper - 10 (outputs opening divs for the content)
+ * @hooked woocommerce_breadcrumb - 20
+ * @hooked WC_Structured_Data::generate_website_data() - 30
+ */
+do_action( 'woocommerce_before_main_content' );
 ?>
 <div class="row">
     <?php
-        /**
-         * woocommerce_sidebar hook.
-         *
-         * @hooked woocommerce_get_sidebar - 10
-         */
-        do_action('woocommerce_sidebar');
+    /**
+     * woocommerce_sidebar hook.
+     *
+     * @hooked woocommerce_get_sidebar - 10
+     */
+    do_action('woocommerce_sidebar');
     ?>
     <div class="col">
-        <header class="woocommerce-products-header">
-            <?php if (apply_filters('woocommerce_show_page_title', true)) { ?>
-                <h1 class="woocommerce-products-header__title page-title"><?php woocommerce_page_title(); ?></h1>
-            <?php } ?>
-            <?php
-                /**
-                 * woocommerce_archive_description hook.
-                 *
-                 * @hooked woocommerce_taxonomy_archive_description - 10
-                 * @hooked woocommerce_product_archive_description - 10
-                 */
-                do_action('woocommerce_archive_description');
-            ?>
-        </header>
         <?php
+        /**
+         * Hook: woocommerce_shop_loop_header.
+         *
+         * @since 8.6.0
+         *
+         * @hooked woocommerce_product_taxonomy_archive_header - 10
+         */
+        do_action( 'woocommerce_shop_loop_header' );
+
         if (woocommerce_product_loop()) {
             ?>
             <div class="row">

@@ -1,6 +1,6 @@
 <?php
 /**
- * Product attributes.
+ * Product attributes
  *
  * Used by list_attributes() in the products class.
  *
@@ -12,21 +12,22 @@
  * happen. When this occurs the version of the template file will be bumped and
  * the readme will list any important changes.
  *
- * @see https://docs.woocommerce.com/document/template-structure/
- *
- * @version 3.6.0
+ * @see https://woocommerce.com/document/template-structure/
+ * @package WooCommerce\Templates
+ * @version 9.3.0
  */
-defined('ABSPATH') || exit;
 
-if (!$product_attributes) {
-    return;
+defined( 'ABSPATH' ) || exit;
+
+if ( ! $product_attributes ) {
+	return;
 }
 ?>
-<table class="woocommerce-product-attributes shop_attributes">
-	<?php foreach ($product_attributes as $product_attribute_key => $product_attribute) { ?>
-		<tr class="woocommerce-product-attributes-item woocommerce-product-attributes-item--<?php echo esc_attr($product_attribute_key); ?>">
-			<th class="woocommerce-product-attributes-item__label"><?php echo wp_kses_post($product_attribute['label']); ?></th>
-			<td class="woocommerce-product-attributes-item__value"><?php echo wp_kses_post($product_attribute['value']); ?></td>
+<table class="woocommerce-product-attributes shop_attributes" aria-label="<?php esc_attr_e( 'Product Details', 'woocommerce' ); ?>">
+	<?php foreach ( $product_attributes as $product_attribute_key => $product_attribute ) : ?>
+		<tr class="woocommerce-product-attributes-item woocommerce-product-attributes-item--<?php echo esc_attr( $product_attribute_key ); ?>">
+			<th class="woocommerce-product-attributes-item__label" scope="row"><?php echo wp_kses_post( $product_attribute['label'] ); ?></th>
+			<td class="woocommerce-product-attributes-item__value"><?php echo wp_kses_post( $product_attribute['value'] ); ?></td>
 		</tr>
-	<?php } ?>
+	<?php endforeach; ?>
 </table>

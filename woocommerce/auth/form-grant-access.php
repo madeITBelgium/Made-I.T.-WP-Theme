@@ -1,6 +1,6 @@
 <?php
 /**
- * Auth form grant access.
+ * Auth form grant access
  *
  * This template can be overridden by copying it to yourtheme/woocommerce/auth/form-grant-access.php.
  *
@@ -10,10 +10,11 @@
  * happen. When this occurs the version of the template file will be bumped and
  * the readme will list any important changes.
  *
- * @see https://docs.woocommerce.com/document/template-structure/
- *
- * @version 4.3.0
+ * @see https://woocommerce.com/document/template-structure/
+ * @package WooCommerce\Templates\Auth
+ * @version 8.8.0
  */
+
 defined('ABSPATH') || exit;
 ?>
 
@@ -40,6 +41,13 @@ defined('ABSPATH') || exit;
 		<li><?php echo esc_html($permission); ?></li>
 	<?php } ?>
 </ul>
+
+<p>
+	<?php
+	/* Translators: %s Domain name from the callback URL. */
+	printf( esc_html__( 'Approving will share credentials with %s. Do not proceed if this looks suspicious in any way.', 'woocommerce' ), '<strong>' . esc_html( wp_parse_url( $callback_url, PHP_URL_HOST ) ) . '</strong>' );
+	?>
+</p>
 
 <div class="wc-auth-logged-in-as">
 	<?php echo get_avatar($user->ID, 70); ?>
