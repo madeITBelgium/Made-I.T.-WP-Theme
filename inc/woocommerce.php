@@ -163,6 +163,7 @@ if(defined('MADEIT_WOO_QUANTITY_LOOP') && MADEIT_WOO_QUANTITY_LOOP) {
         if ($product && $product->is_type( 'simple' ) && $product->is_purchasable() && $product->is_in_stock() && ! $product->is_sold_individually() ) {
             $html = '<form action="' . esc_url( $product->add_to_cart_url() ) . '" class="cart d-flex form-add-to-cart" method="post" enctype="multipart/form-data" data-product_id="' . esc_attr( $product->get_id() ) . '" data-product_sku="' . esc_attr( $product->get_sku() ) . '">';
             $html .= woocommerce_quantity_input( array(), $product, false );
+            $isProductVariable = $product->is_type( 'variable' );
             $wooButtonClass = apply_filters('madeit_woo_btn_class', !$isProductVariable ? ['btn', 'btn-success', 'form_add_to_cart_button', 'w-100'] : ['btn', 'btn-success', 'w-100']);
             $html .= '<button type="submit" class="' . implode(" ", $wooButtonClass) . '">' . esc_html( $product->add_to_cart_text() ) . '</button>';
             $html .= '</form>';
