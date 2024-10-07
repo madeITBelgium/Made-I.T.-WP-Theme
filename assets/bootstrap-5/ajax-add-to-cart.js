@@ -45,6 +45,53 @@
         });
     });
 
+    $( document ).on( 'click', '.form_add_to_cart_button', function(e) {
+        e.preventDefault();
+
+        var thisbutton = $(this);
+        var form = thisbutton.closest('form');
+        var product_qty = form.find('input[name=quantity]').val() || 1;
+        var product_id = form.data('product_id') || 0;
+        var product_sku = form.data('product_sku') || '';
+
+        var data = {
+            action: 'woocommerce_ajax_add_to_cart',
+            product_id: product_id,
+            product_sku: product_sku,
+            quantity: product_qty,
+        };
+
+        $(document.body).trigger('adding_to_cart', [thisbutton, data]);
+
+        var text = thisbutton.html();
+        $.ajax({
+            type: 'post',
+            url: wc_add_to_cart_params.ajax_url,
+            data: data,
+            beforeSend: function (response) {
+                thisbutton.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span><span class="sr-only">Loading...</span>');
+            },
+            complete: function (response) {
+                setTimeout(function() {
+                    thisbutton.html(text);
+                }, 1000);
+            },
+            success: function (response) {
+                if (response.success === false) {
+                    if(response.product_url) {
+                        window.location = response.product_url;
+                        return;
+                    }
+                    return;
+                }
+
+                thisbutton.html('<i class="fa fa-check" aria-hidden="true"></i>');
+                var myModal = new bootstrap.Modal(document.getElementById('addToCartPopup'));
+                myModal.show();
+            },
+        });
+    });
+
 
     $( document ).on( 'click', '.single_add_to_cart_button', function(e) {
         e.preventDefault();
