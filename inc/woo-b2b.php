@@ -313,10 +313,17 @@ function madeit_b2b_my_account_menu_item_content()
                     <h3><a href="<?php echo get_permalink($product_id); ?>"><?php echo $product->get_name(); ?></a></h3>
                     <?php echo $product->get_price_html(); ?>
                 </div>
-                <div class="ms-auto">
-                    <a href="<?php echo $product->add_to_cart_url(); ?>" class="btn btn-sm btn-outline-success"><i class="fas fa-cart-plus"></i></a>
+                <div class="ms-auto d-flex" style="min-width: 200px;">
+                    <form action="<?php esc_url( $product->add_to_cart_url() ); ?>" class="cart d-flex form-add-to-cart" method="post" enctype="multipart/form-data" data-product_id="<?php echo esc_attr( $product->get_id() ); ?>" data-product_sku="<?php echo esc_attr( $product->get_sku() ); ?>">
+                        <?php
+                        echo woocommerce_quantity_input( array(), $product, false );
+                        $isProductVariable = $product->is_type( 'variable' );
+                        $wooButtonClass = apply_filters('madeit_woo_btn_class', !$isProductVariable ? ['btn', 'btn-success', 'form_add_to_cart_button', 'w-100'] : ['btn', 'btn-success', 'w-100']);
+                        ?>
+                        <button type="submit" class="<?php echo implode(" ", $wooButtonClass); ?>"><i class="fas fa-cart-plus"></i></button>
+                    </form>
 
-                    <a href="#" class="btn btn-sm btn-outline-danger b2b-madeit-remove-favorite" data-product-id="<?php echo $product_id; ?>"><i class="fas fa-heart"></i></a>
+                    <a href="#" class="ms-auto btn btn-sm btn-outline-danger b2b-madeit-remove-favorite" data-product-id="<?php echo $product_id; ?>"><i class="fas fa-heart"></i></a>
                 </div>
             </div>
         </li>
