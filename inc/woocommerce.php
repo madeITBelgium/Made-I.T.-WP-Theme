@@ -97,78 +97,80 @@ function madeit_search_products()
 
     //search wooCommerce products with name or description
     $args = [
-        'post_type' => 'product',
-        'post_status' => 'publish',
+        'post_type'      => 'product',
+        'post_status'    => 'publish',
         'posts_per_page' => 10,
-        's' => $search,
+        's'              => $search,
     ];
     $products = new WP_Query($args);
 
     $data = [];
-    if($products->have_posts()) {
-        while($products->have_posts()) {
+    if ($products->have_posts()) {
+        while ($products->have_posts()) {
             $products->the_post();
             $product = wc_get_product(get_the_ID());
             $price = $product->get_price();
 
-            if(function_exists('madeit_b2b_is_purchasable')) {
-                if( madeit_b2b_is_purchasable($product->is_purchasable(), $product)) {
+            if (function_exists('madeit_b2b_is_purchasable')) {
+                if (madeit_b2b_is_purchasable($product->is_purchasable(), $product)) {
                     $price = $product->get_price_html();
                 } else {
                     $price = false;
                 }
             }
 
-            if(!$product->is_visible()) {
+            if (!$product->is_visible()) {
                 continue;
             }
 
             $data[] = [
-                'id' => get_the_ID(),
-                'name' => get_the_title(),
+                'id'          => get_the_ID(),
+                'name'        => get_the_title(),
                 'description' => get_the_excerpt(),
-                'price' => $price,
-                'url' => get_permalink(),
-                'image' => get_the_post_thumbnail_url(get_the_ID(), 'thumbnail'),
+                'price'       => $price,
+                'url'         => get_permalink(),
+                'image'       => get_the_post_thumbnail_url(get_the_ID(), 'thumbnail'),
             ];
         }
     }
 
     wp_send_json([
         'success' => true,
-        'data' => $data,
+        'data'    => $data,
     ]);
 }
 add_action('wp_ajax_nopriv_madeit_search_products', 'madeit_search_products');
 add_action('wp_ajax_madeit_search_products', 'madeit_search_products');
 
-
-function madeit_custom_sale_flash($text) {
+function madeit_custom_sale_flash($text)
+{
     global $product;
 
     $shop_label = get_post_meta($product->get_id(), 'shop_label', true);
 
-    if($shop_label) {
-        return '<div class="product-onsale"><span>' . $shop_label . '</span></div>';
+    if ($shop_label) {
+        return '<div class="product-onsale"><span>'.$shop_label.'</span></div>';
         //return '<span class="onsale">'.$shop_label.'</span>';
     }
+
     return $text;
 }
 add_filter('woocommerce_sale_flash', 'madeit_custom_sale_flash');
 
-
 //add quantity field to product loop
-if(defined('MADEIT_WOO_QUANTITY_LOOP') && MADEIT_WOO_QUANTITY_LOOP) {
-    function quantity_for_woocommerce_loop( $html, $product ) {
-        if ($product && $product->is_type( 'simple' ) && $product->is_purchasable() && $product->is_in_stock() && ! $product->is_sold_individually() ) {
-            $html = '<form action="' . esc_url( $product->add_to_cart_url() ) . '" class="cart d-flex form-add-to-cart" method="post" enctype="multipart/form-data" data-product_id="' . esc_attr( $product->get_id() ) . '" data-product_sku="' . esc_attr( $product->get_sku() ) . '">';
-            $html .= woocommerce_quantity_input( array(), $product, false );
-            $isProductVariable = $product->is_type( 'variable' );
+if (defined('MADEIT_WOO_QUANTITY_LOOP') && MADEIT_WOO_QUANTITY_LOOP) {
+    function quantity_for_woocommerce_loop($html, $product)
+    {
+        if ($product && $product->is_type('simple') && $product->is_purchasable() && $product->is_in_stock() && !$product->is_sold_individually()) {
+            $html = '<form action="'.esc_url($product->add_to_cart_url()).'" class="cart d-flex form-add-to-cart" method="post" enctype="multipart/form-data" data-product_id="'.esc_attr($product->get_id()).'" data-product_sku="'.esc_attr($product->get_sku()).'">';
+            $html .= woocommerce_quantity_input([], $product, false);
+            $isProductVariable = $product->is_type('variable');
             $wooButtonClass = apply_filters('madeit_woo_btn_class', !$isProductVariable ? ['btn', 'btn-success', 'form_add_to_cart_button', 'w-100'] : ['btn', 'btn-success', 'w-100']);
-            $html .= '<button type="submit" class="' . implode(" ", $wooButtonClass) . '">' . esc_html( $product->add_to_cart_text() ) . '</button>';
+            $html .= '<button type="submit" class="'.implode(' ', $wooButtonClass).'">'.esc_html($product->add_to_cart_text()).'</button>';
             $html .= '</form>';
         }
+
         return $html;
     }
-    add_filter( 'woocommerce_loop_add_to_cart_link', 'quantity_for_woocommerce_loop', 10, 2 );
+    add_filter('woocommerce_loop_add_to_cart_link', 'quantity_for_woocommerce_loop', 10, 2);
 }
