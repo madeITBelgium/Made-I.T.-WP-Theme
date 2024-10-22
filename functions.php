@@ -136,10 +136,20 @@ if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
     return;
 }
 
+/*
 if (file_exists(dirname(__FILE__).'/inc/MadeIT_Github_Updater.php')) {
     require_once dirname(__FILE__).'/inc/MadeIT_Github_Updater.php';
     if (class_exists('MadeIT_Github_Updater')) {
         new MadeIT_Github_Updater(__FILE__, 'madeITBelgium', 'Made-I.T.-WP-Theme', null, false);
+    }
+}
+*/
+
+
+if (file_exists(dirname(__FILE__).'/inc/MadeIT_Updater.php')) {
+    require_once dirname(__FILE__).'/inc/MadeIT_Updater.php';
+    if (class_exists('MadeIT_Updater')) {
+        new MadeIT_Updater(__FILE__);
     }
 }
 
