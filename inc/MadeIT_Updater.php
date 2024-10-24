@@ -42,8 +42,8 @@ class MadeIT_Updater
             return;
         }
         // Query the GitHub API
-        $url = "https://portal.madeit.be/api/plugin/wordpress/madeit?website=" . home_url('/');
-        
+        $url = 'https://portal.madeit.be/api/plugin/wordpress/madeit?website='.home_url('/');
+
         $headers = [];
 
         // Get the results
