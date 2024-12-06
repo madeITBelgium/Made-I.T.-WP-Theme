@@ -1239,6 +1239,9 @@ ul.alert {
 /* Mega menu */
 
 @media(min-width: 992px) {
+    .menu-item.megamenu.dropdown {
+        position: static;
+    }
     .menu-item.megamenu > .dropdown-menu.show {
         width: 100vw;
         left: 0;

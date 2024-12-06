@@ -62,25 +62,6 @@ function madeit_megamenu_menuitems($items, $args)
                     }
                 }
             }
-            /*
-            $label = 'Lorem Ipsum';    // add your custom menu item content here
-
-            // Create a nav_menu_item object
-            $item = array(
-                'title'            => $label,
-                'menu_item_parent' => 0,
-                'ID'               => 'yourItemID',
-                'db_id'            => '',
-                'url'              => $link,
-                'classes'          => array( 'menu-item' )
-            );
-
-            $new_links[] = (object) $item; // Add the new menu item to our array
-
-            // insert item
-            $location = 3;   // insert at 3rd place
-            array_splice( $items, $location, 0, $new_links );
-            */
         }
     }
 

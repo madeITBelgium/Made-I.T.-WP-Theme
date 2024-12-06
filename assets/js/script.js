@@ -512,7 +512,6 @@ jQuery(document).ready( function( $ ) {
     });
 });
 
-
 jQuery(document).ready( function( $ ) {
     $('#madeit-review-form').submit(function(e) {
         e.preventDefault();
@@ -585,7 +584,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-
 $('#productSearchDropdown input').on('keyup', function(e) {
     var $this = $(this);
     var val = $this.val();
@@ -618,10 +616,11 @@ $('#productSearchDropdown input').on('keyup', function(e) {
     }
 });
 
-
 //If child dropdown-toggle is clicked, prevent parent from closing
+/*
 document.querySelectorAll('.dropdown a.dropdown-toggle').forEach(function(item) {
     item.addEventListener('click', function(e) {
         e.stopPropagation();
     });
 });
+*/
