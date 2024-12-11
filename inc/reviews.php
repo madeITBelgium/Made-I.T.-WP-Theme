@@ -1,4 +1,3 @@
-
 <?php
 
 function getGoogleReviews($option)
