@@ -1151,6 +1151,7 @@ if (!function_exists('madeit_add_image_popup_class')) {
 
             // Verwijder onnodige tags
             $html = preg_replace('/(<!DOCTYPE.*>)|<html>|<body>|<\/body>|<\/html>/', '', $html);
+            $html = str_replace('<?xml encoding="utf-8" ?>', '', $html);
 
             return $html;
         }
@@ -2088,7 +2089,15 @@ if(class_exists('ACF')) {
 
 if(MADEIT_BOOTSTRAP_VERSION === 5) {
     //replace data-toggle with data-bs-toggle in the_content
-    add_filter('the_content', 'madeit_replace_data_toggle', 10);
+    function madeit_fix_bs_5() {
+        if (!is_admin()) {
+            add_filter('the_content', 'madeit_replace_data_toggle', 10);
+        }
+    }
+    //run only on the front end
+    add_action('init', 'madeit_fix_bs_5');
+    
+
     function madeit_replace_data_toggle($content) {
         return str_replace('data-toggle', 'data-bs-toggle', $content);
     }
