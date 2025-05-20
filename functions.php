@@ -114,6 +114,10 @@ if (!defined('MADEIT_RECEIVE_REVIEWS')) {
     define('MADEIT_RECEIVE_REVIEWS', false);
 }
 
+if (!defined('MADEIT_FEEDBACK')) {
+    define('MADEIT_FEEDBACK', false);
+}
+
 
 if(!defined('MADEIT_WOOCOMMERCE_ADD_PRODUCT_AJAX')) {
     define('MADEIT_WOOCOMMERCE_ADD_PRODUCT_AJAX', true);
@@ -2101,4 +2105,9 @@ if(MADEIT_BOOTSTRAP_VERSION === 5) {
     function madeit_replace_data_toggle($content) {
         return str_replace('data-toggle', 'data-bs-toggle', $content);
     }
+}
+
+
+if(MADEIT_FEEDBACK) {
+    require get_parent_theme_file_path('/feedback/feedback.php');
 }
