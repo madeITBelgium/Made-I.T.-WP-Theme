@@ -16,9 +16,9 @@ add_action('wp_enqueue_scripts', function() {
 add_shortcode('feedback_button', function() {
     ob_start();
     ?>
-    <div id="feedBee-cntr">
+    <div id="feedBee-cntr" data-html2canvas-ignore>
         <button id="feedbackBtn">
-            <img src="/wp-content/uploads/2025/05/system-solid-21-bug-loop-bug.gif" alt="">
+            <img src="<?php echo get_template_directory_uri(); ?>/feedback/system-solid-21-bug-loop-bug.gif" alt="">
             <span style="--i:0;"></span>
             <span style="--i:1;"></span>
             <span style="--i:2;"></span>
@@ -30,7 +30,7 @@ add_shortcode('feedback_button', function() {
         <div id="feedbackForm">
             <div class="banner">
                 <div class="brand">
-                    <img src="/wp-content/uploads/2025/05/system-solid-21-bug-loop-bug.gif" alt="">
+                    <img src="<?php echo get_template_directory_uri(); ?>/feedback/system-solid-21-bug-loop-bug.gif" alt="">
                     <h3><b>FeedBee</b></h3>
                 </div>
                 <button id="closeFeedbackForm">
@@ -52,7 +52,7 @@ add_shortcode('feedback_button', function() {
                 <div class="form-field">
                     <label for="feedbackType">Type</label>
                     <select id="feedbackType">
-                        <option value="BUG">🐞 BUG</option>
+                        <option value="Bug">🐞 BUG</option>
                         <option value="Verbetering">✨ Verbetering</option>
                         <option value="Vraag">❓ Vraag</option>
                         <option value="Overig">📌 Overig</option>

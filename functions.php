@@ -114,11 +114,6 @@ if (!defined('MADEIT_RECEIVE_REVIEWS')) {
     define('MADEIT_RECEIVE_REVIEWS', false);
 }
 
-if (!defined('MADEIT_FEEDBACK')) {
-    define('MADEIT_FEEDBACK', false);
-}
-
-
 if(!defined('MADEIT_WOOCOMMERCE_ADD_PRODUCT_AJAX')) {
     define('MADEIT_WOOCOMMERCE_ADD_PRODUCT_AJAX', true);
 }
@@ -133,6 +128,12 @@ if(!defined('MADEIT_WOO_B2B')) {
 if(!defined('MADEIT_WOO_B2B_ONLY')) {
     define('MADEIT_WOO_B2B_ONLY', false);
 }
+
+//Added in 2.11.0
+if (!defined('MADEIT_FEEDBACK')) {
+    define('MADEIT_FEEDBACK', false);
+}
+
 
 if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
     require get_template_directory().'/inc/back-compat.php';

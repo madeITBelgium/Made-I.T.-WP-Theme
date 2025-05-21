@@ -55,6 +55,13 @@ document.addEventListener('DOMContentLoaded', function () {
     function captureScreenshot(highlight) {
         overlay.style.display = 'none';
         
+        console.log({width: window.innerWidth,
+            height: window.innerHeight,
+            windowWidth: window.innerWidth,
+            windowHeight: window.innerHeight,
+            scrollX: window.scrollX,
+            scrollY: window.scrollY});
+
         html2canvas(document.body, {
             ignoreElements: (element) => element.id === 'feedbackContainer',
             width: window.innerWidth,
@@ -74,6 +81,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 // highlight.remove(); //? Highlight verwijderen wanneer screenshot is gemaakt
             }
             screenshotData = canvas.toDataURL('image/png');
+            console.log(screenshotData);
+            //add image to body
+            /*
+            const img = document.createElement('img');
+            img.src = screenshotData;
+            document.body.appendChild(img);
+            */
             //? Als de screenshot is gemaakt, laat dan het formulier terug zien, zodat het formulier niet mee op de screenshot komt
             // feedbackContainer.classList.add('d-block');
             // feedbackContainer.classList.remove('d-none');
