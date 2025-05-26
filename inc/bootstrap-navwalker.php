@@ -128,14 +128,14 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu
                 $atts['data-bs-toggle'] = 'dropdown';
                 $atts['aria-expanded'] = 'false';
             } elseif ($args->has_children && $depth === 0) {
-                $atts['href'] = !empty($item->url) ? $item->url : ''; 
+                $atts['href'] = !empty($item->url) ? $item->url : '';
                 // $atts['href'] = '#';
                 $atts['data-toggle'] = 'dropdown';
                 $atts['data-bs-toggle'] = 'dropdown';
                 $atts['aria-expanded'] = 'false';
                 $atts['class'] = 'dropdown-toggle';
             } elseif ($args->has_children && $depth > 0) {
-                if(MADEIT_BOOTSTRAP_VERSION === 4) {
+                if (MADEIT_BOOTSTRAP_VERSION === 4) {
                     $atts['href'] = '#';
                     $atts['data-toggle'] = 'dropdown';
                 }
@@ -230,7 +230,7 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu
             $classes = apply_filters('madeit_megamenu_dropdown_class', ['dropdown-menu', 'container'], $element);
             $output .= '<div class="'.implode(' ', $classes).'" role="menu" aria-labelledby="navbarDropdown'.$rand.'">';
             $output .= '<div class="row w-100 m-auto">';
-            if(get_field('megamenu_stijl', $element->ID) === 'style_1') { //3 columns
+            if (get_field('megamenu_stijl', $element->ID) === 'style_1') { //3 columns
                 //Mobile
                 $classes = apply_filters('madeit_megamenu_style_woo_2_mobile', ['col-12', 'd-lg-none', 'list-unstyled'], $element);
                 $output .= '<ul class="'.implode(' ', $classes).'">';
@@ -397,7 +397,7 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu
                 $output .= '</div>';
                 $output .= '</div>';
             }
-            
+
             $output .= '</div>';
             $output .= '</div>';
         } else {
