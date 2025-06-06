@@ -52,15 +52,12 @@ export default function save( props ) {
     var classes = className;
     var classesChild = '';
     
-
-    console.log(size);
     
     var defaultSize = size;
     if(defaultSize !== 'container' && defaultSize !== 'container-fluid' && defaultSize !== 'container-content-boxed') {
         defaultSize = 'container';
     }
     
-    console.log(defaultSize);
     
     classes = classnames( classes, {
         [ `container` ]: 'container' === defaultSize,

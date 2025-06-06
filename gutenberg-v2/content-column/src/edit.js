@@ -48,7 +48,7 @@ function ColumnEdit( props ) {
         verticalAlignment,
         width,
         margin,
-        padding
+        padding,
     } = attributes;
     
     const setPadding = ( padding ) => {

@@ -215,7 +215,7 @@ registerBlockType( metadata, {
                 
                 const blockProps = useBlockProps.save( {
                     className: classes,
-                    style: style,
+                    // style: style,
                 });
                 
                 if(size === 'container-content-boxed') {
@@ -223,8 +223,7 @@ registerBlockType( metadata, {
                         <div { ...blockProps }>
                             <div className="row">
                                 <div className="col">
-                                    <div className={ classesChild }
-                                        style = {styleChild}>
+                                    <div className={classesChild} style={styleChild}>
                                         <div className="row">
                                             <InnerBlocks.Content />
                                         </div>
@@ -237,7 +236,7 @@ registerBlockType( metadata, {
                 else {
                     return (
                         <div { ...blockProps }>
-                            <div class="row">
+                            <div className="row">
                                 <InnerBlocks.Content />
                             </div>
                         </div>
@@ -482,7 +481,7 @@ registerBlockType( metadata, {
                 
                 const blockProps = useBlockProps.save( {
                     className: classes,
-                    style: style,
+                    // style: style,
                 });
                 
                 if(size === 'container-content-boxed') {
@@ -490,8 +489,7 @@ registerBlockType( metadata, {
                         <div { ...blockProps }>
                             <div className="row">
                                 <div className="col">
-                                    <div className={ classesChild }
-                                        style = {styleChild}>
+                                    <div className={classesChild} style={styleChild}>
                                         <div className="row">
                                             <InnerBlocks.Content />
                                         </div>
@@ -504,7 +502,7 @@ registerBlockType( metadata, {
                 else {
                     return (
                         <div { ...blockProps }>
-                            <div class="row">
+                            <div className="row">
                                 <InnerBlocks.Content />
                             </div>
                         </div>
