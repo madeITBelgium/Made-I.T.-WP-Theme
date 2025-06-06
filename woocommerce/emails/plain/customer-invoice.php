@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Customer invoice email (plain text).
  *

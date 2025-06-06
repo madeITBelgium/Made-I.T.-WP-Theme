@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Admin failed order email (plain text).
  *
