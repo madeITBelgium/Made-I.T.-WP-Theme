@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Email Order Items (plain).
  *

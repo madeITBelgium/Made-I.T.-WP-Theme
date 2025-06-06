@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Admin cancelled order email (plain text).
  *

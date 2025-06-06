@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Order details table shown in emails.
  *

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Customer Reset Password email.
  *
