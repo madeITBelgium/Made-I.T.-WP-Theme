@@ -266,60 +266,60 @@ function madeitApplyExtraClass(extraProps, blockType, attributes) {
     }
     
     if(!showMobile && showDesktop) {
-        if(extraProps.className.indexOf('d-none d-lg-block') === -1) {
+        if(extraProps.className !== undefined && extraProps.className.indexOf('d-none d-lg-block') === -1) {
             extraProps.className = extraProps.className + ' d-none d-lg-block';
         }
     }
     else if(!showMobile && !showDesktop) {
-        if(extraProps.className.indexOf('d-none') === -1) {
+        if(extraProps.className !== undefined && extraProps.className.indexOf('d-none') === -1) {
             extraProps.className = extraProps.className + ' d-none';
         }
     }
     else if(showMobile && !showDesktop) {
-        if(extraProps.className.indexOf('d-lg-none') === -1) {
+        if(extraProps.className !== undefined && extraProps.className.indexOf('d-lg-none') === -1) {
             extraProps.className = extraProps.className + ' d-lg-none';
         }
     }
 
     if(typeof appendMarginToColumnsMobile !== 'undefined' && appendMarginToColumnsMobile) {
-        if(extraProps.className.indexOf('margin-column-mobile') === -1) {
+        if(extraProps.className !== undefined && extraProps.className.indexOf('margin-column-mobile') === -1) {
             extraProps.className  = extraProps.className + ' margin-column-mobile';
         }
     }
     
     if (typeof lightbox !== 'undefined' && lightbox) {
-        if(extraProps.className.indexOf('do-lightbox') === -1) {
+        if(extraProps.className !== undefined && extraProps.className.indexOf('do-lightbox') === -1) {
             extraProps.className = extraProps.className + ' do-lightbox';
         }
     }
     
     
     if (typeof lightbox !== 'undefined' && lightbox) {
-        if(extraProps.className.indexOf('do-lightbox') === -1) {
+        if(extraProps.className !== undefined && extraProps.className.indexOf('do-lightbox') === -1) {
             extraProps.className = extraProps.className + ' do-lightbox';
         }
     }
     
     if (typeof orderFirst !== 'undefined' && orderFirst) {
-        if(extraProps.className.indexOf('order-first order-lg-last') === -1) {
+        if(extraProps.className !== undefined && extraProps.className.indexOf('order-first order-lg-last') === -1) {
             extraProps.className = extraProps.className + ' order-first order-lg-last';
         }
     }
     
     if (typeof orderLast !== 'undefined' && orderLast) {
-        if(extraProps.className.indexOf('order-last order-lg-first') === -1) {
+        if(extraProps.className !== undefined && extraProps.className.indexOf('order-last order-lg-first') === -1) {
             extraProps.className = extraProps.className + ' order-last order-lg-first';
         }
     }
 
     if(typeof maxContainerSize !== 'undefined' && maxContainerSize) {
-        if(extraProps.className.indexOf('keep-max-container-size') === -1) {
+        if(extraProps.className !== undefined && extraProps.className.indexOf('keep-max-container-size') === -1) {
             extraProps.className = extraProps.className + ' keep-max-container-size';
         }
     }
 
     if (typeof lockContent !== 'undefined' && lockContent) {
-        if(extraProps.className.indexOf('madeit-lock-content') === -1) {
+        if(extraProps.className !== undefined && extraProps.className.indexOf('madeit-lock-content') === -1) {
             extraProps.className = extraProps.className + ' madeit-lock-content';
         }
     }
