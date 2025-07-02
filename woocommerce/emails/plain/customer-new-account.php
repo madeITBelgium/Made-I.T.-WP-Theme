@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Customer new account email.
  *

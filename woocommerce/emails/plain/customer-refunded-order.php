@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Customer refunded order email (plain text).
  *
