@@ -2112,3 +2112,6 @@ if(MADEIT_BOOTSTRAP_VERSION === 5) {
 if(MADEIT_FEEDBACK) {
     require get_parent_theme_file_path('/feedback/feedback.php');
 }
+
+
+get_template_part('inc/underConstruction/under-construction');
