@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Customer completed order email (plain text).
  *
