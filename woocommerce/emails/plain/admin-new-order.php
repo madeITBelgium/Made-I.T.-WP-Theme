@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Admin new order email (plain text).
  *

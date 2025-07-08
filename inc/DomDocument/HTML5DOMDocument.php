@@ -304,7 +304,7 @@ class HTML5DOMDocument extends \DOMDocument
      *
      * @return string The document (or node) HTML code as string.
      */
-    public function saveHTML(\DOMNode $node = null): string
+    public function saveHTML(?\DOMNode $node = null): string
     {
         $nodeMode = $node !== null;
         if ($nodeMode && $node instanceof \DOMDocument) {
