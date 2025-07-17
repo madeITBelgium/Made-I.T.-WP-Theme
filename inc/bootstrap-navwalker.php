@@ -232,7 +232,7 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu
             $output .= '<div class="row w-100 m-auto">';
             if(get_field('megamenu_stijl', $element->ID) === 'style_1') { //3 columns
                 //Mobile
-                $classes = apply_filters('madeit_megamenu_style_woo_2_mobile', ['col-12', 'd-lg-none', 'list-unstyled'], $element);
+                $classes = apply_filters('madeit_megamenu_style_1_mobile', ['col-12', 'd-lg-none', 'list-unstyled'], $element);
                 $output .= '<ul class="'.implode(' ', $classes).'">';
                 foreach ($children_elements[$id] ?? [] as $i => $child) {
                     if (isset($children_elements[$child->ID])) {
@@ -261,13 +261,13 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu
                 $output .= '</ul>';
 
                 // First subitems
-                $classes = apply_filters('madeit_megamenu_style_woo_2_desktop', ['d-none', 'd-lg-block', 'col-12', 'my-3'], $element);
+                $classes = apply_filters('madeit_megamenu_style_1_desktop', ['d-none', 'd-lg-block', 'col-12', 'my-3'], $element);
                 $output .= '<div class="'.implode(' ', $classes).'">';
                 $output .= '<div class="row">';
 
                 foreach ($children_elements[$id] ?? [] as $i => $child) {
                     $output .= '<div class="col-12 col-lg-3 col-md-4 mb-3">';
-                    $output .= '<h3><a href="'.$child->url.'">'.$child->title.'</a></h3>';
+                    $output .= '<h3 class="' . implode(' ', apply_filters('madeit_megamenu_style_1_h3_class', ['h5'], $element)) . '"><a href="'.$child->url.'">'.$child->title.'</a></h3>';
                     $output .= '<ul class="list-unstyled">';
                     foreach ($children_elements[$child->ID] ?? [] as $subchild) {
                         $output .= '<li><a class="text-primary" href="'.$subchild->url.'">'.$subchild->title.'</a></li>';
@@ -384,7 +384,7 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu
 
                 foreach ($children_elements[$id] ?? [] as $i => $child) {
                     $output .= '<div class="col-12 col-lg-3 col-md-4 mb-3">';
-                    $output .= '<h3><a href="'.$child->url.'">'.$child->title.'</a></h3>';
+                    $output .= '<h3 class="' . implode(' ', apply_filters('madeit_megamenu_style_woo_2_h3_class', ['h5'], $element)) . '"><a href="'.$child->url.'">'.$child->title.'</a></h3>';
                     $output .= '<ul class="list-unstyled">';
                     foreach ($children_elements[$child->ID] ?? [] as $subchild) {
                         $output .= '<li><a class="text-primary" href="'.$subchild->url.'">'.$subchild->title.'</a></li>';
