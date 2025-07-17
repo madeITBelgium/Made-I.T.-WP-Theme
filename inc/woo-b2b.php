@@ -153,11 +153,13 @@ function madeit_b2b_favorite_btn()
 {
     global $product;
     
+    $favoritesButtonColor = apply_filters('madeit_b2b_favorite_button_color', 'danger');
+
     $favorites = madeit_b2b_get_user_favorite_products();
     if(is_array($favorites) && in_array($product->get_id(), $favorites)) {
-        echo '<div class="d-block mb-2"><a href="#" class="btn btn-sm btn-outline-danger b2b-madeit-remove-favorite" data-product-id="' . $product->get_id() . '"><i class="fas fa-heart"></i> <span class="txt">Verwijderen uit favorieten</span></a></div>';
+        echo '<div class="d-block mb-2"><a href="#" class="btn btn-sm btn-outline-' . esc_attr($favoritesButtonColor) . ' b2b-madeit-remove-favorite" data-product-id="' . $product->get_id() . '"><i class="fas fa-heart"></i> <span class="txt">Verwijderen uit favorieten</span></a></div>';
     } else {
-        echo '<div class="d-block mb-2"><a href="#" class="btn btn-sm btn-outline-danger b2b-madeit-add-favorite" data-product-id="' . $product->get_id() . '"><i class="far fa-heart"></i> <span class="txt">Toevoegen aan favorieten</span></a></div>';
+        echo '<div class="d-block mb-2"><a href="#" class="btn btn-sm btn-outline-' . esc_attr($favoritesButtonColor) . ' b2b-madeit-add-favorite" data-product-id="' . $product->get_id() . '"><i class="far fa-heart"></i> <span class="txt">Toevoegen aan favorieten</span></a></div>';
     }
 }
 add_action('woocommerce_after_shop_loop_item', 'madeit_b2b_favorite_btn', 10);
@@ -298,6 +300,7 @@ function madeit_b2b_my_account_menu_item_content()
     usort($productList, function($a, $b) {
         return strcmp($a->get_name(), $b->get_name());
     });
+    $favoritesButtonColor = apply_filters('madeit_b2b_favorite_button_color', 'danger');
 
     echo '<ul class="list-group">';
 
@@ -305,15 +308,15 @@ function madeit_b2b_my_account_menu_item_content()
         $product_id = $product->get_id();
         ?>
         <li class="list-group-item">
-            <div class="d-flex flex-row align-items-center">
-                <div class="me-3">
-                    <?php echo $product->get_image('thumbnail'); ?>
-                </div>
-                <div>
+            <div class="row align-items-center">
+                <div class="col-12 col-md-8">
                     <h3><a href="<?php echo get_permalink($product_id); ?>"><?php echo $product->get_name(); ?></a></h3>
                     <?php echo $product->get_price_html(); ?>
                 </div>
-                <div class="ms-auto d-flex" style="min-width: 200px;">
+                <div class="col-6 order-md-first col-md-2">
+                    <?php echo $product->get_image('thumbnail'); ?>
+                </div>
+                <div class="col-6 col-md-2">
                     <form action="<?php esc_url( $product->add_to_cart_url() ); ?>" class="cart d-flex form-add-to-cart" method="post" enctype="multipart/form-data" data-product_id="<?php echo esc_attr( $product->get_id() ); ?>" data-product_sku="<?php echo esc_attr( $product->get_sku() ); ?>">
                         <?php
                         echo woocommerce_quantity_input( array(), $product, false );
@@ -323,7 +326,7 @@ function madeit_b2b_my_account_menu_item_content()
                         <button type="submit" class="<?php echo implode(" ", $wooButtonClass); ?>"><i class="fas fa-cart-plus"></i></button>
                     </form>
 
-                    <a href="#" class="ms-auto btn btn-sm btn-outline-danger b2b-madeit-remove-favorite" data-product-id="<?php echo $product_id; ?>"><i class="fas fa-heart"></i></a>
+                    <a href="#" class="ms-auto btn btn-sm btn-outline-<?php echo esc_attr($favoritesButtonColor); ?> b2b-madeit-remove-favorite mt-3" data-product-id="<?php echo $product_id; ?>"><i class="fas fa-heart"></i></a>
                 </div>
             </div>
         </li>

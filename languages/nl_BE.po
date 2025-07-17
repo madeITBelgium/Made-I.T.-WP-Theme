@@ -844,7 +844,7 @@ msgstr "Statisch bovenaan je website"
 
 #: inc/email-service.php:8
 msgid "Subscribe to our newsletter?"
-msgstr "Abonneer op onze nieuwsbrief?"
+msgstr "Abonneer op onze nieuwsbrief"
 
 #: functions.php:385 inc/customizer.php:106
 msgid "Success Color"
