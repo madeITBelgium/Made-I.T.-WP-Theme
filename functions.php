@@ -2085,6 +2085,11 @@ if (in_array('woocommerce/woocommerce.php', $activePlugins)) {
     if(defined('MADEIT_WOO_B2B') && MADEIT_WOO_B2B) {
         require get_parent_theme_file_path('/inc/woo-b2b.php');
     }
+
+
+    if(class_exists('ACF') && defined('MADEIT_CATEGORIE_SEO_PAGES') && MADEIT_CATEGORIE_SEO_PAGES) {
+        require get_parent_theme_file_path('/inc/categorie-seo-pages.php');
+    }
 }
 
 if(class_exists('ACF')) {
