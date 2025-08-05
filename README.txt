@@ -55,6 +55,10 @@ License: CC0 1.0 Universal (CC0 1.0)
 Source: https://unsplash.com/@englr?photo=bIhpiQA009k
 
 == Changelog ==
+= 2.11.0 =
+* WooCommerce 9.4 - 10.0
+* Bootstrap v5.3.7
+
 = 2.10.7 =
 * WooCommerce 8.7 - 9.3
 * Bootstrap v5.3.3
