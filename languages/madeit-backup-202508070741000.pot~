@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-07 07:41+0000\n"
+"POT-Creation-Date: 2025-08-05 11:01+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -884,10 +884,6 @@ msgstr ""
 msgid "Titel"
 msgstr ""
 
-#: inc/woo-b2b.php:162
-msgid "Toevoegen aan favorieten"
-msgstr ""
-
 #: functions.php:321
 msgid "Top Menu"
 msgstr ""
@@ -956,10 +952,6 @@ msgstr ""
 
 #: inc/add-to-cart-ajax.php:68 inc/add-to-cart-ajax.php:90
 msgid "Verder winkelen"
-msgstr ""
-
-#: inc/woo-b2b.php:160
-msgid "Verwijderen uit favorieten"
 msgstr ""
 
 #: inc/review-form.php:77 inc/review-form.php:138

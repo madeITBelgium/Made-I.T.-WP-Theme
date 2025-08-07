@@ -157,9 +157,9 @@ function madeit_b2b_favorite_btn()
 
     $favorites = madeit_b2b_get_user_favorite_products();
     if(is_array($favorites) && in_array($product->get_id(), $favorites)) {
-        echo '<div class="d-block mb-2"><a href="#" class="btn btn-sm btn-outline-' . esc_attr($favoritesButtonColor) . ' b2b-madeit-remove-favorite" data-product-id="' . $product->get_id() . '"><i class="fas fa-heart"></i> <span class="txt">Verwijderen uit favorieten</span></a></div>';
+        echo '<div class="d-block mb-2"><a href="#" class="btn btn-sm btn-outline-' . esc_attr($favoritesButtonColor) . ' b2b-madeit-remove-favorite" data-product-id="' . $product->get_id() . '"><i class="fas fa-heart"></i> <span class="txt">' . __('Verwijderen uit favorieten', 'madeit') . '</span></a></div>';
     } else {
-        echo '<div class="d-block mb-2"><a href="#" class="btn btn-sm btn-outline-' . esc_attr($favoritesButtonColor) . ' b2b-madeit-add-favorite" data-product-id="' . $product->get_id() . '"><i class="far fa-heart"></i> <span class="txt">Toevoegen aan favorieten</span></a></div>';
+        echo '<div class="d-block mb-2"><a href="#" class="btn btn-sm btn-outline-' . esc_attr($favoritesButtonColor) . ' b2b-madeit-add-favorite" data-product-id="' . $product->get_id() . '"><i class="far fa-heart"></i> <span class="txt">' . __('Toevoegen aan favorieten', 'madeit') . '</span></a></div>';
     }
 }
 add_action('woocommerce_after_shop_loop_item', 'madeit_b2b_favorite_btn', 10);

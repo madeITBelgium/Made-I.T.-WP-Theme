@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Made I.T.\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-08-05 11:01+0000\n"
-"PO-Revision-Date: 2025-08-05 11:09+0000\n"
+"PO-Revision-Date: 2025-08-07 07:41+0000\n"
 "Last-Translator: \n"
 "Language-Team: English (United States)\n"
 "Language: en_US\n"
@@ -900,6 +900,10 @@ msgstr "This controls the description which the user sees during checkout."
 msgid "Titel"
 msgstr "Titel"
 
+#: inc/woo-b2b.php:162
+msgid "Toevoegen aan favorieten"
+msgstr "Add to favorites"
+
 #: functions.php:321
 msgid "Top Menu"
 msgstr "Top Menu"
@@ -974,6 +978,10 @@ msgstr ""
 #: inc/add-to-cart-ajax.php:68 inc/add-to-cart-ajax.php:90
 msgid "Verder winkelen"
 msgstr "Verder winkelen"
+
+#: inc/woo-b2b.php:160
+msgid "Verwijderen uit favorieten"
+msgstr "Remove from favorites"
 
 #: inc/review-form.php:77 inc/review-form.php:138
 msgid "Verzenden"

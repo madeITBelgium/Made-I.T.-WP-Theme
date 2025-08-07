@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Made I.T.\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-08-05 11:01+0000\n"
-"PO-Revision-Date: 2025-08-05 11:08+0000\n"
+"PO-Revision-Date: 2025-08-07 07:42+0000\n"
 "Last-Translator: \n"
 "Language-Team: French (France)\n"
 "Language: fr_FR\n"
@@ -908,6 +908,10 @@ msgstr ""
 msgid "Titel"
 msgstr "Titre"
 
+#: inc/woo-b2b.php:162
+msgid "Toevoegen aan favorieten"
+msgstr "Ajouter aux favoris"
+
 #: functions.php:321
 msgid "Top Menu"
 msgstr "Menu du haut"
@@ -985,6 +989,10 @@ msgstr ""
 #: inc/add-to-cart-ajax.php:68 inc/add-to-cart-ajax.php:90
 msgid "Verder winkelen"
 msgstr "Voir la page d'accueil"
+
+#: inc/woo-b2b.php:160
+msgid "Verwijderen uit favorieten"
+msgstr "Supprimer des favoris"
 
 #: inc/review-form.php:77 inc/review-form.php:138
 msgid "Verzenden"
