@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Made I.T.\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-08-05 11:01+0000\n"
-"PO-Revision-Date: 2025-08-07 08:36+0000\n"
+"PO-Revision-Date: 2025-08-07 07:42+0000\n"
 "Last-Translator: \n"
 "Language-Team: French (France)\n"
 "Language: fr_FR\n"
@@ -127,7 +127,7 @@ msgstr "Ouvrir une fenêtre contextuelle"
 
 #: inc/add-to-cart-ajax.php:67 inc/add-to-cart-ajax.php:89
 msgid "Bekijk winkelwagen"
-msgstr "Voir votre panier"
+msgstr "Voir la liste des produits"
 
 #: functions.php:598
 msgid "Below index blog"
@@ -686,7 +686,7 @@ msgstr "Politique de confidentialité"
 
 #: inc/add-to-cart-ajax.php:62 inc/add-to-cart-ajax.php:82
 msgid "Product toegevoegd aan winkelwagen"
-msgstr "Produit ajouté au panier"
+msgstr "Produit à livrer à l'étranger"
 
 #: template-parts/footer/site-info.php:15
 #, php-format
@@ -988,7 +988,7 @@ msgstr ""
 
 #: inc/add-to-cart-ajax.php:68 inc/add-to-cart-ajax.php:90
 msgid "Verder winkelen"
-msgstr "Continuer vos achats"
+msgstr "Voir la page d'accueil"
 
 #: inc/woo-b2b.php:160
 msgid "Verwijderen uit favorieten"
