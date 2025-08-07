@@ -53,10 +53,20 @@ if(defined('MADEIT_WOO_B2B_ONLY') && MADEIT_WOO_B2B_ONLY) {
         if(!madeit_b2b_is_purchasable($product->is_purchasable(), $product)) {
             return '';
         }
-
+        
 
         if ( ! $product->get_sale_price() || ! $product->get_regular_price() || $product->get_sale_price() >= $product->get_regular_price() ) {
             return $price;
+        }
+
+        //Check if sales date is current
+        $sale_from = $product->get_date_on_sale_from();
+        $sale_to = $product->get_date_on_sale_to();
+        if ($sale_from && $sale_from->getTimestamp() > time()) {
+            return $price; // Sale not started yet
+        }
+        if ($sale_to && $sale_to->getTimestamp() < time()) {
+            return $price; // Sale ended
         }
 
         return wc_format_sale_price(
@@ -106,6 +116,16 @@ if(defined('MADEIT_WOO_B2B_ONLY') && MADEIT_WOO_B2B_ONLY) {
     function ran_woocommerce_cart_product_price( $price_html, $product ) {
         if ( ! $product->get_sale_price() || ! $product->get_regular_price() || $product->get_sale_price() >= $product->get_regular_price() ) {
             return $price_html;
+        }
+
+        //Check if sales date is current
+        $sale_from = $product->get_date_on_sale_from();
+        $sale_to = $product->get_date_on_sale_to();
+        if ($sale_from && $sale_from->getTimestamp() > time()) {
+            return $price_html; // Sale not started yet
+        }
+        if ($sale_to && $sale_to->getTimestamp() < time()) {
+            return $price_html; // Sale ended
         }
 
         return wc_format_sale_price(
