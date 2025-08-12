@@ -194,10 +194,12 @@ export function ColumnsEditContainer( props ) {
     else {
         style.color = rowTextColor.color;
     }
+
     
+
     const blockProps = useBlockProps({
         className: classes,
-        style: style,
+        // style: style,
     });
     
     return [
@@ -367,14 +369,15 @@ export function ColumnsEditContainer( props ) {
                     value={ verticalAlignment }
                 />
             </BlockControls>,
-        <div { ...blockProps }>
-            <div className={ classesChild }
-            style = { styleChild }>
-                <InnerBlocks
-                    orientation="horizontal"
-                    allowedBlocks={ ALLOWED_BLOCKS } />
+            <div { ...blockProps } style={ rowBackgroundColor.color ? { backgroundColor: rowBackgroundColor.color } : {} }>
+                {/* This is the container classname (container, container-fluid ) */}
+                <div className={ `${classesChild} maxContainerSize` } style={ style }>
+                    <InnerBlocks
+                        orientation="horizontal"
+                        allowedBlocks={ ALLOWED_BLOCKS } 
+                    />
+                </div>
             </div>
-        </div>
     ];
 }
 

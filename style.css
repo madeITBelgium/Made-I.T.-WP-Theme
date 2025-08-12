@@ -4,7 +4,7 @@ Theme URI: https://www.madeit.be
 Author: Made I.T.
 Author URI: https://wordpress.org/
 Description: 
-Version: 2.10.11
+Version: 2.11.0
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: madeit
@@ -1186,7 +1186,6 @@ mark, .mark {
 
 ul.alert {
     list-style: none;
-    padding-left: 0;
 }
 
 .madeit-locked-content {
@@ -1291,4 +1290,8 @@ ul.alert {
 
 .grecaptcha-badge {
     display: none !important;
+}
+
+.woocommerce-MyAccount-navigation {
+    margin-bottom: 3rem;
 }

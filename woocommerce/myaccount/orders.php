@@ -14,7 +14,7 @@
  *
  * @see https://woocommerce.com/document/template-structure/
  * @package WooCommerce\Templates
- * @version 9.2.0
+ * @version 9.5.0
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -35,8 +35,7 @@ do_action( 'woocommerce_before_account_orders', $has_orders ); ?>
                         </tr>
                     </thead>
 
-
-					<tbody>
+                    <tbody>
                         <?php
                         foreach ( $customer_orders->orders as $customer_order ) {
                             $order      = wc_get_order( $customer_order ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
@@ -44,21 +43,26 @@ do_action( 'woocommerce_before_account_orders', $has_orders ); ?>
                             ?>
                             <tr class="woocommerce-orders-table__row woocommerce-orders-table__row--status-<?php echo esc_attr( $order->get_status() ); ?> order">
                                 <?php foreach ( wc_get_account_orders_columns() as $column_id => $column_name ) :
-                                    $is_order_number = 'order-number' === $column_id; ?>
+                                    $is_order_number = 'order-number' === $column_id;
+                                ?>
                                     <?php if ( $is_order_number ) : ?>
                                         <th class="woocommerce-orders-table__cell woocommerce-orders-table__cell-<?php echo esc_attr( $column_id ); ?>" data-title="<?php echo esc_attr( $column_name ); ?>" scope="row">
                                     <?php else : ?>
                                         <td class="woocommerce-orders-table__cell woocommerce-orders-table__cell-<?php echo esc_attr( $column_id ); ?>" data-title="<?php echo esc_attr( $column_name ); ?>">
                                     <?php endif; ?>
+
                                         <?php if ( has_action( 'woocommerce_my_account_my_orders_column_' . $column_id ) ) : ?>
                                             <?php do_action( 'woocommerce_my_account_my_orders_column_' . $column_id, $order ); ?>
+
                                         <?php elseif ( $is_order_number ) : ?>
                                             <?php /* translators: %s: the order number, usually accompanied by a leading # */ ?>
-								            <a href="<?php echo esc_url( $order->get_view_order_url() ); ?>" aria-label="<?php echo esc_attr( sprintf( __( 'View order number %s', 'woocommerce' ), $order->get_order_number() ) ); ?>">
+                                            <a href="<?php echo esc_url( $order->get_view_order_url() ); ?>" aria-label="<?php echo esc_attr( sprintf( __( 'View order number %s', 'woocommerce' ), $order->get_order_number() ) ); ?>">
                                                 <?php echo esc_html( _x( '#', 'hash before order number', 'woocommerce' ) . $order->get_order_number() ); ?>
                                             </a>
+
                                         <?php elseif ( 'order-date' === $column_id ) : ?>
                                             <time datetime="<?php echo esc_attr( $order->get_date_created()->date( 'c' ) ); ?>"><?php echo esc_html( wc_format_datetime( $order->get_date_created() ) ); ?></time>
+
                                         <?php elseif ( 'order-status' === $column_id ) : ?>
                                             <?php echo esc_html( wc_get_order_status_name( $order->get_status() ) ); ?>
 
@@ -74,12 +78,20 @@ do_action( 'woocommerce_before_account_orders', $has_orders ); ?>
 
                                             if ( ! empty( $actions ) ) {
                                                 foreach ( $actions as $key => $action ) { // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-                                                    /* translators: %s: order number */
-										            echo '<a href="' . esc_url( $action['url'] ) . '" class="woocommerce-button' . esc_attr( $wp_button_class ) . ' button ' . sanitize_html_class( $key ) . '" aria-label="' . esc_attr( sprintf( __( 'View order number %s', 'woocommerce' ), $order->get_order_number() ) ) . '">' . esc_html( $action['name'] ) . '</a>';
+                                                    if ( empty( $action['aria-label'] ) ) {
+                                                        // Generate the aria-label based on the action name.
+                                                        /* translators: %1$s Action name, %2$s Order number. */
+                                                        $action_aria_label = sprintf( __( '%1$s order number %2$s', 'woocommerce' ), $action['name'], $order->get_order_number() );
+                                                    } else {
+                                                        $action_aria_label = $action['aria-label'];
+                                                    }
+                                                    echo '<a href="' . esc_url( $action['url'] ) . '" class="woocommerce-button' . esc_attr( $wp_button_class ) . ' button ' . sanitize_html_class( $key ) . '" aria-label="' . esc_attr( $action_aria_label ) . '">' . esc_html( $action['name'] ) . '</a>';
+                                                    unset( $action_aria_label );
                                                 }
                                             }
                                             ?>
                                         <?php endif; ?>
+
                                     <?php if ( $is_order_number ) : ?>
                                         </th>
                                     <?php else : ?>
@@ -91,24 +103,24 @@ do_action( 'woocommerce_before_account_orders', $has_orders ); ?>
                         }
                         ?>
                     </tbody>
-				</table>
+                </table>
 			</div>
 		</div>
 	</div>
 
-	<?php do_action('woocommerce_before_account_orders_pagination'); ?>
+	<?php do_action( 'woocommerce_before_account_orders_pagination' ); ?>
 
-	<?php if (1 < $customer_orders->max_num_pages) { ?>
+	<?php if ( 1 < $customer_orders->max_num_pages ) : ?>
 		<div class="woocommerce-pagination woocommerce-pagination--without-numbers woocommerce-Pagination">
-			<?php if (1 !== $current_page) { ?>
-				<a class="woocommerce-button woocommerce-button--previous woocommerce-Button woocommerce-Button--previous button" href="<?php echo esc_url(wc_get_endpoint_url('orders', $current_page - 1)); ?>"><?php esc_html_e('Previous', 'woocommerce'); ?></a>
-			<?php } ?>
+			<?php if ( 1 !== $current_page ) : ?>
+				<a class="woocommerce-button woocommerce-button--previous woocommerce-Button woocommerce-Button--previous button<?php echo esc_attr( $wp_button_class ); ?>" href="<?php echo esc_url( wc_get_endpoint_url( 'orders', $current_page - 1 ) ); ?>"><?php esc_html_e( 'Previous', 'woocommerce' ); ?></a>
+			<?php endif; ?>
 
-			<?php if (intval($customer_orders->max_num_pages) !== $current_page) { ?>
-				<a class="woocommerce-button woocommerce-button--next woocommerce-Button woocommerce-Button--next button" href="<?php echo esc_url(wc_get_endpoint_url('orders', $current_page + 1)); ?>"><?php esc_html_e('Next', 'woocommerce'); ?></a>
-			<?php } ?>
+			<?php if ( intval( $customer_orders->max_num_pages ) !== $current_page ) : ?>
+				<a class="woocommerce-button woocommerce-button--next woocommerce-Button woocommerce-Button--next button<?php echo esc_attr( $wp_button_class ); ?>" href="<?php echo esc_url( wc_get_endpoint_url( 'orders', $current_page + 1 ) ); ?>"><?php esc_html_e( 'Next', 'woocommerce' ); ?></a>
+			<?php endif; ?>
 		</div>
-	<?php } ?>
+	<?php endif; ?>
 
 <?php } else { ?>
 	<?php wc_print_notice( esc_html__( 'No order has been made yet.', 'woocommerce' ) . ' <a class="woocommerce-Button wc-forward button' . esc_attr( $wp_button_class ) . '" href="' . esc_url( apply_filters( 'woocommerce_return_to_shop_redirect', wc_get_page_permalink( 'shop' ) ) ) . '">' . esc_html__( 'Browse products', 'woocommerce' ) . '</a>', 'notice' ); // phpcs:ignore WooCommerce.Commenting.CommentHooks.MissingHookComment ?>

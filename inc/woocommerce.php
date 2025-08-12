@@ -78,8 +78,6 @@ add_filter('woocommerce_after_checkout_billing_form', 'madeit_woocommerce_after_
 add_filter('woocommerce_after_checkout_shipping_form', 'madeit_woocommerce_after_checkout_billing_form', 99);
 add_filter('woocommerce_after_order_notes', 'madeit_woocommerce_after_checkout_billing_form', 99);
 
-remove_action('woocommerce_cart_is_empty', 'wc_empty_cart_message', 10);
-
 function madeit_woocommerce_webhook_payload($payload, $resource, $resource_id, $id)
 {
     $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
@@ -173,4 +171,125 @@ if (defined('MADEIT_WOO_QUANTITY_LOOP') && MADEIT_WOO_QUANTITY_LOOP) {
         return $html;
     }
     add_filter('woocommerce_loop_add_to_cart_link', 'quantity_for_woocommerce_loop', 10, 2);
+}
+
+/* Add tracking to email and My Account area */
+add_action( 'acf/include_fields', function() {
+    if ( ! function_exists( 'acf_add_local_field_group' ) ) {
+		return;
+	}
+
+	acf_add_local_field_group( array(
+        'key' => 'group_6891c4507a4fb',
+        'title' => 'Track en Trace',
+        'fields' => array(
+            array(
+                'key' => 'field_6891c452d0964',
+                'label' => 'Track & Trace URL',
+                'name' => 'tracking_url',
+                'aria-label' => '',
+                'type' => 'text',
+                'instructions' => '',
+                'required' => 0,
+                'conditional_logic' => 0,
+                'wrapper' => array(
+                    'width' => '',
+                    'class' => '',
+                    'id' => '',
+                ),
+                'relevanssi_exclude' => 1,
+                'wpml_cf_preferences' => 2,
+                'default_value' => '',
+                'maxlength' => '',
+                'allow_in_bindings' => 0,
+                'placeholder' => '',
+                'prepend' => '',
+                'append' => '',
+            ),
+        ),
+        'location' => array(
+            array(
+                array(
+                    'param' => 'post_type',
+                    'operator' => '==',
+                    'value' => 'shop_order',
+                ),
+            ),
+        ),
+        'menu_order' => 0,
+        'position' => 'normal',
+        'style' => 'default',
+        'label_placement' => 'top',
+        'instruction_placement' => 'label',
+        'hide_on_screen' => '',
+        'active' => true,
+        'description' => '',
+        'show_in_rest' => 0,
+        'acfml_field_group_mode' => 'translation',
+    ) );
+} );
+
+// Examine the tracking url and return a provider name.
+function madeit_get_tracking_info_to_order_completed_email( $url ) {
+    if ( strpos( $url, 'postnl' ) !== false ) {
+        return 'Post NL';
+    }
+    if ( strpos( $url, 'bpost' ) !== false ) {
+        return 'Bpost';
+    }
+
+    // Unknown provider.
+    return null;
+}
+
+add_action( 'woocommerce_email_order_details', 'madeit_add_tracking_info_to_order_completed_email', 5, 4 ); 
+function madeit_add_tracking_info_to_order_completed_email( $order, $sent_to_admin, $plain_text, $email ) {
+    if ( 'customer_completed_order' == $email->id ) {
+        $order_id = $order->get_id();
+        $tracking_url = get_post_meta( $order_id, 'tracking_url', true );
+
+        if (empty( $tracking_url ) ) {
+            return;
+        }
+
+        $tracking_provider = madeit_get_tracking_info_to_order_completed_email( $tracking_url );
+
+        if ( $plain_text ) {
+            if ( ! empty( $tracking_provider ) ) {
+                printf( "\n" . __('Uw order is verzonden met %s. Je kan uw order volgen via %s.', 'madeit') . "\n", $tracking_provider, esc_url($tracking_url, array('http', 'https')));
+            }
+            else {
+                printf( "\n" . __('Uw order is verzonden. Je kan uw order volgen via %s.', 'madeit') . "\n", esc_url($tracking_url, array( 'http', 'https' ) ) );
+            }
+        }
+        else {
+            if ( ! empty( $tracking_provider ) ) {
+                printf( '<p>' . __('Uw order is verzonden met <strong>%s</strong>. Je kan uw order volgen via <strong><a href="%s">%s</a></strong>.</p>', 'madeit') . '</p>', $tracking_provider, esc_url( $tracking_url, array( 'http', 'https' ) ), esc_url( $tracking_url, array( 'http', 'https' ) ) );
+            }
+            else {
+                printf( '<p>' . __('Uw order is verzonden. Je kan uw order volgen via <strong><a href="%s">%s</a></strong>.</p>', 'madeit') . '</p>', esc_url( $tracking_url, array( 'http', 'https' ) ), esc_url( $tracking_url, array( 'http', 'https' ) ) );
+            }
+        }
+    }
+}
+
+// Display tracking information in My Account area.
+add_action( 'woocommerce_view_order', 'madeit_add_tracking_info_to_view_order_page', 5 );
+function madeit_add_tracking_info_to_view_order_page( $order_id ) {
+    $tracking_url = get_post_meta( $order_id, 'tracking_url', true );
+
+    // Quit if either tracking field is empty.
+    if (empty( $tracking_url ) ) {
+        // Debugging code.
+        echo '<p>' . __('Sorry, er is momenteel nog geen tracking informatie beschikbaar.', 'madeit') . '</p>';
+        return;
+    }
+
+    $tracking_provider = madeit_get_tracking_info_to_order_completed_email( $tracking_url );
+    if ( ! empty( $tracking_provider ) ) {
+        printf( '<p>' . __('Uw order is verzonden met <strong>%s</strong>. Je kan uw order volgen via <strong><a href="%s">%s</a></strong>.</p>', 'madeit') . '</p>', $tracking_provider, esc_url( $tracking_url, array( 'http', 'https' ) ), esc_url( $tracking_url, array( 'http', 'https' ) ) );
+    }
+    else {
+        printf( '<p>' . __('Uw order is verzonden. Je kan uw order volgen via <strong><a href="%s">%s</a></strong>.</p>', 'madeit') . '</p>', esc_url( $tracking_url, array( 'http', 'https' ) ), esc_url( $tracking_url, array( 'http', 'https' ) ) );
+    }
 }

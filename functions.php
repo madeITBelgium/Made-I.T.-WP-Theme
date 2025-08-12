@@ -114,7 +114,6 @@ if (!defined('MADEIT_RECEIVE_REVIEWS')) {
     define('MADEIT_RECEIVE_REVIEWS', false);
 }
 
-
 if(!defined('MADEIT_WOOCOMMERCE_ADD_PRODUCT_AJAX')) {
     define('MADEIT_WOOCOMMERCE_ADD_PRODUCT_AJAX', true);
 }
@@ -129,6 +128,12 @@ if(!defined('MADEIT_WOO_B2B')) {
 if(!defined('MADEIT_WOO_B2B_ONLY')) {
     define('MADEIT_WOO_B2B_ONLY', false);
 }
+
+//Added in 2.11.0
+if (!defined('MADEIT_FEEDBACK')) {
+    define('MADEIT_FEEDBACK', false);
+}
+
 
 if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
     require get_template_directory().'/inc/back-compat.php';
@@ -1151,6 +1156,7 @@ if (!function_exists('madeit_add_image_popup_class')) {
 
             // Verwijder onnodige tags
             $html = preg_replace('/(<!DOCTYPE.*>)|<html>|<body>|<\/body>|<\/html>/', '', $html);
+            $html = str_replace('<?xml encoding="utf-8" ?>', '', $html);
 
             return $html;
         }
@@ -2079,6 +2085,11 @@ if (in_array('woocommerce/woocommerce.php', $activePlugins)) {
     if(defined('MADEIT_WOO_B2B') && MADEIT_WOO_B2B) {
         require get_parent_theme_file_path('/inc/woo-b2b.php');
     }
+
+
+    if(class_exists('ACF') && defined('MADEIT_CATEGORIE_SEO_PAGES') && MADEIT_CATEGORIE_SEO_PAGES) {
+        require get_parent_theme_file_path('/inc/categorie-seo-pages.php');
+    }
 }
 
 if(class_exists('ACF')) {
@@ -2088,8 +2099,21 @@ if(class_exists('ACF')) {
 
 if(MADEIT_BOOTSTRAP_VERSION === 5) {
     //replace data-toggle with data-bs-toggle in the_content
-    add_filter('the_content', 'madeit_replace_data_toggle', 10);
+    function madeit_fix_bs_5() {
+        if (!is_admin()) {
+            add_filter('the_content', 'madeit_replace_data_toggle', 10);
+        }
+    }
+    //run only on the front end
+    add_action('init', 'madeit_fix_bs_5');
+    
+
     function madeit_replace_data_toggle($content) {
         return str_replace('data-toggle', 'data-bs-toggle', $content);
     }
+}
+
+
+if(MADEIT_FEEDBACK) {
+    require get_parent_theme_file_path('/feedback/feedback.php');
 }

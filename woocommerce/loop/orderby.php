@@ -12,7 +12,7 @@
  *
  * @see         https://docs.woocommerce.com/document/template-structure/
  *
- * @version     3.6.0
+ * @version     9.7.0
  */
 if (!defined('ABSPATH')) {
     exit;
@@ -20,11 +20,22 @@ if (!defined('ABSPATH')) {
 
 ?>
 <form class="woocommerce-ordering" method="get">
-	<select name="orderby" class="orderby form-select" aria-label="<?php esc_attr_e('Shop order', 'woocommerce'); ?>">
-		<?php foreach ($catalog_orderby_options as $id => $name) { ?>
-			<option value="<?php echo esc_attr($id); ?>" <?php selected($orderby, $id); ?>><?php echo esc_html($name); ?></option>
-		<?php } ?>
-	</select>
+    <?php if ( $use_label ) : ?>
+        <label for="woocommerce-orderby-<?php echo esc_attr( $id_suffix ); ?>"><?php echo esc_html__( 'Sort by', 'woocommerce' ); ?></label>
+    <?php endif; ?>
+    <select
+        name="orderby"
+        class="orderby form-select"
+        <?php if ( $use_label ) : ?>
+            id="woocommerce-orderby-<?php echo esc_attr( $id_suffix ); ?>"
+        <?php else : ?>
+            aria-label="<?php esc_attr_e( 'Shop order', 'woocommerce' ); ?>"
+        <?php endif; ?>
+    >
+        <?php foreach ( $catalog_orderby_options as $id => $name ) : ?>
+            <option value="<?php echo esc_attr( $id ); ?>" <?php selected( $orderby, $id ); ?>><?php echo esc_html( $name ); ?></option>
+        <?php endforeach; ?>
+    </select>
 	<input type="hidden" name="paged" value="1" />
 	<?php wc_query_string_form_fields(null, ['orderby', 'submit', 'paged', 'product-page']); ?>
 </form>
