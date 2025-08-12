@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Plugin Name: content — CGB Gutenberg Block Plugin
  * Plugin URI: https://github.com/ahmadawais/create-guten-block/
