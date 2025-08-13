@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             $this.querySelector('i').classList.remove('far');
                             $this.querySelector('i').classList.add('fas');
 
-                            $this.querySelector('.txt').textContent = 'Verwijderen uit favorieten';
+                            $this.querySelector('.txt').textContent = wp.i18n.__('Verwijderen uit favorieten', 'madeit');
                         } else {
                             $this.classList.remove('b2b-madeit-remove-favorite');
                             $this.classList.add('b2b-madeit-add-favorite');
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             $this.querySelector('i').classList.remove('fas');
                             $this.querySelector('i').classList.add('far');
 
-                            $this.querySelector('.txt').textContent = 'Toevoegen aan favorieten';
+                            $this.querySelector('.txt').textContent = wp.i18n.__('Toevoegen aan favorieten', 'madeit');
                         }
                     }
                 });

@@ -2,17 +2,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Made I.T.\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-05 11:01+0000\n"
-"PO-Revision-Date: 2025-08-07 08:36+0000\n"
-"Last-Translator: \n"
+"Last-Translator: Tjebbe Lievens\n"
 "Language-Team: French (France)\n"
-"Language: fr_FR\n"
-"Plural-Forms: nplurals=2; plural=n > 1;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2025-08-05 11:01+0000\n"
+"PO-Revision-Date: 2025-08-13 13:55+0000\n"
+"Language: fr_FR\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Loco https://localise.biz/\n"
-"X-Loco-Version: 2.8.0; wp-6.8.2; php-8.3.9"
+"X-Loco-Version: 2.8.0; wp-6.8.2; php-8.3.19\n"
 
 #: functions.php:1525
 msgid "%d item"
@@ -28,7 +28,7 @@ msgstr "%s <span class=\"says\">:</span>"
 #. used between list items, there is a space after the comma
 #: inc/template-tags.php:75
 msgid ", "
-msgstr ","
+msgstr ", "
 
 #: inc/template-functions.php:145
 #, php-format
@@ -66,7 +66,7 @@ msgstr "Accepter"
 
 #: inc/woo-b2b.php:36
 msgid "Account aanmaken"
-msgstr "Compte ouvert"
+msgstr "Créez un compte"
 
 #: inc/reviews.php:84
 msgid "Add new"
@@ -908,7 +908,7 @@ msgstr ""
 msgid "Titel"
 msgstr "Titre"
 
-#: inc/woo-b2b.php:162
+#: inc/woo-b2b.php:162 assets/js/b2b.js:44
 msgid "Toevoegen aan favorieten"
 msgstr "Ajouter aux favoris"
 
@@ -990,7 +990,7 @@ msgstr ""
 msgid "Verder winkelen"
 msgstr "Continuer vos achats"
 
-#: inc/woo-b2b.php:160
+#: inc/woo-b2b.php:160 assets/js/b2b.js:35
 msgid "Verwijderen uit favorieten"
 msgstr "Supprimer des favoris"
 
