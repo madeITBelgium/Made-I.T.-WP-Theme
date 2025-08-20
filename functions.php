@@ -1974,6 +1974,50 @@ if (!function_exists('madeit_rgb_colors_inline')) {
     add_action('wp_enqueue_scripts', 'madeit_rgb_colors_inline');
 }
 
+// Voeg een zichtbaarheidsveld toe aan menu-items
+function madeit_add_custom_menu_field($item_id, $item, $depth, $args, $id) {
+    $visibility = get_post_meta($item->ID, '_menu_item_visibility', true);
+    ?>
+    <p class="field-visibility description description-wide">
+        <label for="edit-menu-item-visibility-<?php echo $item_id; ?>">
+            Zichtbaarheid<br />
+            <select id="edit-menu-item-visibility-<?php echo $item_id; ?>" class="widefat edit-menu-item-visibility" name="menu-item-visibility[<?php echo $item_id; ?>]">
+                <option value="" <?php selected($visibility, ''); ?>>Alle gebruikers</option>
+                <option value="logged_in" <?php selected($visibility, 'logged_in'); ?>>Alleen ingelogde gebruikers</option>
+                <option value="logged_out" <?php selected($visibility, 'logged_out'); ?>>Alleen uitgelogde gebruikers</option>
+            </select>
+        </label>
+    </p>
+    <?php
+}
+add_action('wp_nav_menu_item_custom_fields', 'madeit_add_custom_menu_field', 10, 5);
+
+// Sla de zichtbaarheid-optie op
+function madeit_save_menu_item_visibility($menu_id, $menu_item_db_id, $args) {
+    if (isset($_POST['menu-item-visibility'][$menu_item_db_id])) {
+        update_post_meta($menu_item_db_id, '_menu_item_visibility', sanitize_text_field($_POST['menu-item-visibility'][$menu_item_db_id]));
+    } else {
+        delete_post_meta($menu_item_db_id, '_menu_item_visibility');
+    }
+}
+add_action('wp_update_nav_menu_item', 'madeit_save_menu_item_visibility', 10, 3);
+
+// Filter menu-items op basis van zichtbaarheid
+function madeit_filter_menu_items_based_on_visibility($items, $args) {
+    foreach ($items as $key => $item) {
+        $visibility = get_post_meta($item->ID, '_menu_item_visibility', true);
+
+        if ($visibility === 'logged_in' && !is_user_logged_in()) {
+            unset($items[$key]);
+        } elseif ($visibility === 'logged_out' && is_user_logged_in()) {
+            unset($items[$key]);
+        }
+    }
+    return $items;
+}
+add_filter('wp_nav_menu_objects', 'madeit_filter_menu_items_based_on_visibility', 10, 2);
+
+
 /**
  * CSS Cache mechanisme.
  */
