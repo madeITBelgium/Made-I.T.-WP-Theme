@@ -1,0 +1,21 @@
+{
+    "translation-revision-date": "2025-08-13 13:55+0000",
+    "generator": "WP-CLI\/2.11.0",
+    "source": "assets\/js\/b2b.js",
+    "domain": "messages",
+    "locale_data": {
+        "messages": {
+            "": {
+                "domain": "messages",
+                "lang": "fr_FR",
+                "plural-forms": "nplurals=2; plural=n > 1;"
+            },
+            "Toevoegen aan favorieten": [
+                "Ajouter aux favoris"
+            ],
+            "Verwijderen uit favorieten": [
+                "Supprimer des favoris"
+            ]
+        }
+    }
+}

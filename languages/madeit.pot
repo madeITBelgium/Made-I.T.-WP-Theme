@@ -884,7 +884,7 @@ msgstr ""
 msgid "Titel"
 msgstr ""
 
-#: inc/woo-b2b.php:162
+#: inc/woo-b2b.php:162 assets/js/b2b.js:44
 msgid "Toevoegen aan favorieten"
 msgstr ""
 
@@ -958,7 +958,7 @@ msgstr ""
 msgid "Verder winkelen"
 msgstr ""
 
-#: inc/woo-b2b.php:160
+#: inc/woo-b2b.php:160 assets/js/b2b.js:35
 msgid "Verwijderen uit favorieten"
 msgstr ""
 

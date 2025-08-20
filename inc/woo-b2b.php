@@ -188,7 +188,8 @@ add_action('woocommerce_single_product_summary', 'madeit_b2b_favorite_btn', 30);
 //add javascript
 function madeit_b2b_enqueue_scripts()
 {
-    wp_enqueue_script('madeit-b2b-js', get_theme_file_uri('/assets/js/b2b.js'), [], wp_get_theme()->get('Version'), true);
+    wp_enqueue_script('madeit-b2b-js', get_theme_file_uri('/assets/js/b2b.js'), ['wp-i18n'], wp_get_theme()->get('Version'), true);
+    wp_set_script_translations( 'madeit-b2b-js', 'madeit', get_template_directory() . '/languages' );
 }
 add_action('wp_enqueue_scripts', 'madeit_b2b_enqueue_scripts');
 

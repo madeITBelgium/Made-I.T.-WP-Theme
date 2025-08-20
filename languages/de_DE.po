@@ -2,17 +2,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Made I.T.\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-05 11:01+0000\n"
-"PO-Revision-Date: 2025-08-05 11:10+0000\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
-"Language: de_DE\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2025-08-05 11:01+0000\n"
+"PO-Revision-Date: 2025-08-05 11:10+0000\n"
+"Language: de_DE\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Loco https://localise.biz/\n"
-"X-Loco-Version: 2.8.0; wp-6.8.2; php-8.3.9"
+"X-Loco-Version: 2.8.0; wp-6.8.2; php-8.3.9\n"
 
 #: functions.php:1525
 msgid "%d item"
@@ -84,7 +84,10 @@ msgstr ""
 msgid "Add widgets here to appear below your blog/news list."
 msgstr ""
 
-#: functions.php:560 functions.php:570 functions.php:580 functions.php:590
+#: functions.php:560
+#: functions.php:570
+#: functions.php:580
+#: functions.php:590
 msgid "Add widgets here to appear in your footer."
 msgstr ""
 
@@ -93,8 +96,7 @@ msgid "Add widgets here to appear in your left sidebar."
 msgstr ""
 
 #: functions.php:540
-msgid ""
-"Add widgets here to appear in your sidebar on blog posts and archive pages."
+msgid "Add widgets here to appear in your sidebar on blog posts and archive pages."
 msgstr ""
 
 #: inc/woo-b2b.php:348
@@ -109,7 +111,8 @@ msgstr ""
 msgid "Alle Popups"
 msgstr ""
 
-#: functions.php:385 inc/customizer.php:69
+#: functions.php:385
+#: inc/customizer.php:69
 msgid "Background Color"
 msgstr ""
 
@@ -117,11 +120,13 @@ msgstr ""
 msgid "Bedankt voor uw review!"
 msgstr ""
 
-#: inc/popup.php:17 inc/popup.php:18
+#: inc/popup.php:17
+#: inc/popup.php:18
 msgid "Bekijk Popup"
 msgstr ""
 
-#: inc/add-to-cart-ajax.php:67 inc/add-to-cart-ajax.php:89
+#: inc/add-to-cart-ajax.php:67
+#: inc/add-to-cart-ajax.php:89
 msgid "Bekijk winkelwagen"
 msgstr ""
 
@@ -129,7 +134,8 @@ msgstr ""
 msgid "Below index blog"
 msgstr ""
 
-#: inc/review-form.php:71 inc/review-form.php:132
+#: inc/review-form.php:71
+#: inc/review-form.php:132
 msgid "Beschrijving"
 msgstr ""
 
@@ -153,9 +159,7 @@ msgstr ""
 
 #: functions.php:1588
 #, php-format
-msgid ""
-"By using our website you are consenting to our use of cookies in accordance "
-"with our <a href=\"%s\">cookie & privacy policy</a>."
+msgid "By using our website you are consenting to our use of cookies in accordance with our <a href=\"%s\">cookie & privacy policy</a>."
 msgstr ""
 
 #: inc/template-tags.php:93
@@ -182,7 +186,8 @@ msgstr ""
 msgid "City"
 msgstr ""
 
-#: functions.php:1605 functions.php:1623
+#: functions.php:1605
+#: functions.php:1623
 msgid "Close"
 msgstr ""
 
@@ -229,7 +234,8 @@ msgid "Continue reading <span class=\"screen-reader-text\">\"%s\"</span>"
 msgstr ""
 
 #. %s: Name of current post
-#: functions.php:631 template-parts/page/content-front-page.php:38
+#: functions.php:631
+#: template-parts/page/content-front-page.php:38
 #: template-parts/page/content-page.php:26
 #, php-format
 msgid "Continue reading<span class=\"screen-reader-text\"> \"%s\"</span>"
@@ -251,7 +257,8 @@ msgstr ""
 msgid "Country"
 msgstr ""
 
-#: inc/sfwd-lms.php:74 inc/sfwd-lms.php:106
+#: inc/sfwd-lms.php:74
+#: inc/sfwd-lms.php:106
 msgid "Courses"
 msgstr ""
 
@@ -259,7 +266,8 @@ msgstr ""
 msgid "Custom"
 msgstr ""
 
-#: functions.php:415 inc/customizer.php:142
+#: functions.php:415
+#: inc/customizer.php:142
 msgid "Danger Color"
 msgstr ""
 
@@ -275,15 +283,18 @@ msgstr ""
 msgid "Default Header Image"
 msgstr ""
 
-#: inc/customizer.php:267 inc/customizer.php:429
+#: inc/customizer.php:267
+#: inc/customizer.php:429
 msgid "Do not show"
 msgstr ""
 
-#: inc/review-form.php:59 inc/review-form.php:119
+#: inc/review-form.php:59
+#: inc/review-form.php:119
 msgid "E-mailadres"
 msgstr ""
 
-#: inc/template-functions.php:127 inc/template-functions.php:148
+#: inc/template-functions.php:127
+#: inc/template-functions.php:148
 msgid "Edit"
 msgstr ""
 
@@ -348,7 +359,8 @@ msgstr ""
 msgid "Footer 4"
 msgstr ""
 
-#: footer-landing.php:20 footer.php:34
+#: footer-landing.php:20
+#: footer.php:34
 msgid "Footer Social Links Menu"
 msgstr ""
 
@@ -362,7 +374,8 @@ msgstr ""
 msgid "Front Page Section %d Content"
 msgstr ""
 
-#: inc/customizer.php:190 inc/customizer.php:321
+#: inc/customizer.php:190
+#: inc/customizer.php:321
 msgid "Full screen width"
 msgstr ""
 
@@ -378,7 +391,8 @@ msgstr ""
 msgid "Hide page title"
 msgstr ""
 
-#: inc/popup.php:22 inc/popup.php:40
+#: inc/popup.php:22
+#: inc/popup.php:40
 msgid "Hoofd Popup:"
 msgstr ""
 
@@ -394,7 +408,8 @@ msgstr ""
 msgid "https://www.madeit.be/"
 msgstr ""
 
-#: functions.php:405 inc/customizer.php:118
+#: functions.php:405
+#: inc/customizer.php:118
 msgid "Info Color"
 msgstr ""
 
@@ -411,16 +426,15 @@ msgid "It looks like nothing was found at this location. Maybe try a search?"
 msgstr ""
 
 #: template-parts/post/content-none.php:24
-msgid ""
-"It seems we can&rsquo;t find what you&rsquo;re looking for. Perhaps "
-"searching can help."
+msgid "It seems we can&rsquo;t find what you&rsquo;re looking for. Perhaps searching can help."
 msgstr ""
 
 #: inc/template-functions.php:152
 msgid "Je comentaar wacht op een review van de beheerder."
 msgstr ""
 
-#: inc/review-form.php:48 inc/review-form.php:108
+#: inc/review-form.php:48
+#: inc/review-form.php:108
 msgid "Klik op de sterren om een beoordeling te geven."
 msgstr ""
 
@@ -441,7 +455,8 @@ msgstr ""
 msgid "Last name"
 msgstr ""
 
-#: sidebar-left.php:15 functions.php:548
+#: sidebar-left.php:15
+#: functions.php:548
 msgid "Left Sidebar"
 msgstr ""
 
@@ -471,11 +486,11 @@ msgstr ""
 msgid "Made I.T."
 msgstr ""
 
-#: inc/back-compat.php:39 inc/back-compat.php:52 inc/back-compat.php:68
+#: inc/back-compat.php:39
+#: inc/back-compat.php:52
+#: inc/back-compat.php:68
 #, php-format
-msgid ""
-"Made I.T. requires at least WordPress version 4.7. You are running version "
-"%s. Please upgrade and try again."
+msgid "Made I.T. requires at least WordPress version 4.7. You are running version %s. Please upgrade and try again."
 msgstr ""
 
 #: functions.php:198
@@ -487,7 +502,8 @@ msgstr ""
 msgid "Menu"
 msgstr ""
 
-#: inc/review-form.php:53 inc/review-form.php:113
+#: inc/review-form.php:53
+#: inc/review-form.php:113
 msgid "Naam"
 msgstr ""
 
@@ -495,7 +511,8 @@ msgstr ""
 msgid "New Review"
 msgstr ""
 
-#: comments.php:68 inc/template-functions.php:212
+#: comments.php:68
+#: inc/template-functions.php:212
 msgid "Next"
 msgstr ""
 
@@ -515,11 +532,13 @@ msgstr ""
 msgid "No Reviews found in trash"
 msgstr ""
 
-#: inc/customizer.php:189 inc/customizer.php:320
+#: inc/customizer.php:189
+#: inc/customizer.php:320
 msgid "Normal screen width"
 msgstr ""
 
-#: search.php:19 template-parts/post/content-none.php:14
+#: search.php:19
+#: template-parts/post/content-none.php:14
 msgid "Nothing Found"
 msgstr ""
 
@@ -527,7 +546,8 @@ msgstr ""
 msgid "of"
 msgstr ""
 
-#: inc/customizer.php:168 inc/customizer.php:301
+#: inc/customizer.php:168
+#: inc/customizer.php:301
 msgid "One Column"
 msgstr ""
 
@@ -565,7 +585,8 @@ msgstr ""
 msgid "Pages:"
 msgstr ""
 
-#: inc/reviews.php:93 inc/reviews.php:111
+#: inc/reviews.php:93
+#: inc/reviews.php:111
 msgid "Parent Review:"
 msgstr ""
 
@@ -601,8 +622,13 @@ msgstr ""
 msgid "Please define default parameters in the form of an array."
 msgstr ""
 
-#: inc/customizer.php:268 inc/customizer.php:430 inc/popup.php:9
-#: inc/popup.php:10 inc/popup.php:11 inc/popup.php:34 inc/popup.php:44
+#: inc/customizer.php:268
+#: inc/customizer.php:430
+#: inc/popup.php:9
+#: inc/popup.php:10
+#: inc/popup.php:11
+#: inc/popup.php:34
+#: inc/popup.php:44
 msgid "Popup"
 msgstr ""
 
@@ -650,7 +676,8 @@ msgstr ""
 msgid "Posts"
 msgstr ""
 
-#: comments.php:67 inc/template-functions.php:202
+#: comments.php:67
+#: inc/template-functions.php:202
 msgid "Previous"
 msgstr ""
 
@@ -658,7 +685,8 @@ msgstr ""
 msgid "Previous Post"
 msgstr ""
 
-#: functions.php:390 inc/customizer.php:81
+#: functions.php:390
+#: inc/customizer.php:81
 msgid "Primary Color"
 msgstr ""
 
@@ -670,7 +698,8 @@ msgstr ""
 msgid "Privacy policy"
 msgstr ""
 
-#: inc/add-to-cart-ajax.php:62 inc/add-to-cart-ajax.php:82
+#: inc/add-to-cart-ajax.php:62
+#: inc/add-to-cart-ajax.php:82
 msgid "Product toegevoegd aan winkelwagen"
 msgstr ""
 
@@ -685,8 +714,7 @@ msgstr ""
 
 #: template-parts/post/content-none.php:20
 #, php-format
-msgid ""
-"Ready to publish your first post? <a href=\"%1$s\">Get started here</a>."
+msgid "Ready to publish your first post? <a href=\"%1$s\">Get started here</a>."
 msgstr ""
 
 #: functions.php:1683
@@ -701,12 +729,14 @@ msgstr ""
 msgid "Remove featured image for this Review"
 msgstr ""
 
-#: inc/MadeIT_Github_Updater.php:217 inc/MadeIT_Gitlab_Updater.php:210
+#: inc/MadeIT_Github_Updater.php:217
+#: inc/MadeIT_Gitlab_Updater.php:210
 #: inc/MadeIT_Updater.php:207
 msgid "Rename successful"
 msgstr ""
 
-#: inc/reviews.php:81 inc/reviews.php:105
+#: inc/reviews.php:81
+#: inc/reviews.php:105
 msgid "Review"
 msgstr ""
 
@@ -734,7 +764,9 @@ msgstr ""
 msgid "Review updated."
 msgstr ""
 
-#: inc/reviews.php:80 inc/reviews.php:82 inc/reviews.php:115
+#: inc/reviews.php:80
+#: inc/reviews.php:82
+#: inc/reviews.php:115
 msgid "Reviews"
 msgstr ""
 
@@ -754,7 +786,8 @@ msgstr ""
 msgid "Right Sidebar"
 msgstr ""
 
-#: searchform.php:19 searchform.php:21 searchform.php:21 searchform.php:24
+#: searchform.php:19
+#: searchform.php:21
 #: searchform.php:24
 msgid "Search"
 msgstr ""
@@ -772,15 +805,13 @@ msgstr ""
 msgid "Search..."
 msgstr ""
 
-#: functions.php:395 inc/customizer.php:93
+#: functions.php:395
+#: inc/customizer.php:93
 msgid "Secondary Color"
 msgstr ""
 
 #: inc/customizer.php:232
-msgid ""
-"Select pages to feature in each area from the dropdowns. Add an image to a "
-"section by setting a featured image in the page editor. Empty sections will "
-"not be displayed."
+msgid "Select pages to feature in each area from the dropdowns. Add an image to a section by setting a featured image in the page editor. Empty sections will not be displayed."
 msgstr ""
 
 #: inc/customizer.php:284
@@ -800,35 +831,36 @@ msgid "Show header image"
 msgstr ""
 
 #: inc/customizer.php:208
-msgid ""
-"Show the homepage header image on sub pages when there is no post featured "
-"image."
+msgid "Show the homepage header image on sub pages when there is no post featured image."
 msgstr ""
 
-#: functions.php:201 functions.php:332
+#: functions.php:201
+#: functions.php:332
 #: template-parts/navigation/navigation-upper-top.php:40
 msgid "Social Links Menu"
 msgstr ""
 
 #: search.php:40
-msgid ""
-"Sorry, but nothing matched your search terms. Please try again with some "
-"different keywords."
+msgid "Sorry, but nothing matched your search terms. Please try again with some different keywords."
 msgstr ""
 
 #: inc/woocommerce.php:284
 msgid "Sorry, er is momenteel nog geen tracking informatie beschikbaar."
 msgstr ""
 
-#: functions.php:1517 functions.php:1531 functions.php:1554
+#: functions.php:1517
+#: functions.php:1531
+#: functions.php:1554
 msgid "Start shopping"
 msgstr ""
 
-#: inc/customizer.php:270 inc/customizer.php:432
+#: inc/customizer.php:270
+#: inc/customizer.php:432
 msgid "Static bottom notice"
 msgstr ""
 
-#: inc/customizer.php:269 inc/customizer.php:431
+#: inc/customizer.php:269
+#: inc/customizer.php:431
 msgid "Static top notice"
 msgstr ""
 
@@ -836,7 +868,8 @@ msgstr ""
 msgid "Subscribe to our newsletter?"
 msgstr ""
 
-#: functions.php:400 inc/customizer.php:106
+#: functions.php:400
+#: inc/customizer.php:106
 msgid "Success Color"
 msgstr ""
 
@@ -844,7 +877,8 @@ msgstr ""
 msgid "Tags"
 msgstr ""
 
-#: functions.php:380 inc/customizer.php:57
+#: functions.php:380
+#: inc/customizer.php:57
 msgid "Text Color"
 msgstr ""
 
@@ -880,7 +914,8 @@ msgstr ""
 msgid "This controls the description which the user sees during checkout."
 msgstr ""
 
-#: inc/review-form.php:65 inc/review-form.php:126
+#: inc/review-form.php:65
+#: inc/review-form.php:126
 msgid "Titel"
 msgstr ""
 
@@ -892,7 +927,8 @@ msgstr ""
 msgid "Top of main menu"
 msgstr ""
 
-#: inc/customizer.php:169 inc/customizer.php:302
+#: inc/customizer.php:169
+#: inc/customizer.php:302
 msgid "Two Column"
 msgstr ""
 
@@ -900,7 +936,8 @@ msgstr ""
 msgid "U heeft nog geen favorieten."
 msgstr ""
 
-#: inc/MadeIT_Github_Updater.php:224 inc/MadeIT_Gitlab_Updater.php:217
+#: inc/MadeIT_Github_Updater.php:224
+#: inc/MadeIT_Gitlab_Updater.php:217
 #: inc/MadeIT_Updater.php:214
 msgid "Unable to rename downloaded repository."
 msgstr ""
@@ -922,8 +959,7 @@ msgid "Use as featured image for this Review"
 msgstr ""
 
 #: inc/woo-b2b.php:40
-msgid ""
-"Uw account is nog niet goedgekeurd. U kunt nog geen bestellingen plaatsen."
+msgid "Uw account is nog niet goedgekeurd. U kunt nog geen bestellingen plaatsen."
 msgstr ""
 
 #: inc/woocommerce.php:259
@@ -931,11 +967,10 @@ msgstr ""
 msgid "Uw order is verzonden met %s. Je kan uw order volgen via %s."
 msgstr ""
 
-#: inc/woocommerce.php:267 inc/woocommerce.php:290
+#: inc/woocommerce.php:267
+#: inc/woocommerce.php:290
 #, php-format
-msgid ""
-"Uw order is verzonden met <strong>%s</strong>. Je kan uw order volgen via "
-"<strong><a href=\"%s\">%s</a></strong>.</p>"
+msgid "Uw order is verzonden met <strong>%s</strong>. Je kan uw order volgen via <strong><a href=\"%s\">%s</a></strong>.</p>"
 msgstr ""
 
 #: inc/woocommerce.php:262
@@ -943,18 +978,19 @@ msgstr ""
 msgid "Uw order is verzonden. Je kan uw order volgen via %s."
 msgstr ""
 
-#: inc/woocommerce.php:270 inc/woocommerce.php:293
+#: inc/woocommerce.php:270
+#: inc/woocommerce.php:293
 #, php-format
-msgid ""
-"Uw order is verzonden. Je kan uw order volgen via <strong><a href=\"%s\">"
-"%s</a></strong>.</p>"
+msgid "Uw order is verzonden. Je kan uw order volgen via <strong><a href=\"%s\">%s</a></strong>.</p>"
 msgstr ""
 
-#: inc/add-to-cart-ajax.php:68 inc/add-to-cart-ajax.php:90
+#: inc/add-to-cart-ajax.php:68
+#: inc/add-to-cart-ajax.php:90
 msgid "Verder winkelen"
 msgstr ""
 
-#: inc/review-form.php:77 inc/review-form.php:138
+#: inc/review-form.php:77
+#: inc/review-form.php:138
 msgid "Verzenden"
 msgstr ""
 
@@ -966,7 +1002,10 @@ msgstr ""
 msgid "View Reviews"
 msgstr ""
 
-#: functions.php:1521 functions.php:1535 functions.php:1545 functions.php:1558
+#: functions.php:1521
+#: functions.php:1535
+#: functions.php:1545
+#: functions.php:1558
 msgid "View your shopping cart"
 msgstr ""
 
@@ -978,23 +1017,23 @@ msgstr ""
 msgid "Voeg nieuwe toe"
 msgstr ""
 
-#: inc/reviews.php:326 inc/reviews.php:397
+#: inc/reviews.php:326
+#: inc/reviews.php:397
 msgid "Volgend"
 msgstr ""
 
-#: inc/reviews.php:322 inc/reviews.php:393
+#: inc/reviews.php:322
+#: inc/reviews.php:393
 msgid "Vorige"
 msgstr ""
 
-#: functions.php:410 inc/customizer.php:130
+#: functions.php:410
+#: inc/customizer.php:130
 msgid "Warning Color"
 msgstr ""
 
 #: functions.php:1689
-msgid ""
-"We use cookies on our website to give you the most relevant experience by "
-"remembering your preferences and repeat visits. By clicking “Accept”, you "
-"consent to the use of ALL the cookies."
+msgid "We use cookies on our website to give you the most relevant experience by remembering your preferences and repeat visits. By clicking “Accept”, you consent to the use of ALL the cookies."
 msgstr ""
 
 #: template-parts/footer/site-info.php:15
@@ -1003,9 +1042,7 @@ msgid "Webdesign door %s uit Geel"
 msgstr ""
 
 #: inc/customizer.php:166
-msgid ""
-"When the two-column layout is assigned, the page title is in one column and "
-"content is in the other."
+msgid "When the two-column layout is assigned, the page title is in one column and content is in the other."
 msgstr ""
 
 #: functions.php:370
