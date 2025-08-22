@@ -361,7 +361,7 @@ add_action('woocommerce_account_b2b-favorites_endpoint', 'madeit_b2b_my_account_
 // Custom function with all extra field data arrays
 function madeit_b2b_extra_register_fields() {
     $text_domain  = 'woocommerce';
-    return array(
+    return apply_filters('madeit_b2b_extra_register_fields', array(
         'first_name' => array('type' => 'text',    'class' => ['form-row-first'], 'required' => 1, 'label' => __('First name', 'madeit') ),
         'last_name'  => array('type' => 'text',    'class' => ['form-row-last'],  'required' => 1, 'label' => __('Last name', 'madeit') ),
         'phone'      => array('type' => 'tel',     'class' => ['form-row-wide'],  'required' => 1, 'label' => __( 'Phone', 'madeit' ) ),
@@ -370,7 +370,7 @@ function madeit_b2b_extra_register_fields() {
         'postcode'   => array('type' => 'text',    'class' => ['form-row-first'], 'required' => 1, 'label' => __( 'Postcode', 'madeit' ) ),
         'city'       => array('type' => 'text',    'class' => ['form-row-wide'],  'required' => 1, 'label' => __( 'City', 'madeit' ) ),
         'country'    => array('type' => 'country', 'class' => ['form-row-wide'],  'required' => 1, 'label' => __( 'Country', 'madeit' ) ),
-    );
+    ));
 }
 
 // Add extra register fields
