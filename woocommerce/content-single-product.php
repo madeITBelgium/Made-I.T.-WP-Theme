@@ -28,7 +28,7 @@ if (post_password_required()) {
     return;
 }
 
-$col1 = apply_filters('madeit_woo_single_product_col_1_class', ['col-md', 'order-last', 'order-md-first']);
+$col1 = apply_filters('madeit_woo_single_product_col_1_class', ['col-md', 'order-last', 'order-md-first', 'position-relative']);
 $col2 = apply_filters('madeit_woo_single_product_col_2_class', ['col-md']);
 ?>
 
