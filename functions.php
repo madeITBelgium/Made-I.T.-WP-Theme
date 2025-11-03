@@ -2159,5 +2159,6 @@ if(MADEIT_BOOTSTRAP_VERSION === 5) {
 
 
 if(MADEIT_FEEDBACK) {
-    require get_parent_theme_file_path('/feedback/feedback.php');
+    require get_parent_theme_file_path('/inc/feedback.php');
+    //require get_parent_theme_file_path('/feedback/feedback.php');
 }
