@@ -1,13 +1,13 @@
 <?php
 
 function feedback_add_admin_script() {
-    if (!array_intersect(wp_get_current_user()->roles, ['administrator'])) {
+    if(!defined('MADEIT_FEEDBACK_ALL') || MADEIT_FEEDBACK_ALL !== true && !array_intersect(wp_get_current_user()->roles, ['administrator'])) {
         return;
     }
 
     echo feedback_script();
 }
-add_action('admin_head', 'feedback_add_admin_script');
+add_action('wp_head', 'feedback_add_admin_script');
 
 function feedback_script() {
     $scriptHtml = '';
