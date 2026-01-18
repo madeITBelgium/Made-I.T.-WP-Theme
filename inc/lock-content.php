@@ -2,7 +2,10 @@
 
 function madeit_filter_lock_content($content)
 {
-    $p = new WP_HTML_Tag_Processor( $content );
+    if (!is_string($content)) {
+        $content = (string) $content;
+    }
+    $p = new WP_HTML_Tag_Processor($content);
     if($p->next_tag(['tag_name' => 'div', 'class_name' => 'madeit-lock-content'])) {
         //if cookie madeit_unlock exists, show content
         if(isset($_COOKIE['madeit_unlock'])) {
