@@ -12,17 +12,17 @@ if (!function_exists('madeit_admin_chat_enqueue')) {
         wp_register_style('madeit-admin-chat', false, [], MADEIT_VERSION);
         wp_enqueue_style('madeit-admin-chat');
         wp_add_inline_style('madeit-admin-chat', '
-            #madeit-admin-chat-bubble{position:fixed;right:24px;bottom:24px;z-index:9999;width:56px;height:56px;border-radius:50%;background:#0051A8;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+            #madeit-admin-chat-bubble{position:fixed;right:24px;bottom:24px;z-index:9999;width:56px;height:56px;border-radius:50%;background:#476a8a;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.2)}
             #madeit-admin-chat-bubble:hover{transform:translateY(-1px)}
             #madeit-admin-chat-panel{position:fixed;right:24px;bottom:90px;width:320px;max-height:60vh;background:#fff;border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,.2);display:none;flex-direction:column;overflow:hidden;z-index:9999}
             #madeit-admin-chat-panel.is-open{display:flex}
-            #madeit-admin-chat-header{background:#0051A8;color:#fff;padding:12px 14px;display:flex;align-items:center;justify-content:space-between}
+            #madeit-admin-chat-header{background:#476a8a;color:#fff;padding:12px 14px;display:flex;align-items:center;justify-content:space-between}
             #madeit-admin-chat-body{padding:12px;overflow:auto;display:flex;flex-direction:column;gap:8px;flex:1}
             .madeit-admin-chat-message{padding:8px 10px;border-radius:10px;background:#f3f4f6;color:#111;max-width:85%;align-self:flex-start;font-size:12px;line-height:1.4}
             .madeit-admin-chat-message.is-own{background:#e8f0ff;color:#0b2a6b;align-self:flex-end}
             #madeit-admin-chat-form{display:flex;gap:8px;padding:10px;border-top:1px solid #eef0f2}
             #madeit-admin-chat-input{flex:1;border:1px solid #cfd6dd;border-radius:8px;padding:8px 10px;font-size:12px}
-            #madeit-admin-chat-send{background:#0051A8;border:none;color:#fff;border-radius:8px;padding:8px 12px;cursor:pointer;font-size:12px}
+            #madeit-admin-chat-send{background:#476a8a;border:none;color:#fff;border-radius:8px;padding:8px 12px;cursor:pointer;font-size:12px}
             #madeit-admin-chat-close{background:transparent;border:none;color:#fff;font-size:16px;cursor:pointer}
             #madeit-admin-chat-reset{background:rgba(255,255,255,.15);border:none;color:#fff;font-size:11px;border-radius:8px;padding:4px 8px;cursor:pointer;margin-right:6px}
             #madeit-admin-chat-reset:hover{background:rgba(255,255,255,.25)}
@@ -30,6 +30,14 @@ if (!function_exists('madeit_admin_chat_enqueue')) {
             #madeit-admin-chat-expand:hover{background:rgba(255,255,255,.25)}
             #madeit-admin-chat-panel.is-expanded{right:20px;left:20px;bottom:20px;top:20px;width:auto;max-height:none}
             #madeit-admin-chat-panel.is-expanded #madeit-admin-chat-body{max-height:none}
+            #madeit-admin-chat-status{padding:6px 12px;font-size:12px;color:#6b7280;display:none;border-top:1px solid #eef0f2}
+            #madeit-admin-chat-status.is-loading{display:block}
+            #madeit-admin-chat-panel.is-loading #madeit-admin-chat-send{opacity:.6;cursor:not-allowed}
+            #madeit-admin-chat-panel.is-loading #madeit-admin-chat-input{opacity:.6}
+            #madeit-admin-chat-hide{background:rgba(255,255,255,.15);border:none;color:#fff;font-size:11px;border-radius:8px;padding:4px 8px;cursor:pointer;margin-right:6px}
+            #madeit-admin-chat-hide:hover{background:rgba(255,255,255,.25)}
+            #madeit-admin-chat-bubble.is-hidden{display:none}
+            #madeit-admin-chat-panel.is-hidden{display:none !important}
         ');
 
         wp_register_script('madeit-admin-chat', false, [], MADEIT_VERSION, true);
@@ -45,13 +53,16 @@ if (!function_exists('madeit_admin_chat_enqueue')) {
                 var closeBtn = document.getElementById("madeit-admin-chat-close");
                 var expandBtn = document.getElementById("madeit-admin-chat-expand");
                 var resetBtn = document.getElementById("madeit-admin-chat-reset");
+                var hideBtn = document.getElementById("madeit-admin-chat-hide");
                 var form = document.getElementById("madeit-admin-chat-form");
                 var input = document.getElementById("madeit-admin-chat-input");
                 var body = document.getElementById("madeit-admin-chat-body");
+                var status = document.getElementById("madeit-admin-chat-status");
 
                 if(!bubble || !panel) return;
 
                 var storageKey = "madeit_admin_chat_messages";
+                var hiddenKey = "madeit_admin_chat_hidden";
 
                 function saveMessages(){
                     var messages = [];
@@ -155,10 +166,53 @@ if (!function_exists('madeit_admin_chat_enqueue')) {
                     }
                 }
 
+                function setLoading(isLoading){
+                    if(!panel) return;
+                    if(isLoading){
+                        panel.classList.add("is-loading");
+                        if(status){
+                            status.textContent = "Bezig met antwoorden...";
+                            status.classList.add("is-loading");
+                        }
+                        if(input){
+                            input.setAttribute("disabled", "disabled");
+                        }
+                    }else{
+                        panel.classList.remove("is-loading");
+                        if(status){
+                            status.textContent = "";
+                            status.classList.remove("is-loading");
+                        }
+                        if(input){
+                            input.removeAttribute("disabled");
+                            input.focus();
+                        }
+                    }
+                }
+
                 bubble.addEventListener("click", function(){
                     var isOpen = panel.classList.contains("is-open");
                     toggle(!isOpen);
                 });
+
+                function setHidden(isHidden){
+                    if(isHidden){
+                        try{localStorage.setItem(hiddenKey, "1");}catch(e){}
+                        bubble.classList.add("is-hidden");
+                        panel.classList.add("is-hidden");
+                        panel.classList.remove("is-open");
+                    }else{
+                        try{localStorage.removeItem(hiddenKey);}catch(e){}
+                        bubble.classList.remove("is-hidden");
+                        panel.classList.remove("is-hidden");
+                    }
+                }
+
+                try{
+                    if(localStorage.getItem(hiddenKey) === "1"){
+                        setHidden(true);
+                    }
+                }catch(e){}
 
                 if(closeBtn){
                     closeBtn.addEventListener("click", function(){
@@ -183,14 +237,46 @@ if (!function_exists('madeit_admin_chat_enqueue')) {
                     });
                 }
 
+                if(hideBtn){
+                    hideBtn.addEventListener("click", function(){
+                        setHidden(true);
+                    });
+                }
+
+                function applyClientActions(actions){
+                    if(!actions || !actions.length) return;
+                    if(!window.wp || !wp.data || !wp.blocks) return;
+
+                    var editor = wp.data.select("core/editor");
+                    var blockEditor = wp.data.dispatch("core/block-editor");
+                    if(!editor || !blockEditor) return;
+
+                    var currentPostId = editor.getCurrentPostId && editor.getCurrentPostId();
+
+                    actions.forEach(function(action){
+                        if(!action || action.type !== "insert_block") return;
+                        if(action.page_id && currentPostId && action.page_id !== currentPostId) return;
+
+                        if(action.block_serialized){
+                            var blocks = wp.blocks.parse(action.block_serialized);
+                            if(blocks && blocks.length){
+                                blockEditor.insertBlocks(blocks);
+                            }
+                        }
+                    });
+                }
+
                 if(form){
                     form.addEventListener("submit", function(e){
                         e.preventDefault();
+                        if(panel.classList.contains("is-loading")) return;
                         var value = input.value.trim();
                         if(!value) return;
                         addMessage(value, "user");
                         input.value = "";
                         saveMessages();
+
+                        setLoading(true);
 
                         var history = getHistory();
                         history.push({role: "user", content: value});
@@ -199,9 +285,14 @@ if (!function_exists('madeit_admin_chat_enqueue')) {
                             if(resp && resp.success && resp.data && resp.data.message){
                                 addMessage(resp.data.message, "assistant");
                                 saveMessages();
+                                if(resp.data.client_actions){
+                                    applyClientActions(resp.data.client_actions);
+                                }
                             }
+                            setLoading(false);
                         }).catch(function(){
                             addMessage("Kon bericht niet verzenden.", "assistant");
+                            setLoading(false);
                         });
                     });
                 }
@@ -245,10 +336,12 @@ if (!function_exists('madeit_admin_chat_markup')) {
                 <div>
                     <button id="madeit-admin-chat-expand" aria-label="Vergroot chat">Groot</button>
                     <button id="madeit-admin-chat-reset" aria-label="Reset chat">Reset</button>
+                    <button id="madeit-admin-chat-hide" aria-label="Verberg chat">Verberg</button>
                     <button id="madeit-admin-chat-close" aria-label="Close chat">&times;</button>
                 </div>
             </div>
             <div id="madeit-admin-chat-body"></div>
+            <div id="madeit-admin-chat-status" aria-live="polite"></div>
             <form id="madeit-admin-chat-form" autocomplete="off">
                 <input id="madeit-admin-chat-input" type="text" placeholder="Typ een bericht..." />
                 <button id="madeit-admin-chat-send" type="submit">Verstuur</button>
@@ -303,6 +396,16 @@ if (!function_exists('madeit_admin_chat_send')) {
 
         $reply = madeit_admin_chat_openai_reply($messages);
 
+        if (is_array($reply)) {
+            $payload = [
+                'message' => $reply['message'] ?? '',
+            ];
+            if (!empty($reply['client_actions'])) {
+                $payload['client_actions'] = $reply['client_actions'];
+            }
+            wp_send_json_success($payload);
+        }
+
         wp_send_json_success([
             'message' => $reply,
         ]);
@@ -331,11 +434,36 @@ if (!function_exists('madeit_admin_chat_openai_reply')) {
         }
 
         $site_info = madeit_admin_chat_tool_get_site_info();
+        $screen_id = '';
+        $screen_base = '';
+        $context_post_id = 0;
+        $context_post_type = '';
+        if (function_exists('get_current_screen')) {
+            $screen = get_current_screen();
+            if ($screen) {
+                $screen_id = $screen->id;
+                $screen_base = $screen->base;
+                $context_post_type = $screen->post_type ?? '';
+            }
+        }
+        if (isset($_GET['post'])) {
+            $context_post_id = (int) $_GET['post'];
+        } elseif (isset($GLOBALS['post']) && $GLOBALS['post'] instanceof WP_Post) {
+            $context_post_id = (int) $GLOBALS['post']->ID;
+        }
+        if (empty($context_post_type) && $context_post_id > 0) {
+            $context_post_type = get_post_type($context_post_id);
+        }
+        $current_url = (is_ssl() ? 'https://' : 'http://').($_SERVER['HTTP_HOST'] ?? '').($_SERVER['REQUEST_URI'] ?? '');
         $current_user = wp_get_current_user();
         $role = !empty($current_user->roles) ? $current_user->roles[0] : 'guest';
-        $system_prompt = 'Je bent een behulpzame admin-assistent voor WordPress. Antwoord kort en duidelijk in het Vlaams, in Markdown. ';
+        $system_prompt = 'Je bent een behulpzame admin-assistent voor WordPress. Antwoord kort en duidelijk in het Vlaams, in Markdown. Gebruik altijd Markdown links als je een URL vermeldt. ';
         $system_prompt .= 'De gebruiker is ingelogd met rol: '.$role.'. Geef geen login-instructies. ';
         $system_prompt .= 'Basis info: Site naam: '.$site_info['name'].', URL: '.$site_info['url'].', WordPress: '.$site_info['wp_version'].', Thema: '.$site_info['theme'].', Locale: '.$site_info['locale'].'.';
+        $system_prompt .= ' Huidige admin scherm: '.$screen_id.' ('.$screen_base.'). Huidige URL: '.$current_url.'.';
+        if ($context_post_id > 0 && !empty($context_post_type)) {
+            $system_prompt .= ' Huidige inhoud: post_type '.$context_post_type.', post_id '.$context_post_id.'. Gebruik dit standaard voor acties op de huidige pagina, vraag geen extra ID als het hier staat.';
+        }
 
         array_unshift($messages, [
             'role' => 'system',
@@ -347,14 +475,19 @@ if (!function_exists('madeit_admin_chat_openai_reply')) {
 
         $payload = madeit_admin_chat_openai_request($messages, $tools);
         if (!is_array($payload)) {
-            return 'Ik kan nu geen antwoord ophalen.';
+            return [
+                'message' => 'Ik kan nu geen antwoord ophalen.',
+            ];
         }
 
         $message = $payload['choices'][0]['message'] ?? null;
         if (empty($message)) {
-            return 'Geen antwoord ontvangen.';
+            return [
+                'message' => 'Geen antwoord ontvangen.',
+            ];
         }
 
+        $client_actions = [];
         if (!empty($message['tool_calls'])) {
             $tool_messages = [];
             foreach ($message['tool_calls'] as $call) {
@@ -371,6 +504,9 @@ if (!function_exists('madeit_admin_chat_openai_reply')) {
                 }
 
                 $result = madeit_admin_chat_run_tool($name, $args);
+                if (is_array($result) && !empty($result['client_action'])) {
+                    $client_actions[] = $result['client_action'];
+                }
 
                 $tool_messages[] = [
                     'role' => 'tool',
@@ -385,16 +521,25 @@ if (!function_exists('madeit_admin_chat_openai_reply')) {
 
             $payload = madeit_admin_chat_openai_request($messages, $tools);
             if (!is_array($payload)) {
-                return 'Ik kan nu geen antwoord ophalen.';
+                return [
+                    'message' => 'Ik kan nu geen antwoord ophalen.',
+                    'client_actions' => $client_actions,
+                ];
             }
             $message = $payload['choices'][0]['message'] ?? null;
         }
 
         if (empty($message['content'])) {
-            return 'Geen antwoord ontvangen.';
+            return [
+                'message' => 'Geen antwoord ontvangen.',
+                'client_actions' => $client_actions,
+            ];
         }
 
-        return sanitize_text_field($message['content']);
+        return [
+            'message' => sanitize_text_field($message['content']),
+            'client_actions' => $client_actions,
+        ];
     }
 }
 
@@ -410,9 +555,10 @@ if (!function_exists('madeit_admin_chat_openai_request')) {
             'model' => MADEIT_ADMIN_CHAT_OPENAI_MODEL,
             'messages' => $messages,
             'temperature' => 1,
-            'max_tokens' => 512,
+            'max_tokens' => 10_000,
             'tools' => $tools,
             'tool_choice' => 'auto',
+            'reasoning' => ["effort" => "low"],
         ];
 
         madeit_admin_chat_debug('request_body', [
@@ -605,6 +751,58 @@ if (!function_exists('madeit_admin_chat_get_tools')) {
                     ],
                 ],
             ],
+            [
+                'type' => 'function',
+                'function' => [
+                    'name' => 'get_page_blocks',
+                    'description' => 'Haal Gutenberg blokken op van een pagina op basis van page_id. Geeft blokken met name en attributes terug.',
+                    'parameters' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'page_id' => [
+                                'type' => 'integer',
+                                'description' => 'ID van de pagina.',
+                            ],
+                        ],
+                        'required' => ['page_id'],
+                        'additionalProperties' => false,
+                    ],
+                ],
+            ],
+            [
+                'type' => 'function',
+                'function' => [
+                    'name' => 'add_block_to_page',
+                    'description' => 'Voeg een Gutenberg blok toe aan een pagina. Vereist page_id en block_name. Optioneel attributes, inner_html en position (append/prepend).',
+                    'parameters' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'page_id' => [
+                                'type' => 'integer',
+                                'description' => 'ID van de pagina.',
+                            ],
+                            'block_name' => [
+                                'type' => 'string',
+                                'description' => 'Block name, bv. core/paragraph of madeit/block-container.',
+                            ],
+                            'attributes' => [
+                                'type' => 'object',
+                                'description' => 'Block attributes object.',
+                            ],
+                            'inner_html' => [
+                                'type' => 'string',
+                                'description' => 'Inner HTML content voor het blok.',
+                            ],
+                            'position' => [
+                                'type' => 'string',
+                                'description' => 'append of prepend.',
+                            ],
+                        ],
+                        'required' => ['block_name'],
+                        'additionalProperties' => false,
+                    ],
+                ],
+            ],
         ];
     }
 }
@@ -624,6 +822,10 @@ if (!function_exists('madeit_admin_chat_run_tool')) {
                 return madeit_admin_chat_tool_get_pages($args);
             case 'create_page':
                 return madeit_admin_chat_tool_create_page($args);
+            case 'get_page_blocks':
+                return madeit_admin_chat_tool_get_page_blocks($args);
+            case 'add_block_to_page':
+                return madeit_admin_chat_tool_add_block_to_page($args);
             default:
                 return ['error' => 'Unknown tool'];
         }
@@ -792,6 +994,128 @@ if (!function_exists('madeit_admin_chat_tool_create_page')) {
             'view_link' => get_permalink($post_id),
             'status' => get_post_status($post_id),
             'title' => get_the_title($post_id),
+        ];
+    }
+}
+
+if (!function_exists('madeit_admin_chat_tool_get_page_blocks')) {
+    function madeit_admin_chat_tool_get_page_blocks($args) {
+        if (!current_user_can('edit_pages')) {
+            return ['error' => 'Geen permissies om pagina\'s te bekijken.'];
+        }
+
+        $page_id = isset($args['page_id']) ? (int) $args['page_id'] : 0;
+        if ($page_id <= 0) {
+            return ['error' => 'Ongeldig page_id.'];
+        }
+
+        $post = get_post($page_id);
+        if (!$post || $post->post_type !== 'page') {
+            return ['error' => 'Pagina niet gevonden.'];
+        }
+
+        $blocks = parse_blocks($post->post_content);
+        $result = [];
+        foreach ($blocks as $block) {
+            $result[] = [
+                'block_name' => $block['blockName'],
+                'attrs' => $block['attrs'],
+                'inner_html' => $block['innerHTML'],
+            ];
+        }
+
+        return [
+            'page_id' => $page_id,
+            'title' => get_the_title($page_id),
+            'edit_link' => admin_url('post.php?post='.$page_id.'&action=edit'),
+            'blocks' => $result,
+        ];
+    }
+}
+
+if (!function_exists('madeit_admin_chat_tool_add_block_to_page')) {
+    function madeit_admin_chat_tool_add_block_to_page($args) {
+        if (!current_user_can('edit_pages')) {
+            return ['error' => 'Geen permissies om pagina\'s te wijzigen.'];
+        }
+
+        $page_id = isset($args['page_id']) ? (int) $args['page_id'] : 0;
+        if ($page_id <= 0 && isset($_GET['post'])) {
+            $page_id = (int) $_GET['post'];
+        }
+        $block_name = isset($args['block_name']) ? sanitize_text_field($args['block_name']) : '';
+        if ($page_id <= 0 || '' === $block_name) {
+            return ['error' => 'page_id of context ontbreekt, en block_name is verplicht.'];
+        }
+
+        $post = get_post($page_id);
+        if (!$post || $post->post_type !== 'page') {
+            return ['error' => 'Pagina niet gevonden.'];
+        }
+
+        $attributes = isset($args['attributes']) && is_array($args['attributes']) ? $args['attributes'] : [];
+        $inner_html = isset($args['inner_html']) ? (string) $args['inner_html'] : '';
+        $position = isset($args['position']) ? sanitize_key($args['position']) : 'append';
+
+        if ('core/heading' === $block_name) {
+            $level = isset($attributes['level']) ? (int) $attributes['level'] : 2;
+            if ($level < 1 || $level > 6) {
+                $level = 2;
+            }
+            $attributes['level'] = $level;
+            $text = trim(wp_strip_all_tags($inner_html));
+            if ('' === $text) {
+                $text = 'Heading';
+            }
+            $inner_html = sprintf(
+                '<h%d class="wp-block-heading">%s</h%d>',
+                $level,
+                esc_html($text),
+                $level
+            );
+        }
+
+        if ('core/paragraph' === $block_name) {
+            if (!preg_match('/<p\b/i', $inner_html)) {
+                $content = wp_kses_post($inner_html);
+                $inner_html = '<p class="wp-block-paragraph">'.$content.'</p>';
+            }
+        }
+
+        $block = [
+            'blockName' => $block_name,
+            'attrs' => $attributes,
+            'innerBlocks' => [],
+            'innerHTML' => $inner_html,
+            'innerContent' => [$inner_html],
+        ];
+
+        $blocks = parse_blocks($post->post_content);
+        if ('prepend' === $position) {
+            array_unshift($blocks, $block);
+        } else {
+            $blocks[] = $block;
+        }
+
+        $updated = serialize_blocks($blocks);
+        $updated_id = wp_update_post([
+            'ID' => $page_id,
+            'post_content' => $updated,
+        ], true);
+
+        if (is_wp_error($updated_id)) {
+            return ['error' => $updated_id->get_error_message()];
+        }
+
+        return [
+            'page_id' => $page_id,
+            'status' => get_post_status($page_id),
+            'edit_link' => admin_url('post.php?post='.$page_id.'&action=edit'),
+            'client_action' => [
+                'type' => 'insert_block',
+                'page_id' => $page_id,
+                'block_serialized' => serialize_blocks([$block]),
+            ],
         ];
     }
 }

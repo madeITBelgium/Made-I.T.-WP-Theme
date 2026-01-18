@@ -1141,6 +1141,11 @@ if (!function_exists('madeit_register_required_plugins')) {
                 'name' => 'Rank Math SEO',
                 'slug' => 'seo-by-rank-math',
                 'required' => false,
+            ],
+            [
+                'name'     => 'Query Monitor',
+                'slug'     => 'query-monitor',
+                'required' => false,
             ]
         ];
 
@@ -1989,7 +1994,7 @@ if (!function_exists('madeit_rgb_colors_inline')) {
 
         $css = "body {\n";
 
-        foreach (get_theme_support('editor-color-palette')[0] as $color) {
+        foreach (get_theme_support('editor-color-palette')[0] ?? [] as $color) {
             list($r, $g, $b) = sscanf($color['color'], '#%02x%02x%02x');
 
             $css .= '--wp--preset--color--'.$color['slug'].'-rgb: '.$r.','.$g.','.$b.";\n";
