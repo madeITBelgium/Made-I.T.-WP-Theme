@@ -134,6 +134,17 @@ if (!defined('MADEIT_FEEDBACK')) {
     define('MADEIT_FEEDBACK', false);
 }
 
+// Added in 2.11.0
+if (!defined('MADEIT_ADMIN_CHAT')) {
+    define('MADEIT_ADMIN_CHAT', true);
+}
+if (!defined('MADEIT_ADMIN_CHAT_OPENAI_API_KEY')) {
+    define('MADEIT_ADMIN_CHAT_OPENAI_API_KEY', '');
+}
+if (!defined('MADEIT_ADMIN_CHAT_OPENAI_MODEL')) {
+    define('MADEIT_ADMIN_CHAT_OPENAI_MODEL', 'gpt-5-mini');
+}
+
 
 if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
     require get_template_directory().'/inc/back-compat.php';
@@ -1116,6 +1127,21 @@ if (!function_exists('madeit_register_required_plugins')) {
                 'slug'     => 'woocommerce-pdf-invoices-packing-slips',
                 'required' => false,
             ],
+            [
+                'name'     => 'OPCache Manager',
+                'slug'     => 'opcache-manager',
+                'required' => false,
+            ],
+            [
+                'name'     => 'Redis Object Cache',
+                'slug'     => 'redis-cache',
+                'required' => false,
+            ],
+            [
+                'name' => 'Rank Math SEO',
+                'slug' => 'seo-by-rank-math',
+                'required' => false,
+            ]
         ];
 
         $config = [
@@ -2161,4 +2187,8 @@ if(MADEIT_BOOTSTRAP_VERSION === 5) {
 if(MADEIT_FEEDBACK) {
     require get_parent_theme_file_path('/inc/feedback.php');
     //require get_parent_theme_file_path('/feedback/feedback.php');
+}
+
+if (MADEIT_ADMIN_CHAT) {
+    require get_parent_theme_file_path('/inc/admin-chat.php');
 }
