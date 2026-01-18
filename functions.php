@@ -145,6 +145,11 @@ if (!defined('MADEIT_ADMIN_CHAT_OPENAI_MODEL')) {
     define('MADEIT_ADMIN_CHAT_OPENAI_MODEL', 'gpt-5-mini');
 }
 
+// Added in 2.11.0
+if (!defined('MADEIT_TRACKING_IDS')) {
+    define('MADEIT_TRACKING_IDS', true);
+}
+
 
 if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
     require get_template_directory().'/inc/back-compat.php';
@@ -2196,4 +2201,8 @@ if(MADEIT_FEEDBACK) {
 
 if (MADEIT_ADMIN_CHAT) {
     require get_parent_theme_file_path('/inc/admin-chat.php');
+}
+
+if (MADEIT_TRACKING_IDS) {
+    require get_parent_theme_file_path('/inc/tracking-ids.php');
 }
