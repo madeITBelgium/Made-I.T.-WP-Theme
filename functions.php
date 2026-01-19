@@ -1899,13 +1899,31 @@ if (!function_exists('madeit_wprocket_pre_get_rocket_option_delay_js_exclusions'
 if (!function_exists('madeit_user_analytics')) {
     function madeit_user_analytics()
     {
+        $has_google_consent_mode = (defined('MADEIT_ANALYTICS_GA') && MADEIT_ANALYTICS_GA) || (defined('MADEIT_ANALYTICS_TM') && MADEIT_ANALYTICS_TM);
+
+        if ($has_google_consent_mode) {
+            ?>
+            <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('consent', 'default', {
+                'ad_storage': 'denied',
+                'ad_user_data': 'denied',
+                'ad_personalization': 'denied',
+                'analytics_storage': 'denied',
+                'functionality_storage': 'denied',
+                'personalization_storage': 'denied',
+                'security_storage': 'denied',
+            });
+            </script>
+            <?php
+        }
+
         if (defined('MADEIT_ANALYTICS_GA') && MADEIT_ANALYTICS_GA) {
             $tags = apply_filters('madeit_analtyics_ga', explode(',', MADEIT_ANALYTICS_GA)); ?>
             <!-- Google tag (gtag.js) -->
             <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $tags[0]; ?>"></script>
             <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
             <?php foreach ($tags as $tag) { ?>
             gtag('config', '<?php echo $tag; ?>');
@@ -1926,7 +1944,7 @@ if (!function_exists('madeit_user_analytics')) {
 
         if (defined('MADEIT_ANALYTICS_FB')) {
             ?>
-            <script>
+            <script type="text/plain" data-category="advertisement" data-service="Facebook Pixel">
             !function(f,b,e,v,n,t,s)
             {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
             n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -1943,11 +1961,11 @@ if (!function_exists('madeit_user_analytics')) {
 
         if(defined('MADEIT_ANALYTICS_LINKEDIN')) {
             ?>
-            <script type="text/javascript">
+            <script type="text/plain" data-category="advertisement" data-service="LinkedIn Insight">
             _linkedin_partner_id = "<?php echo MADEIT_ANALYTICS_LINKEDIN; ?>";
             window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
             window._linkedin_data_partner_ids.push(_linkedin_partner_id);
-            </script><script type="text/javascript">
+            </script><script type="text/plain" data-category="advertisement" data-service="LinkedIn Insight">
             (function(l) {
             if (!l){window.lintrk = function(a,b){window.lintrk.q.push([a,b])};
             window.lintrk.q=[]}
@@ -1961,7 +1979,7 @@ if (!function_exists('madeit_user_analytics')) {
         }
         if(defined('MADEIT_ANALYTICS_TIKTOK')) {
             ?>
-            <script>
+            <script type="text/plain" data-category="advertisement" data-service="TikTok Pixel">
             !function (w, d, t) {
             w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var i="https://analytics.tiktok.com/i18n/pixel/events.js";ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=i,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};var o=document.createElement("script");o.type="text/javascript",o.async=!0,o.src=i+"?sdkid="+e+"&lib="+t;var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(o,a)};
             ttq.load('<?php echo MADEIT_ANALYTICS_TIKTOK; ?>');
@@ -1971,7 +1989,7 @@ if (!function_exists('madeit_user_analytics')) {
             <?php
         }
         ?>
-        <script>
+        <script type="text/plain" data-category="analytics" data-service="WebsiteTool">
             (function() {
             var script = document.createElement('script');
                 script.src = 'https://www.websitetool.be/script.js';
@@ -2205,4 +2223,8 @@ if (MADEIT_ADMIN_CHAT) {
 
 if (MADEIT_TRACKING_IDS) {
     require get_parent_theme_file_path('/inc/tracking-ids.php');
+}
+
+if (!in_array('cookie-law-info/cookie-law-info.php', apply_filters('active_plugins', get_option('active_plugins')))) {
+    require get_parent_theme_file_path('/inc/cookieconsent.php');
 }
