@@ -1,4 +1,5 @@
 <?php
+
 if (!defined('ABSPATH')) {
     exit;
 }
@@ -8,15 +9,15 @@ if (!function_exists('madeit_tracking_register_post_type')) {
     {
         register_post_type('madeit_tracking', [
             'labels' => [
-                'name' => __('Tracking', 'madeit'),
+                'name'          => __('Tracking', 'madeit'),
                 'singular_name' => __('Tracking', 'madeit'),
             ],
-            'public' => false,
-            'show_ui' => false,
+            'public'       => false,
+            'show_ui'      => false,
             'show_in_menu' => false,
-            'supports' => ['title'],
-            'has_archive' => false,
-            'rewrite' => false,
+            'supports'     => ['title'],
+            'has_archive'  => false,
+            'rewrite'      => false,
         ]);
     }
 }
@@ -27,11 +28,11 @@ if (!function_exists('madeit_tracking_enqueue_scripts')) {
     {
         wp_enqueue_script('madeit-tracking-ids', get_theme_file_uri('/assets/js/tracking-ids.js'), [], wp_get_theme()->get('Version'), true);
         wp_localize_script('madeit-tracking-ids', 'madeit_tracking', [
-            'ajax_url' => admin_url('admin-ajax.php'),
-            'cookie_name' => apply_filters('madeit_tracking_cookie_name', 'madeit_tracking_id'),
-            'cookie_gclid' => apply_filters('madeit_tracking_cookie_gclid', 'madeit_gclid'),
+            'ajax_url'      => admin_url('admin-ajax.php'),
+            'cookie_name'   => apply_filters('madeit_tracking_cookie_name', 'madeit_tracking_id'),
+            'cookie_gclid'  => apply_filters('madeit_tracking_cookie_gclid', 'madeit_gclid'),
             'cookie_fbclid' => apply_filters('madeit_tracking_cookie_fbclid', 'madeit_fbclid'),
-            'cookie_days' => apply_filters('madeit_tracking_cookie_days', 90),
+            'cookie_days'   => apply_filters('madeit_tracking_cookie_days', 90),
         ]);
     }
 }
@@ -45,12 +46,12 @@ if (!function_exists('madeit_tracking_get_post_id_by_tracking_id')) {
         }
 
         $posts = get_posts([
-            'post_type' => 'madeit_tracking',
-            'post_status' => 'publish',
+            'post_type'      => 'madeit_tracking',
+            'post_status'    => 'publish',
             'posts_per_page' => 1,
-            'fields' => 'ids',
-            'meta_key' => 'madeit_tracking_id',
-            'meta_value' => $tracking_id,
+            'fields'         => 'ids',
+            'meta_key'       => 'madeit_tracking_id',
+            'meta_value'     => $tracking_id,
         ]);
 
         if (is_array($posts) && count($posts) > 0) {
@@ -82,9 +83,9 @@ if (!function_exists('madeit_tracking_store_ajax')) {
         if (!$post_id) {
             $visitor_id = wp_generate_uuid4();
             $post_id = wp_insert_post([
-                'post_type' => 'madeit_tracking',
+                'post_type'   => 'madeit_tracking',
                 'post_status' => 'publish',
-                'post_title' => 'Tracking ' . $visitor_id,
+                'post_title'  => 'Tracking '.$visitor_id,
             ]);
 
             if (is_wp_error($post_id) || !$post_id) {
@@ -114,7 +115,7 @@ if (!function_exists('madeit_tracking_store_ajax')) {
         update_post_meta($post_id, 'madeit_tracking_last_seen', current_time('mysql'));
 
         wp_send_json_success([
-            'visitor_id' => $visitor_id,
+            'visitor_id'       => $visitor_id,
             'tracking_post_id' => (int) $post_id,
         ]);
     }
@@ -139,29 +140,29 @@ if (!function_exists('madeit_tracking_cleanup_old_entries')) {
         $cutoff = gmdate('Y-m-d H:i:s', time() - ((int) $days * DAY_IN_SECONDS));
 
         $posts = get_posts([
-            'post_type' => 'madeit_tracking',
-            'post_status' => 'publish',
+            'post_type'      => 'madeit_tracking',
+            'post_status'    => 'publish',
             'posts_per_page' => -1,
-            'fields' => 'ids',
-            'meta_query' => [
+            'fields'         => 'ids',
+            'meta_query'     => [
                 'relation' => 'OR',
                 [
-                    'key' => 'madeit_tracking_last_seen',
-                    'value' => $cutoff,
+                    'key'     => 'madeit_tracking_last_seen',
+                    'value'   => $cutoff,
                     'compare' => '<=',
-                    'type' => 'DATETIME',
+                    'type'    => 'DATETIME',
                 ],
                 [
                     'relation' => 'AND',
                     [
-                        'key' => 'madeit_tracking_last_seen',
+                        'key'     => 'madeit_tracking_last_seen',
                         'compare' => 'NOT EXISTS',
                     ],
                     [
-                        'key' => 'madeit_tracking_first_seen',
-                        'value' => $cutoff,
+                        'key'     => 'madeit_tracking_first_seen',
+                        'value'   => $cutoff,
                         'compare' => '<=',
-                        'type' => 'DATETIME',
+                        'type'    => 'DATETIME',
                     ],
                 ],
             ],
@@ -203,8 +204,8 @@ if (!function_exists('madeit_tracking_export_page')) {
         );
 
         echo '<div class="wrap">';
-        echo '<h1>' . esc_html__('Tracking export', 'madeit') . '</h1>';
-        echo '<p><a class="button button-primary" href="' . esc_url($export_url) . '">' . esc_html__('Download CSV', 'madeit') . '</a></p>';
+        echo '<h1>'.esc_html__('Tracking export', 'madeit').'</h1>';
+        echo '<p><a class="button button-primary" href="'.esc_url($export_url).'">'.esc_html__('Download CSV', 'madeit').'</a></p>';
         echo '</div>';
     }
 }
@@ -219,16 +220,16 @@ if (!function_exists('madeit_tracking_export_csv')) {
         check_admin_referer('madeit_tracking_export_csv');
 
         $ids = get_posts([
-            'post_type' => 'madeit_tracking',
-            'post_status' => 'publish',
+            'post_type'      => 'madeit_tracking',
+            'post_status'    => 'publish',
             'posts_per_page' => -1,
-            'fields' => 'ids',
+            'fields'         => 'ids',
         ]);
 
-        $filename = 'tracking-export-' . gmdate('Y-m-d') . '.csv';
+        $filename = 'tracking-export-'.gmdate('Y-m-d').'.csv';
 
         header('Content-Type: text/csv; charset=utf-8');
-        header('Content-Disposition: attachment; filename=' . $filename);
+        header('Content-Disposition: attachment; filename='.$filename);
         header('Pragma: no-cache');
         header('Expires: 0');
 
@@ -270,6 +271,7 @@ if (!function_exists('madeit_tracking_extract_email_from_array')) {
     {
         if (!is_array($data)) {
             $email = sanitize_email($data);
+
             return !empty($email) ? $email : '';
         }
 
@@ -302,9 +304,9 @@ if (!function_exists('madeit_tracking_store_email_for_visitor')) {
         $post_id = madeit_tracking_get_post_id_by_tracking_id($tracking_id);
         if (!$post_id) {
             $post_id = wp_insert_post([
-                'post_type' => 'madeit_tracking',
+                'post_type'   => 'madeit_tracking',
                 'post_status' => 'publish',
-                'post_title' => 'Tracking ' . $tracking_id,
+                'post_title'  => 'Tracking '.$tracking_id,
             ]);
 
             if (is_wp_error($post_id) || !$post_id) {
@@ -367,9 +369,9 @@ if (!function_exists('madeit_tracking_attach_to_order')) {
         if (!$tracking_post_id && (!empty($gclid) || !empty($fbclid))) {
             $tracking_id = !empty($tracking_id) ? $tracking_id : wp_generate_uuid4();
             $tracking_post_id = wp_insert_post([
-                'post_type' => 'madeit_tracking',
+                'post_type'   => 'madeit_tracking',
                 'post_status' => 'publish',
-                'post_title' => 'Tracking ' . $tracking_id,
+                'post_title'  => 'Tracking '.$tracking_id,
             ]);
 
             if (!is_wp_error($tracking_post_id) && $tracking_post_id) {
