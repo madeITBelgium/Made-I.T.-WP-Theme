@@ -61,6 +61,293 @@ if (!function_exists('madeit_tracking_get_post_id_by_tracking_id')) {
     }
 }
 
+if (!function_exists('madeit_tracking_get_cookie_value')) {
+    function madeit_tracking_get_cookie_value($cookie_name)
+    {
+        if (empty($cookie_name)) {
+            return '';
+        }
+
+        return isset($_COOKIE[$cookie_name]) ? sanitize_text_field(wp_unslash($_COOKIE[$cookie_name])) : '';
+    }
+}
+
+if (!function_exists('madeit_tracking_get_tracking_ids_from_cookies')) {
+    function madeit_tracking_get_tracking_ids_from_cookies()
+    {
+        $cookie_name = apply_filters('madeit_tracking_cookie_name', 'madeit_tracking_id');
+        $cookie_gclid = apply_filters('madeit_tracking_cookie_gclid', 'madeit_gclid');
+        $cookie_fbclid = apply_filters('madeit_tracking_cookie_fbclid', 'madeit_fbclid');
+
+        return [
+            'tracking_id' => madeit_tracking_get_cookie_value($cookie_name),
+            'gclid' => madeit_tracking_get_cookie_value($cookie_gclid),
+            'fbclid' => madeit_tracking_get_cookie_value($cookie_fbclid),
+        ];
+    }
+}
+
+if (!function_exists('madeit_tracking_get_or_create_tracking_post')) {
+    function madeit_tracking_get_or_create_tracking_post($tracking_id, $gclid = '', $fbclid = '', $context = [])
+    {
+        $tracking_id = !empty($tracking_id) ? sanitize_text_field($tracking_id) : '';
+        $gclid = !empty($gclid) ? sanitize_text_field($gclid) : '';
+        $fbclid = !empty($fbclid) ? sanitize_text_field($fbclid) : '';
+
+        if (empty($tracking_id) && (empty($gclid) && empty($fbclid))) {
+            return [0, ''];
+        }
+
+        $post_id = 0;
+        if (!empty($tracking_id)) {
+            $post_id = madeit_tracking_get_post_id_by_tracking_id($tracking_id);
+        }
+
+        if (!$post_id) {
+            if (empty($tracking_id)) {
+                $tracking_id = wp_generate_uuid4();
+            }
+
+            $post_id = wp_insert_post([
+                'post_type' => 'madeit_tracking',
+                'post_status' => 'publish',
+                'post_title' => 'Tracking ' . $tracking_id,
+            ]);
+
+            if (is_wp_error($post_id) || !$post_id) {
+                return [0, ''];
+            }
+
+            update_post_meta($post_id, 'madeit_tracking_id', $tracking_id);
+            update_post_meta($post_id, 'madeit_tracking_first_seen', current_time('mysql'));
+            do_action('madeit_tracking_registered', (int) $post_id, $tracking_id, $context);
+        }
+
+        if (!empty($gclid)) {
+            update_post_meta($post_id, 'madeit_tracking_gclid', $gclid);
+        }
+        if (!empty($fbclid)) {
+            update_post_meta($post_id, 'madeit_tracking_fbclid', $fbclid);
+        }
+
+        update_post_meta($post_id, 'madeit_tracking_last_seen', current_time('mysql'));
+
+        return [(int) $post_id, $tracking_id];
+    }
+}
+
+if (!function_exists('madeit_tracking_log_action')) {
+    function madeit_tracking_log_action($tracking_post_id, $action_type, $action_value = null, $context = [])
+    {
+        $tracking_post_id = (int) $tracking_post_id;
+        if ($tracking_post_id <= 0) {
+            return;
+        }
+
+        $action_type = sanitize_key($action_type);
+        if (empty($action_type)) {
+            return;
+        }
+
+        $entry = [
+            'type' => $action_type,
+            'value' => $action_value,
+            'time' => current_time('mysql'),
+            'context' => is_array($context) ? $context : [],
+        ];
+
+        $actions = get_post_meta($tracking_post_id, 'madeit_tracking_actions', true);
+        if (!is_array($actions)) {
+            $actions = [];
+        }
+        $actions[] = $entry;
+
+        update_post_meta($tracking_post_id, 'madeit_tracking_actions', $actions);
+        update_post_meta($tracking_post_id, 'madeit_tracking_last_action_type', $action_type);
+        update_post_meta($tracking_post_id, 'madeit_tracking_last_action_time', $entry['time']);
+        update_post_meta($tracking_post_id, 'madeit_tracking_action_' . $action_type, 1);
+
+        do_action('madeit_tracking_action_logged', $tracking_post_id, $entry);
+    }
+}
+
+if (!function_exists('madeit_tracking_meta_is_enabled')) {
+    function madeit_tracking_meta_is_enabled()
+    {
+        return defined('MADEIT_META_ACCESS_TOKEN') && !empty(MADEIT_META_ACCESS_TOKEN)
+            && (defined('MADEIT_ANALYTICS_FB') && !empty(MADEIT_ANALYTICS_FB));
+    }
+}
+
+if (!function_exists('madeit_tracking_meta_hash')) {
+    function madeit_tracking_meta_hash($value)
+    {
+        $value = is_string($value) ? trim(strtolower($value)) : '';
+        if (empty($value)) {
+            return '';
+        }
+
+        return hash('sha256', $value);
+    }
+}
+
+if (!function_exists('madeit_tracking_meta_get_cookie')) {
+    function madeit_tracking_meta_get_cookie($name)
+    {
+        if (empty($name)) {
+            return '';
+        }
+
+        return isset($_COOKIE[$name]) ? sanitize_text_field(wp_unslash($_COOKIE[$name])) : '';
+    }
+}
+
+if (!function_exists('madeit_tracking_meta_map_event_name')) {
+    function madeit_tracking_meta_map_event_name($action_type)
+    {
+        $action_type = sanitize_key($action_type);
+        $map = apply_filters('madeit_tracking_meta_event_map', [
+            'lead' => 'Lead',
+            'purchase' => 'Purchase',
+            'register' => 'CompleteRegistration',
+        ]);
+
+        return isset($map[$action_type]) ? $map[$action_type] : '';
+    }
+}
+
+if (!function_exists('madeit_tracking_meta_send_event')) {
+    function madeit_tracking_meta_send_event($tracking_post_id, $entry)
+    {
+        if (!madeit_tracking_meta_is_enabled()) {
+            return;
+        }
+
+        $tracking_post_id = (int) $tracking_post_id;
+        if ($tracking_post_id <= 0 || !is_array($entry)) {
+            return;
+        }
+
+        $event_name = madeit_tracking_meta_map_event_name(isset($entry['type']) ? $entry['type'] : '');
+        if (empty($event_name)) {
+            return;
+        }
+
+        $tracking_id = (string) get_post_meta($tracking_post_id, 'madeit_tracking_id', true);
+        $email = (string) get_post_meta($tracking_post_id, 'madeit_tracking_email', true);
+        $ip_address = (string) get_post_meta($tracking_post_id, 'madeit_tracking_ip', true);
+        $user_agent = (string) get_post_meta($tracking_post_id, 'madeit_tracking_user_agent', true);
+
+        $fbp = madeit_tracking_meta_get_cookie('_fbp');
+        $fbc = madeit_tracking_meta_get_cookie('_fbc');
+
+        // If fbc is missing but fbclid exists, build a best-effort fbc.
+        if (empty($fbc)) {
+            $fbclid = (string) get_post_meta($tracking_post_id, 'madeit_tracking_fbclid', true);
+            if (!empty($fbclid)) {
+                $fbc = 'fb.1.' . time() . '.' . $fbclid;
+            }
+        }
+
+        $event_time = time();
+        if (!empty($entry['time'])) {
+            $ts = strtotime($entry['time']);
+            if (!empty($ts)) {
+                $event_time = (int) $ts;
+            }
+        }
+
+        $context = isset($entry['context']) && is_array($entry['context']) ? $entry['context'] : [];
+        $event_source_url = '';
+        if (!empty($context['source']) && $context['source'] === 'form') {
+            $event_source_url = wp_get_referer();
+        }
+        if (empty($event_source_url) && !empty($_SERVER['HTTP_REFERER'])) {
+            $event_source_url = esc_url_raw(wp_unslash($_SERVER['HTTP_REFERER']));
+        }
+
+        $user_data = [];
+        $hashed_email = madeit_tracking_meta_hash($email);
+        if (!empty($hashed_email)) {
+            $user_data['em'] = [$hashed_email];
+        }
+        if (!empty($ip_address)) {
+            $user_data['client_ip_address'] = $ip_address;
+        }
+        if (!empty($user_agent)) {
+            $user_data['client_user_agent'] = $user_agent;
+        }
+        if (!empty($fbp)) {
+            $user_data['fbp'] = $fbp;
+        }
+        if (!empty($fbc)) {
+            $user_data['fbc'] = $fbc;
+        }
+
+        $custom_data = [];
+        $action_value = isset($entry['value']) ? $entry['value'] : null;
+        if ($event_name === 'Purchase') {
+            if (is_array($action_value)) {
+                if (isset($action_value['total'])) {
+                    $custom_data['value'] = (float) $action_value['total'];
+                }
+                if (!empty($action_value['currency'])) {
+                    $custom_data['currency'] = (string) $action_value['currency'];
+                }
+                if (!empty($action_value['order_id'])) {
+                    $custom_data['order_id'] = (string) $action_value['order_id'];
+                }
+            }
+        }
+
+        $event_id = apply_filters(
+            'madeit_tracking_meta_event_id',
+            substr(hash('sha256', $tracking_id . '|' . $event_name . '|' . $event_time . '|' . wp_json_encode($action_value)), 0, 32),
+            $tracking_post_id,
+            $entry
+        );
+
+        $payload = [
+            'data' => [
+                [
+                    'event_name' => $event_name,
+                    'event_time' => $event_time,
+                    'event_id' => $event_id,
+                    'action_source' => 'website',
+                    'event_source_url' => $event_source_url,
+                    'user_data' => $user_data,
+                    'custom_data' => $custom_data,
+                ],
+            ],
+        ];
+
+        if (defined('MADEIT_META_TEST_EVENT_CODE') && !empty(MADEIT_META_TEST_EVENT_CODE)) {
+            $payload['test_event_code'] = MADEIT_META_TEST_EVENT_CODE;
+        }
+
+        $pixel_ids = array_filter(array_map('trim', explode(',', MADEIT_ANALYTICS_FB)));
+        $api_version = defined('MADEIT_META_API_VERSION') && !empty(MADEIT_META_API_VERSION) ? MADEIT_META_API_VERSION : 'v24.0';
+        $responses = [];
+        foreach ($pixel_ids as $pixel_id) {
+            if (empty($pixel_id)) continue;
+            $endpoint = 'https://graph.facebook.com/' . rawurlencode($api_version) . '/' . rawurlencode($pixel_id) . '/events';
+            $endpoint = apply_filters('madeit_tracking_meta_endpoint', $endpoint, $payload, $tracking_post_id, $entry);
+            $response = wp_remote_post($endpoint, [
+                'timeout' => 5,
+                'headers' => [
+                    'Content-Type' => 'application/json; charset=utf-8',
+                ],
+                'body' => wp_json_encode(array_merge($payload, [
+                    'access_token' => MADEIT_META_ACCESS_TOKEN,
+                ])),
+            ]);
+            $responses[$pixel_id] = $response;
+        }
+        do_action('madeit_tracking_meta_event_sent', $tracking_post_id, $entry, $payload, $responses);
+    }
+}
+add_action('madeit_tracking_action_logged', 'madeit_tracking_meta_send_event', 10, 2);
+
 if (!function_exists('madeit_tracking_store_ajax')) {
     function madeit_tracking_store_ajax()
     {
@@ -74,33 +361,13 @@ if (!function_exists('madeit_tracking_store_ajax')) {
             wp_send_json_error(['message' => 'missing_tracking_ids'], 400);
         }
 
-        $post_id = 0;
-        if (!empty($visitor_id)) {
-            $post_id = madeit_tracking_get_post_id_by_tracking_id($visitor_id);
-        }
+        $context = [
+            'source' => 'ajax',
+        ];
 
+        [$post_id, $visitor_id] = madeit_tracking_get_or_create_tracking_post($visitor_id, $gclid, $fbclid, $context);
         if (!$post_id) {
-            $visitor_id = wp_generate_uuid4();
-            $post_id = wp_insert_post([
-                'post_type' => 'madeit_tracking',
-                'post_status' => 'publish',
-                'post_title' => 'Tracking ' . $visitor_id,
-            ]);
-
-            if (is_wp_error($post_id) || !$post_id) {
-                wp_send_json_error(['message' => 'tracking_create_failed'], 500);
-            }
-
-            update_post_meta($post_id, 'madeit_tracking_id', $visitor_id);
-            update_post_meta($post_id, 'madeit_tracking_first_seen', current_time('mysql'));
-        }
-
-        if (!empty($gclid)) {
-            update_post_meta($post_id, 'madeit_tracking_gclid', $gclid);
-        }
-
-        if (!empty($fbclid)) {
-            update_post_meta($post_id, 'madeit_tracking_fbclid', $fbclid);
+            wp_send_json_error(['message' => 'tracking_create_failed'], 500);
         }
 
         if (!empty($user_agent)) {
@@ -122,6 +389,66 @@ if (!function_exists('madeit_tracking_store_ajax')) {
 add_action('wp_ajax_madeit_store_tracking_ids', 'madeit_tracking_store_ajax');
 add_action('wp_ajax_nopriv_madeit_store_tracking_ids', 'madeit_tracking_store_ajax');
 
+if (!function_exists('madeit_tracking_forms_post_data')) {
+    function madeit_tracking_forms_post_data($postData, $form_id, $input_id)
+    {
+        $input_id = (int) $input_id;
+        if ($input_id <= 0) {
+            return $postData;
+        }
+
+        $ids = madeit_tracking_get_tracking_ids_from_cookies();
+        $tracking_id = $ids['tracking_id'];
+        $gclid = $ids['gclid'];
+        $fbclid = $ids['fbclid'];
+
+        if (!empty($gclid)) {
+            update_post_meta($input_id, '_madeit_gclid', $gclid);
+        }
+        if (!empty($fbclid)) {
+            update_post_meta($input_id, '_madeit_fbclid', $fbclid);
+        }
+        if (!empty($tracking_id)) {
+            update_post_meta($input_id, '_madeit_tracking_id', $tracking_id);
+        }
+
+        [$tracking_post_id, $tracking_id_final] = madeit_tracking_get_or_create_tracking_post(
+            $tracking_id,
+            $gclid,
+            $fbclid,
+            [
+                'source' => 'form',
+                'form_id' => (int) $form_id,
+                'input_id' => $input_id,
+            ]
+        );
+
+        if ($tracking_post_id) {
+            update_post_meta($input_id, '_madeit_tracking_post_id', (int) $tracking_post_id);
+            madeit_tracking_log_action($tracking_post_id, 'lead', 1, [
+                'source' => 'form',
+                'form_id' => (int) $form_id,
+                'input_id' => $input_id,
+            ]);
+        }
+
+        if (is_array($postData)) {
+            if (!empty($gclid)) {
+                $postData['gclid'] = $gclid;
+            }
+            if (!empty($fbclid)) {
+                $postData['fbclid'] = $fbclid;
+            }
+            if (!empty($tracking_id_final)) {
+                $postData['tracking_id'] = $tracking_id_final;
+            }
+        }
+
+        return $postData;
+    }
+}
+add_filter('madeit_forms_post_data', 'madeit_tracking_forms_post_data', 10, 3);
+
 if (!function_exists('madeit_tracking_schedule_cleanup')) {
     function madeit_tracking_schedule_cleanup()
     {
@@ -135,7 +462,7 @@ add_action('init', 'madeit_tracking_schedule_cleanup');
 if (!function_exists('madeit_tracking_cleanup_old_entries')) {
     function madeit_tracking_cleanup_old_entries()
     {
-        $days = apply_filters('madeit_tracking_retention_days', 30);
+        $days = apply_filters('madeit_tracking_retention_days', 90);
         $cutoff = gmdate('Y-m-d H:i:s', time() - ((int) $days * DAY_IN_SECONDS));
 
         $posts = get_posts([
@@ -359,24 +686,15 @@ if (!function_exists('madeit_tracking_attach_to_order')) {
             return;
         }
 
-        $tracking_post_id = 0;
-        if (!empty($tracking_id)) {
-            $tracking_post_id = madeit_tracking_get_post_id_by_tracking_id($tracking_id);
-        }
-
-        if (!$tracking_post_id && (!empty($gclid) || !empty($fbclid))) {
-            $tracking_id = !empty($tracking_id) ? $tracking_id : wp_generate_uuid4();
-            $tracking_post_id = wp_insert_post([
-                'post_type' => 'madeit_tracking',
-                'post_status' => 'publish',
-                'post_title' => 'Tracking ' . $tracking_id,
-            ]);
-
-            if (!is_wp_error($tracking_post_id) && $tracking_post_id) {
-                update_post_meta($tracking_post_id, 'madeit_tracking_id', $tracking_id);
-                update_post_meta($tracking_post_id, 'madeit_tracking_first_seen', current_time('mysql'));
-            }
-        }
+        [$tracking_post_id, $tracking_id] = madeit_tracking_get_or_create_tracking_post(
+            $tracking_id,
+            $gclid,
+            $fbclid,
+            [
+                'source' => 'woocommerce',
+                'order_id' => (int) $order_id,
+            ]
+        );
 
         if (!empty($tracking_id)) {
             update_post_meta($order_id, '_madeit_tracking_id', $tracking_id);
@@ -398,6 +716,19 @@ if (!function_exists('madeit_tracking_attach_to_order')) {
                 update_post_meta($order_id, '_madeit_email', $email);
                 madeit_tracking_store_email_for_visitor($email);
             }
+
+            if (!empty($tracking_post_id) && !is_wp_error($tracking_post_id)) {
+                $total = $order->get_total();
+                $currency = method_exists($order, 'get_currency') ? $order->get_currency() : '';
+                madeit_tracking_log_action((int) $tracking_post_id, 'purchase', [
+                    'order_id' => (int) $order_id,
+                    'total' => $total,
+                    'currency' => $currency,
+                ], [
+                    'source' => 'woocommerce',
+                    'order_id' => (int) $order_id,
+                ]);
+            }
         }
     }
 }
@@ -405,3 +736,58 @@ if (!function_exists('madeit_tracking_attach_to_order')) {
 if (class_exists('WooCommerce')) {
     add_action('woocommerce_checkout_update_order_meta', 'madeit_tracking_attach_to_order', 10, 1);
 }
+
+if (!function_exists('madeit_tracking_user_register')) {
+    function madeit_tracking_user_register($user_id)
+    {
+        $user_id = (int) $user_id;
+        if ($user_id <= 0) {
+            return;
+        }
+
+        $ids = madeit_tracking_get_tracking_ids_from_cookies();
+        $tracking_id = $ids['tracking_id'];
+        $gclid = $ids['gclid'];
+        $fbclid = $ids['fbclid'];
+
+        if (empty($tracking_id) && empty($gclid) && empty($fbclid)) {
+            return;
+        }
+
+        [$tracking_post_id, $tracking_id] = madeit_tracking_get_or_create_tracking_post(
+            $tracking_id,
+            $gclid,
+            $fbclid,
+            [
+                'source' => 'user_register',
+                'user_id' => $user_id,
+            ]
+        );
+
+        if (!$tracking_post_id) {
+            return;
+        }
+
+        update_user_meta($user_id, '_madeit_tracking_id', $tracking_id);
+        update_user_meta($user_id, '_madeit_tracking_post_id', (int) $tracking_post_id);
+        if (!empty($gclid)) {
+            update_user_meta($user_id, '_madeit_gclid', $gclid);
+        }
+        if (!empty($fbclid)) {
+            update_user_meta($user_id, '_madeit_fbclid', $fbclid);
+        }
+
+        $user = get_userdata($user_id);
+        if ($user && !empty($user->user_email)) {
+            madeit_tracking_store_email_for_visitor($user->user_email);
+        }
+
+        madeit_tracking_log_action((int) $tracking_post_id, 'register', [
+            'user_id' => $user_id,
+        ], [
+            'source' => 'user_register',
+            'user_id' => $user_id,
+        ]);
+    }
+}
+add_action('user_register', 'madeit_tracking_user_register', 10, 1);
