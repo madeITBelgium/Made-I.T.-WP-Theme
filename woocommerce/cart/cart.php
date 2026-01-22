@@ -20,7 +20,7 @@ defined('ABSPATH') || exit;
 do_action('woocommerce_before_cart'); ?>
 
 <div class="row">
-    <div class="col-12 col-lg-8">
+    <div class="col-12">
         <form class="woocommerce-cart-form" action="<?php echo esc_url(wc_get_cart_url()); ?>" method="post">
             <?php do_action('woocommerce_before_cart_table'); ?>
 
@@ -182,16 +182,18 @@ do_action('woocommerce_before_cart'); ?>
         
         <?php do_action('woocommerce_before_cart_collaterals'); ?>
     </div>
-    <div class="col-12 col-lg-4">
-        <?php
-            /**
-             * Cart collaterals hook.
-             *
-             * @hooked woocommerce_cross_sell_display
-             * @hooked woocommerce_cart_totals - 10
-             */
-            do_action('woocommerce_cart_collaterals');
-        ?>
+    <div class="col-12 mt-3">
+        <div class="row">
+            <?php
+                /**
+                 * Cart collaterals hook.
+                 *
+                 * @hooked woocommerce_cross_sell_display
+                 * @hooked woocommerce_cart_totals - 10
+                 */
+                do_action('woocommerce_cart_collaterals');
+            ?>
+        </div>
     </div>
 </div>
 
