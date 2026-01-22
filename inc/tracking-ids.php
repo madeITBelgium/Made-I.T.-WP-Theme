@@ -791,3 +791,240 @@ if (!function_exists('madeit_tracking_user_register')) {
     }
 }
 add_action('user_register', 'madeit_tracking_user_register', 10, 1);
+
+
+if (!function_exists('madeit_tracking_google_ads_export_is_enabled')) {
+    function madeit_tracking_google_ads_export_is_enabled()
+    {
+        return defined('MADEIT_TRACKING_EXPORT_KEY') && is_string(MADEIT_TRACKING_EXPORT_KEY) && MADEIT_TRACKING_EXPORT_KEY !== '';
+    }
+}
+
+if (!function_exists('madeit_tracking_google_ads_export_check_key')) {
+    function madeit_tracking_google_ads_export_check_key($provided)
+    {
+        if (!madeit_tracking_google_ads_export_is_enabled()) {
+            return false;
+        }
+
+        $provided = is_string($provided) ? $provided : '';
+        $provided = trim($provided);
+        if ($provided === '') {
+            return false;
+        }
+
+        $expected = (string) MADEIT_TRACKING_EXPORT_KEY;
+        return function_exists('hash_equals') ? hash_equals($expected, $provided) : $expected === $provided;
+    }
+}
+
+if (!function_exists('madeit_tracking_google_ads_export_get_timezone')) {
+    function madeit_tracking_google_ads_export_get_timezone()
+    {
+        $tz = defined('MADEIT_GOOGLE_ADS_TIMEZONE') && !empty(MADEIT_GOOGLE_ADS_TIMEZONE) ? (string) MADEIT_GOOGLE_ADS_TIMEZONE : 'UTC';
+        $tz = trim($tz);
+        if ($tz === '') {
+            $tz = 'UTC';
+        }
+
+        return apply_filters('madeit_tracking_google_ads_timezone', $tz);
+    }
+}
+
+if (!function_exists('madeit_tracking_google_ads_export_map_conversion_name')) {
+    function madeit_tracking_google_ads_export_map_conversion_name($action_type)
+    {
+        $action_type = sanitize_key($action_type);
+        $map = apply_filters('madeit_tracking_google_ads_conversion_name_map', [
+            'lead' => 'Lead',
+            'purchase' => 'Purchase',
+            'register' => 'CompleteRegistration',
+        ]);
+
+        return (is_array($map) && isset($map[$action_type])) ? (string) $map[$action_type] : '';
+    }
+}
+
+if (!function_exists('madeit_tracking_google_ads_export_parse_date_param')) {
+    function madeit_tracking_google_ads_export_parse_date_param($value)
+    {
+        $value = is_string($value) ? trim($value) : '';
+        if ($value === '') {
+            return 0;
+        }
+
+        // Accept YYYY-MM-DD or any strtotime compatible string.
+        $ts = strtotime($value);
+        return $ts ? (int) $ts : 0;
+    }
+}
+
+if (!function_exists('madeit_tracking_google_ads_export_output_csv')) {
+    function madeit_tracking_google_ads_export_output_csv()
+    {
+        $timezone = madeit_tracking_google_ads_export_get_timezone();
+
+        $filename = 'google-ads-conversions-' . gmdate('Y-m-d') . '.csv';
+
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename=' . $filename);
+        header('Pragma: no-cache');
+        header('Expires: 0');
+
+        $output = fopen('php://output', 'w');
+        if (!$output) {
+            status_header(500);
+            exit;
+        }
+
+        // Google Ads offline conversion import template header.
+        fputcsv($output, [
+            'Parameters:TimeZone=' . $timezone,
+        ]);
+        fputcsv($output, [
+            'Google Click ID',
+            'Conversion Name',
+            'Conversion Time',
+            'Conversion Value',
+            'Conversion Currency',
+            'Ad User Data',
+            'Ad Personalization',
+        ]);
+
+        $from_ts = isset($_GET['from']) ? madeit_tracking_google_ads_export_parse_date_param(wp_unslash($_GET['from'])) : 0;
+        $to_ts = isset($_GET['to']) ? madeit_tracking_google_ads_export_parse_date_param(wp_unslash($_GET['to'])) : 0;
+        $only_type = isset($_GET['type']) ? sanitize_key(wp_unslash($_GET['type'])) : '';
+
+        $ids = get_posts([
+            'post_type' => 'madeit_tracking',
+            'post_status' => 'publish',
+            'posts_per_page' => -1,
+            'fields' => 'ids',
+        ]);
+
+        if (!is_array($ids) || count($ids) === 0) {
+            fclose($output);
+            exit;
+        }
+
+        foreach ($ids as $post_id) {
+            $post_id = (int) $post_id;
+            if ($post_id <= 0) {
+                continue;
+            }
+
+            $gclid = (string) get_post_meta($post_id, 'madeit_tracking_gclid', true);
+            $gclid = trim($gclid);
+            if ($gclid === '') {
+                continue;
+            }
+
+            $actions = get_post_meta($post_id, 'madeit_tracking_actions', true);
+            if (!is_array($actions) || count($actions) === 0) {
+                continue;
+            }
+
+            foreach ($actions as $entry) {
+                if (!is_array($entry)) {
+                    continue;
+                }
+
+                $action_type = isset($entry['type']) ? sanitize_key($entry['type']) : '';
+                if ($action_type === '') {
+                    continue;
+                }
+                if ($only_type !== '' && $only_type !== $action_type) {
+                    continue;
+                }
+
+                $conversion_name = madeit_tracking_google_ads_export_map_conversion_name($action_type);
+                if ($conversion_name === '') {
+                    continue;
+                }
+
+                $entry_time = isset($entry['time']) ? (string) $entry['time'] : '';
+                $event_ts = $entry_time !== '' ? (int) strtotime($entry_time) : 0;
+                if ($event_ts <= 0) {
+                    continue;
+                }
+                if ($from_ts > 0 && $event_ts < $from_ts) {
+                    continue;
+                }
+                if ($to_ts > 0 && $event_ts > $to_ts) {
+                    continue;
+                }
+
+                // Time should match the TimeZone specified in the parameters row.
+                $conversion_time = gmdate('Y-m-d H:i:s', $event_ts);
+
+                $value = '';
+                $currency = '';
+                $action_value = isset($entry['value']) ? $entry['value'] : null;
+
+                if ($action_type === 'purchase' && is_array($action_value)) {
+                    if (isset($action_value['total'])) {
+                        $value = (string) (float) $action_value['total'];
+                    }
+                    if (!empty($action_value['currency'])) {
+                        $currency = (string) $action_value['currency'];
+                    }
+                } else {
+                    // For non-purchase conversions, keep value/currency empty by default.
+                    $value = apply_filters('madeit_tracking_google_ads_default_value', '', $action_type, $post_id, $entry);
+                    $currency = apply_filters('madeit_tracking_google_ads_default_currency', '', $action_type, $post_id, $entry);
+                }
+
+                $ad_user_data = apply_filters('madeit_tracking_google_ads_ad_user_data', '', $post_id, $entry);
+                $ad_personalization = apply_filters('madeit_tracking_google_ads_ad_personalization', '', $post_id, $entry);
+
+                fputcsv($output, [
+                    $gclid,
+                    $conversion_name,
+                    $conversion_time,
+                    $value,
+                    $currency,
+                    $ad_user_data,
+                    $ad_personalization,
+                ]);
+            }
+        }
+
+        fclose($output);
+        exit;
+    }
+}
+
+if (!function_exists('madeit_tracking_google_ads_export_endpoint')) {
+    function madeit_tracking_google_ads_export_endpoint()
+    {
+        if (is_admin() || wp_doing_ajax()) {
+            return;
+        }
+
+        // Secret URL endpoint:
+        //   https://example.com/?madeit_tracking_google_ads_csv=1&key=YOUR_KEY
+        if (!isset($_GET['madeit_tracking_google_ads_csv'])) {
+            return;
+        }
+
+        $key = isset($_GET['key']) ? (string) wp_unslash($_GET['key']) : '';
+        if (!madeit_tracking_google_ads_export_check_key($key)) {
+            // Do not reveal whether this endpoint exists/enabled.
+            return;
+        }
+
+        madeit_tracking_google_ads_export_output_csv();
+    }
+}
+add_action('template_redirect', 'madeit_tracking_google_ads_export_endpoint', 0);
+
+
+/*
+### INSTRUCTIONS ###,,,,
+# IMPORTANT: Remember to set the TimeZone value in the ""parameters"" row and/or in your Conversion Time column,,,,
+# For instructions on how to set your timezones visit http://goo.gl/T1C5Ov,,,,
+,,,,
+### TEMPLATE ###,,,,
+Parameters:TimeZone=UTC,,,,
+Google Click ID,Conversion Name,Conversion Time,Conversion Value,Conversion Currency,Ad User Data,Ad Personalization
+*/
