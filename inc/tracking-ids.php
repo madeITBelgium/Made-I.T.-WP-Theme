@@ -355,7 +355,15 @@ if (!function_exists('madeit_tracking_store_ajax')) {
         $fbclid = isset($_POST['fbclid']) ? sanitize_text_field(wp_unslash($_POST['fbclid'])) : '';
         $visitor_id = isset($_POST['visitor_id']) ? sanitize_text_field(wp_unslash($_POST['visitor_id'])) : '';
         $user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'])) : '';
-        $ip_address = isset($_SERVER['REMOTE_ADDR']) ? sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'])) : '';
+        $ip_address = '';
+        if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $forwarded_for = sanitize_text_field(wp_unslash($_SERVER['HTTP_X_FORWARDED_FOR']));
+            $forwarded_parts = array_map('trim', explode(',', $forwarded_for));
+            $ip_address = isset($forwarded_parts[0]) ? $forwarded_parts[0] : '';
+        }
+        if (empty($ip_address)) {
+            $ip_address = isset($_SERVER['REMOTE_ADDR']) ? sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'])) : '';
+        }
 
         if (empty($gclid) && empty($fbclid)) {
             wp_send_json_error(['message' => 'missing_tracking_ids'], 400);

@@ -2211,6 +2211,27 @@ if(MADEIT_BOOTSTRAP_VERSION === 5) {
     }
 }
 
+add_filter('rest_endpoints', function ($endpoints) {
+    // Hide user endpoints for unauthenticated visitors.
+    // Authenticated users (cookies / application passwords / etc.) can still use them.
+    if (!is_user_logged_in()) {
+        if (isset($endpoints['/wp/v2/users'])) {
+            unset($endpoints['/wp/v2/users']);
+        }
+
+        if (isset($endpoints['/wp/v2/users/(?P<id>[\d]+)'])) {
+            unset($endpoints['/wp/v2/users/(?P<id>[\d]+)']);
+        }
+
+        if (isset($endpoints['/wp/v2/users/me'])) {
+            unset($endpoints['/wp/v2/users/me']);
+        }
+    }
+
+    return $endpoints;
+});
+
+
 
 if(MADEIT_FEEDBACK) {
     require get_parent_theme_file_path('/inc/feedback.php');
