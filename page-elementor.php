@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Template Name: Elementor
  * The template for displaying all pages with a sidebar.
