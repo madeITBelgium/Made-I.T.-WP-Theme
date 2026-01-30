@@ -65,8 +65,14 @@ if(defined('MADEIT_WOO_B2B_ONLY') && MADEIT_WOO_B2B_ONLY) {
         if ($sale_from && $sale_from->getTimestamp() > time()) {
             return $price; // Sale not started yet
         }
-        if ($sale_to && $sale_to->getTimestamp() < time()) {
-            return $price; // Sale ended
+
+        // Sale end date is valid until 23:59:59 (end of day)
+        if ($sale_to) {
+            $sale_to_end_of_day = clone $sale_to;
+            $sale_to_end_of_day->setTime(23, 59, 59);
+            if ($sale_to_end_of_day->getTimestamp() < time()) {
+                return $price; // Sale ended
+            }
         }
 
         return wc_format_sale_price(
@@ -124,8 +130,14 @@ if(defined('MADEIT_WOO_B2B_ONLY') && MADEIT_WOO_B2B_ONLY) {
         if ($sale_from && $sale_from->getTimestamp() > time()) {
             return $price_html; // Sale not started yet
         }
-        if ($sale_to && $sale_to->getTimestamp() < time()) {
-            return $price_html; // Sale ended
+        
+        // Sale end date is valid until 23:59:59 (end of day)
+        if ($sale_to) {
+            $sale_to_end_of_day = clone $sale_to;
+            $sale_to_end_of_day->setTime(23, 59, 59);
+            if ($sale_to_end_of_day->getTimestamp() < time()) {
+                return $price_html; // Sale ended
+            }
         }
 
         return wc_format_sale_price(
