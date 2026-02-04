@@ -1,7 +1,9 @@
 <?php
 
 function feedback_add_admin_script() {
-    if(!defined('MADEIT_FEEDBACK_ALL') || MADEIT_FEEDBACK_ALL !== true && !array_intersect(wp_get_current_user()->roles, ['administrator'])) {
+    $feedback_all_enabled = defined('MADEIT_FEEDBACK_ALL') && MADEIT_FEEDBACK_ALL === true;
+    $is_admin = is_user_logged_in() && array_intersect(wp_get_current_user()->roles, ['administrator']);
+    if (!$feedback_all_enabled && !$is_admin) {
         return;
     }
 

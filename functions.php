@@ -131,12 +131,12 @@ if(!defined('MADEIT_WOO_B2B_ONLY')) {
 
 //Added in 2.11.0
 if (!defined('MADEIT_FEEDBACK')) {
-    define('MADEIT_FEEDBACK', false);
+    define('MADEIT_FEEDBACK', true);
 }
 
 // Added in 2.11.0
 if (!defined('MADEIT_ADMIN_CHAT')) {
-    define('MADEIT_ADMIN_CHAT', true);
+    define('MADEIT_ADMIN_CHAT', false);
 }
 if (!defined('MADEIT_ADMIN_CHAT_OPENAI_API_KEY')) {
     define('MADEIT_ADMIN_CHAT_OPENAI_API_KEY', '');
