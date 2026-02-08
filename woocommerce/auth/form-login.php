@@ -12,7 +12,7 @@
  *
  * @see     https://woocommerce.com/document/template-structure/
  * @package WooCommerce\Templates\Auth
- * @version 9.2.0
+ * @version 10.5.0
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -34,7 +34,7 @@ defined( 'ABSPATH' ) || exit;
 	</p>
 	<p class="form-row form-row-wide">
 		<label for="password"><?php _e('Password', 'woocommerce'); ?>&nbsp;<span class="required" aria-hidden="true">*</span><span class="screen-reader-text"><?php esc_html_e( 'Required', 'woocommerce' ); ?></span></label>
-		<input class="input-text form-control" type="password" name="password" id="password" required aria-required="true" />
+		<input class="input-text form-control" type="password" name="password" id="password" autocomplete="current-password" required aria-required="true" />
 	</p>
 	<p class="wc-auth-actions">
 		<?php wp_nonce_field('woocommerce-login', 'woocommerce-login-nonce'); ?>
