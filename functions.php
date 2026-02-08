@@ -47,6 +47,19 @@ if (!defined('MADEIT_UPDATER_GITLAB_REPO')) {
 if (!defined('MADEIT_UPDATER_GITLAB_TOKEN')) {
     define('MADEIT_UPDATER_GITLAB_TOKEN', '');
 }
+
+// Plugin updater (Made I.T. update server)
+if (!defined('MADEIT_PLUGIN_UPDATER')) {
+    define('MADEIT_PLUGIN_UPDATER', true);
+}
+if (!defined('MADEIT_PLUGIN_UPDATER_ENDPOINT')) {
+    // Expects a JSON API that accepts { website, level, plugins: [{plugin, slug, version, name}, ...] }
+    define('MADEIT_PLUGIN_UPDATER_ENDPOINT', 'https://portal.madeit.be/api/plugin/wordpress/plugins');
+}
+if (!defined('MADEIT_PLUGIN_UPDATER_LEVEL')) {
+    // Default to the same level as the theme updater.
+    define('MADEIT_PLUGIN_UPDATER_LEVEL', defined('MADEIT_UPDATER_LEVEL') ? MADEIT_UPDATER_LEVEL : 'stable');
+}
 /* Default colors */
 if (!defined('MADEIT_CUSTOM_COLOR')) {
     define('MADEIT_CUSTOM_COLOR', false);
@@ -233,6 +246,16 @@ if ($madeit_updater_type !== 'none') {
             if (class_exists('MadeIT_Updater')) {
                 new MadeIT_Updater(__FILE__, (bool) MADEIT_UPDATER_CHILD_THEME, MADEIT_UPDATER_LEVEL);
             }
+        }
+    }
+}
+
+// Plugin updater initialization (runs in admin + cron update checks)
+if (defined('MADEIT_PLUGIN_UPDATER') && MADEIT_PLUGIN_UPDATER) {
+    if (file_exists(dirname(__FILE__).'/inc/MadeIT_Plugin_Updater.php')) {
+        require_once dirname(__FILE__).'/inc/MadeIT_Plugin_Updater.php';
+        if (class_exists('MadeIT_Plugin_Updater')) {
+            new MadeIT_Plugin_Updater(MADEIT_PLUGIN_UPDATER_ENDPOINT, MADEIT_PLUGIN_UPDATER_LEVEL);
         }
     }
 }
