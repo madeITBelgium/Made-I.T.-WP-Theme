@@ -7,8 +7,9 @@ class MadeIT_Updater
     private $themeFile; // __FILE__ of our plugin
     private $apiResult; // holds data from GitHub
     private $childTheme = false;
+    private $level = 'stable';
 
-    public function __construct($themeFile, $child = false)
+    public function __construct($themeFile, $child = false, $level = 'stable')
     {
         add_filter('pre_set_site_transient_update_themes', [$this, 'setTransitent']);
         add_filter('themes_api', [$this, 'setThemeInfo'], 10, 3);
@@ -18,6 +19,23 @@ class MadeIT_Updater
 
         $this->themeFile = $themeFile;
         $this->childTheme = $child;
+        $this->level = $this->sanitizeLevel($level);
+    }
+
+    private function sanitizeLevel($level)
+    {
+        if (!is_string($level)) {
+            return 'stable';
+        }
+        $level = strtolower(trim($level));
+        if ($level === '') {
+            return 'stable';
+        }
+
+        // Keep it URL-safe: letters, numbers, underscore, dash, dot
+        $level = preg_replace('/[^a-z0-9._-]+/', '', $level);
+
+        return $level !== '' ? $level : 'stable';
     }
 
     // Get information regarding our plugin from WordPress
@@ -42,7 +60,13 @@ class MadeIT_Updater
             return;
         }
         // Query the GitHub API
-        $url = 'https://portal.madeit.be/api/plugin/wordpress/madeit?website='.home_url('/');
+        $url = add_query_arg(
+            [
+                'website' => home_url('/'),
+                'level'   => $this->level,
+            ],
+            'https://portal.madeit.be/api/plugin/wordpress/madeit'
+        );
 
         $headers = [];
 

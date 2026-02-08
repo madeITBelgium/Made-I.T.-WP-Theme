@@ -12,6 +12,41 @@
 if (!defined('MADEIT_VERSION')) {
     define('MADEIT_VERSION', '2.10.0');
 }
+
+// Updater configuration
+// Options for MADEIT_UPDATER_TYPE: 'madeit' (default), 'github', 'gitlab', 'none'
+if (!defined('MADEIT_UPDATER_TYPE')) {
+    define('MADEIT_UPDATER_TYPE', 'madeit');
+}
+if (!defined('MADEIT_UPDATER_CHILD_THEME')) {
+    define('MADEIT_UPDATER_CHILD_THEME', false);
+}
+// Made I.T. portal updater level (only used when MADEIT_UPDATER_TYPE === 'madeit')
+// Examples: 'stable' (default), 'development', 'beta', ...
+if (!defined('MADEIT_UPDATER_LEVEL')) {
+    define('MADEIT_UPDATER_LEVEL', 'stable');
+}
+// GitHub updater defaults (only used when MADEIT_UPDATER_TYPE === 'github')
+if (!defined('MADEIT_UPDATER_GITHUB_OWNER')) {
+    define('MADEIT_UPDATER_GITHUB_OWNER', 'madeITBelgium');
+}
+if (!defined('MADEIT_UPDATER_GITHUB_REPO')) {
+    define('MADEIT_UPDATER_GITHUB_REPO', 'Made-I.T.-WP-Theme');
+}
+if (!defined('MADEIT_UPDATER_GITHUB_TOKEN')) {
+    define('MADEIT_UPDATER_GITHUB_TOKEN', '');
+}
+// GitLab updater defaults (only used when MADEIT_UPDATER_TYPE === 'gitlab')
+// Note: MADEIT_UPDATER_GITLAB_REPO should be the GitLab project id/path expected by the updater.
+if (!defined('MADEIT_UPDATER_GITLAB_OWNER')) {
+    define('MADEIT_UPDATER_GITLAB_OWNER', '');
+}
+if (!defined('MADEIT_UPDATER_GITLAB_REPO')) {
+    define('MADEIT_UPDATER_GITLAB_REPO', '');
+}
+if (!defined('MADEIT_UPDATER_GITLAB_TOKEN')) {
+    define('MADEIT_UPDATER_GITLAB_TOKEN', '');
+}
 /* Default colors */
 if (!defined('MADEIT_CUSTOM_COLOR')) {
     define('MADEIT_CUSTOM_COLOR', false);
@@ -157,20 +192,48 @@ if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
     return;
 }
 
-/*
-if (file_exists(dirname(__FILE__).'/inc/MadeIT_Github_Updater.php')) {
-    require_once dirname(__FILE__).'/inc/MadeIT_Github_Updater.php';
-    if (class_exists('MadeIT_Github_Updater')) {
-        new MadeIT_Github_Updater(__FILE__, 'madeITBelgium', 'Made-I.T.-WP-Theme', null, false);
-    }
-}
-*/
+// Theme updater selection
+// Configure in wp-config.php (or elsewhere) by defining MADEIT_UPDATER_TYPE.
+// Example: define('MADEIT_UPDATER_TYPE', 'github');
+// Example: define('MADEIT_UPDATER_TYPE', 'none');
+$madeit_updater_type = is_string(MADEIT_UPDATER_TYPE) ? strtolower(MADEIT_UPDATER_TYPE) : 'madeit';
 
-
-if (file_exists(dirname(__FILE__).'/inc/MadeIT_Updater.php')) {
-    require_once dirname(__FILE__).'/inc/MadeIT_Updater.php';
-    if (class_exists('MadeIT_Updater')) {
-        new MadeIT_Updater(__FILE__);
+if ($madeit_updater_type !== 'none') {
+    if ($madeit_updater_type === 'github') {
+        if (file_exists(dirname(__FILE__).'/inc/MadeIT_Github_Updater.php')) {
+            require_once dirname(__FILE__).'/inc/MadeIT_Github_Updater.php';
+            if (class_exists('MadeIT_Github_Updater')) {
+                new MadeIT_Github_Updater(
+                    __FILE__,
+                    MADEIT_UPDATER_GITHUB_OWNER,
+                    MADEIT_UPDATER_GITHUB_REPO,
+                    MADEIT_UPDATER_GITHUB_TOKEN,
+                    (bool) MADEIT_UPDATER_CHILD_THEME
+                );
+            }
+        }
+    } elseif ($madeit_updater_type === 'gitlab') {
+        // Only start the GitLab updater when a repo identifier is provided.
+        if (MADEIT_UPDATER_GITLAB_REPO !== '' && file_exists(dirname(__FILE__).'/inc/MadeIT_Gitlab_Updater.php')) {
+            require_once dirname(__FILE__).'/inc/MadeIT_Gitlab_Updater.php';
+            if (class_exists('MadeIT_Gitlab_Updater')) {
+                new MadeIT_Gitlab_Updater(
+                    __FILE__,
+                    MADEIT_UPDATER_GITLAB_OWNER,
+                    MADEIT_UPDATER_GITLAB_REPO,
+                    MADEIT_UPDATER_GITLAB_TOKEN,
+                    (bool) MADEIT_UPDATER_CHILD_THEME
+                );
+            }
+        }
+    } else {
+        // Default: Made I.T. portal updater
+        if (file_exists(dirname(__FILE__).'/inc/MadeIT_Updater.php')) {
+            require_once dirname(__FILE__).'/inc/MadeIT_Updater.php';
+            if (class_exists('MadeIT_Updater')) {
+                new MadeIT_Updater(__FILE__, (bool) MADEIT_UPDATER_CHILD_THEME, MADEIT_UPDATER_LEVEL);
+            }
+        }
     }
 }
 
