@@ -86,7 +86,7 @@ add_action('admin_footer', 'madeit_support_popup');
 
 function madeit_support_ticket_store()
 {
-    wp_mail('support@madeit.be', 'Support Ticket '.$_POST['ms_subject'].' - '.get_home_url(), json_encode($_POST, JSON_PRETTY_PRINT));
+    wp_mail('info@madeit.be', 'Support Ticket '.$_POST['ms_subject'].' - '.get_home_url(), json_encode($_POST, JSON_PRETTY_PRINT));
     echo json_encode(['success' => true]);
     wp_die();
 }

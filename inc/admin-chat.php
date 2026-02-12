@@ -7,6 +7,17 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+if (!function_exists('madeit_admin_chat_footer_unhide_link')) {
+    function madeit_admin_chat_footer_unhide_link($text)
+    {
+        // Link is shown/hidden via JS depending on localStorage flag.
+        $text .= ' • <a href="#" id="madeit-admin-chat-unhide" style="display:none">Toon Admin Chat</a>';
+
+        return $text;
+    }
+}
+add_filter('admin_footer_text', 'madeit_admin_chat_footer_unhide_link', 100, 1);
+
 if (!function_exists('madeit_admin_chat_enqueue')) {
     function madeit_admin_chat_enqueue() {
         wp_register_style('madeit-admin-chat', false, [], MADEIT_VERSION);
@@ -50,6 +61,7 @@ if (!function_exists('madeit_admin_chat_enqueue')) {
             (function(){
                 var bubble = document.getElementById("madeit-admin-chat-bubble");
                 var panel = document.getElementById("madeit-admin-chat-panel");
+                var unhideLink = document.getElementById("madeit-admin-chat-unhide");
                 var closeBtn = document.getElementById("madeit-admin-chat-close");
                 var expandBtn = document.getElementById("madeit-admin-chat-expand");
                 var resetBtn = document.getElementById("madeit-admin-chat-reset");
@@ -201,10 +213,16 @@ if (!function_exists('madeit_admin_chat_enqueue')) {
                         bubble.classList.add("is-hidden");
                         panel.classList.add("is-hidden");
                         panel.classList.remove("is-open");
+                        if(unhideLink){
+                            unhideLink.style.display = "inline";
+                        }
                     }else{
                         try{localStorage.removeItem(hiddenKey);}catch(e){}
                         bubble.classList.remove("is-hidden");
                         panel.classList.remove("is-hidden");
+                        if(unhideLink){
+                            unhideLink.style.display = "none";
+                        }
                     }
                 }
 
@@ -213,6 +231,15 @@ if (!function_exists('madeit_admin_chat_enqueue')) {
                         setHidden(true);
                     }
                 }catch(e){}
+
+                if(unhideLink){
+                    unhideLink.addEventListener("click", function(e){
+                        e.preventDefault();
+                        setHidden(false);
+                        // Optionally open the panel so it is obvious the chat is back.
+                        toggle(true);
+                    });
+                }
 
                 if(closeBtn){
                     closeBtn.addEventListener("click", function(){
@@ -434,6 +461,7 @@ if (!function_exists('madeit_admin_chat_openai_reply')) {
         }
 
         $site_info = madeit_admin_chat_tool_get_site_info();
+        $extra_context = madeit_admin_chat_extra_context();
         $screen_id = '';
         $screen_base = '';
         $context_post_id = 0;
@@ -463,6 +491,9 @@ if (!function_exists('madeit_admin_chat_openai_reply')) {
         $system_prompt .= ' Huidige admin scherm: '.$screen_id.' ('.$screen_base.'). Huidige URL: '.$current_url.'.';
         if ($context_post_id > 0 && !empty($context_post_type)) {
             $system_prompt .= ' Huidige inhoud: post_type '.$context_post_type.', post_id '.$context_post_id.'. Gebruik dit standaard voor acties op de huidige pagina, vraag geen extra ID als het hier staat.';
+        }
+        if (!empty($extra_context)) {
+            $system_prompt .= ' Extra context: '.$extra_context;
         }
 
         array_unshift($messages, [
@@ -540,6 +571,46 @@ if (!function_exists('madeit_admin_chat_openai_reply')) {
             'message' => sanitize_text_field($message['content']),
             'client_actions' => $client_actions,
         ];
+    }
+}
+
+if (!function_exists('madeit_admin_chat_extra_context')) {
+    function madeit_admin_chat_extra_context() {
+        $theme = wp_get_theme();
+        $base_context = [
+            'Thema: '.$theme->get('Name'),
+            'Thema versie: '.$theme->get('Version'),
+            'Thema URI: '.$theme->get('ThemeURI'),
+            'Als je iets niet weet of extra hulp nodig hebt, contacteer Made I.T. via info@madeit.be.',
+            'Gutenberg block madeit/block-content (Content Container): belangrijkste blok om rijen met kolommen op te bouwen; je kan meerdere containers onder elkaar plaatsen; gebruik background color en padding voor afstand.',
+            'Gutenberg block madeit/block-content-column (Content Column): kolom binnen een Content Container; ondersteunt width (0-12), padding en background/text colors.',
+        ];
+        $context = apply_filters('madeit_admin_chat_extra_context', $base_context);
+        if (is_string($context)) {
+            $context = [$context];
+        }
+        if (!is_array($context)) {
+            return '';
+        }
+
+        $items = [];
+        foreach ($context as $item) {
+            if (is_string($item)) {
+                $item = trim($item);
+                if ($item !== '') {
+                    $items[] = $item;
+                }
+            }
+        }
+
+        if (empty($items)) {
+            return '';
+        }
+
+        // Keep context compact to avoid bloating the prompt.
+        $items = array_slice($items, 0, 20);
+
+        return implode(' | ', $items);
     }
 }
 
@@ -803,6 +874,36 @@ if (!function_exists('madeit_admin_chat_get_tools')) {
                     ],
                 ],
             ],
+            [
+                'type' => 'function',
+                'function' => [
+                    'name' => 'set_page_meta',
+                    'description' => 'Genereer en bewaar meta titel en meta beschrijving voor een pagina in Yoast of RankMath. Optioneel eigen title/description doorgeven.',
+                    'parameters' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'page_id' => [
+                                'type' => 'integer',
+                                'description' => 'ID van de pagina.',
+                            ],
+                            'title' => [
+                                'type' => 'string',
+                                'description' => 'Meta titel (optioneel).',
+                            ],
+                            'description' => [
+                                'type' => 'string',
+                                'description' => 'Meta beschrijving (optioneel).',
+                            ],
+                            'provider' => [
+                                'type' => 'string',
+                                'description' => 'yoast, rankmath, of auto (default).',
+                            ],
+                        ],
+                        'required' => ['page_id'],
+                        'additionalProperties' => false,
+                    ],
+                ],
+            ],
         ];
     }
 }
@@ -826,6 +927,8 @@ if (!function_exists('madeit_admin_chat_run_tool')) {
                 return madeit_admin_chat_tool_get_page_blocks($args);
             case 'add_block_to_page':
                 return madeit_admin_chat_tool_add_block_to_page($args);
+            case 'set_page_meta':
+                return madeit_admin_chat_tool_set_page_meta($args);
             default:
                 return ['error' => 'Unknown tool'];
         }
@@ -1097,6 +1200,8 @@ if (!function_exists('madeit_admin_chat_tool_add_block_to_page')) {
             $blocks[] = $block;
         }
 
+        // Normalize/validate block structure via round-trip before saving.
+        $blocks = parse_blocks(serialize_blocks($blocks));
         $updated = serialize_blocks($blocks);
         $updated_id = wp_update_post([
             'ID' => $page_id,
@@ -1116,6 +1221,155 @@ if (!function_exists('madeit_admin_chat_tool_add_block_to_page')) {
                 'page_id' => $page_id,
                 'block_serialized' => serialize_blocks([$block]),
             ],
+        ];
+    }
+}
+
+if (!function_exists('madeit_admin_chat_tool_set_page_meta')) {
+    function madeit_admin_chat_tool_set_page_meta($args) {
+        if (!current_user_can('edit_pages')) {
+            return ['error' => 'Geen permissies om pagina\'s te wijzigen.'];
+        }
+
+        $page_id = isset($args['page_id']) ? (int) $args['page_id'] : 0;
+        if ($page_id <= 0) {
+            return ['error' => 'Ongeldig page_id.'];
+        }
+
+        $post = get_post($page_id);
+        if (!$post || $post->post_type !== 'page') {
+            return ['error' => 'Pagina niet gevonden.'];
+        }
+
+        $provider = isset($args['provider']) ? sanitize_key($args['provider']) : 'auto';
+        if (!in_array($provider, ['auto', 'yoast', 'rankmath'], true)) {
+            $provider = 'auto';
+        }
+
+        $title = isset($args['title']) ? sanitize_text_field($args['title']) : '';
+        $description = isset($args['description']) ? sanitize_text_field($args['description']) : '';
+
+        if ($title === '' || $description === '') {
+            $ai_meta = madeit_admin_chat_generate_meta_with_ai($post, madeit_admin_chat_tool_get_site_info());
+            if ($title === '' && !empty($ai_meta['title'])) {
+                $title = $ai_meta['title'];
+            }
+            if ($description === '' && !empty($ai_meta['description'])) {
+                $description = $ai_meta['description'];
+            }
+        }
+
+        if ($title === '') {
+            $title = get_the_title($page_id);
+        }
+        if ($description === '') {
+            $excerpt = wp_strip_all_tags($post->post_excerpt);
+            if ($excerpt === '') {
+                $excerpt = wp_strip_all_tags($post->post_content);
+            }
+            $description = wp_html_excerpt($excerpt, 160, '');
+        }
+
+        $title = trim($title);
+        $description = trim($description);
+
+        if (!function_exists('is_plugin_active')) {
+            require_once ABSPATH.'wp-admin/includes/plugin.php';
+        }
+
+        $applied = [];
+
+        if ($provider === 'yoast' || $provider === 'auto') {
+            if ($provider === 'auto' || is_plugin_active('wordpress-seo/wp-seo.php')) {
+                update_post_meta($page_id, '_yoast_wpseo_title', $title);
+                update_post_meta($page_id, '_yoast_wpseo_metadesc', $description);
+                $applied[] = 'yoast';
+            }
+        }
+
+        if ($provider === 'rankmath' || $provider === 'auto') {
+            if ($provider === 'auto' || is_plugin_active('seo-by-rank-math/rank-math.php')) {
+                update_post_meta($page_id, 'rank_math_title', $title);
+                update_post_meta($page_id, 'rank_math_description', $description);
+                $applied[] = 'rankmath';
+            }
+        }
+
+        if (empty($applied)) {
+            return [
+                'error' => 'Geen SEO plugin gevonden (Yoast of RankMath) voor opslaan.',
+                'title' => $title,
+                'description' => $description,
+            ];
+        }
+
+        return [
+            'page_id' => $page_id,
+            'title' => $title,
+            'description' => $description,
+            'providers' => $applied,
+        ];
+    }
+}
+
+if (!function_exists('madeit_admin_chat_generate_meta_with_ai')) {
+    function madeit_admin_chat_generate_meta_with_ai($post, $site_info) {
+        if (empty(MADEIT_ADMIN_CHAT_OPENAI_API_KEY)) {
+            return [];
+        }
+
+        if (!$post instanceof WP_Post) {
+            return [];
+        }
+
+        $content = wp_strip_all_tags($post->post_content);
+        $content = wp_html_excerpt($content, 1500, '');
+        $excerpt = wp_strip_all_tags($post->post_excerpt);
+        if ($excerpt === '') {
+            $excerpt = wp_html_excerpt(wp_strip_all_tags($post->post_content), 300, '');
+        }
+
+        $messages = [
+            [
+                'role' => 'system',
+                'content' => 'Je bent een SEO assistent voor WordPress. Geef enkel JSON terug met exact deze keys: "title" en "description". Max 60 tekens voor titel, max 160 tekens voor description. Geen Markdown, geen extra tekst.',
+            ],
+            [
+                'role' => 'user',
+                'content' => 'Website: '.$site_info['name'].' ('.$site_info['url'].')\nPagina: '.$post->post_title.'\nURL: '.get_permalink($post).'\nUittreksel: '.$excerpt.'\nInhoud (ingekort): '.$content,
+            ],
+        ];
+
+        $payload = madeit_admin_chat_openai_request($messages, []);
+        if (!is_array($payload)) {
+            return [];
+        }
+
+        $content = $payload['choices'][0]['message']['content'] ?? '';
+        if (!is_string($content) || $content === '') {
+            return [];
+        }
+
+        $content = trim($content);
+        $content = preg_replace('/^```(json)?/i', '', $content);
+        $content = preg_replace('/```$/', '', $content);
+        $content = trim($content);
+
+        $decoded = json_decode($content, true);
+        if (!is_array($decoded)) {
+            return [];
+        }
+
+        $title = isset($decoded['title']) ? sanitize_text_field($decoded['title']) : '';
+        $description = isset($decoded['description']) ? sanitize_text_field($decoded['description']) : '';
+
+        if ($title === '' && $description === '') {
+            return [];
+        }
+
+        return [
+            'title' => $title,
+            'description' => $description,
         ];
     }
 }
