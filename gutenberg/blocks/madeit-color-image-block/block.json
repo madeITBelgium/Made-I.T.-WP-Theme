@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json.schemastore.org/block.json",
+  "apiVersion": 2,
+  "name": "madeit/block-color-image",
+  "title": "Made I.T. color image",
+  "category": "madeit",
+"icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:serif=\"http://www.serif.com/\" width=\"24\" height=\"24\" viewBox=\"0 0 30 30\" version=\"1.1\" xml:space=\"preserve\" style=\"fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;\"><g><g><path d=\"M4,22L2,22L2,4C2.001,2.903 2.903,2.001 4,2L22,2L22,4L4,4L4,22Z\" style=\"fill:rgb(28,172,180);fill-rule:nonzero;\"/></g><g><path d=\"M21,17C22.646,17 24,15.646 24,14C24,12.354 22.646,11 21,11C19.354,11 18,12.354 18,14C18.002,15.645 19.355,16.998 21,17ZM21,13C21.549,13 22,13.451 22,14C22,14.549 21.549,15 21,15C20.451,15 20,14.549 20,14C20,13.452 20.452,13 21,13Z\" style=\"fill:rgb(71,106,138);fill-rule:nonzero;\"/></g><g><path d=\"M28,7L9,7C7.903,7.001 7.001,7.903 7,9L7,28C7.001,29.097 7.903,29.999 9,30L28,30C29.097,29.999 29.999,29.097 30,28L30,9C29.999,7.903 29.097,7.001 28,7ZM28,28L9,28L9,22L13,18.003L18.586,23.589C19.362,24.365 20.638,24.365 21.414,23.589L23,22.003L28,27L28,28ZM28,24.172L24.414,20.586C23.638,19.81 22.362,19.81 21.586,20.586L20,22.172L14.414,16.586C13.638,15.81 12.362,15.81 11.586,16.586L9,19.172L9,9L28,9L28,24.172Z\" style=\"fill:rgb(71,106,138);fill-rule:nonzero;\"/></g><g><rect id=\"_Transparent_Rectangle_\" x=\"0\" y=\"0\" width=\"32\" height=\"32\" style=\"fill:none;\"/></g></g></svg>",
+  "description": "Image block with background color and configurable offsets.",
+  "status": "normal",
+
+  "version": "1.2.0",
+  "madeit": {
+    "changelog": {
+      "1.2.0": [
+        "✨ Nieuwe block toegevoegd: Made I.T. Color Image",
+        "Deze block biedt de mogelijkheid om een afbeelding toe te voegen met een achtergrondkleur en configureerbare offsets."
+      ]
+    }
+  },
+
+  "editorScript": "file:./build/index.js",
+  "editorStyle": "file:./build/index.css",
+  "style": "file:./build/style-index.css",
+  "textdomain": "madeit",
+  "attributes": {
+    "color": {
+      "type": "string",
+      "default": "#000000"
+    },
+    "top": {
+      "type": "number",
+      "default": 50
+    },
+    "right": {
+      "type": "number",
+      "default": 50
+    },
+    "bottom": {
+      "type": "number",
+      "default": 50
+    },
+    "left": {
+      "type": "number",
+      "default": 50
+    }
+  }
+}

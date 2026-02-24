@@ -1,0 +1,41 @@
+.wp-block-madeit-block-color-image {
+    position: relative;
+}
+
+.wp-block-madeit-block-color-image .madeit-color-image__inner {
+    display: block;
+}
+
+.wp-block-madeit-block-color-image img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+
+.madeit-color-image__inner figure {
+    position: relative;
+
+    &:before {
+        content: '';
+        position: absolute;
+        width: calc(100% - var(--margin-left, 0) - var(--margin-right, 0));
+        height: calc(100% - var(--margin-top, 0) - var(--margin-bottom, 0));
+        top: var(--margin-top, 0);
+        right: var(--margin-right, 0);
+        bottom: var(--margin-bottom, 0);
+        left: var(--margin-left, 0);
+        background-color: var(--background-color, transparent);
+    }
+
+    &.is-style-rounded {
+        &:before {
+            border-radius: 9999px;
+        }
+    }
+
+    img {
+        position: relative;
+        z-index: 1;
+    }
+}
