@@ -1,0 +1,24 @@
+{
+  "apiVersion": 2,
+  "name": "madeit/slider-image",
+  "title": "Slider Afbeelding",
+  "parent": [ "madeit/slider" ],
+  "category": "madeit",
+  "icon": "format-image",
+  "attributes": {
+    "url": { "type": "string" },
+    "alt": { "type": "string" },
+    "id": { "type": "number" },
+    "focalPoint" : {
+      "type": "object",
+      "default": { "x": 0.5, "y": 0.5 }
+    }
+  },
+  "supports": {
+    "reusable": false,
+    "html": false
+  },
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./editor.css",
+  "style": "file:./style.css"
+}

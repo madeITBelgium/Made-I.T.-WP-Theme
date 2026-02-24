@@ -1,0 +1,69 @@
+{
+  "apiVersion": 2,
+  "name": "madeit/slider",
+  "title": "Made I.T. Foto slider",
+  "category": "madeit",
+  "icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:serif=\"http://www.serif.com/\" width=\"30\" height=\"30\" viewBox=\"0 0 200 154\" version=\"1.1\" xml:space=\"preserve\" style=\"fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;\"><g transform=\"matrix(1,0,0,1,-249.594603,-25.218512)\"><g id=\"SVGRepo_iconCarrier\" transform=\"matrix(13.333333,0,0,13.333333,222.5497,-41.031488)\"><g transform=\"matrix(0.067117,0,0,0.066094,-14.024464,4.1838)\"><path d=\"M393,34.433L393,163.504C393,172.039 386.176,178.969 377.772,178.969L323.228,178.969C314.824,178.969 308,172.039 308,163.504L308,34.433C308,25.898 314.824,18.969 323.228,18.969L377.772,18.969C386.176,18.969 393,25.898 393,34.433Z\" style=\"fill:rgb(28,171,179);fill-opacity:0;stroke:rgb(71,106,138);stroke-width:14.08px;\"/></g><g transform=\"matrix(0.03094,0,0,0.054438,-7.032526,5.144863)\"><path d=\"M393,36.956L393,160.981C393,170.909 378.819,178.969 361.353,178.969L339.647,178.969C322.181,178.969 308,170.909 308,160.981L308,36.956C308,27.028 322.181,18.969 339.647,18.969L361.353,18.969C378.819,18.969 393,27.028 393,36.956Z\" style=\"fill:rgb(28,171,179);fill-opacity:0;stroke:rgb(28,172,180);stroke-width:21.17px;\"/></g><g transform=\"matrix(0.03094,0,0,0.054438,4.357953,5.144863)\"><path d=\"M393,36.956L393,160.981C393,170.909 378.819,178.969 361.353,178.969L339.647,178.969C322.181,178.969 308,170.909 308,160.981L308,36.956C308,27.028 322.181,18.969 339.647,18.969L361.353,18.969C378.819,18.969 393,27.028 393,36.956Z\" style=\"fill:rgb(28,171,179);fill-opacity:0;stroke:rgb(28,172,180);stroke-width:21.17px;\"/></g></g></g></svg>",
+  "description": "Maak jouw eigen slider met afbeeldingen.",
+  "status": "nieuw",
+  "version": "1.3.0",
+  "madeit": {
+    "changelog": {
+      "1.3.0": [
+        "Autoplay toegevoegd",
+        "Bugfix responsive height"
+      ],
+      "1.2.0": [
+        "Nieuwe gallery layout"
+      ]
+    }
+  },
+
+
+  "supports": {
+    "html": false
+  },
+  "attributes": {
+    "effect": { "type": "string", "default": "slide" },
+    "crossFade": { "type": "boolean", "default": false },
+
+    "slidesDesktop": { "type": "number", "default": 3.5 },
+    "slidesTablet": { "type": "number", "default": 2.5 },
+    "slidesMobile": { "type": "number", "default": 1.5 }, 
+
+    "height": { "type": "string", "default": "300px" },
+    "minHeight": { "type": "string", "default": "300px" },
+    "spaceBetween": { "type": "number", "default": "10px" },
+    "objectFit": { "type": "string", "default": "cover" },
+
+    "navigation": { "type": "boolean", "default": false },
+    "navigationPosition": { "type": "string", "default": "outside" },
+    "navigationIcon": { "type": "string", "default": "arrow" },
+    "customNavigationIcon": { "type": "string", "default": "" },
+    "navigationIconColor": { "type": "string", "default": "#000000" },
+    "navigationBackgroundColor": { "type": "string", "default": "#ffffff" },
+    "navigationIconSize": { "type": "number", "default": 20 },
+    "navigationBorderWidth": { "type": "string", "default": "1px" },
+    "navigationBorderStyle": { "type": "string", "default": "solid" },
+    "navigationBorderColor": { "type": "string", "default": "#ccc" },
+    "navigationBorderRadius": { "type": "number", "default": 50 },
+
+    "touchSlides": { "type": "boolean", "default": true },
+    
+    "pagination": { "type": "boolean", "default": false },
+    "paginationType": { "type": "string", "default": "bullets" },
+    "paginationInside": { "type": "boolean", "default": false },
+    "paginationOutside": { "type": "boolean", "default": true },
+    "paginationDynamic": { "type": "boolean", "default": false },
+    "editorScript": "file:./build/index.js",
+    "style": "file:./build/style-index.css",
+    "editorStyle": "file:./build/style-index.css",
+    "autoplay": { "type": "boolean", "default": true },
+    "speed": { "type": "number", "default": 5000 },
+    "loop": { "type": "boolean", "default": false }
+  },
+  
+  "editorScript": "file:./build/index.js",
+  "style": "file:./build/style-index.css",
+  "editorStyle": "file:./build/style-index.css"
+}

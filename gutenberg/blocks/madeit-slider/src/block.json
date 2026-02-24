@@ -1,0 +1,117 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 2,
+  "name": "madeit/slider",
+  "title": "Made I.T. Foto slider",
+  "category": "madeit",
+  "icon": "slides",
+  "description": "Maak jouw eigen slider met afbeeldingen.",
+  "supports": {
+    "html": false
+  },
+
+  "example": {
+    "attributes": {
+      "slidesDesktop": 3.5,
+      "slidesTablet": 2.5,
+      "slidesMobile": 1.5,
+      "height": "300px",
+      "minHeight": "300px",
+      "spaceBetween": 10,
+      "objectFit": "cover",
+      "navigation": true,
+      "navigationPosition": "outside",
+      "navigationIcon": "arrow",
+      "navigationIconColor": "#000000",
+      "navigationBackgroundColor": "#ffffff",
+      "navigationIconSize": 20,
+      "navigationBorderWidth": "1px",
+      "navigationBorderStyle": "solid",
+      "navigationBorderColor": "#ccc",
+      "navigationBorderRadius": 50,
+      "touchSlides": true,
+      "pagination": true,
+      "paginationType": "bullets",
+      "paginationInside": false,
+      "paginationOutside": true,
+      "paginationDynamic": false,
+      "paginationMaxBullets": 10,
+      "paginationActiveColor": "#000000",
+      "autoplay": true,
+      "speed": 5000,
+      "loop": false
+    },
+    "innerBlocks": [
+      {
+        "name": "madeit/slider",
+        "attributes": {
+          "Url": "https://placehold.co/800x600",
+          "altText": "Slide 1",
+          "linkUrl": "",
+          "linkTarget": "_self"
+        }
+      },
+      {
+        "name": "madeit/slider",
+        "attributes": {
+          "Url": "https://placehold.co/800x600",
+          "altText": "Slide 2",
+          "linkUrl": "",
+          "linkTarget": "_self"
+        }
+      },
+      {
+        "name": "madeit/slider",
+        "attributes": {
+          "Url": "https://placehold.co/800x600",
+          "altText": "Slide 3",
+          "linkUrl": "",
+          "linkTarget": "_self"
+        }
+      }
+    ]
+  },
+
+  "attributes": {
+    "effect": { "type": "string", "default": "slide" },
+    "crossFade": { "type": "boolean", "default": false },
+
+    "slidesDesktop": { "type": "number", "default": 3.5 },
+    "slidesTablet": { "type": "number", "default": 2.5 },
+    "slidesMobile": { "type": "number", "default": 1.5 },
+
+    "height": { "type": "string", "default": "300px" },
+    "minHeight": { "type": "string", "default": "300px" },
+    "spaceBetween": { "type": "number", "default": "10px" },
+    "objectFit": { "type": "string", "default": "cover" },
+
+    "navigation": { "type": "boolean", "default": false },
+    "navigationPosition": { "type": "string", "default": "outside" },
+    "navigationIcon": { "type": "string", "default": "arrow" },
+    "customNavigationIcon": { "type": "string", "default": "" },
+    "navigationIconColor": { "type": "string", "default": "#000000" },
+    "navigationBackgroundColor": { "type": "string", "default": "#ffffff" },
+    "navigationIconSize": { "type": "number", "default": 20 },
+    "navigationBorderWidth": { "type": "string", "default": "1px" },
+    "navigationBorderStyle": { "type": "string", "default": "solid" },
+    "navigationBorderColor": { "type": "string", "default": "#ccc" },
+    "navigationBorderRadius": { "type": "number", "default": 50 },
+
+    "touchSlides": { "type": "boolean", "default": true },
+
+    "pagination": { "type": "boolean", "default": false },
+    "paginationType": { "type": "string", "default": "bullets" },
+    "paginationInside": { "type": "boolean", "default": false },
+    "paginationOutside": { "type": "boolean", "default": true },
+    "paginationDynamic": { "type": "boolean", "default": false },
+    "paginationMaxBullets": { "type": "number", "default": 10 },
+    "paginationActiveColor": { "type": "string", "default": "#000000" },
+
+    "autoplay": { "type": "boolean", "default": true },
+    "speed": { "type": "number", "default": 5000 },
+    "loop": { "type": "boolean", "default": false }
+  },
+  "editorScript": "file:./index.js",
+  "style": "file:./style-index.css",
+  "editorStyle": "file:./style-index.css"
+}
