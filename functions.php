@@ -177,12 +177,12 @@ if(!defined('MADEIT_WOO_B2B_ONLY')) {
     define('MADEIT_WOO_B2B_ONLY', false);
 }
 
-//Added in 2.11.0
+//Added in 3.0.0
 if (!defined('MADEIT_FEEDBACK')) {
     define('MADEIT_FEEDBACK', true);
 }
 
-// Added in 2.11.0
+// Added in 3.0.0
 if (!defined('MADEIT_ADMIN_CHAT')) {
     define('MADEIT_ADMIN_CHAT', false);
 }
@@ -193,15 +193,18 @@ if (!defined('MADEIT_ADMIN_CHAT_OPENAI_MODEL')) {
     define('MADEIT_ADMIN_CHAT_OPENAI_MODEL', 'gpt-5-mini');
 }
 
-// Added in 2.11.0
+// Added in 3.0.0
 if (!defined('MADEIT_TRACKING_IDS')) {
     define('MADEIT_TRACKING_IDS', true);
 }
 
+// Added in 3.0.0
+if(!defined('MADEIT_SETUP_WIZARD')) {
+    define('MADEIT_SETUP_WIZARD', true);
+}
 
 if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
     require get_template_directory().'/inc/back-compat.php';
-
     return;
 }
 
@@ -2258,13 +2261,19 @@ if (in_array('woocommerce/woocommerce.php', $activePlugins) && in_array('sfwd-lm
 /**
  * Admin Menu Editor.
  */
-require get_parent_theme_file_path('/inc/admin-menu-editor.php');
-require get_parent_theme_file_path('/inc/admin/admin-menu/admin-menu.php');
+if (file_exists(get_parent_theme_file_path('/inc/admin-menu-editor.php'))) {
+    require get_parent_theme_file_path('/inc/admin-menu-editor.php');
+}
+if (file_exists(get_parent_theme_file_path('/inc/admin/admin-menu/admin-menu.php'))) {
+    require get_parent_theme_file_path('/inc/admin/admin-menu/admin-menu.php');
+}
 
 /**
  * Customizer
  */
-require get_parent_theme_file_path('/inc/admin/admin-menu/customizer.php');
+if(file_exists(get_parent_theme_file_path('/inc/admin/admin-menu/customizer.php'))) {
+    require get_parent_theme_file_path('/inc/admin/admin-menu/customizer.php');
+}
 
 
 /**
@@ -2391,4 +2400,6 @@ if (!in_array('cookie-law-info/cookie-law-info.php', apply_filters('active_plugi
 }
 
 // Setup wizard
-require get_parent_theme_file_path('/inc/admin/setup-wizard/class-setup-wizard.php');
+if(MADEIT_SETUP_WIZARD) {
+    require get_parent_theme_file_path('/inc/admin/setup-wizard/class-setup-wizard.php');
+}

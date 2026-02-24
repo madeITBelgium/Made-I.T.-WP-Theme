@@ -1,0 +1,266 @@
+.madeit-setup-wizard-step {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: auto;
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    width: calc(100% - 40px);
+    background: white;
+    padding: 20px;
+}
+.buttons a {
+    background: transparent;
+    font-weight: bold;
+    color: #476a8a;
+    text-decoration: none;
+    border: none;
+    padding: 0;
+    font-size: 14px;
+}
+.buttons a:first-child {
+    color: rgb(133, 133, 133);
+}
+
+p.small {
+    font-size: 14px;
+    font-style: italic;
+    color: #6b7280;
+}
+
+.pluginList {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+.pluginList .pluginItem {
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 20px;
+    text-align: left;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.pluginImage {
+    width: 40px;
+    height: 40px;
+    margin-right: 20px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+}
+.pluginList .pluginItem .pluginContent p,
+.pluginList .pluginItem .pluginContent h3 {
+    margin: 0;
+}
+
+
+.settingsForm {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    text-align: left;
+    padding-bottom: 50px;
+}
+
+
+
+
+/* Favicon preview */
+.cls-1 {
+  fill: #dddee5;
+}
+
+.cls-2,.cls-6,.cls-7 {
+  fill: #abb1c2;
+}
+
+.cls-3 {
+  fill: #fdfdff;
+}
+
+.cls-4 {
+  fill: #fff;
+}
+
+.cls-5{
+  fill: none;
+  stroke: #abb1c2;
+  stroke-linecap: round;
+  stroke-miterlimit: 10;
+}
+
+.cls-6 {
+  font-size:8px;
+}
+
+.cls-6, .cls-7 {
+  font-family: Brandon Text;
+}
+
+.cls-7{
+  font-size:9px;
+}
+
+
+/* Color input */
+.swatch {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  max-width: 33.3%;
+  min-width: 33.3%;
+}
+
+.swatch .info {
+  padding: 1em 1em 1em 0;
+}
+
+.swatch h3 {
+  margin: 0;
+  text-transform: uppercase;
+}
+
+input[type="color"] {
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  background: none;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+  height: 50px;
+  width: 50px;
+  padding: 0;
+}
+
+*:focus{
+  border-radius: 0;
+  outline: none;
+}
+
+::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+::-webkit-color-swatch{
+  border: 0;
+  border-radius: 0;
+}
+
+::-moz-color-swatch,
+::-moz-focus-inner{
+  border: 0;
+}
+
+::-moz-focus-inner{
+  padding: 0;
+}
+
+.removeSwatch {
+    position: absolute;
+    left: 60px;
+    padding: 3px;
+    background: red;
+    aspect-ratio: 1;
+    width: 10px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    border-radius: 50px;
+    font-size: 11px;
+    line-height: 1;
+    color: white;
+}
+
+
+
+
+
+/* pages */
+#pageCheckboxes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 20px;
+}
+
+
+
+/* Child thems */
+.groupChildTheme label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  padding: 10px;
+}
+.groupChildTheme input {
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    background: none;
+    border: 1px solid #e5e7eb;
+    cursor: pointer;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    border-radius: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    border: 1px solid transparent;
+    box-shadow: none;
+  }
+  .groupChildTheme input::before {
+    display: none !important;
+  }
+  .groupChildTheme input:checked {
+    border-color: #476a8a;
+  }
+  .groupChildTheme .childImage {
+    aspect-ratio: 2/1;
+    width: 100%;
+    height: auto;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+  }
+
+
+  .child-theme-extra-settings-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  }
+  .child-theme-extra-settings-modal .modal-content {
+    background: white;
+    padding: 40px;
+    border-radius: 6px;
+    width: 400px;
+    max-width: 90%;
+    text-align: left;
+    position: relative;
+  }
+  .child-theme-extra-settings-modal button.close-modal {
+    position: absolute !important;
+    top: 10px !important;
+    right: 10px !important;
+    background: transparent !important;
+    border: none !important;
+    font-size: 18px !important;
+    cursor: pointer;
+  }
