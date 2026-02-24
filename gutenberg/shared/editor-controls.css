@@ -1,0 +1,169 @@
+/* Editor-only shared styling for Made I.T. inspector controls.
+   This is loaded globally in the block editor via gutenberg/loader.php. */
+
+.madeit-control-header__reset.components-button {
+    min-width: 32px;
+    margin-left: auto;
+}
+
+/* Hide RangeControl's own label since we render a custom header above. */
+.madeit-control .components-range-control__label {
+    display: none;
+}
+
+.madeit-control .components-range-control {
+    margin: 0;
+}
+
+/* ToolsPanel styling when used inside our shared control wrapper. */
+.madeit-control [data-wp-component="ToolsPanel"] {
+    padding: 0 !important;
+    border-top: none !important;
+}
+
+/* Sidebar controls styling */
+.madeit-control {
+    margin-bottom: 20px;
+}
+
+.madeit-control-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.4;
+    text-transform: uppercase;
+}
+
+.madeit-control-header .madeit-control-header__title {
+    min-width: max-content;
+}
+
+.madeit-control-header .madeit-control-header__tools {
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.madeit-control-breakpoints {
+    display: flex;
+    gap: 5px;
+}
+
+.madeit-control-breakpoints button {
+    height: 16px !important;
+    width: 16px !important;
+    min-width: auto !important;
+    border-radius: 50px !important;
+    padding: 10px !important;
+}
+
+.madeit-control-breakpoints button span {
+    font-size: 15px !important;
+}
+
+.madeit-control-styleSwitcher {
+    display: flex;
+    gap: 5px;
+}
+
+.madeit-control-styleSwitcher button {
+    padding: 0 !important;
+    height: 16px !important;
+    width: 16px !important;
+    min-width: auto !important;
+    border-radius: 50px !important;
+}
+
+.madeit-control-styleSwitcher button.is-pressed {
+    background-color: transparent !important;
+    border: 1px solid blue !important;
+}
+
+.madeit-control-styleSwitcher button svg {
+    font-size: 13px !important;
+    border-radius: 50px !important;
+}
+
+.madeit-control-units {
+    display: flex;
+    gap: 5px;
+}
+
+.madeit-control-units button {
+    padding: 0 !important;
+    width: max-content !important;
+    min-width: auto !important;
+    height: max-content !important;
+    background-color: transparent !important;
+    color: rgb(79, 79, 79) !important;
+    box-shadow: none !important;
+}
+
+.madeit-control-units button.is-pressed {
+    color: black !important;
+    text-decoration: underline !important;
+    background-color: transparent !important;
+}
+
+.madeit-control-units button span {
+    font-size: 13px !important;
+}
+
+.madeit-control-rangeRow {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.madeit-control-rangeRow .components-range-control {
+    width: 100%;
+}
+
+.madeit-control-rangeRow__reset {
+    height: 20px;
+    min-width: 20px !important;
+    margin-bottom: 4px;
+    padding: 0 0 0 10px !important;
+    width: 20px;
+}
+
+.madeit-control-rangeRow__reset span {
+    font-size: 15px;
+    color: black;
+}
+
+.madeit-control-buttonGroup {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.madeit-control-buttonGroup button {
+    width: 100%;
+    min-height: 40px !important;
+    box-shadow: none !important;
+}
+
+.madeit-control-buttonGroup button.is-pressed {
+    background-color: #493c92 !important;
+}
+
+.madeit-control-buttonGroup button:hover {
+    background-color: #493c92 !important;
+}
+
+.madeit-control-buttonGroup button:hover:not(.is-pressed) {
+    background-color: #f0f0f0 !important;
+}
+
+.madeit-control-buttonGroup button svg {
+    max-width: 15px !important;
+}
