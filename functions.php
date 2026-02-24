@@ -1982,6 +1982,32 @@ if (!function_exists('madeit_wprocket_pre_get_rocket_option_delay_js_exclusions'
     add_filter('pre_get_rocket_option_delay_js_exclusions', 'madeit_wprocket_pre_get_rocket_option_delay_js_exclusions', 10, 2);
 }
 
+if (defined('WP_ROCKET_VERSION')) {
+    add_filter('rocket_rucss_safelist', function($safelist) {
+        $safelist[] = '/wp-content/themes/madeit/assets/css/cookieconsent.css';
+        return $safelist;
+    });
+    add_filter('rocket_excluded_inline_js_content', function($excluded) {
+        $excluded[] = ';';
+        $excluded[] = ',';
+        $excluded[] = '=';
+        $excluded[] = '{';
+        return $excluded;
+    });
+    add_filter('rocket_exclude_js', function($excluded) {
+        $excluded[] = '/wp-includes/js/dist/(.*)';
+        return $excluded;
+    });
+    add_filter('rocket_exclude_js', function($excluded) {
+        $excluded[] = '/wp-includes/js/dist/(.*)';
+        return $excluded;
+    });
+    add_filter('rocket_exclude_defer_js', function($excluded) {
+        $excluded[] = '/wp-includes/js/dist/(.*)';
+        return $excluded;
+    });
+}
+
 if (!function_exists('madeit_user_analytics')) {
     function madeit_user_analytics()
     {
@@ -2207,7 +2233,11 @@ require get_parent_theme_file_path('/inc/wp-members.php');
  * Gutenberg blocks.
  */
 require get_parent_theme_file_path('/gutenberg/gutenberg.php');
-require get_parent_theme_file_path('/gutenberg-v2/gutenberg.php');
+// require get_parent_theme_file_path('/gutenberg-v2/gutenberg.php');
+
+// Gutenberg admin & blokken setup
+require_once get_parent_theme_file_path('/gutenberg/loader.php');
+
 
 /**
  * WooCommerce.
@@ -2229,6 +2259,13 @@ if (in_array('woocommerce/woocommerce.php', $activePlugins) && in_array('sfwd-lm
  * Admin Menu Editor.
  */
 require get_parent_theme_file_path('/inc/admin-menu-editor.php');
+require get_parent_theme_file_path('/inc/admin/admin-menu/admin-menu.php');
+
+/**
+ * Customizer
+ */
+require get_parent_theme_file_path('/inc/admin/admin-menu/customizer.php');
+
 
 /**
  * Made I.T. Support.
@@ -2247,8 +2284,26 @@ if (defined('MADEIT_REVIEWS') && MADEIT_REVIEWS && class_exists('ACF')) {
     require get_parent_theme_file_path('/inc/reviews.php');
 }
 
-if (defined('MADEIT_POPUPS') && MADEIT_POPUPS && class_exists('ACF')) {
-    require get_parent_theme_file_path('/inc/popup.php');
+if (defined('MADEIT_POPUPS') && MADEIT_POPUPS) {
+    if (class_exists('ACF')) {
+        require get_parent_theme_file_path('/inc/popup.php');
+    }
+
+    add_action('enqueue_block_editor_assets', static function (): void {
+        wp_enqueue_script(
+            'madeit-popup-toolbar',
+            get_parent_theme_file_uri('/inc/core/popup/edit.js'),
+            [
+                'wp-hooks',
+                'wp-compose',
+                'wp-element',
+                'wp-components',
+                'wp-block-editor',
+            ],
+            defined('MADEIT_VERSION') ? MADEIT_VERSION : null,
+            true
+        );
+    });
 }
 
 if (defined('MADEIT_RECEIVE_REVIEWS') && MADEIT_RECEIVE_REVIEWS && defined('MADEIT_REVIEWS') && MADEIT_REVIEWS && class_exists('ACF')) {
@@ -2321,7 +2376,6 @@ add_filter('rest_endpoints', function ($endpoints) {
 
 if(MADEIT_FEEDBACK) {
     require get_parent_theme_file_path('/inc/feedback.php');
-    //require get_parent_theme_file_path('/feedback/feedback.php');
 }
 
 if (MADEIT_ADMIN_CHAT) {
@@ -2335,3 +2389,6 @@ if (MADEIT_TRACKING_IDS) {
 if (!in_array('cookie-law-info/cookie-law-info.php', apply_filters('active_plugins', get_option('active_plugins')))) {
     require get_parent_theme_file_path('/inc/cookieconsent.php');
 }
+
+// Setup wizard
+require get_parent_theme_file_path('/inc/admin/setup-wizard/class-setup-wizard.php');

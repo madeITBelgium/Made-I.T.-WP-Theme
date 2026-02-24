@@ -134,7 +134,7 @@ function madeit_remove_menu_pages()
         $hideMenus = true;
     }
 
-    $items = ['index.php', 'edit.php', 'upload.php', 'edit.php?post_type=page', 'edit-comments.php', 'madeit_forms', 'users.php', 'woocommerce', 'madeit_shoppingmanager'];
+    $items = ['index.php', 'admin.php?page=madeit_blocks', 'edit.php', 'upload.php', 'edit.php?post_type=page', 'edit-comments.php', 'madeit_forms', 'users.php', 'woocommerce', 'madeit_shoppingmanager'];
     if (defined('MADEIT_HIDE_MENU_ITEMS')) {
         $items = array_merge($items, MADEIT_HIDE_MENU_ITEMS);
     }

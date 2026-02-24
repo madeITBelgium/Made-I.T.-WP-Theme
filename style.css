@@ -1015,7 +1015,7 @@ LearnDash
 
 
 /* Column max container size */
-
+/* 
 
 
 @media (min-width: 576px) {
@@ -1092,7 +1092,7 @@ LearnDash
     .wp-block-madeit-block-content-column.keep-max-container-size.max-start-size {
         padding-left: calc((100vw - 1320px) / 2 + 15px);
     }
-}
+} */
 
 
 .navbar-toggler {
