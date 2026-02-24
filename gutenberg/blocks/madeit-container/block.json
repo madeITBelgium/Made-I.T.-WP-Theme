@@ -1,0 +1,30 @@
+{
+  "title": "Made I.T. Container",
+  "description": "A container block with multiple options for styling and layout.",
+  "icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:serif=\"http://www.serif.com/\" width=\"24\" height=\"24\" viewBox=\"0 0 135 135\" version=\"1.1\" xml:space=\"preserve\" style=\"fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;\"><g transform=\"matrix(1,0,0,1,-282.404386,-214.957044)\"><g id=\"SVGRepo_iconCarrier\" transform=\"matrix(7.458333,0,0,7.458333,260.029386,192.582044)\"><path id=\"形状\" d=\"M3,5C3,3.895 3.895,3 5,3L19,3C20.105,3 21,3.895 21,5L21,19C21,20.105 20.105,21 19,21L5,21C3.895,21 3,20.105 3,19L3,5ZM14,5L10,5L10,19L14,19L14,5ZM16,5L19,5L19,19L16,19L16,5ZM8,19L8,5L5,5L5,19L8,19Z\" style=\"fill:rgb(71,106,138);\"/></g></g></svg>",
+  "category": "madeit",
+  
+  "status": "update",
+  "version": "2.0.0",
+  "madeit": {
+    "changelog": {
+      "2.0.0": [
+        "✨ De nieuwe container block is geüpdate, er zijn nieuwe functionaliteiten toegevoegd:",
+        "- Eigen hoogte en maximale breedte aanpassen.",
+        "- Overflow toegevoegd.",
+        "- Soort element kiezen.",
+        "- Flex opties toegevoegd.",
+        "- flex-direction",
+        "- flex-alignment",
+        "- justify-alignment",
+        "- wrap-items",
+        "- Spatie tussen kolommen toegevoegd",
+        "- Deze update maakt de container block nog veelzijdiger en gebruiksvriendelijker, waardoor je nog meer creatieve mogelijkheden hebt bij het ontwerpen van je pagina's."
+      ],
+      "1.2.0": [
+        "✨ Nieuwe block toegevoegd: Made I.T. Container",
+        "Deze block biedt een flexibele container met verschillende opties voor styling en layout."
+      ]
+    }
+  }
+}

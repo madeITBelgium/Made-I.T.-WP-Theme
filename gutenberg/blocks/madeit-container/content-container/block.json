@@ -1,0 +1,187 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "madeit/block-content",
+    "version": "0.1.0",
+    "title": "Made I.T. Container",
+    "category": "madeit",
+    "icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:serif=\"http://www.serif.com/\" width=\"30\" height=\"30\" viewBox=\"0 0 135 135\" version=\"1.1\" xml:space=\"preserve\" style=\"fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;\"><g transform=\"matrix(1,0,0,1,-282.404386,-214.957044)\"><g id=\"SVGRepo_iconCarrier\" transform=\"matrix(7.458333,0,0,7.458333,260.029386,192.582044)\"><path id=\"形状\" d=\"M3,5C3,3.895 3.895,3 5,3L19,3C20.105,3 21,3.895 21,5L21,19C21,20.105 20.105,21 19,21L5,21C3.895,21 3,20.105 3,19L3,5ZM14,5L10,5L10,19L14,19L14,5ZM16,5L19,5L19,19L16,19L16,5ZM8,19L8,5L5,5L5,19L8,19Z\" style=\"fill:rgb(71,106,138);\"/></g></g></svg>",
+    "description": "A container block with multiple options for styling and layout.",
+    "keywords": [
+        "content",
+        "columns",
+        "madeit"
+    ],
+    "supports": {
+        "html": false
+    },
+    "textdomain": "content-container",
+    "editorScript": "file:./build/index.js",
+    "editorStyle": "file:./build/index.css",
+    "style": "file:./build/style-index.css",
+    "attributes": {
+        "verticalAlignment": {
+            "type": "string"
+        },
+        "containerBackgroundColor": {
+            "type": "string"
+        },
+        "customContainerBackgroundColor": {
+            "type": "string"
+        },
+        "size": {
+            "type": "string",
+            "default": "container"
+        },
+        "contentWidth": {
+            "type": "string"
+        },
+        "containerMargin": {
+            "type": "object"
+        },
+        "containerPadding": {
+            "type": "object"
+        },
+        "rowBackgroundColor": {
+            "type": "string"
+        },
+        "customRowBackgroundColor": {
+            "type": "string"
+        },
+        "rowTextColor": {
+            "type": "string"
+        },
+        "customRowTextColor": {
+            "type": "string"
+        },
+        "rowMargin": {
+            "type": "object"
+        },
+        "rowPadding": {
+            "type": "object"
+        },
+        "overflow": {
+            "type": "string",
+            "default": "visible"
+        },
+        "htmlTag": {
+            "type": "string",
+            "default": "div"
+        },
+        "flexDirection": {
+            "type": "string",
+            "default": "row"
+        },
+        "flexDirectionTablet": {
+            "type": "string"
+        },
+        "flexDirectionMobile": {
+            "type": "string"
+        },
+        "alignItems": {
+            "type": "string",
+            "default": "stretch"
+        },
+        "alignItemsTablet": {
+            "type": "string"
+        },
+        "alignItemsMobile": {
+            "type": "string"
+        },
+        "justifyContent": {
+            "type": "string",
+            "default": "flex-start"
+        },
+        "justifyContentTablet": {
+            "type": "string"
+        },
+        "justifyContentMobile": {
+            "type": "string"
+        },
+        "minHeight": {
+            "type": "number"
+        },
+        "minHeightUnit": {
+            "type": "string",
+            "default": "px"
+        },
+        "minHeightTablet": {
+            "type": "number"
+        },
+        "minHeightUnitTablet": {
+            "type": "string",
+            "default": "px"
+        },
+        "minHeightMobile": {
+            "type": "number"
+        },
+        "minHeightUnitMobile": {
+            "type": "string",
+            "default": "px"
+        },
+        "maxWidth": {
+            "type": "number"
+        },
+        "maxWidthUnit": {
+            "type": "string",
+            "default": "px"
+        },
+        "maxWidthTablet": {
+            "type": "number"
+        },
+        "maxWidthUnitTablet": {
+            "type": "string",
+            "default": "px"
+        },
+        "maxWidthMobile": {
+            "type": "number"
+        },
+        "maxWidthUnitMobile": {
+            "type": "string",
+            "default": "px"
+        },
+        "rowGap": {
+            "type": "number"
+        },
+        "rowGapUnit": {
+            "type": "string",
+            "default": "px"
+        },
+        "rowGapTablet": {
+            "type": "number"
+        },
+        "rowGapUnitTablet": {
+            "type": "string",
+            "default": "px"
+        },
+        "rowGapMobile": {
+            "type": "number"
+        },
+        "rowGapUnitMobile": {
+            "type": "string",
+            "default": "px"
+        },
+        "columnsCount": {
+            "type": "number"
+        },
+        "flexWrap": {
+            "type": "string",
+            "default": "nowrap"
+        },
+        "flexWrapTablet": {
+            "type": "string"
+        },
+        "flexWrapMobile": {
+            "type": "string"
+        },
+        "hideOnDesktop": {
+            "type": "boolean"
+        },
+        "hideOnTablet": {
+            "type": "boolean"
+        },
+        "hideOnMobile": {
+            "type": "boolean"
+        }
+    }
+}

@@ -1,0 +1,679 @@
+/**
+ * #.# Editor Styles
+ *
+ * CSS for just Backend enqueued after style.scss
+ * which makes it higher in priority.
+ */
+$break-huge: 1440px;
+$break-wide: 1280px;
+$break-xlarge: 1080px;
+$break-large: 960px;	// admin sidebar auto folds
+$break-medium: 782px;	// adminbar goes big
+$break-small: 600px;
+$break-mobile: 480px;
+$break-zoomed-in: 280px;
+
+$block-padding: 14px;
+$block-side-ui-width: 28px; // Width of the movers/drag handle UI.
+$block-side-ui-clearance: 2px; // Space between movers/drag handle UI, and block.
+$block-container-side-padding: $block-side-ui-width + $block-padding + 2 * $block-side-ui-clearance;
+$grid-size-large: 16px;
+$border-width: 1px;
+$default-block-margin: 28px; // This value provides a consistent, contiguous spacing between blocks (it's 2x $block-padding)
+
+$breakpoints: (
+  mobile: 599px,
+  tablet: 781px,
+  desktop: 960px
+);
+
+@mixin break-huge() {
+	@media (min-width: #{ ($break-huge) }) {
+		@content;
+	}
+}
+
+@mixin break-wide() {
+	@media (min-width: #{ ($break-wide) }) {
+		@content;
+	}
+}
+
+@mixin break-xlarge() {
+	@media (min-width: #{ ($break-xlarge) }) {
+		@content;
+	}
+}
+
+@mixin break-large() {
+	@media (min-width: #{ ($break-large) }) {
+		@content;
+	}
+}
+
+@mixin break-medium() {
+	@media (min-width: #{ ($break-medium) }) {
+		@content;
+	}
+}
+
+@mixin break-small() {
+	@media (min-width: #{ ($break-small) }) {
+		@content;
+	}
+}
+
+@mixin break-mobile() {
+	@media (min-width: #{ ($break-mobile) }) {
+		@content;
+	}
+}
+
+@mixin break-zoomed-in() {
+	@media (min-width: #{ ($break-zoomed-in) }) {
+		@content;
+	}
+}
+
+@mixin flex-full-height() {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+}
+
+.block-editor-block-list__block>[data-align=container] {
+    max-width: 100% !important;
+}
+
+// These margins make sure that nested blocks stack/overlay with the parent block chrome
+// This is sort of an experiment at making sure the editor looks as much like the end result as possible
+// Potentially the rules here can apply to all nested blocks and enable stacking, in which case it should be moved elsewhere
+// When using CSS grid, margins do not collapse on the container.
+.wp-block-madeit-block-content > .block-editor-block-list__layout {
+	margin-left: 0;
+	margin-right: 0;
+
+	// This max-width is used to constrain the main editor column, it should not cascade into columns
+	.editor-block-list__block {
+		max-width: none;
+	}
+}
+
+// Fullwide: show margin left/right to ensure there's room for the side UI.
+// This is not a 1:1 preview with the front-end where these margins would presumably be zero.
+[data-type="madeit/block-content-columns"][data-align="full"] .wp-block-madeit-block-content > .block-editor-inner-blocks {
+	padding-left: $block-padding;
+	padding-right: $block-padding;
+
+	@include break-small() {
+		padding-left: $block-container-side-padding;
+		padding-right: $block-container-side-padding;
+	}
+}
+
+.components-select-control__input {
+    font-size: 15px;
+    height: 40px !important;
+}
+
+/* label layout */
+.my-range-label {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+// Placeholder styling
+.madeit-container-placeholder {
+    background-color: #ccd0d4 !important;
+}
+.wp-block-madeit-block-content {
+    border: 1px dashed #bbb;
+    display:block;
+    position: relative;
+    max-width: none;
+
+    .madeit-container-placeholder__inner {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 50px;
+    }
+
+    .madeit-container-placeholder__header {
+        margin-bottom: 30px;
+    }
+
+    .madeit-container-placeholder__title {
+        margin: 0 0 6px;
+    }
+
+    .madeit-container-placeholder__description {
+        margin: 0;
+        color: #50575e;
+        text-align: center;
+    }
+
+    .madeit-container-placeholder__actions {
+        display: flex;
+        gap: 8px;
+        margin: 14px 0 18px;
+    }
+
+    .madeit-container-placeholder__card {
+        width: 260px;
+    }
+
+    .madeit-container-placeholder__cardTitle {
+        font-weight: 600;
+        margin-bottom: 6px;
+    }
+
+    .madeit-container-placeholder__cardDesc {
+        color: #50575e;
+        margin-bottom: 10px;
+    }
+
+    .premium-blocks__placeholder-group {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .premium-blocks__placeholder-item {
+        margin: 0;
+        padding: 0;
+    }
+
+    .premium-blocks__placeholder-button {
+        padding: 6px;
+        height: auto;
+        line-height: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        box-shadow: none;
+
+        &:hover {
+            background-color: #f3f4f5;
+            box-shadow: none !important;
+
+            svg {
+                color: #959595;
+            }
+        }
+    }
+
+    .premium-blocks__placeholder-button svg {
+        width: 114.08px;
+        height: 60.02px;
+        display: block;
+        color: #abadae;
+    }
+
+    .premium-blocks__placeholder-button svg path,
+    .premium-blocks__placeholder-button svg rect {
+        fill: currentColor;
+    }
+
+    // Clickable edges to select the parent block even when inner columns cover the area.
+    .madeit-container-select-edges {
+        position: absolute;
+        inset: 0;
+        z-index: 3;
+        pointer-events: none;
+    }
+
+    .madeit-container-select-edge {
+        position: absolute;
+        background: transparent;
+        cursor: pointer;
+        pointer-events: auto;
+    }
+
+    $edge-size: 14px;
+
+    .edge--top {
+        top: 0;
+        left: 0;
+        right: 0;
+        height: $edge-size;
+    }
+
+    .edge--right {
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: $edge-size;
+    }
+
+    .edge--bottom {
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: $edge-size;
+    }
+
+    .edge--left {
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: $edge-size;
+    }
+
+    > div {
+        position: relative;
+        z-index: 2;
+    }
+
+    // InnerBlocks layout direction (editor-only).
+    > .container > .block-editor-inner-blocks,
+    > .container-fluid > .block-editor-inner-blocks {
+        min-height: var(--madeit-min-height-desktop);
+        display: flex;
+        align-items: var(--madeit-align-items-desktop, stretch);
+        justify-content: var(--madeit-justify-content-desktop, flex-start);
+
+        > .block-editor-block-list__layout {
+            // max-width: var(--madeit-max-width-desktop);
+            flex-direction: var(--madeit-flex-direction-desktop, row);
+            width: 100%;
+
+            > .block-core-columns {
+
+                    > .block-editor-block-list__layout {
+                        align-content: var(--madeit-align-items-mobile, var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch)));
+                        min-height: var(--madeit-min-height-mobile, var(--madeit-min-height-tablet, var(--madeit-min-height-desktop))) !important;
+                    }
+                }
+        }
+
+
+
+    }
+
+    @media (max-width: 781px) {
+        > .container > .block-editor-inner-blocks,
+        > .container-fluid > .block-editor-inner-blocks {
+            
+            align-items: var(
+                --madeit-align-items-tablet,
+                var(--madeit-align-items-desktop, stretch)
+            );
+            justify-content: var(
+                --madeit-justify-content-tablet,
+                var(--madeit-justify-content-desktop, flex-start)
+            );
+
+            > .block-editor-block-list__layout {
+                max-width: var(--madeit-max-width-tablet, var(--madeit-max-width-desktop));
+                flex-direction: var(
+                    --madeit-flex-direction-tablet,
+                    var(--madeit-flex-direction-desktop, row)
+                );
+                width: 100%;
+
+                > .block-core-columns {
+
+                    > .block-editor-block-list__layout {
+                        align-content: var(--madeit-align-items-mobile, var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch)));
+                        min-height: var(--madeit-min-height-mobile, var(--madeit-min-height-tablet, var(--madeit-min-height-desktop))) !important;
+                    }
+                }
+            }
+        }
+    }
+
+    @media (max-width: 599px) {
+        > .container > .block-editor-inner-blocks,
+        > .container-fluid > .block-editor-inner-blocks {
+            
+            align-items: var(
+                --madeit-align-items-mobile,
+                var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch))
+            );
+            justify-content: var(
+                --madeit-justify-content-mobile,
+                var(--madeit-justify-content-tablet, var(--madeit-justify-content-desktop, flex-start))
+            );
+
+            > .block-editor-block-list__layout {
+                max-width: var(--madeit-max-width-mobile, var(--madeit-max-width-tablet, var(--madeit-max-width-desktop)));
+                flex-direction: var(
+                    --madeit-flex-direction-mobile,
+                    var(--madeit-flex-direction-tablet, var(--madeit-flex-direction-desktop, row))
+                );
+                width: 100%;
+
+                > .block-core-columns {
+
+                    > .block-editor-block-list__layout {
+                        align-content: var(--madeit-align-items-mobile, var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch)));
+                        min-height: var(--madeit-min-height-mobile, var(--madeit-min-height-tablet, var(--madeit-min-height-desktop))) !important;
+                    }
+                }
+            }
+        }
+    }
+    
+    
+    &.container-fluid {
+        display: flex;
+        justify-content: center;
+    }
+    
+    > .container {
+        --container-offset: 0px;
+        --sidebar: 100px;
+
+        @media (min-width: 576px) {
+            --container-offset: calc((540px - var(--sidebar)));
+        }
+
+        @media (min-width: 768px) {
+            --container-offset: calc((720px - var(--sidebar)));
+        }
+
+        @media (min-width: 992px) {
+            --container-offset: calc((960px - var(--sidebar)));
+        }
+
+        @media (min-width: 1200px) {
+            --container-offset: calc((1140px - var(--sidebar)));
+        }
+
+        @media (min-width: 1400px) {
+            --container-offset: calc((1320px - var(--sidebar)));
+        }
+
+        width: var(--container-offset);
+        min-height: var(--madeit-min-height-desktop);
+        max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+
+    }
+
+    > .container-fluid {
+        max-width: 100%;
+        width: 100%;
+        
+        > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="madeit/block-content-column"] {
+            max-width: none;
+        }
+    }
+
+	> div {
+        > .block-editor-inner-blocks > .block-editor-block-list__layout {
+            display: flex;
+            justify-content: var(--madeit-justify-content-desktop, flex-start);
+            align-items: var(--madeit-align-items-desktop, stretch);
+            gap: var(--madeit-row-gap-desktop, 0);
+
+            // Responsive flex-wrap via the same CSS vars as frontend.
+            flex-wrap: var(--madeit-flex-wrap-desktop, nowrap);
+
+            @media (max-width: 781px) {
+                flex-wrap: var(
+                    --madeit-flex-wrap-tablet,
+                    var(--madeit-flex-wrap-desktop, nowrap)
+                );
+            }
+
+            @media (max-width: 599px) {
+                flex-wrap: var(
+                    --madeit-flex-wrap-mobile,
+                    var(--madeit-flex-wrap-tablet, var(--madeit-flex-wrap-desktop, nowrap))
+                );
+            }
+            // Set full heights on Columns to enable vertical alignment preview
+            > [data-type="madeit/block-content-column"],
+            > [data-type="madeit/block-content-column"] > .editor-block-list__block-edit,
+            > [data-type="madeit/block-content-column"] > .editor-block-list__block-edit > div[data-block],
+            > [data-type="madeit/block-content-column"] > .editor-block-list__block-edit .block-core-columns {
+                @include flex-full-height();
+            }
+            // Adjust the individual column block.
+            > [data-type="madeit/block-content-column"] {
+
+                // On mobile, only a single column is shown, so match adjacent block paddings.
+                padding-left: 0;
+                padding-right: 0;
+                // margin-left: -$block-padding;
+                // margin-right: -$block-padding;
+
+                // Prevent the columns from growing wider than their distributed sizes.
+                min-width: 0;
+
+                // Prevent long unbroken words from overflowing.
+                word-break: break-word; // For back-compat.
+                overflow-wrap: break-word; // New standard.
+
+                // Responsiveness: Show at most one columns on mobile.
+                flex-basis: 100%;
+                width: 100%;
+
+                // Beyond mobile, allow 2 columns.
+                @include break-small() {
+                    flex-basis: calc(50% - (#{$grid-size-large} + #{$block-padding * 2}));
+                    flex-grow: 0;
+                    // margin-left: $block-padding;
+                    // margin-right: $block-padding;
+                }
+
+                // Add space between columns. Themes can customize this if they wish to work differently.
+                // This has to match the same padding applied in style.scss.
+                // Only apply this beyond the mobile breakpoint, as there's only a single column on mobile.
+                // @include break-small() {
+                //     &:nth-child(even) {
+                //         margin-left: calc(#{$grid-size-large * 2} + #{$block-padding});
+                //     }
+                // }
+
+                // When columns are in a single row, add space before all except the first.
+                // @include break-medium() {
+                //     &:not(:first-child) {
+                //         margin-left: calc(#{$grid-size-large * 2} + #{$block-padding});
+                //     }
+                // }
+                
+                
+                @include break-medium() {
+                    flex-basis: 100%;
+                    // max-width: 100%;
+                    margin-top: 0;
+                    margin-bottom: 0;
+                }
+
+                > .editor-block-list__block-edit {
+                    margin-top: 0;
+                    margin-bottom: 0;
+
+                    // Remove Block "padding" so individual Column is flush with parent Columns
+                    &::before {
+                        left: 0;
+                        right: 0;
+                    }
+
+                    > .editor-block-contextual-toolbar {
+                        margin-left: -$border-width;
+                    }
+
+                    // Zero out margins.
+                    > [data-block] {
+                        margin-top: 0;
+                        margin-bottom: 0;
+                    }
+
+                    // The Columns block is a flex-container, therefore it nullifies margin collapsing.
+                    // Therefore, blocks inside this will appear to create a double margin.
+                    // We compensate for this using negative margins.
+                    > div > .block-core-columns > .block-editor-inner-blocks {
+                        margin-top: -$default-block-margin;
+                        margin-bottom: -$default-block-margin;
+                    }
+                }
+            }
+        }
+	}
+
+    @media (max-width: 781px) {
+        > div {
+            > .block-editor-inner-blocks > .block-editor-block-list__layout {
+                justify-content: var(
+                    --madeit-justify-content-tablet,
+                    var(--madeit-justify-content-desktop, flex-start)
+                );
+                align-items: var(
+                    --madeit-align-items-tablet,
+                    var(--madeit-align-items-desktop, stretch)
+                );
+                gap: var(--madeit-row-gap-desktop, 
+                var(--madeit-row-gap-tablet, 0)
+                );
+            }
+        }
+    }
+
+    @media (max-width: 599px) {
+        > div {
+            > .block-editor-inner-blocks > .block-editor-block-list__layout {
+                justify-content: var(
+                    --madeit-justify-content-mobile,
+                    var(
+                        --madeit-justify-content-tablet,
+                        var(--madeit-justify-content-desktop, flex-start)
+                    )
+                );
+                align-items: var(
+                    --madeit-align-items-mobile,
+                    var(
+                        --madeit-align-items-tablet,
+                        var(--madeit-align-items-desktop, stretch)
+                    )
+                );
+                gap: var(--madeit-row-gap-desktop, 
+                var(--madeit-row-gap-tablet, 0)
+                );
+            }
+        }
+    }
+}
+
+
+
+/**
+ * Columns act as as a "passthrough container"
+ * and therefore has its vertical margins/padding removed via negative margins
+ * therefore we need to compensate for this here by doubling the spacing on the
+ * vertical to ensure there is equal visual spacing around the inserter. Note there
+ * is no formal API for a "passthrough" Block so this is an edge case overide
+ */
+[data-type="madeit/block-content-column"] .block-list-appender {
+	margin-top: $block-padding*2;
+	margin-bottom: $block-padding*2;
+}
+
+/**
+ * Vertical Alignment Preview
+ * note: specificity is important here to ensure individual
+ * * columns alignment is prioritised over parent column alignment
+ *
+ */
+.are-vertically-aligned-top .block-editor-block-list__layout {
+	align-items: start;
+}
+
+.are-vertically-aligned-center .block-editor-block-list__layout {
+	align-items: center;
+}
+
+.are-vertically-aligned-bottom .block-editor-block-list__layout {
+    align-items: end;
+}
+
+
+/**
+ * Fixes single Column breadcrumb to RHS of Block boundary
+ */
+[data-type="madeit/block-content-column"] > .editor-block-list__block-edit > .editor-block-list__breadcrumb {
+	right: 0;
+	left: auto;
+}
+
+/**
+ * Make single Column overlay not extend past boundaries of parent
+ */
+.block-core-columns > .block-editor-inner-blocks.has-overlay::after {
+	left: 0;
+	right: 0;
+}
+
+[data-type="madeit/block-content"].block-editor-block-list__block.has-child-selected:before {
+    border: 1px solid rgba(66,88,99,.4);
+}
+[data-type="madeit/block-content-column"].block-editor-block-list__block.has-child-selected:before {
+    border: 1px solid rgba(66,88,99,.4);
+}
+
+[data-type="madeit/block-content-column"] .wp-block-madeit-block-content-column {
+    width: 100%;
+}
+
+.wp-block .wp-block-madeit-block-content .wp-block {
+    max-width: 100%;
+}
+
+[data-type="madeit/block-content-column"].is-width-1 {
+    max-width: calc(var(--madeit-max-width-desktop) / 12) !important;
+}
+    [data-type="madeit/block-content-column"].is-width-2 {
+    max-width: calc(var(--madeit-max-width-desktop) / 6) !important;
+}
+    [data-type="madeit/block-content-column"].is-width-3 {
+    max-width: calc(var(--madeit-max-width-desktop) / 4) !important;
+}
+    [data-type="madeit/block-content-column"].is-width-4 {
+    max-width: calc(var(--madeit-max-width-desktop) / 3) !important;
+}
+    [data-type="madeit/block-content-column"].is-width-5 {
+    max-width: calc(var(--madeit-max-width-desktop) / 2.4) !important;
+}
+    [data-type="madeit/block-content-column"].is-width-6 {
+    max-width: calc(var(--madeit-max-width-desktop) / 2) !important;
+}
+    [data-type="madeit/block-content-column"].is-width-7 {
+    max-width: calc(var(--madeit-max-width-desktop) / 1.71) !important;
+}
+    [data-type="madeit/block-content-column"].is-width-8 {
+    max-width: calc(var(--madeit-max-width-desktop) / 1.5) !important;
+}
+    [data-type="madeit/block-content-column"].is-width-9 {
+    max-width: calc(var(--madeit-max-width-desktop) / 1.33) !important;
+}
+    [data-type="madeit/block-content-column"].is-width-10 {
+    max-width: calc(var(--madeit-max-width-desktop) / 1.2) !important;
+}
+    [data-type="madeit/block-content-column"].is-width-11 {
+    max-width: calc(var(--madeit-max-width-desktop) / 1.09) !important;
+}
+    [data-type="madeit/block-content-column"].is-width-12 {
+    max-width: var(--madeit-max-width-desktop) !important; 
+}
+
+
+
+.disabledPanel {
+    pointer-events: none;
+    opacity: .5;
+}
+
+
+body.madeit-content-container-advanced-tabs .block-editor-block-inspector__advanced.show,
+body.madeit-content-container-advanced-tabs .block-editor-block-inspector__advanced.is-opened {
+    display: block !important;
+}

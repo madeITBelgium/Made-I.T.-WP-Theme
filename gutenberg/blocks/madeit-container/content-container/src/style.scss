@@ -1,0 +1,421 @@
+/**
+ * #.# Styles
+ *
+ * CSS for both Frontend+Backend.
+ */
+// Most used breakpoints
+$break-huge: 1440px;
+$break-wide: 1280px;
+$break-xlarge: 1080px;
+$break-large: 960px;	// admin sidebar auto folds
+$break-medium: 782px;	// adminbar goes big
+$break-small: 600px;
+$break-mobile: 480px;
+$break-zoomed-in: 280px;
+
+$default-block-margin: 28px;
+$break-small: 600px;
+
+// Grid size
+$grid-size-small: 4px;
+$grid-size: 8px;
+$grid-size-large: 16px;
+
+@mixin break-huge() {
+	@media (min-width: #{ ($break-huge) }) {
+		@content;
+	}
+}
+
+@mixin break-wide() {
+	@media (min-width: #{ ($break-wide) }) {
+		@content;
+	}
+}
+
+@mixin break-xlarge() {
+	@media (min-width: #{ ($break-xlarge) }) {
+		@content;
+	}
+}
+
+@mixin break-large() {
+	@media (min-width: #{ ($break-large) }) {
+		@content;
+	}
+}
+
+@mixin break-medium() {
+	@media (min-width: #{ ($break-medium) }) {
+		@content;
+	}
+}
+
+@mixin break-small() {
+	@media (min-width: #{ ($break-small) }) {
+		@content;
+	}
+}
+
+@mixin break-mobile() {
+	@media (min-width: #{ ($break-mobile) }) {
+		@content;
+	}
+}
+
+@mixin break-zoomed-in() {
+	@media (min-width: #{ ($break-zoomed-in) }) {
+		@content;
+	}
+}
+
+
+
+
+/**
+ * All Columns Alignment
+ */
+.wp-block-madeit-block-content {
+	min-height: var(--madeit-min-height-desktop);
+	// max-width: var(--madeit-max-width-desktop);
+	margin-left: auto;
+	margin-right: auto;
+
+	@media (max-width: 781px) {
+		min-height: var(
+			--madeit-min-height-tablet,
+			var(--madeit-min-height-desktop)
+		);
+		max-width: var(
+			--madeit-max-width-tablet,
+			var(--madeit-max-width-desktop)
+		);
+	}
+
+	@media (max-width: 599px) {
+		min-height: var(
+			--madeit-min-height-mobile,
+			var(--madeit-min-height-tablet, var(--madeit-min-height-desktop))
+		);
+		max-width: var(
+			--madeit-max-width-mobile,
+			var(--madeit-max-width-tablet, var(--madeit-max-width-desktop))
+		);
+	}
+
+	&.container, &.container-fluid {
+		padding-right: 0;
+		padding-left: 0;
+	}
+	// Row wrapper that contains the Column blocks.
+	// Provide a safe baseline so columns don't shrink to content-width
+	// when flex-direction is set to `row`.
+	
+
+	.madeit-container-row > .col,
+	.madeit-container-row > .wp-block-madeit-block-content-column {
+		min-width: 0;
+		max-width: 100%;
+	}
+
+	// Bootstrap-like baseline: `.col` is equal-width.
+	// Do NOT force `width: 100%` here, because it breaks `.col-md-*` sizing.
+	.madeit-container-row > .col {
+		flex: 1 0 0%;
+	}
+
+	// If direction is column/column-reverse, force all columns to full width.
+	// This intentionally overrides any Bootstrap `col-*` sizing classes.
+	.madeit-container-row[data-madeit-dir="column"],
+	.madeit-container-row[data-madeit-dir="column-reverse"] {
+		> .wp-block-madeit-block-content-column {
+			width: 100% !important;
+			flex: 0 0 100% !important;
+		}
+	}
+
+	// Bootstrap-like fallbacks for the Column width classes.
+	// (If Bootstrap is already present, these values match and won't change layout.)
+	@media (min-width: 768px) {
+		@for $i from 1 through 12 {
+			.madeit-container-row > .col.col-md-#{$i},
+			.madeit-container-row > .wp-block-madeit-block-content-column.col-md-#{$i} {
+				flex: 0 0 auto;
+				width: percentage($i / 12);
+			}
+		}
+	}
+
+	@media (min-width: 992px) {
+		@for $i from 1 through 12 {
+			.madeit-container-row > .col.col-lg-#{$i},
+			.madeit-container-row > .wp-block-madeit-block-content-column.col-lg-#{$i} {
+				flex: 0 0 auto;
+				width: percentage($i / 12);
+			}
+		}
+
+		.madeit-container-row {
+			display: flex;
+			flex-wrap: var(--madeit-flex-wrap-desktop, nowrap);
+			flex-direction: var(--madeit-flex-direction-desktop, row);
+			align-items: var(--madeit-align-items-desktop, stretch);
+			justify-content: var(--madeit-justify-content-desktop, flex-start);
+			gap: var(--madeit-row-gap-desktop, 0px);
+		}
+
+		// Ensure column-direction always stays full width, even at lg breakpoint.
+		.madeit-container-row[data-madeit-dir="column"],
+		.madeit-container-row[data-madeit-dir="column-reverse"] {
+			> .wp-block-madeit-block-content-column {
+				width: 100% !important;
+				flex: 0 0 100% !important;
+			}
+		}
+	}
+
+	@media (min-width: 600px) and (max-width: 991px) {
+		.madeit-container-row {
+			flex-wrap: var(--madeit-flex-wrap-tablet, wrap);
+			flex-direction: var(--madeit-flex-direction-tablet, column);
+			align-items: var(--madeit-align-items-tablet, stretch);
+			justify-content: var(--madeit-justify-content-tablet, flex-start);
+			gap: var(--madeit-row-gap-tablet, 0px);
+		}
+
+		.madeit-container-row[data-madeit-dir-tablet="column"],
+		.madeit-container-row[data-madeit-dir-tablet="column-reverse"] {
+			> .wp-block-madeit-block-content-column {
+				width: 100% !important;
+				flex: 0 0 100% !important;
+			}
+		}
+	}
+
+	@media (max-width: 599px) {
+		.madeit-container-row {
+			flex-wrap: var(--madeit-flex-wrap-mobile, wrap);
+			flex-direction: var(--madeit-flex-direction-mobile, column);
+			align-items: var(--madeit-align-items-mobile, stretch);
+			justify-content: var(--madeit-justify-content-mobile, flex-start);
+			gap: var(--madeit-row-gap-mobile, 0px);
+		}
+
+		.madeit-container-row[data-madeit-dir-mobile="column"],
+		.madeit-container-row[data-madeit-dir-mobile="column-reverse"] {
+			> .wp-block-madeit-block-content-column {
+				width: 100% !important;
+				flex: 0 0 100% !important;
+			}
+		}
+	}
+
+	// Editor-only: when the block uses column direction, also force the editor
+	// inner blocks layout to full width (it doesn't use `.madeit-container-row`).
+	&[data-madeit-dir="column"],
+	&[data-madeit-dir="column-reverse"] {
+		.block-editor-block-list__layout > [data-type="madeit/block-content-column"],
+		.block-editor-block-list__layout > .wp-block-madeit-block-content-column {
+			width: 100% !important;
+			flex: 0 0 100% !important;
+		}
+	}
+
+	@media (max-width: 781px) {
+		&[data-madeit-dir-tablet="column"],
+		&[data-madeit-dir-tablet="column-reverse"] {
+			.block-editor-block-list__layout > [data-type="madeit/block-content-column"],
+			.block-editor-block-list__layout > .wp-block-madeit-block-content-column {
+				width: 100% !important;
+				flex: 0 0 100% !important;
+			}
+		}
+	}
+
+	@media (max-width: 599px) {
+		&[data-madeit-dir-mobile="column"],
+		&[data-madeit-dir-mobile="column-reverse"] {
+			.block-editor-block-list__layout > [data-type="madeit/block-content-column"],
+			.block-editor-block-list__layout > .wp-block-madeit-block-content-column {
+				width: 100% !important;
+				flex: 0 0 100% !important;
+			}
+		}
+	}
+
+	&.are-vertically-aligned-top {
+		align-items: flex-start;
+	}
+
+	&.are-vertically-aligned-center {
+		align-items: center;
+	}
+
+	&.are-vertically-aligned-bottom {
+		align-items: flex-end;
+	}
+}
+
+/**
+ * Individual Column Alignment
+ */
+.wp-block-madeit-block-content-column {
+	padding: 0 !important;
+
+	&.is-vertically-aligned-top {
+		align-self: flex-start;
+	}
+
+	&.is-vertically-aligned-center {
+		align-self: center;
+	}
+
+	&.is-vertically-aligned-bottom {
+		align-self: flex-end;
+	}
+}
+
+.justify-content-center > .row {
+    -ms-flex-pack: center !important;
+    justify-content: center !important;
+}
+
+
+
+
+@media (min-width: 992px) {
+	.wp-block-madeit-block-content.is-hidden-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 600px) and (max-width: 991px) {
+	.wp-block-madeit-block-content.is-hidden-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 599px) {
+	.wp-block-madeit-block-content.is-hidden-mobile {
+		display: none !important;
+	}
+}
+
+
+
+.madeit-container-row.rows-2 {
+	.wp-block-madeit-block-content-column.col-lg-1 {
+		max-width: calc((var(--madeit-max-width-desktop) / 12) - var(--madeit-row-gap-desktop, 0) / 2) !important;
+	}
+	.wp-block-madeit-block-content-column.col-lg-2 {
+		max-width: calc((var(--madeit-max-width-desktop) / 6) - var(--madeit-row-gap-desktop, 0) / 2) !important;
+	}
+	.wp-block-madeit-block-content-column.col-lg-3 {
+		max-width: calc((var(--madeit-max-width-desktop) / 4) - var(--madeit-row-gap-desktop, 0) / 2) !important;
+	}
+	.wp-block-madeit-block-content-column.col-lg-4 {
+		max-width: calc((var(--madeit-max-width-desktop) / 3) - var(--madeit-row-gap-desktop, 0) / 2) !important;
+	}
+	.wp-block-madeit-block-content-column.col-lg-5 {
+		max-width: calc((var(--madeit-max-width-desktop) / 2.4) - var(--madeit-row-gap-desktop, 0) / 2) !important;
+	}
+	.wp-block-madeit-block-content-column.col-lg-6 {
+		max-width: calc((var(--madeit-max-width-desktop) / 2) - var(--madeit-row-gap-desktop, 0) / 2) !important;
+	}
+	.wp-block-madeit-block-content-column.col-lg-7 {
+		max-width: calc((var(--madeit-max-width-desktop) / 1.71) - var(--madeit-row-gap-desktop, 0) / 2) !important;
+	}
+	.wp-block-madeit-block-content-column.col-lg-8 {
+		max-width: calc((var(--madeit-max-width-desktop) / 1.5) - var(--madeit-row-gap-desktop, 0) / 2) !important;
+	}
+	.wp-block-madeit-block-content-column.col-lg-9 {
+		max-width: calc((var(--madeit-max-width-desktop) / 1.33) - var(--madeit-row-gap-desktop, 0) / 2) !important;
+	}
+	.wp-block-madeit-block-content-column.col-lg-10 {
+		max-width: calc((var(--madeit-max-width-desktop) / 1.2) - var(--madeit-row-gap-desktop, 0) / 2) !important;
+	}
+	.wp-block-madeit-block-content-column.col-lg-11 {
+		max-width: calc((var(--madeit-max-width-desktop) / 1.09) - var(--madeit-row-gap-desktop, 0) / 2) !important;
+	}
+	.wp-block-madeit-block-content-column.col-lg-12 {
+		max-width: calc(var(--madeit-max-width-desktop) - var(--madeit-row-gap-desktop, 0) / 2) !important; 
+	}
+}
+
+.madeit-container-row.rows-3 {
+	.wp-block-madeit-block-content-column.col-lg-1 {
+		max-width: calc(var(--madeit-max-width-desktop, 100%) / 12 - var(--madeit-row-gap-desktop, 0) * 2 / 3) !important;
+	}
+	.wp-block-madeit-block-content-column.col-lg-2 {
+		max-width: calc(var(--madeit-max-width-desktop, 100%) / 6 - var(--madeit-row-gap-desktop, 0) * 2 / 3) !important;
+	}
+	.wp-block-madeit-block-content-column.col-lg-3 {
+		max-width: calc(var(--madeit-max-width-desktop, 100%) / 4 - var(--madeit-row-gap-desktop, 0) * 2 / 3) !important;
+	}
+	.wp-block-madeit-block-content-column.col-lg-4 {
+		max-width: calc(var(--madeit-max-width-desktop, 100%) / 3 - var(--madeit-row-gap-desktop, 0) * 2 / 3) !important;
+	}
+	.wp-block-madeit-block-content-column.col-lg-5 {
+		max-width: calc(var(--madeit-max-width-desktop, 100%) / 2.4 - var(--madeit-row-gap-desktop, 0) * 2 / 3) !important;
+	}
+	.wp-block-madeit-block-content-column.col-lg-6 {
+		max-width: calc((var(--madeit-max-width-desktop, 100%) - (2 * var(--madeit-row-gap-desktop, 0))) / 3) !important;
+	}
+	.wp-block-madeit-block-content-column.col-lg-7 {
+		max-width: calc(var(--madeit-max-width-desktop, 100%) / 1.71 - var(--madeit-row-gap-desktop, 0) * 2 / 3) !important;
+	}
+	.wp-block-madeit-block-content-column.col-lg-8 {
+		max-width: calc(var(--madeit-max-width-desktop, 100%) / 1.5 - var(--madeit-row-gap-desktop, 0) * 2 / 3) !important;
+	}
+	.wp-block-madeit-block-content-column.col-lg-9 {
+		max-width: calc(var(--madeit-max-width-desktop, 100%) / 1.33 - var(--madeit-row-gap-desktop, 0) * 2 / 3) !important;
+	}
+	.wp-block-madeit-block-content-column.col-lg-10 {
+		max-width: calc(var(--madeit-max-width-desktop, 100%) / 1.2 - var(--madeit-row-gap-desktop, 0) * 2 / 3) !important;
+	}
+	.wp-block-madeit-block-content-column.col-lg-11 {
+		max-width: calc(var(--madeit-max-width-desktop, 100%) / 1.09 - var(--madeit-row-gap-desktop, 0) * 2 / 3) !important;
+	}
+	.wp-block-madeit-block-content-column.col-lg-12 {
+		max-width: calc(var(--madeit-max-width-desktop, 100%) - var(--madeit-row-gap-desktop, 0) * 2 / 3) !important; 
+	}
+}
+
+.madeit-container-row.rows-4 {
+	.wp-block-madeit-block-content-column.col-lg-1 {
+		max-width: calc(var(--madeit-max-width-desktop, 100%) / 12 - var(--madeit-row-gap-desktop, 0) * 3 / 4) !important;
+	}
+	.wp-block-madeit-block-content-column.col-lg-2 {
+		max-width: calc(var(--madeit-max-width-desktop, 100%) / 6 - var(--madeit-row-gap-desktop, 0) * 3 / 4) !important;
+	}
+	.wp-block-madeit-block-content-column.col-lg-3 {
+		max-width: calc(var(--madeit-max-width-desktop, 100%) / 4 - var(--madeit-row-gap-desktop, 0) * 3 / 4) !important;
+	}
+	.wp-block-madeit-block-content-column.col-lg-4 {
+		max-width: calc(var(--madeit-max-width-desktop, 100%) / 3 - var(--madeit-row-gap-desktop, 0) * 3 / 4) !important;
+	}
+	.wp-block-madeit-block-content-column.col-lg-5 {
+		max-width: calc(var(--madeit-max-width-desktop, 100%) / 2.4 - var(--madeit-row-gap-desktop, 0) * 3 / 4) !important;
+	}
+	.wp-block-madeit-block-content-column.col-lg-6 {
+		max-width: calc((var(--madeit-max-width-desktop, 100%) - (3 * var(--madeit-row-gap-desktop, 0))) / 4) !important;
+	}
+	.wp-block-madeit-block-content-column.col-lg-7 {
+		max-width: calc(var(--madeit-max-width-desktop, 100%) / 1.71 - var(--madeit-row-gap-desktop, 0) * 3 / 4) !important;
+	}
+	.wp-block-madeit-block-content-column.col-lg-8 {
+		max-width: calc(var(--madeit-max-width-desktop, 100%) / 1.5 - var(--madeit-row-gap-desktop, 0) * 3 / 4) !important;
+	}
+	.wp-block-madeit-block-content-column.col-lg-9 {
+		max-width: calc(var(--madeit-max-width-desktop, 100%) / 1.33 - var(--madeit-row-gap-desktop, 0) * 3 / 4) !important;
+	}
+	.wp-block-madeit-block-content-column.col-lg-10 {
+		max-width: calc(var(--madeit-max-width-desktop, 100%) / 1.2 - var(--madeit-row-gap-desktop, 0) * 3 / 4) !important;
+	}
+	.wp-block-madeit-block-content-column.col-lg-11 {
+		max-width: calc(var(--madeit-max-width-desktop, 100%) / 1.09 - var(--madeit-row-gap-desktop, 0) * 3 / 4) !important;
+	}
+	.wp-block-madeit-block-content-column.col-lg-12 {
+		max-width: calc(var(--madeit-max-width-desktop, 100%) - var(--madeit-row-gap-desktop, 0) * 3 / 4) !important; 
+	}
+}

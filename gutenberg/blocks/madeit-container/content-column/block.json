@@ -1,0 +1,52 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "madeit/block-content-column",
+    "version": "0.1.0",
+    "title": "Made I.T. Inner Column",
+    "category": "madeit",
+    "icon": "<svg style='max-width:30px;' xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" role=\"img\" aria-label=\"Column\"><path fill=\"none\" d=\"M0 0h24v24H0V0z\"/><path d=\"M11.99 18.54l-7.37-5.73L3 14.07l9 7 9-7-1.63-1.27zM12 16l7.36-5.73L21 9l-9-7-9 7 1.63 1.27L12 16zm0-11.47L17.74 9 12 13.47 6.26 9 12 4.53z\"/></svg>",
+    "description": "A column block designed to be used within the Made I.T. Container block, with options for styling and layout.",
+    "keywords": [
+        "content",
+        "column",
+        "madeit"
+    ],
+    "supports": {
+        "inserter": false,
+        "reusable": false,
+        "html": false
+    },
+    "textdomain": "madeit",
+    "editorScript": "file:./build/index.js",
+    "editorStyle": "file:./build/index.css",
+    "style": "file:./build/style-index.css",
+    "attributes": {
+        "verticalAlignment": {
+            "type": "string"
+        },
+        "width": {
+            "type": "number",
+            "min": 0,
+            "max": 12
+        },
+        "backgroundColor": {
+            "type": "string"
+        },
+        "customBackgroundColor": {
+            "type": "string"
+        },
+        "textColor": {
+            "type": "string"
+        },
+        "customTextColor": {
+            "type": "string"
+        },
+        "margin": {
+            "type": "object"
+        },
+        "padding": {
+            "type": "object"
+        }
+    }
+}
