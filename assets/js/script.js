@@ -302,6 +302,175 @@ jQuery(document).ready( function( $ ) {
             i++;
         });
     });
+
+    // New Made I.T. Tabs block renderer (madeit/block-tabs + madeit/block-tab).
+    // Builds the tab nav based on child blocks and supports FontAwesome + custom SVG icons.
+    function madeitExtractSafeSvg(svgString) {
+        if (!svgString || typeof svgString !== 'string') return '';
+        var trimmed = svgString.trim();
+        if (!trimmed) return '';
+
+        try {
+            var parser = new window.DOMParser();
+            var doc = parser.parseFromString(trimmed, 'image/svg+xml');
+            var svg = doc.querySelector('svg');
+            if (!svg) return '';
+
+            // Remove potentially unsafe nodes.
+            var forbidden = svg.querySelectorAll('script, foreignObject');
+            forbidden.forEach(function (node) { node.remove(); });
+
+            // Remove inline event handlers + javascript: hrefs.
+            var walker = doc.createTreeWalker(svg, NodeFilter.SHOW_ELEMENT, null);
+            while (walker.nextNode()) {
+                var el = walker.currentNode;
+                if (!el || !el.attributes) continue;
+                Array.prototype.slice.call(el.attributes).forEach(function (attr) {
+                    var name = (attr && attr.name) ? String(attr.name) : '';
+                    var value = (attr && attr.value) ? String(attr.value) : '';
+                    if (!name) return;
+                    if (name.toLowerCase().indexOf('on') === 0) {
+                        el.removeAttribute(name);
+                    }
+                    if ((name === 'href' || name === 'xlink:href') && value.trim().toLowerCase().indexOf('javascript:') === 0) {
+                        el.removeAttribute(name);
+                    }
+                });
+            }
+
+            return svg.outerHTML || '';
+        } catch (e) {
+            return '';
+        }
+    }
+
+    function madeitRandomId() {
+        var text = '';
+        var possible = 'abcdefghijklmnopqrstuvwxyz0123456789';
+        for (var i = 0; i < 10; i++) {
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+        }
+        return text;
+    }
+
+    $('.wp-block-madeit-block-tabs').each(function() {
+        var $block = $(this);
+
+        // If this block already has a nav-tabs list, assume legacy renderer.
+        if ($block.find('> .nav-tabs, > ul.nav-tabs').length) {
+            return;
+        }
+
+        // Child tab panels from the new implementation.
+        var $panels = $block.children('.wp-block-madeit-block-tab');
+        if (!$panels.length) {
+            return;
+        }
+
+        // Prevent double initialization.
+        if ($block.data('madeitTabsInit') === 1) {
+            return;
+        }
+        $block.data('madeitTabsInit', 1);
+
+        var $nav = $('<ul class="nav nav-tabs" role="tablist"></ul>');
+        var $content = $('<div class="tab-content"></div>');
+
+        $panels.each(function(index) {
+            var $panel = $(this);
+
+            var title = $panel.attr('data-title') || ('Tab ' + (index + 1));
+            var showIcon = ($panel.attr('data-show-icon') === '1');
+            var iconType = $panel.attr('data-icon-type') || 'fontawesome';
+            var iconValue = $panel.attr('data-icon') || '';
+            var iconColor = $panel.attr('data-icon-color') || '';
+
+            var tabId = 'madeit-tab-' + madeitRandomId();
+            var tabLinkId = tabId + '-tab';
+
+            $panel.attr('id', tabId);
+            $panel.attr('aria-labelledby', tabLinkId);
+            $panel.addClass('tab-pane fade');
+            if (index === 0) {
+                $panel.addClass('active show');
+            }
+
+            var $li = $('<li class="nav-item"></li>');
+            var $a = $('<a class="nav-link" role="tab"></a>');
+            $a.attr('id', tabLinkId);
+            $a.attr('href', '#' + tabId);
+            $a.attr('aria-controls', tabId);
+            $a.attr('aria-selected', index === 0 ? 'true' : 'false');
+            // Bootstrap 4 + 5 support.
+            $a.attr('data-toggle', 'tab');
+            $a.attr('data-bs-toggle', 'tab');
+            if (index === 0) {
+                $a.addClass('active');
+            }
+
+            if (showIcon) {
+                if (iconType === 'custom') {
+                    var tpl = $panel.find('template.madeit-tab-custom-svg').first();
+                    var svgHtml = tpl.length ? tpl.html() : iconValue;
+                    var safeSvg = madeitExtractSafeSvg(svgHtml);
+                    if (safeSvg) {
+                        var $wrap = $('<span class="madeit-tab-icon" aria-hidden="true"></span>');
+                        var $svg = $(safeSvg);
+                        if (iconColor) {
+                            $wrap.css('color', iconColor);
+                            // Ensure the SVG actually takes the color, even when paths have fill/stroke attributes.
+                            // Respect explicit `none` values to avoid filling strokes-only icons.
+                            $svg.css({ color: iconColor, fill: iconColor, stroke: iconColor });
+                            $svg.find('*').each(function() {
+                                var $el = $(this);
+                                var fillAttr = String($el.attr('fill') || '').trim().toLowerCase();
+                                var strokeAttr = String($el.attr('stroke') || '').trim().toLowerCase();
+
+                                if (fillAttr !== 'none') {
+                                    $el.css('fill', iconColor);
+                                }
+                                if (strokeAttr !== 'none') {
+                                    $el.css('stroke', iconColor);
+                                }
+                            });
+                        }
+                        $wrap.append($svg);
+                        $a.append($wrap);
+                    }
+                } else if (iconType === 'fontawesome') {
+                    var cls = String(iconValue || '').trim();
+                    if (cls) {
+                        var $i = $('<i class="madeit-tab-icon" aria-hidden="true"></i>');
+                        $i.addClass(cls);
+                        if (iconColor) {
+                            $i.css('color', iconColor);
+                        }
+                        $a.append($i);
+                    }
+                } else if (iconType === 'dashicons') {
+                    var dash = String(iconValue || '').trim();
+                    if (dash) {
+                        var $d = $('<span class="madeit-tab-icon dashicons" aria-hidden="true"></span>').addClass('dashicons-' + dash);
+                        if (iconColor) {
+                            $d.css('color', iconColor);
+                        }
+                        $a.append($d);
+                    }
+                }
+            }
+
+            $a.append($('<span class="madeit-tab-title"></span>').text(title));
+            $li.append($a);
+            $nav.append($li);
+        });
+
+        // Move panels into tab-content.
+        $content.append($panels);
+
+        // Compose final structure.
+        $block.prepend($nav);
+        $block.append($content);
+    });
     
     $('.dropdown-menu a.dropdown-toggle').on('click', function(e) {
         if($( window ).width() < 768) {

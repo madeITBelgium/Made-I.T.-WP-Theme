@@ -1,0 +1,360 @@
+/**
+ * #.# Styles
+ *
+ * CSS for both Frontend+Backend.
+ */
+
+.wp-block-madeit-block-tabs {
+    width: 100%;
+
+    --madeit-tabs-radius: var(--wp--custom--border-radius--default, 0.25rem);
+    --madeit-tabs-border: rgba(0, 0, 0, 0.15);
+    --madeit-tabs-muted: rgba(0, 0, 0, 0.06);
+    --madeit-tabs-focus: rgba(var(--wp--preset--color--primary-rgb, 0, 0, 0), 0.2);
+
+    --madeit-tabs-title-font-size: inherit;
+    --madeit-tabs-title-font-weight: inherit;
+    --madeit-tabs-title-font-style: normal;
+    --madeit-tabs-title-text-decoration: none;
+
+    --madeit-tabs-title-gap: 0.25rem;
+
+    --madeit-tabs-tab-bg: var(--madeit-tabs-muted);
+    --madeit-tabs-tab-color: inherit;
+    --madeit-tabs-tab-active-bg: var(--wp--preset--color--base, transparent);
+    --madeit-tabs-tab-active-color: inherit;
+    --madeit-tabs-content-bg: var(--wp--preset--color--base, transparent);
+
+    --madeit-tabs-title-border-color: var(--madeit-tabs-border);
+    --madeit-tabs-title-border-top-width: 1px;
+    --madeit-tabs-title-border-right-width: 1px;
+    --madeit-tabs-title-border-bottom-width: 1px;
+    --madeit-tabs-title-border-left-width: 1px;
+    /* Backwards compatible (bottom border for top tabs) */
+    --madeit-tabs-nav-border-width: var(--madeit-tabs-title-border-bottom-width);
+    --madeit-tabs-nav-border-top-width: var(--madeit-tabs-title-border-top-width);
+    --madeit-tabs-nav-border-right-width: var(--madeit-tabs-title-border-right-width);
+    --madeit-tabs-nav-border-bottom-width: var(--madeit-tabs-title-border-bottom-width);
+    --madeit-tabs-nav-border-left-width: var(--madeit-tabs-title-border-left-width);
+
+    --madeit-tabs-content-border-color: var(--madeit-tabs-border);
+    --madeit-tabs-content-border-width: 1px;
+
+    --madeit-tabs-justify-desktop: flex-start;
+    --madeit-tabs-justify-tablet: var(--madeit-tabs-justify-desktop);
+    --madeit-tabs-justify-mobile: var(--madeit-tabs-justify-tablet);
+}
+
+
+
+@media (min-width: 992px) {
+    .wp-block-madeit-block-tabs {
+        
+        &.is-hidden-desktop {
+            display: none !important;
+        }
+
+        &.is-tab-position-desktop-right {
+            display: flex;
+            flex-direction: row-reverse;
+
+            .nav-tabs {
+                flex-direction: column;
+                border-bottom: none;
+                border-left: var(--madeit-tabs-nav-border-left-width, 1px) solid
+                    var(--madeit-tabs-title-border-color, var(--madeit-tabs-border));
+
+                .nav-item {
+                    min-width: 200px;
+
+                    .nav-link {
+                        min-width: 200px;
+                    }
+                }
+            }
+
+            .tab-content {
+                border-top: var(--madeit-tabs-content-border-width, 1px) solid
+                    var(--madeit-tabs-content-border-color, var(--madeit-tabs-border));
+            }
+
+            .wp-block-madeit-block-content > .container {
+                width: auto;
+            }
+        }
+        &.is-tab-position-desktop-left {
+            display: flex;
+            flex-direction: row;
+
+            .nav-tabs {
+                flex-direction: column;
+                border-bottom: none;
+                border-right: var(--madeit-tabs-nav-border-right-width, 1px) solid
+                    var(--madeit-tabs-title-border-color, var(--madeit-tabs-border));
+
+                .nav-item {
+                    min-width: 200px;
+
+                    .nav-link {
+                        min-width: 200px;
+                    }
+                }
+            }
+
+            .tab-content {
+                border-top: var(--madeit-tabs-content-border-width, 1px) solid
+                    var(--madeit-tabs-content-border-color, var(--madeit-tabs-border));
+            }
+
+            .wp-block-madeit-block-content > .container {
+                width: auto;
+            }
+        }
+    }
+}
+
+@media (min-width: 600px) and (max-width: 991px) {
+    .wp-block-madeit-block-tabs{
+        
+        &.is-hidden-tablet {
+            display: none !important;
+        }
+
+        &.is-tab-position-tablet-right {
+            display: flex;
+            flex-direction: row-reverse;
+
+            .nav-tabs {
+                flex-direction: column;
+                border-bottom: none;
+                border-left: var(--madeit-tabs-nav-border-left-width, 1px) solid
+                    var(--madeit-tabs-title-border-color, var(--madeit-tabs-border));
+                    justify-content: var(
+                        --madeit-tabs-justify-tablet,
+                        var(--madeit-tabs-justify-desktop, flex-start)
+                    );
+
+                .nav-item {
+                    min-width: 200px;
+
+                    .nav-link {
+                       min-width: 200px;
+                    }
+                }
+            }
+
+            .tab-content {
+                border-top: var(--madeit-tabs-content-border-width, 1px) solid
+                    var(--madeit-tabs-content-border-color, var(--madeit-tabs-border));
+            }
+
+            .wp-block-madeit-block-content > .container {
+                width: auto;
+            }
+        }
+        &.is-tab-position-tablet-left {
+            display: flex;
+            flex-direction: row;
+
+            .nav-tabs {
+                flex-direction: column;
+                border-bottom: none;
+                border-right: var(--madeit-tabs-nav-border-right-width, 1px) solid
+                    var(--madeit-tabs-title-border-color, var(--madeit-tabs-border));
+
+                .nav-item {
+                    min-width: 200px;
+
+                    .nav-link {
+                        min-width: 200px;
+                    }
+                }
+            }
+
+            .tab-content {
+                border-top: var(--madeit-tabs-content-border-width, 1px) solid
+                    var(--madeit-tabs-content-border-color, var(--madeit-tabs-border));
+            }
+
+            .wp-block-madeit-block-content > .container {
+                width: auto;
+            }
+        }
+    }
+}
+
+@media (max-width: 599px) {
+    .wp-block-madeit-block-tabs {
+    
+        &.is-hidden-mobile {
+            display: none !important;
+        }
+
+        &.is-tab-position-mobile-right {
+            display: flex;
+            flex-direction: row-reverse;
+
+            .nav-tabs {
+                flex-direction: column;
+                border-bottom: none;
+                border-left: var(--madeit-tabs-nav-border-left-width, 1px) solid
+                    var(--madeit-tabs-title-border-color, var(--madeit-tabs-border));
+                    justify-content: var(
+                        --madeit-tabs-justify-mobile,
+                        var(--madeit-tabs-justify-tablet, var(--madeit-tabs-justify-desktop, flex-start))
+                    );
+
+                .nav-item {
+                    min-width: 200px;
+
+                    .nav-link {
+                        min-width: 200px;
+                    }
+                }
+            }
+
+            .tab-content {
+                border-top: var(--madeit-tabs-content-border-width, 1px) solid
+                    var(--madeit-tabs-content-border-color, var(--madeit-tabs-border));
+            }
+
+            .wp-block-madeit-block-content > .container {
+                width: auto;
+            }
+        }
+        &.is-tab-position-mobile-left {
+            display: flex;
+            flex-direction: row;
+
+            .nav-tabs {
+                flex-direction: column;
+                border-bottom: none;
+                border-right: var(--madeit-tabs-nav-border-right-width, 1px) solid
+                    var(--madeit-tabs-title-border-color, var(--madeit-tabs-border));
+
+                .nav-item {
+                    min-width: 200px;
+
+                    .nav-link {
+                        min-width: 200px;
+                    }
+                }
+            }
+
+            .tab-content {
+                border-top: var(--madeit-tabs-content-border-width, 1px) solid
+                    var(--madeit-tabs-content-border-color, var(--madeit-tabs-border));
+            }
+
+            .wp-block-madeit-block-content > .container {
+                width: auto;
+            }
+        }
+
+
+    }
+}
+
+.wp-block-madeit-block-tabs {
+    border: none !important;
+    
+    .nav-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--madeit-tabs-title-gap, 0.25rem);
+        justify-content: var(--madeit-tabs-justify-desktop, flex-start);
+    
+        list-style: none;
+        padding-left: 0;
+        margin: 0;
+
+        .nav-item {
+            margin: 0;
+
+            .nav-link {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+
+                padding: 0.6rem 0.9rem;
+                line-height: 1.2;
+
+                text-decoration: none;
+                color: var(--madeit-tabs-tab-color, inherit);
+
+                font-size: var(--madeit-tabs-title-font-size, inherit);
+                font-weight: var(--madeit-tabs-title-font-weight, inherit);
+                font-style: var(--madeit-tabs-title-font-style, normal);
+                text-decoration: var(--madeit-tabs-title-text-decoration, none);
+
+                background: var(--madeit-tabs-tab-bg, var(--madeit-tabs-muted));
+
+                border-style: solid;
+                border-color: var(--madeit-tabs-title-border-color, var(--madeit-tabs-border));
+                border-width: var(--madeit-tabs-title-border-top-width, 1px)
+                    var(--madeit-tabs-title-border-right-width, 1px)
+                    var(--madeit-tabs-title-border-bottom-width, 1px)
+                    var(--madeit-tabs-title-border-left-width, 1px);
+                border-radius: calc(var(--madeit-tabs-radius) * 0.85) calc(var(--madeit-tabs-radius) * 0.85) 0 0;
+
+                transition: box-shadow 0.2s ease-in-out, background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+
+                .madeit-tab-icon, i {
+                    display: inline-flex;
+                    margin-right: 0.5rem;
+                }
+
+                .madeit-tab-icon svg {
+                    width: 1em;
+                    height: 1em;
+                }
+
+                &:hover {
+                    background: rgba(0, 0, 0, 0.03);
+                }
+
+                &:focus-visible {
+                    outline: none;
+                    box-shadow: 0 0 0 3px var(--madeit-tabs-focus);
+                }
+
+                &.active, &[aria-selected="true"] {
+                    background: var(--madeit-tabs-tab-active-bg, var(--wp--preset--color--base, transparent));
+                    color: var(--madeit-tabs-tab-active-color, inherit);
+                    border-color: var(--madeit-tabs-title-border-color, var(--madeit-tabs-border));
+                    border-bottom-color: var(
+                        --madeit-tabs-tab-active-bg,
+                        var(--wp--preset--color--base, transparent)
+                    );
+                    position: relative;
+                    top: 1px;
+                }
+            }
+        }
+    }
+
+    .tab-content {
+        border: var(--madeit-tabs-content-border-width, 1px) solid
+            var(--madeit-tabs-content-border-color, var(--madeit-tabs-border));
+        border-top: none;
+        border-radius: 0 0 var(--madeit-tabs-radius) var(--madeit-tabs-radius);
+        background: var(--madeit-tabs-content-bg, var(--wp--preset--color--base, transparent));
+
+        padding: 1rem;
+    }
+}
+
+
+
+/* Fallback behavior if Bootstrap's tab CSS isn't present */
+.wp-block-madeit-block-tabs .tab-pane {
+    display: none;
+}
+
+.wp-block-madeit-block-tabs .tab-pane.active {
+    display: block;
+}
+
+.wp-block-madeit-block-tabs .tab-pane.fade {
+    opacity: 1;
+}

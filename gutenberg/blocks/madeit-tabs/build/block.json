@@ -1,0 +1,117 @@
+{
+  "apiVersion": 3,
+  "name": "madeit/block-tabs",
+  "title": "Made I.T. tabs",
+  "category": "madeit",
+  "description": "Maak eenvoudig tabbladen aan om content te organiseren en overzichtelijk te presenteren. Perfect voor het structureren van informatie op een aantrekkelijke manier.",
+  "keywords": [
+    "tabs",
+    "Made IT",
+    "Made I.T."
+  ],
+  "icon": "index-card",
+  "attributes": {
+    "activeTabClientId": {
+      "type": "string",
+      "default": ""
+    },
+    "justifyContent": {
+      "type": "string",
+      "default": "flex-start"
+    },
+    "justifyContentTablet": {
+      "type": "string"
+    },
+    "justifyContentMobile": {
+      "type": "string"
+    },
+    "tabPosition": {
+      "type": "string",
+      "default": "top"
+    },
+    "tabPositionTablet": {
+      "type": "string"
+    },
+    "tabPositionMobile": {
+      "type": "string"
+    },
+    "hideOnDesktop": {
+      "type": "boolean",
+      "default": false
+    },
+    "hideOnTablet": {
+      "type": "boolean",
+      "default": false
+    },
+    "hideOnMobile": {
+      "type": "boolean",
+      "default": false
+    },
+    "titleFontSize": {
+      "type": "string"
+    },
+    "titleBold": {
+      "type": "boolean",
+      "default": false
+    },
+    "titleItalic": {
+      "type": "boolean",
+      "default": false
+    },
+    "titleUnderline": {
+      "type": "boolean",
+      "default": false
+    },
+    "titleGap": {
+      "type": "number"
+    },
+    "activeTabBackgroundColor": {
+      "type": "string"
+    },
+    "activeTabTextColor": {
+      "type": "string"
+    },
+    "inactiveTabBackgroundColor": {
+      "type": "string"
+    },
+    "inactiveTabTextColor": {
+      "type": "string"
+    },
+    "contentBackgroundColor": {
+      "type": "string"
+    },
+    "titleBorderStyle": {
+      "type": "string",
+      "default": "full"
+    },
+    "titleBorderColor": {
+      "type": "string"
+    },
+    "titleBorderWidth": {
+      "type": "number",
+      "default": 1
+    },
+    "contentBorderColor": {
+      "type": "string"
+    },
+    "contentBorderWidth": {
+      "type": "number",
+      "default": 1
+    }
+  },
+  "providesContext": {
+    "madeit/activeTabClientId": "activeTabClientId"
+  },
+  "supports": {
+    "customClassName": true,
+    "anchor": true,
+    "align": [
+      "wide",
+      "full"
+    ],
+    "spacing": {
+      "margin": true,
+      "padding": true
+    }
+  }
+}

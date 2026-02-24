@@ -1,0 +1,49 @@
+{
+  "apiVersion": 3,
+  "name": "madeit/block-tab",
+  "title": "Tab",
+  "parent": [
+    "madeit/block-tabs"
+  ],
+  "category": "layout",
+  "usesContext": [
+    "madeit/activeTabClientId"
+  ],
+  "attributes": {
+    "title": {
+      "type": "string",
+      "default": "Tab titel"
+    },
+    "showIcon": {
+      "type": "boolean",
+      "default": false
+    },
+    "iconType": {
+      "type": "string",
+      "default": "fontawesome"
+    },
+    "fontawesome": {
+      "type": "string",
+      "default": ""
+    },
+    "dashicon": {
+      "type": "string",
+      "default": ""
+    },
+    "customSvg": {
+      "type": "string",
+      "default": ""
+    },
+    "icon": {
+      "type": "string",
+      "default": ""
+    },
+    "iconColor": {
+      "type": "string",
+      "default": "#000000"
+    }
+  },
+  "supports": {
+    "reusable": false
+  }
+}
