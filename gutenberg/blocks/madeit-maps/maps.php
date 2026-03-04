@@ -1,11 +1,11 @@
 <?php
+
 /**
  * Plugin Name: madeit-maps
  * Description: A customizable Gutenberg maps block using Leaflet.js
  * Version: 1.0
  * Author: Made I.T.
  */
-
 if (!defined('ABSPATH')) {
     exit;
 }
@@ -28,4 +28,3 @@ add_action('enqueue_block_assets', function () {
     wp_enqueue_style('leaflet-css', 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css');
     wp_enqueue_script('leaflet-js', 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js', [], null, true);
 });
-

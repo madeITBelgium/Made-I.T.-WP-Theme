@@ -5,7 +5,8 @@ if (!defined('ABSPATH')) {
 }
 
 if (!function_exists('madeit_odoo_log')) {
-    function madeit_odoo_log($message, $context = []) {
+    function madeit_odoo_log($message, $context = [])
+    {
         if (function_exists('madeit_wc_api_log')) {
             madeit_wc_api_log($message, $context);
         }
@@ -13,13 +14,14 @@ if (!function_exists('madeit_odoo_log')) {
 }
 
 if (!function_exists('madeit_odoo_get_category_id_from_path')) {
-    function madeit_odoo_get_category_id_from_path($path) {
+    function madeit_odoo_get_category_id_from_path($path)
+    {
         $path = trim((string) $path);
         if ($path === '' || $path === '[undefined]') {
             return null;
         }
 
-        $cacheKey = 'madeit_odoo_category_id_' . md5($path);
+        $cacheKey = 'madeit_odoo_category_id_'.md5($path);
         $cachedValue = get_transient($cacheKey);
         if ($cachedValue) {
             return (int) $cachedValue;
@@ -34,20 +36,21 @@ if (!function_exists('madeit_odoo_get_category_id_from_path')) {
             }
 
             $args = [
-                'taxonomy' => 'product_cat',
-                'name' => $segment,
+                'taxonomy'   => 'product_cat',
+                'name'       => $segment,
                 'hide_empty' => false,
-                'parent' => (int) $parentId,
+                'parent'     => (int) $parentId,
             ];
 
             $terms = get_terms($args);
             if (is_wp_error($terms)) {
                 madeit_odoo_log('Fout bij opvragen categorie', [
-                    'categorie' => $segment,
-                    'parent_id' => (int) $parentId,
-                    'error_codes' => $terms->get_error_codes(),
+                    'categorie'      => $segment,
+                    'parent_id'      => (int) $parentId,
+                    'error_codes'    => $terms->get_error_codes(),
                     'error_messages' => $terms->get_error_messages(),
                 ]);
+
                 return null;
             }
 
@@ -58,16 +61,17 @@ if (!function_exists('madeit_odoo_get_category_id_from_path')) {
 
             $insertedTerm = wp_insert_term($segment, 'product_cat', [
                 'parent' => (int) $parentId,
-                'slug' => sanitize_title($segment),
+                'slug'   => sanitize_title($segment),
             ]);
 
             if (is_wp_error($insertedTerm)) {
                 madeit_odoo_log('Fout bij aanmaken categorie', [
-                    'categorie' => $segment,
-                    'parent_id' => (int) $parentId,
-                    'error_codes' => $insertedTerm->get_error_codes(),
+                    'categorie'      => $segment,
+                    'parent_id'      => (int) $parentId,
+                    'error_codes'    => $insertedTerm->get_error_codes(),
                     'error_messages' => $insertedTerm->get_error_messages(),
                 ]);
+
                 return null;
             }
 
@@ -83,7 +87,8 @@ if (!function_exists('madeit_odoo_get_category_id_from_path')) {
 }
 
 if (!function_exists('madeit_odoo_sync_product_category_from_meta')) {
-    function madeit_odoo_sync_product_category_from_meta($postId, $post = null, $update = false) {
+    function madeit_odoo_sync_product_category_from_meta($postId, $post = null, $update = false)
+    {
         if (wp_is_post_autosave($postId) || wp_is_post_revision($postId)) {
             return;
         }
@@ -126,6 +131,7 @@ if (!function_exists('madeit_odoo_sync_product_category_from_meta')) {
             madeit_odoo_log('Product niet gevonden voor categorie-update', [
                 'product_id' => (int) $postId,
             ]);
+
             return;
         }
 
@@ -140,6 +146,7 @@ if (!function_exists('madeit_odoo_sync_product_category_from_meta')) {
         }
 
         $isRunning = true;
+
         try {
             $product->set_category_ids($newCategoryIds);
             $product->save();
@@ -147,17 +154,17 @@ if (!function_exists('madeit_odoo_sync_product_category_from_meta')) {
             update_post_meta($postId, '_yoast_wpseo_primary_product_cat', $newCategoryIds[0]);
 
             madeit_odoo_log('Product categorieen bijgewerkt vanuit Odoo', [
-                'product_id' => (int) $postId,
-                'old_category_ids' => $currentCategoryIds,
-                'new_category_ids' => $newCategoryIds,
+                'product_id'          => (int) $postId,
+                'old_category_ids'    => $currentCategoryIds,
+                'new_category_ids'    => $newCategoryIds,
                 'primary_category_id' => (int) $newCategoryIds[0],
             ]);
         } catch (Throwable $e) {
             madeit_odoo_log('Fout bij updaten product categorieen vanuit Odoo', [
                 'product_id' => (int) $postId,
-                'message' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
+                'message'    => $e->getMessage(),
+                'file'       => $e->getFile(),
+                'line'       => $e->getLine(),
             ]);
         }
 
@@ -166,4 +173,3 @@ if (!function_exists('madeit_odoo_sync_product_category_from_meta')) {
 }
 
 add_action('save_post_product', 'madeit_odoo_sync_product_category_from_meta', 20, 3);
-

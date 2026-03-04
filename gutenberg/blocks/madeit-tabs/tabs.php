@@ -10,7 +10,7 @@ function madeit_tabs_block_assets()
     $asset_file = get_theme_file_path('gutenberg/blocks/tabs/build/index.asset.php');
     $asset = is_readable($asset_file) ? require $asset_file : [
         'dependencies' => ['wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor'],
-        'version' => null,
+        'version'      => null,
     ];
 
     wp_register_style(
