@@ -104,92 +104,18 @@ class Madeit_Image_Optimizer_Command
             WP_CLI::error('ImageMagick CLI tools not available. Expected: convert and identify.');
         }
 
+        $options = [
+            'max_width'        => $max_width,
+            'max_height'       => $max_height,
+            'quality'          => $quality,
+            'backup_suffix'    => $backup_suffix,
+            'dry_run'          => $dry_run,
+            'use_cli'          => $use_cli,
+            'regenerate_sizes' => $regenerate_sizes,
+        ];
+
         foreach ($attachments as $attachment_id) {
-            $stats['processed']++;
-            $file = get_attached_file($attachment_id);
-            if (!$file || !file_exists($file)) {
-                $stats['errors']++;
-                $error_log[] = $this->format_error($attachment_id, $file, 'File missing');
-                $progress->tick();
-                continue;
-            }
-
-            $mime = get_post_mime_type($attachment_id);
-            if (!$this->is_supported_mime($mime)) {
-                $stats['skipped']++;
-                $progress->tick();
-                continue;
-            }
-
-            $needs_optimize = $this->needs_optimization($file, $max_width, $max_height);
-            if (!$needs_optimize) {
-                $stats['skipped']++;
-                $progress->tick();
-                continue;
-            }
-
-            $backup_path = $file.$backup_suffix;
-            if (!$dry_run && !file_exists($backup_path)) {
-                if (!copy($file, $backup_path)) {
-                    $stats['errors']++;
-                    $error_log[] = $this->format_error($attachment_id, $file, 'Backup copy failed');
-                    $progress->tick();
-                    continue;
-                }
-            }
-
-            if ($dry_run) {
-                $stats['optimized']++;
-                $progress->tick();
-                continue;
-            }
-
-            if ($use_cli) {
-                $cli_error = '';
-                if (!$this->optimize_with_cli($file, $max_width, $max_height, $quality, $mime, $cli_error)) {
-                    $stats['errors']++;
-                    $error_log[] = $this->format_error($attachment_id, $file, $cli_error);
-                    $progress->tick();
-                    continue;
-                }
-            } else {
-                $editor = wp_get_image_editor($file);
-                if (is_wp_error($editor)) {
-                    $stats['errors']++;
-                    $error_log[] = $this->format_error($attachment_id, $file, $editor->get_error_message());
-                    $progress->tick();
-                    continue;
-                }
-
-                $editor->set_quality($quality);
-                $resize_result = $editor->resize($max_width, $max_height, false);
-                if (is_wp_error($resize_result)) {
-                    $stats['errors']++;
-                    $error_log[] = $this->format_error($attachment_id, $file, $resize_result->get_error_message());
-                    $progress->tick();
-                    continue;
-                }
-
-                $save_result = $editor->save($file);
-                if (is_wp_error($save_result)) {
-                    $stats['errors']++;
-                    $error_log[] = $this->format_error($attachment_id, $file, $save_result->get_error_message());
-                    $progress->tick();
-                    continue;
-                }
-            }
-
-            // Refresh attachment metadata so WP knows about the new dimensions.
-            if ($regenerate_sizes) {
-                $metadata = wp_generate_attachment_metadata($attachment_id, $file);
-                if (is_wp_error($metadata)) {
-                    $error_log[] = $this->format_error($attachment_id, $file, $metadata->get_error_message());
-                } elseif (!empty($metadata)) {
-                    wp_update_attachment_metadata($attachment_id, $metadata);
-                }
-            }
-
-            $stats['optimized']++;
+            $this->optimize_attachment($attachment_id, $options, $stats, $error_log);
             $progress->tick();
         }
 
@@ -211,11 +137,173 @@ class Madeit_Image_Optimizer_Command
         }
     }
 
+    public function optimize_attachment_on_upload($attachment_id)
+    {
+        if (wp_attachment_is_image($attachment_id) === false) {
+            return;
+        }
+
+        $options = $this->get_default_options();
+        $options['dry_run'] = false;
+        $options['use_cli'] = $this->cli_tools_available();
+
+        $stats = [
+            'processed' => 0,
+            'skipped'   => 0,
+            'optimized' => 0,
+            'errors'    => 0,
+        ];
+        $error_log = [];
+
+        $this->optimize_attachment($attachment_id, $options, $stats, $error_log);
+
+        if (!empty($error_log)) {
+            foreach ($error_log as $line) {
+                error_log('[madeit optimize-images] '.$line);
+            }
+        }
+    }
+
+    public function optimize_daily()
+    {
+        $query_args = [
+            'post_type'      => 'attachment',
+            'post_status'    => 'inherit',
+            'posts_per_page' => -1,
+            'fields'         => 'ids',
+            'meta_query'     => [
+                [
+                    'key'     => '_wp_attachment_metadata',
+                    'compare' => 'EXISTS',
+                ],
+            ],
+        ];
+
+        $attachments = get_posts($query_args);
+        if (empty($attachments)) {
+            return;
+        }
+
+        $options = $this->get_default_options();
+        $options['dry_run'] = false;
+        $options['use_cli'] = $this->cli_tools_available();
+
+        $stats = [
+            'processed' => 0,
+            'skipped'   => 0,
+            'optimized' => 0,
+            'errors'    => 0,
+        ];
+        $error_log = [];
+
+        foreach ($attachments as $attachment_id) {
+            $this->optimize_attachment($attachment_id, $options, $stats, $error_log);
+        }
+
+        if (!empty($error_log)) {
+            foreach ($error_log as $line) {
+                error_log('[madeit optimize-images] '.$line);
+            }
+        }
+    }
+
     private function format_error($attachment_id, $file, $message)
     {
         $file_label = $file ? $file : 'unknown file';
 
         return sprintf('#%d %s: %s', (int) $attachment_id, $file_label, $message);
+    }
+
+    private function get_default_options()
+    {
+        return [
+            'max_width'        => 1920,
+            'max_height'       => 1920,
+            'quality'          => 82,
+            'backup_suffix'    => '.orig',
+            'dry_run'          => false,
+            'use_cli'          => true,
+            'regenerate_sizes' => true,
+        ];
+    }
+
+    private function optimize_attachment($attachment_id, $options, &$stats, &$error_log)
+    {
+        $stats['processed']++;
+        $file = get_attached_file($attachment_id);
+        if (!$file || !file_exists($file)) {
+            $stats['errors']++;
+            $error_log[] = $this->format_error($attachment_id, $file, 'File missing');
+            return;
+        }
+
+        $mime = get_post_mime_type($attachment_id);
+        if (!$this->is_supported_mime($mime)) {
+            $stats['skipped']++;
+            return;
+        }
+
+        $needs_optimize = $this->needs_optimization($file, $options['max_width'], $options['max_height']);
+        if (!$needs_optimize) {
+            $stats['skipped']++;
+            return;
+        }
+
+        $backup_path = $file.$options['backup_suffix'];
+        if (!$options['dry_run'] && !file_exists($backup_path)) {
+            if (!copy($file, $backup_path)) {
+                $stats['errors']++;
+                $error_log[] = $this->format_error($attachment_id, $file, 'Backup copy failed');
+                return;
+            }
+        }
+
+        if ($options['dry_run']) {
+            $stats['optimized']++;
+            return;
+        }
+
+        if ($options['use_cli']) {
+            $cli_error = '';
+            if (!$this->optimize_with_cli($file, $options['max_width'], $options['max_height'], $options['quality'], $mime, $cli_error)) {
+                $stats['errors']++;
+                $error_log[] = $this->format_error($attachment_id, $file, $cli_error);
+                return;
+            }
+        } else {
+            $editor = wp_get_image_editor($file);
+            if (is_wp_error($editor)) {
+                $stats['errors']++;
+                $error_log[] = $this->format_error($attachment_id, $file, $editor->get_error_message());
+                return;
+            }
+
+            $editor->set_quality($options['quality']);
+            $resize_result = $editor->resize($options['max_width'], $options['max_height'], false);
+            if (is_wp_error($resize_result)) {
+                $stats['errors']++;
+                $error_log[] = $this->format_error($attachment_id, $file, $resize_result->get_error_message());
+                return;
+            }
+
+            $save_result = $editor->save($file);
+            if (is_wp_error($save_result)) {
+                $stats['errors']++;
+                $error_log[] = $this->format_error($attachment_id, $file, $save_result->get_error_message());
+                return;
+            }
+        }
+
+        if ($options['regenerate_sizes']) {
+            $metadata = wp_generate_attachment_metadata($attachment_id, $file);
+            if (is_wp_error($metadata)) {
+                $error_log[] = $this->format_error($attachment_id, $file, $metadata->get_error_message());
+            } elseif (!empty($metadata)) {
+                wp_update_attachment_metadata($attachment_id, $metadata);
+            }
+        }
+
+        $stats['optimized']++;
     }
 
     private function is_supported_mime($mime)
@@ -299,4 +387,40 @@ class Madeit_Image_Optimizer_Command
     }
 }
 
-WP_CLI::add_command('madeit', 'Madeit_Image_Optimizer_Command');
+function madeit_image_optimizer()
+{
+    static $instance = null;
+    if ($instance === null) {
+        $instance = new Madeit_Image_Optimizer_Command();
+    }
+
+    return $instance;
+}
+
+add_action('add_attachment', function ($attachment_id) {
+    if (!wp_next_scheduled('madeit_optimize_single_attachment', [$attachment_id])) {
+        wp_schedule_single_event(time() + 60, 'madeit_optimize_single_attachment', [$attachment_id]);
+    }
+});
+
+add_action('madeit_optimize_single_attachment', function ($attachment_id) {
+    madeit_image_optimizer()->optimize_attachment_on_upload((int) $attachment_id);
+});
+
+add_action('init', function () {
+    if (!wp_next_scheduled('madeit_optimize_images_daily')) {
+        wp_schedule_event(time() + 300, 'daily', 'madeit_optimize_images_daily');
+    }
+});
+
+add_action('madeit_optimize_images_daily', function () {
+    madeit_image_optimizer()->optimize_daily();
+});
+
+add_action('switch_theme', function () {
+    wp_clear_scheduled_hook('madeit_optimize_images_daily');
+});
+
+if (defined('WP_CLI') && WP_CLI) {
+    WP_CLI::add_command('madeit', 'Madeit_Image_Optimizer_Command');
+}
