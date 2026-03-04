@@ -21,6 +21,74 @@ jQuery(document).ready(function($) {
 });
 
 
+// Save current step data via AJAX before continuing to next step.
+jQuery(document).ready(function($) {
+    const config = window.madeitSetupWizard || null;
+    if (!config || !config.ajaxUrl || !config.nonce || !config.currentStep) {
+        return;
+    }
+
+    const collectStepFields = function() {
+        const result = {};
+        const $container = $('.madeit-setup-wizard-step');
+
+        if (!$container.length) {
+            return result;
+        }
+
+        $container.find('input, select, textarea').each(function() {
+            const field = this;
+            const name = field.name || field.id;
+
+            if (!name || field.disabled) {
+                return;
+            }
+
+            if (field.type === 'button' || field.type === 'submit' || field.type === 'reset' || field.type === 'file') {
+                return;
+            }
+
+            if (field.type === 'checkbox') {
+                result[name] = field.checked ? '1' : '0';
+                return;
+            }
+
+            if (field.type === 'radio') {
+                if (field.checked) {
+                    result[name] = field.value;
+                }
+                return;
+            }
+
+            result[name] = field.value;
+        });
+
+        return result;
+    };
+
+    $(document).on('click', '.madeit-setup-wrapper .buttons a[data-save="1"]', function(e) {
+        e.preventDefault();
+
+        const href = $(this).attr('href');
+        if (!href) {
+            return;
+        }
+
+        const payload = {
+            action: 'madeit_setup_wizard_save_step',
+            nonce: config.nonce,
+            step: config.currentStep,
+            data: collectStepFields(),
+        };
+
+        $.post(config.ajaxUrl, payload)
+            .always(function() {
+                window.location.href = href;
+            });
+    });
+});
+
+
 
 
 // extraClr toevoegen, zelf naam kiezen en kleur kiezen, deze opslaan in de database en toepassen op de preview

@@ -14,6 +14,7 @@
 
 // Styles for the frontend only
 .madeit-block-content--frontend {
+    display: flex;
     --container-offset: 0px;
 
     @media (min-width: 576px) {
@@ -32,12 +33,12 @@
         --container-offset: calc((100vw - 1140px) / 2);
     }
 
-    //! voorlopig disabled, container gaat maar tot 1200px.
-    // @media (min-width: 1400px) {
-    //     --container-offset: calc((100vw - 1320px) / 2);
-    // }
+    @media (min-width: 1400px) {
+        --container-offset: calc((100vw - 1320px) / 2);
+    }
 
     .madeit-container-row  {
+        flex: auto;
         margin-left: 0 !important;
         margin-right: 0 !important;
 
@@ -50,23 +51,26 @@
         .madeit-container-row[data-madeit-dir="row-reverse"] .wp-block-madeit-block-content-column.keep-max-container-size:first-child:not(.max-end-size) {
             padding-right: calc(var(--container-offset) + var(--madeit-row-gap-desktop, 0px)) !important;
             max-width: none !important;
+
+            @media (max-width: 991px) {
+                padding-left: calc(var(--container-offset) + var(--madeit-row-gap-tablet, var(--madeit-row-gap-desktop, 0px))) !important;
+            }
         }
 
         .wp-block-madeit-block-content-column {
+            flex: auto 1 !important;
         
             .madeit-content-column__inner {
-                min-height: var(--madeit-min-height-desktop, 100%);
+                width: 100%;
                 align-content: var(--madeit-align-items-desktop, flex-start);
-                padding-inline: 15px;
+                padding-inline: 0;
             
                 @media (max-width: 991px) {
-                    min-height: var(--madeit-min-height-tablet, 100%);
-                    align-content: var(--madeit-align-items-tablet, flex-start);
+                    align-content: var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, flex-start));
                 }
             
                 @media (max-width: 575px) {
-                    min-height: var(--madeit-min-height-mobile, 100%);
-                    align-content: var(--madeit-align-items-mobile, flex-start);
+                    align-content: var(--madeit-align-items-mobile, var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, flex-start)));
                 }
             }
         }

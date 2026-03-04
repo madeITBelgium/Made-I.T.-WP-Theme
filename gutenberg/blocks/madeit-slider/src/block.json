@@ -1,13 +1,15 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
-  "apiVersion": 2,
+  "apiVersion": 3,
   "name": "madeit/slider",
   "title": "Made I.T. Foto slider",
   "category": "madeit",
   "icon": "slides",
   "description": "Maak jouw eigen slider met afbeeldingen.",
   "supports": {
-    "html": false
+    "html": false,
+    "align": true,
+    "anchor": true
   },
 
   "example": {

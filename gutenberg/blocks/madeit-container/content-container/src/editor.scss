@@ -677,3 +677,44 @@ body.madeit-content-container-advanced-tabs .block-editor-block-inspector__advan
 body.madeit-content-container-advanced-tabs .block-editor-block-inspector__advanced.is-opened {
     display: block !important;
 }
+
+
+
+.madeit-background-image-preview {
+    position: relative;
+    width: 100%;
+
+    .remove-image-button {
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        z-index: 1;
+
+        pointer-events: none;
+        opacity: 0;
+    }
+
+    .edit-image-button {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #ffffff75;
+        border: none;
+        margin: auto;
+        z-index: 0;
+
+        pointer-events: none;
+        opacity: 0;
+    }
+
+    &:hover {
+        .remove-image-button,
+        .edit-image-button {
+            pointer-events: auto;
+            opacity: 1;
+            cursor: pointer;
+        }
+    }
+}

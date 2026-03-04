@@ -5,7 +5,7 @@
  * @package MadeIt
  */
 
-
+opcache_reset();
 
 
 
@@ -58,6 +58,11 @@ class MadeIt_Setup_Wizard {
             $js_ver,
             true
         );
+        wp_localize_script('madeit-setup-wizard', 'madeitSetupWizard', [
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('madeit_setup_wizard_save_step'),
+            'currentStep' => $this->current_step,
+        ]);
         wp_enqueue_style(
             'madeit-setup-wizard',
             get_template_directory_uri() . $css_rel_path,
@@ -126,6 +131,62 @@ class MadeIt_Setup_Wizard {
     }
 }
 
+function madeit_is_setup_wizard_page_request(): bool {
+    return isset($_GET['page']) && sanitize_key($_GET['page']) === 'madeit-setup-wizard';
+}
+
+function madeit_setup_requires_child_theme(): bool {
+    $theme = wp_get_theme();
+    $template = sanitize_key((string) $theme->get_template());
+
+    if ($template !== 'madeit') {
+        return false;
+    }
+
+    return !is_child_theme();
+}
+
+function madeit_should_skip_setup_redirect(): bool {
+    if (!is_admin()) {
+        return true;
+    }
+
+    if (!current_user_can('manage_options')) {
+        return true;
+    }
+
+    if (wp_doing_ajax() || wp_doing_cron()) {
+        return true;
+    }
+
+    if (defined('REST_REQUEST') && REST_REQUEST) {
+        return true;
+    }
+
+    if (defined('WP_CLI') && WP_CLI) {
+        return true;
+    }
+
+    if (isset($_GET['skip_setup']) && sanitize_text_field(wp_unslash($_GET['skip_setup'])) === '1') {
+        return true;
+    }
+
+    if (madeit_is_setup_wizard_page_request()) {
+        return true;
+    }
+
+    return false;
+}
+
+function madeit_setup_wizard_admin_body_class($classes) {
+    if (madeit_is_setup_wizard_page_request()) {
+        $classes .= ' madeit-setup-wizard-fullscreen';
+    }
+
+    return $classes;
+}
+add_filter('admin_body_class', 'madeit_setup_wizard_admin_body_class');
+
 /**
  * Ensure the wizard is instantiated early enough so its enqueue hook runs.
  */
@@ -143,7 +204,7 @@ function madeit_setup_wizard_bootstrap() {
         return;
     }
 
-    if ( ! isset($_GET['page']) || sanitize_key($_GET['page']) !== 'madeit-setup-wizard' ) {
+    if (!madeit_is_setup_wizard_page_request()) {
         return;
     }
 
@@ -157,9 +218,16 @@ function madeit_redirect_after_activation() {
 
 add_action( 'admin_init', 'madeit_setup_redirect' );
 function madeit_setup_redirect() {
-    if ( get_option( 'madeit_do_setup_redirect', false ) ) {
-        delete_option( 'madeit_do_setup_redirect' );
-        wp_redirect( admin_url( 'themes.php?page=madeit-setup-wizard' ) );
+    if (madeit_should_skip_setup_redirect()) {
+        return;
+    }
+
+    $should_redirect_after_activation = (bool) get_option('madeit_do_setup_redirect', false);
+    $should_redirect_for_child_theme = madeit_setup_requires_child_theme();
+
+    if ($should_redirect_after_activation || $should_redirect_for_child_theme) {
+        delete_option('madeit_do_setup_redirect');
+        wp_safe_redirect(admin_url('themes.php?page=madeit-setup-wizard'));
         exit;
     }
 }
@@ -188,3 +256,56 @@ function madeit_setup_wizard_page() {
     $wizard = madeit_get_setup_wizard_instance();
     $wizard->render();
 }
+
+function madeit_setup_wizard_sanitize_posted_data($value) {
+    if (is_array($value)) {
+        $sanitized = [];
+        foreach ($value as $key => $item) {
+            $sanitized_key = is_string($key) ? sanitize_key($key) : $key;
+            $sanitized[$sanitized_key] = madeit_setup_wizard_sanitize_posted_data($item);
+        }
+
+        return $sanitized;
+    }
+
+    if (!is_scalar($value)) {
+        return '';
+    }
+
+    return sanitize_text_field(wp_unslash((string) $value));
+}
+
+function madeit_setup_wizard_ajax_save_step(): void {
+    check_ajax_referer('madeit_setup_wizard_save_step', 'nonce');
+
+    if (!current_user_can('manage_options')) {
+        wp_send_json_error(['message' => 'Unauthorized'], 403);
+    }
+
+    $step = isset($_POST['step']) ? sanitize_key(wp_unslash($_POST['step'])) : '';
+    $raw_data = isset($_POST['data']) ? $_POST['data'] : [];
+
+    if ($step === '') {
+        wp_send_json_error(['message' => 'Missing step'], 400);
+    }
+
+    if (!is_array($raw_data)) {
+        wp_send_json_error(['message' => 'Invalid payload'], 400);
+    }
+
+    $sanitized_data = madeit_setup_wizard_sanitize_posted_data($raw_data);
+
+    $all_steps_data = get_option('madeit_setup_wizard_data', []);
+    if (!is_array($all_steps_data)) {
+        $all_steps_data = [];
+    }
+
+    $all_steps_data[$step] = $sanitized_data;
+    update_option('madeit_setup_wizard_data', $all_steps_data);
+
+    wp_send_json_success([
+        'step' => $step,
+        'savedKeys' => array_keys($sanitized_data),
+    ]);
+}
+add_action('wp_ajax_madeit_setup_wizard_save_step', 'madeit_setup_wizard_ajax_save_step');

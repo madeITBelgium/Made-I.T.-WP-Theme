@@ -44,12 +44,15 @@ export default function save( props ) {
         [ `col-12` ]: true,
         [ `col-lg-${widthRounded}` ]: widthRounded,
         [ 'keep-max-container-size' ]: !! maxContainerSize,
+        // [ 'madeit-block-content--frontend' ]: true,
     } );
 
     wrapperClasses = classnames( wrapperClasses, {
         'has-text-color': textColorClass,
         [ textColorClass ]: textColorClass,
     } );
+
+    const hasBackground = !! ( backgroundColorClass || customBackgroundColor );
 
     const innerClasses = classnames( 'madeit-content-column__inner', {
         'has-background': backgroundColorClass,
@@ -87,6 +90,18 @@ export default function save( props ) {
         className: wrapperClasses,
         style: style,
     } );
+
+    // Legacy markup: no inner wrapper when no background.
+    // This prevents block validation errors on older/pasted content.
+    if ( ! hasBackground ) {
+        return (
+            <div { ...blockProps }>
+                { '\n\n' }
+                <InnerBlocks.Content />
+                { '\n\n' }
+            </div>
+        );
+    }
 
     return (
         <div { ...blockProps }>

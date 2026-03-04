@@ -121,6 +121,7 @@ registerBlockType( 'madeit/block-carousel', {
     supports: {
         align: true,
         anchor: true,
+        inserter: false,
     },
 
     // The "edit" property must be a valid function.

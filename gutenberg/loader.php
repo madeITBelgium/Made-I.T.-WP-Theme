@@ -4,6 +4,10 @@ if (!defined('MADEIT_BLOCKS_VERSION')) {
     define('MADEIT_BLOCKS_VERSION', '1.3.0');
 }
 
+// Migrations: shared logic + auto-runner + optional WP-CLI command.
+require_once get_parent_theme_file_path('gutenberg/migrations/wp-cli-migrate-carousel-to-slider.php');
+require_once get_parent_theme_file_path('gutenberg/migrations/auto-migrate-carousel-to-slider.php');
+
 // Admin pagina's
 if (is_admin()) {
     require_once get_parent_theme_file_path('gutenberg/admin/menu.php');

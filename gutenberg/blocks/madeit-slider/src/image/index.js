@@ -16,6 +16,9 @@ registerBlockType('madeit/slider-image', {
         url: { type: 'string' },
         alt: { type: 'string' },
         id: { type: 'number' },
+        caption: { type: 'string', default: '' },
+        linkUrl: { type: 'string', default: '' },
+        linkTarget: { type: 'string', default: '_self' },
         focalPoint: {
             type: 'object',
             default: { x: 0.5, y: 0.5 }

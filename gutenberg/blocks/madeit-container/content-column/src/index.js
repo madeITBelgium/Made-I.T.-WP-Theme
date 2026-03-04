@@ -65,6 +65,94 @@ registerBlockType( metadata.name, {
     save,
     
     deprecated: [
+        {
+            // Deprecated (legacy markup): columns were saved without the
+            // `.madeit-content-column__inner` wrapper.
+            // Needed so copy/pasting older content does not require recovery.
+            save: function( props ) {
+                const {
+                    verticalAlignment,
+                    width,
+                    customTextColor,
+                    textColor,
+                    margin,
+                    padding,
+                    maxContainerSize,
+                } = props.attributes;
+
+                const { className } = props;
+
+                const defaultBlockClassName = 'wp-block-madeit-block-content-column';
+                const outerClassName = ( className || '' )
+                    .split( /\s+/ )
+                    .filter( Boolean )
+                    .filter(
+                        ( token ) =>
+                            token !== 'has-background' &&
+                            ! /^has-.*-background-color$/.test( token )
+                    )
+                    .join( ' ' );
+
+                const textColorClass = textColor
+                    ? getColorClassName( 'color', textColor )
+                    : undefined;
+
+                const widthRounded = Math.round( width );
+
+                let wrapperClasses = classnames(
+                    defaultBlockClassName,
+                    outerClassName,
+                    {
+                        [ `is-vertically-aligned-${ verticalAlignment }` ]:
+                            verticalAlignment,
+                        'col-12': true,
+                        [ `col-lg-${ widthRounded }` ]: widthRounded,
+                        'keep-max-container-size': !! maxContainerSize,
+                    }
+                );
+
+                wrapperClasses = classnames( wrapperClasses, {
+                    'has-text-color': textColorClass,
+                    [ textColorClass ]: textColorClass,
+                } );
+
+                const style = {
+                    color: textColorClass ? undefined : customTextColor,
+                };
+
+                if ( margin !== undefined && margin.top !== undefined ) {
+                    style.marginTop = margin.top;
+                }
+                if ( margin !== undefined && margin.bottom !== undefined ) {
+                    style.marginBottom = margin.bottom;
+                }
+                if ( padding !== undefined && padding.top !== undefined ) {
+                    style.paddingTop = padding.top;
+                }
+                if ( padding !== undefined && padding.bottom !== undefined ) {
+                    style.paddingBottom = padding.bottom;
+                }
+                if ( padding !== undefined && padding.left !== undefined ) {
+                    style.paddingLeft = padding.left;
+                }
+                if ( padding !== undefined && padding.right !== undefined ) {
+                    style.paddingRight = padding.right;
+                }
+
+                const blockProps = useBlockProps.save( {
+                    className: wrapperClasses,
+                    style,
+                } );
+
+                return (
+                    <div { ...blockProps }>
+                        { '\n\n' }
+                        <InnerBlocks.Content />
+                        { '\n\n' }
+                    </div>
+                );
+            },
+        },
 
         {
             supports: {

@@ -1,10 +1,38 @@
 <?php
 function madeit_blocks_updates_page() {
 
+    $get_latest_version = function (array $block_data): string {
+        $changelog = $block_data['madeit']['changelog'] ?? [];
+        if (is_array($changelog) && !empty($changelog)) {
+            $keys = array_keys($changelog);
+            usort($keys, 'version_compare');
+            $latest = end($keys);
+            if (is_string($latest) && $latest !== '') {
+                return $latest;
+            }
+        }
+
+        $v = $block_data['version'] ?? '';
+        return is_string($v) ? $v : '';
+    };
+
+    $get_last_updated = function (string $slug, array $block_data): string {
+        $block_json = function_exists('get_theme_file_path')
+            ? get_theme_file_path('gutenberg/blocks/' . $slug . '/block.json')
+            : (get_stylesheet_directory() . '/gutenberg/blocks/' . $slug . '/block.json');
+
+        $ts = (is_string($block_json) && is_readable($block_json)) ? filemtime($block_json) : false;
+        if (is_int($ts) && $ts > 0) {
+            return wp_date(get_option('date_format'), $ts);
+        }
+
+        $fallback = $block_data['madeit']['updated'] ?? '';
+        return is_string($fallback) && $fallback !== '' ? $fallback : 'N/A';
+    };
+
     if (!current_user_can('manage_options')) {
         return;
     }
-    $versions = madeit_get_all_changelogs();
     $blocks = madeit_get_all_blocks();
     ?>
 
@@ -19,20 +47,36 @@ function madeit_blocks_updates_page() {
         <div class="madeit-updates-wrapper">
         <?php foreach ($blocks as $block => $block_data): ?>
 
+            <?php
+            $latest_version = $get_latest_version((array) $block_data);
+            $last_updated = $get_last_updated((string) $block, (array) $block_data);
+
+            $changelog = $block_data['madeit']['changelog'] ?? [];
+            if (is_array($changelog) && !empty($changelog)) {
+                // Sort changelog newest first.
+                $versions_sorted = array_keys($changelog);
+                usort($versions_sorted, 'version_compare');
+                $versions_sorted = array_reverse($versions_sorted);
+            } else {
+                $versions_sorted = [];
+            }
+            ?>
+
             <div class="madeit-release-card" style="break-inside: avoid;-webkit-column-break-inside: avoid;page-break-inside: avoid;">
 
                 <div class="madeit-release-header">
                     <h2><?php echo esc_html($block_data['title']); ?></h2>
                     <span  class="madeit-release-version">
-                        v<?php echo esc_html($version); ?> -
-                        <?php echo esc_html($block_data['madeit']['updated'] ?? 'N/A'); ?>
+                        v<?php echo esc_html($latest_version !== '' ? $latest_version : 'N/A'); ?> -
+                        <?php echo esc_html($last_updated); ?>
                     </span>
                 </div>
 
                 <div class="madeit-release-block">
                     <ul>
-                    <?php foreach ($block_data['madeit']['changelog'] ?? [] as $version => $items): ?>
-                        <li style="margin-bottom: 20px"><strong>v<?php echo esc_html($version); ?>:</strong>
+                    <?php foreach ($versions_sorted as $version): ?>
+                        <?php $items = is_array($changelog[$version] ?? null) ? $changelog[$version] : []; ?>
+                        <li style="margin-bottom: 20px"><strong>v<?php echo esc_html((string) $version); ?>:</strong>
                             <ul>
                                 <?php foreach ($items as $item): ?>
                                     <li><?php echo esc_html($item); ?></li>

@@ -1,0 +1,59 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "madeit/maps",
+  "title": "Maps",
+  "category": "madeit",
+  "icon": "slides",
+  "description": "A customizable Gutenberg maps block using Leaflet.js",
+  "supports": {
+    "html": false,
+    "align": true,
+    "anchor": true
+  },
+  "attributes": {
+    "location": { "type": "string", "default": "" },
+    "mapType": { "type": "string", "default": "osm" },
+    "mapColor": { "type": "string", "default": "" },
+    "latitude": { "type": "number", "default": 51.505 },
+    "longitude": { "type": "number", "default": -0.09 },
+    "zoom": { "type": "number", "default": 13 },
+    "height": { "type": "string", "default": "400px" },
+    "marker": { "type": "boolean", "default": true },
+    "markerColor": { "type": "string", "default": "#1cacb4" },
+    "markerSvg": { "type": "string", "default": "" },
+    "markers": {
+      "type": "array",
+      "default": [],
+      "items": { "type": "object" }
+    },
+    "markerLatitude": { "type": "number", "default": 51.505 },
+    "markerLongitude": { "type": "number", "default": -0.09 },
+    "markerPopup": { "type": "string", "default": "" }
+  },
+  "example": {
+    "attributes": {
+      "mapType": "osm",
+      "latitude": 51.505,
+      "longitude": -0.09,
+      "zoom": 13,
+      "height": "400px",
+      "marker": true,
+      "markerColor": "#1cacb4",
+      "markers": [
+        {
+          "latitude": 51.505,
+          "longitude": -0.09,
+          "popup": "Hier is een marker!"
+        }
+      ],
+      "markerLatitude": 51.505,
+      "markerLongitude": -0.09,
+      "markerPopup": "Hier is een marker!"
+    }
+  },
+  "editorScript": "file:./index.js",
+  "viewScript": "file:./view.js",
+  "style": "file:./style-index.css",
+  "editorStyle": "file:./style-index.css"
+}

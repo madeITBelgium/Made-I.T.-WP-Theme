@@ -5,7 +5,7 @@
  * Simple block, renders and saves the same content without any interactivity.
  */
 
-import { registerBlockType } from '@wordpress/blocks';
+import { registerBlockType, createBlock } from '@wordpress/blocks';
 
 import metadata from './block.json';
 import Edit from './edit';
@@ -51,6 +51,50 @@ const icon = {
 registerBlockType(metadata.name, {
     ...metadata,
     icon,
+    transforms: {
+        from: [
+            {
+                type: 'block',
+                blocks: ['madeit/block-carousel'],
+                transform: (attributes = {}) => {
+                    const { images = [], anchor } = attributes;
+
+                    const innerBlocks = (Array.isArray(images) ? images : [])
+                        .filter((image) => image && image.url)
+                        .map((image) =>
+                            createBlock('madeit/slider-image', {
+                                id: image.id ? Number(image.id) : undefined,
+                                url: image.url,
+                                alt: image.alt || '',
+                                caption: Array.isArray(image.caption)
+                                    ? image.caption
+                                          .map((part) => (typeof part === 'string' ? part : ''))
+                                          .join('')
+                                    : image.caption || '',
+                                linkUrl: image.link || '',
+                                linkTarget: '_self',
+                            })
+                        );
+
+                    return createBlock(
+                        'madeit/slider',
+                        {
+                            anchor,
+                            slidesDesktop: 1,
+                            slidesTablet: 1,
+                            slidesMobile: 1,
+                            navigation: true,
+                            pagination: true,
+                            paginationType: 'bullets',
+                            autoplay: false,
+                            loop: false,
+                        },
+                        innerBlocks
+                    );
+                },
+            },
+        ],
+    },
     edit: Edit,
     save: Save,
 });

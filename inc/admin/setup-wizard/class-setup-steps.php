@@ -13,7 +13,7 @@ class MadeIt_Setup_Steps {
     public static function get_steps() {
         return [
             'welcome'  => 'Welkom',
-            'child-theme' => 'Child Theme',
+            'child-theme' => 'Website-stijl',
             'basic-settings' => 'Basis Instellingen',
             'branding' => 'Branding',
             'plugins'  => 'Plugins', 

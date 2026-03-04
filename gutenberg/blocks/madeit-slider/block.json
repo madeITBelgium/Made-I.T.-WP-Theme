@@ -1,5 +1,5 @@
 {
-  "apiVersion": 2,
+  "apiVersion": 3,
   "name": "madeit/slider",
   "title": "Made I.T. Foto slider",
   "category": "madeit",
@@ -21,7 +21,9 @@
 
 
   "supports": {
-    "html": false
+    "html": false,
+    "align": true,
+    "anchor": true
   },
   "attributes": {
     "effect": { "type": "string", "default": "slide" },

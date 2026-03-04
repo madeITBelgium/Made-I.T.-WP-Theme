@@ -37,11 +37,20 @@ add_action('enqueue_block_assets', 'carousel_madeit_block_assets');
  */
 function carousel_madeit_editor_assets()
 {
+    // Compatibility: hide legacy carousel from inserter without rebuilding dist assets.
+    wp_enqueue_script(
+        'madeit-carousel-compat-hide-inserter',
+        get_template_directory_uri().'/gutenberg/carousel/compat-hide-inserter.js',
+        ['wp-hooks'],
+        null,
+        true
+    );
+
     // Scripts.
     wp_enqueue_script(
         'carousel-madeit-block-js', // Handle.
         get_template_directory_uri().'/gutenberg/carousel/dist/blocks.build.js',  // Block.build.js: We register the block here. Built with Webpack.
-        ['wp-blocks', 'wp-i18n', 'wp-element', 'wp-components', 'wp-editor'], // Dependencies, defined above.
+        ['madeit-carousel-compat-hide-inserter', 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-components', 'wp-editor'], // Dependencies, defined above.
         // filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.build.js' ), // Version: filemtime — Gets file modification time.
         true // Enqueue the script in the footer.
     );

@@ -1,0 +1,74 @@
+/* Frontend + editor shared styles */
+.madeit-maps__map {
+	width: 100%;
+}
+
+.madeit-maps__marker-icon {
+	background: transparent;
+	border: 0;
+}
+
+.madeit-maps__marker svg {
+	display: block;
+	width: 32px;
+	height: 32px;
+}
+
+.madeit-maps__marker svg[data-madeit-recolor='1'] {
+	fill: currentColor;
+}
+
+.madeit-maps__marker svg[data-madeit-recolor='1'] [fill]:not([fill='none']) {
+	fill: currentColor;
+}
+
+.madeit-maps__marker svg[data-madeit-recolor='1'] [stroke]:not([stroke='none']) {
+	stroke: currentColor;
+}
+
+.leaflet-bottom.leaflet-right {
+	display: none;
+}
+
+
+button.madeit-maps__show-coordinates-button {
+	padding: 0;
+	margin: 0 0 12px 0; 
+	height: auto;
+
+	&:hover {
+		background: transparent;
+	}
+
+	&:focus {
+		box-shadow: none;
+	}
+}
+
+.madeit-maps--dark {
+	.leaflet-layer,
+	.leaflet-control-zoom-in,
+	.leaflet-control-zoom-out,
+	.leaflet-control-attribution {
+		filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+	}
+}
+
+.madeit-maps--purple {
+	.leaflet-layer,
+	.leaflet-control-zoom-in,
+	.leaflet-control-zoom-out,
+	.leaflet-control-attribution {
+		filter: brightness(.9) invert(1) contrast(1.2) saturate(0.8);
+		// filter: hue-rotate(270deg) brightness(90%) contrast(110%);
+	}
+}
+
+.madeit-maps--grayscale {
+	.leaflet-layer,
+	.leaflet-control-zoom-in,
+	.leaflet-control-zoom-out,
+	.leaflet-control-attribution {
+		filter: grayscale(1) contrast(1) sepia(0) hue-rotate(0deg) saturate(1) brightness(100%);
+	}
+}

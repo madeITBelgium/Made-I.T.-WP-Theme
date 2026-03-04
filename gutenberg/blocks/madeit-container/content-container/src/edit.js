@@ -9,6 +9,8 @@ import {
     BlockVerticalAlignmentToolbar,
     ContrastChecker,
     PanelColorSettings,
+    MediaUpload,
+    MediaUploadCheck,
     withColors,
 } from '@wordpress/block-editor';
 import { createBlock } from '@wordpress/blocks';
@@ -23,6 +25,7 @@ import { PanelBody, RangeControl, SVG, Path, SelectControl,
     CardBody,
     Flex,
     FlexItem,
+    GradientPicker as GradientControl,
     __experimentalBoxControl as BoxControl,
     __experimentalToolsPanel as ToolsPanel,
 	__experimentalToolsPanelItem as ToolsPanelItem} from "@wordpress/components";
@@ -68,6 +71,11 @@ export function ColumnsEditContainer( props ) {
         containerPadding,
         rowMargin,
         rowPadding,
+        containerBackgroundImage,
+        containerBackgroundPosition,
+        containerBackgroundRepeat,
+        containerBackgroundSize,
+        containerBackgroundGradient,
         minHeight,
         minHeightUnit,
         minHeightTablet,
@@ -104,9 +112,51 @@ export function ColumnsEditContainer( props ) {
         hideOnDesktop,
         hideOnTablet,
         hideOnMobile,
-        backgroundType = 'transparent',
+        backgroundType,
     } = attributes;
-    
+
+    const computedContainerBackgroundPosition =
+        typeof containerBackgroundPosition === 'string' && containerBackgroundPosition.length > 0
+            ? containerBackgroundPosition
+            : 'center center';
+    const computedContainerBackgroundRepeat =
+        typeof containerBackgroundRepeat === 'string' && containerBackgroundRepeat.length > 0
+            ? containerBackgroundRepeat
+            : 'no-repeat';
+    const computedContainerBackgroundSize =
+        typeof containerBackgroundSize === 'string' && containerBackgroundSize.length > 0
+            ? containerBackgroundSize
+            : 'cover';
+
+    const computedBackgroundType =
+        backgroundType ||
+        ( containerBackgroundImage?.url || containerBackgroundColor?.color
+            ? 'classic'
+            : 'transparent' );
+
+    const computedBackgroundGradient = 
+        attributes.containerBackgroundGradient || {
+            gradient: '',
+        };
+
+    const computedBackgroundGradientValue =
+        typeof computedBackgroundGradient?.gradient === 'string' &&
+        computedBackgroundGradient.gradient.trim().length > 0
+            ? computedBackgroundGradient.gradient
+            : undefined;
+
+    const gradients = useSelect( ( select ) => {
+        const settings = select( 'core/block-editor' )?.getSettings?.() || {};
+
+        // Gutenberg has multiple possible shapes depending on WP/Gutenberg version.
+        const gradientsFromFeatures =
+            settings?.__experimentalFeatures?.color?.gradients?.theme ||
+            settings?.__experimentalFeatures?.color?.gradients?.default ||
+            settings?.__experimentalFeatures?.color?.gradients?.custom;
+
+        return settings.gradients || gradientsFromFeatures || [];
+    }, [] );
+
     // Define the container size options and their corresponding CSS classes
     const containerSizes = [
         { value: 'container', label: __( 'Boxed' ) },
@@ -200,6 +250,80 @@ export function ColumnsEditContainer( props ) {
 		setRowPadding( undefined );
 		setRowMargin( undefined );
 	};
+
+    const resetContainerPadding = () => {
+        setContainerPadding( undefined );
+    };
+
+    const resetContainerMargin = () => {
+        setContainerMargin( undefined );
+    };
+
+    const setContainerBackgroundImage = ( media ) => {
+        if ( ! media || ! media.id ) {
+            setAttributes( { containerBackgroundImage: undefined } );
+            return;
+        }
+
+        const url =
+            media.url ||
+            media?.sizes?.full?.url ||
+            media?.sizes?.large?.url ||
+            media?.source_url;
+
+        setAttributes( {
+            containerBackgroundImage: {
+                id: media.id,
+                url,
+                alt: media.alt || '',
+            },
+            containerBackgroundPosition:
+                typeof containerBackgroundPosition === 'string' &&
+                containerBackgroundPosition.length > 0
+                    ? containerBackgroundPosition
+                    : 'center center',
+            containerBackgroundRepeat:
+                typeof containerBackgroundRepeat === 'string' &&
+                containerBackgroundRepeat.length > 0
+                    ? containerBackgroundRepeat
+                    : 'no-repeat',
+            containerBackgroundSize:
+                typeof containerBackgroundSize === 'string' &&
+                containerBackgroundSize.length > 0
+                    ? containerBackgroundSize
+                    : 'cover',
+        } );
+    };
+    const setContainerBackgroundPosition = ( value ) =>
+        setAttributes( { containerBackgroundPosition: value } );
+    const setContainerBackgroundRepeat = ( value ) =>
+        setAttributes( { containerBackgroundRepeat: value } );
+    const setContainerBackgroundSize = ( value ) =>
+        setAttributes( { containerBackgroundSize: value } );
+
+    const setContainerBackgroundGradient = ( value ) => {
+        if ( ! value ) {
+            setAttributes( { containerBackgroundGradient: undefined } );
+            return;
+        }
+
+        if ( typeof value === 'string' ) {
+            if ( value.trim().length === 0 ) {
+                setAttributes( { containerBackgroundGradient: undefined } );
+                return;
+            }
+            setAttributes( { containerBackgroundGradient: { gradient: value } } );
+            return;
+        }
+
+        // Handle objects like { gradient: '' } coming from pickers.
+        if ( typeof value?.gradient === 'string' && value.gradient.trim().length === 0 ) {
+            setAttributes( { containerBackgroundGradient: undefined } );
+            return;
+        }
+
+        setAttributes( { containerBackgroundGradient: value } );
+    };
     
     const computedOverflow = overflow ?? 'visible';
     const computedHtmlTag = htmlTag ?? 'div';
@@ -207,9 +331,23 @@ export function ColumnsEditContainer( props ) {
     const HtmlTag = allowedHtmlTags.includes( computedHtmlTag ) ? computedHtmlTag : 'div';
 
     var style = {
-        backgroundColor: containerBackgroundColor.color,
+        backgroundColor:
+            computedBackgroundType === 'transparent'
+                ? 'transparent'
+                : containerBackgroundColor.color,
         overflow: computedOverflow,
     };
+
+    if ( computedBackgroundType === 'classic' && containerBackgroundImage?.url ) {
+        style.backgroundImage = `url(${ containerBackgroundImage.url })`;
+        style.backgroundPosition = computedContainerBackgroundPosition;
+        style.backgroundRepeat = computedContainerBackgroundRepeat;
+        style.backgroundSize = computedContainerBackgroundSize;
+    }
+
+    if ( computedBackgroundType === 'gradient' && computedBackgroundGradientValue ) {
+        style.backgroundImage = computedBackgroundGradientValue;
+    }
 
     // Responsive flex-direction via CSS variables.
     style['--madeit-flex-direction-desktop'] = flexDirection || 'row';
@@ -285,6 +423,12 @@ export function ColumnsEditContainer( props ) {
     if(containerMargin !== undefined && containerMargin.bottom !== undefined) {
         style.marginBottom = containerMargin.bottom;
     }
+    if(containerMargin !== undefined && containerMargin.left !== undefined) {
+        style.marginLeft = containerMargin.left;
+    }
+    if(containerMargin !== undefined && containerMargin.right !== undefined) {
+        style.marginRight = containerMargin.right;
+    }
     if(containerPadding !== undefined && containerPadding.top !== undefined) {
         style.paddingTop = containerPadding.top;
     }
@@ -310,6 +454,12 @@ export function ColumnsEditContainer( props ) {
         }
         if(rowMargin !== undefined && rowMargin.bottom !== undefined) {
             styleChild.marginBottom = rowMargin.bottom;
+        }
+        if(rowMargin !== undefined && rowMargin.left !== undefined) {
+            styleChild.marginLeft = rowMargin.left;
+        }
+        if(rowMargin !== undefined && rowMargin.right !== undefined) {
+            styleChild.marginRight = rowMargin.right;
         }
         if(rowPadding !== undefined && rowPadding.top !== undefined) {
             styleChild.paddingTop = rowPadding.top;
@@ -340,6 +490,8 @@ export function ColumnsEditContainer( props ) {
     const [ activeMaxWidthBreakpoint, setActiveMaxWidthBreakpoint ] = useState( 'desktop' );
     const [ activeMinHeightBreakpoint, setActiveMinHeightBreakpoint ] = useState( 'desktop' );
     const [ activeRowGapBreakpoint, setActiveRowGapBreakpoint ] = useState( 'desktop' );
+    const [ activePaddingBreakpoint, setActivePaddingBreakpoint ] = useState( 'desktop' );
+    const [ activeMarginBreakpoint, setActiveMarginBreakpoint ] = useState( 'desktop' );
 
     const [ activeDirectionBreakpoint, setActiveDirectionBreakpoint ] = useState( 'desktop' );
     const directionValueKey =
@@ -394,24 +546,42 @@ export function ColumnsEditContainer( props ) {
         } );
 
 
-    const RowGapValueKey =
+    const rowGapValueKey =
         activeRowGapBreakpoint === 'tablet'
             ? 'rowGapTablet'
             : activeRowGapBreakpoint === 'mobile'
                 ? 'rowGapMobile'
                 : 'rowGap';
-    const RowGapUnitKey =
+    const rowGapUnitKey =
         activeRowGapBreakpoint === 'tablet'
             ? 'rowGapUnitTablet'
             : activeRowGapBreakpoint === 'mobile'
                 ? 'rowGapUnitMobile'
                 : 'rowGapUnit';
-    const currentRowGapValue = attributes?.[ RowGapValueKey ];
-    const currentRowGapUnit = attributes?.[ RowGapUnitKey ] || 'px';
+    const paddingValueKey =
+        activePaddingBreakpoint === 'tablet'        
+            ? 'containerPaddingTablet'
+            : activePaddingBreakpoint === 'mobile'
+                ? 'containerPaddingMobile'
+                : 'containerPadding';   
+
+    const marginValueKey =
+        activeMarginBreakpoint === 'tablet'
+            ? 'containerMarginTablet'
+            : activeMarginBreakpoint === 'mobile'
+                ? 'containerMarginMobile'
+                : 'containerMargin';
+
+                
+    const currentRowGapValueRaw = attributes?.[ rowGapValueKey ];
+    const currentRowGapValue =
+        typeof currentRowGapValueRaw === 'number' ? currentRowGapValueRaw : 20;
+    const currentRowGapUnit = attributes?.[ rowGapUnitKey ] || 'px';
+
     const resetRowGap = () =>
         setAttributes( {
-            [ RowGapValueKey ]: undefined,
-            [ RowGapUnitKey ]: 'px',
+            [ rowGapValueKey ]: activeRowGapBreakpoint === 'desktop' ? 20 : undefined,
+            [ rowGapUnitKey ]: 'px',
         } );
 
 
@@ -548,11 +718,35 @@ export function ColumnsEditContainer( props ) {
         <svg viewBox="0 -2 32 32" fill="#000000"> <g strokeWidth="0"></g><g strokeLinecap="round" strokeLinejoin="round"></g><g><g fill="none" fillRule="evenodd"><g transform="translate(-101.000000, -156.000000)" fill="#000000"><path d="M132.132,156.827 C130.975,155.685 129.099,155.685 127.942,156.827 L115.336,169.277 L119.499,173.44 L132.132,160.964 C133.289,159.821 133.289,157.969 132.132,156.827 Z M112.461,180.385 C111.477,181.298 107.08,183.333 104.491,181.36 C104.491,181.36 105.392,180.657 106.074,179.246 C107.703,174.919 111.763,175.56 111.763,175.56 L113.159,176.938 C113.173,176.952 114.202,178.771 112.461,180.385 Z M113.913,170.683 L110.764,173.788 C108.661,173.74 105.748,174.485 104.491,178.603 C103.53,180.781 101,180.671 101,180.671 C106.253,186.498 112.444,183.196 113.857,181.764 C115.1,180.506 115.279,178.966 115.146,177.734 L118.076,174.846 L113.913,170.683 Z" /></g></g></g></svg>
     );
     const styleGradientIcon = () => (
-        <svg fill="#000000" viewBox="0 0 32 32" id="icon" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <defs> </defs> <path d="M26,4H6A2.0023,2.0023,0,0,0,4,6V26a2.0023,2.0023,0,0,0,2,2H26a2.0023,2.0023,0,0,0,2-2V6A2.0023,2.0023,0,0,0,26,4ZM22,26V22H18v4H14V22H10V18h4V14H10V10h4V6h4v4h4V6h4V26Z"></path> <rect x="14" y="10" width="4" height="4"></rect> <rect x="14" y="18" width="4" height="4"></rect> <rect x="18" y="14" width="4" height="4"></rect> <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" className="cls-1" width="32" height="32"></rect> </g></svg>
+        <svg fill="#000000" viewBox="0 0 32 32" id="icon" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <defs> </defs> <path d="M26,4H6A2.0023,2.0023,0,0,0,4,6V26a2.0023,2.0023,0,0,0,2,2H26a2.0023,2.0023,0,0,0,2-2V6A2.0023,2.0023,0,0,0,26,4ZM22,26V22H18v4H14V22H10V18h4V14H10V10h4V6h4v4h4V6h4V26Z"></path> <rect x="14" y="10" width="4" height="4"></rect> <rect x="14" y="18" width="4" height="4"></rect> <rect x="18" y="14" width="4" height="4"></rect> <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" className="cls-1" width="32" height="32" fill="none"></rect> </g></svg>
     );
 
+    const handleBackgroundTypeChange = ( newType ) => {
+        // When switching to transparent, clear classic background selections
+        // so they don't "stick" when toggling back and forth.
+        if ( newType === 'transparent' ) {
+            setAttributes( {
+                backgroundType: 'transparent',
+                containerBackgroundColor: undefined,
+                customContainerBackgroundColor: undefined,
+            } );
+            return;
+        }
+
+        setAttributes( { backgroundType: newType } );
+    };
+
     const resetBackgroundType = () => {
-        setAttributes( { backgroundType: 'transparent' } );
+        setAttributes( {
+            backgroundType: 'transparent',
+            containerBackgroundColor: undefined,
+            customContainerBackgroundColor: undefined,
+            containerBackgroundImage: undefined,
+            containerBackgroundPosition: undefined,
+            containerBackgroundRepeat: undefined,
+            containerBackgroundSize: undefined,
+            containerBackgroundGradient: {},
+        } );
     };
 
     const StyleSwitcher = ( { active, onChange } ) => (
@@ -1208,41 +1402,133 @@ export function ColumnsEditContainer( props ) {
                                 onReset={ resetBackgroundType }
                                 afterBreakpoint={
                                     <StyleSwitcher
-                                        active={ backgroundType }
-                                        onChange={ ( newType ) => setAttributes( { backgroundType: newType } ) }
+                                        active={ computedBackgroundType }
+                                        onChange={ handleBackgroundTypeChange }
                                     />
                                 }
                             />
 
-                            { backgroundType === 'classic' && (
+                            { computedBackgroundType === 'classic' && (
                                 
                                 <>
                                     {/* Achtergrond kleur */}
-                                    <PanelColorSettings
-                                        title={ __( 'Achtergrond kleur' ) }
-                                        initialOpen={ true }
-                                        colorSettings={ [
-                                            {
-                                                label: __( 'Kleur' ),
-                                                value: containerBackgroundColor.color,
-                                                onChange: ( value ) => setContainerBackgroundColor(value),
-                                            },
-                                        ] }
-                                    />
+                                    <div className="madeit-control">
+                                        <PanelColorSettings
+                                            initialOpen={ true }
+                                            colorSettings={ [
+                                                {
+                                                    label: __( 'Achtergrond kleur' ),
+                                                    value: containerBackgroundColor.color,
+                                                    onChange: ( value ) => setContainerBackgroundColor(value),
+                                                },
+                                            ] }
+                                        />
+                                    </div>
 
                                     {/* Achtergrond afbeelding */}
+                                    <div className="madeit-control">
+                                        <MediaUploadCheck>
+                                            <MediaUpload
+                                                onSelect={ ( media ) => setContainerBackgroundImage(media) }
+                                                allowedTypes={ ['image'] }
+                                                value={ containerBackgroundImage?.id }
+                                                render={ ( { open } ) => (
+                                                    <Button 
+                                                    onClick={ open } 
+                                                    style={ { width: '100%', height: '150px', justifyContent: 'center', padding: '0px' } 
+                                                    }>
+                                                    {/*  if no image selected, gray background with + icon and selecteer afbeelding in a div. Else if image selected, show the image */}
+                                                    { !containerBackgroundImage ? (
+                                                        <div style={ { width: '100%', height: '150px', backgroundColor: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0px' } }>
+                                                            { __( 'Selecteer afbeelding' ) }
+                                                        </div>
+                                                    ) : (
+                                                        <div className={ 'madeit-background-image-preview' }>
+                                                            <button className="remove-image-button" onClick={ (e) => { e.stopPropagation(); setContainerBackgroundImage(null); } }>
+                                                                { __( 'x' ) }
+                                                            </button>
+                                                            <img src={ containerBackgroundImage.url } alt={ containerBackgroundImage.alt } style={ { width: '100%', height: '150px', objectFit: 'cover' } } />
+                                                            <button className="edit-image-button" onClick={ (e) => { e.stopPropagation(); open(); } }>
+                                                                { __( 'Wijzig afbeelding' ) }
+                                                            </button>
+                                                        </div>
+                                                    ) }
+                                                    </Button>
+                                                ) }
+                                            />
+                                        </MediaUploadCheck>
+                                    </div>
 
                                     {/* Achtergrond positie */}
-                                    
+                                    {  containerBackgroundImage && (
+                                        <>
+                                            <div className="madeit-control">
+                                                <SelectControl
+                                                    label={ __( 'Achtergrond positie' ) }
+                                                    value={ computedContainerBackgroundPosition }
+                                                    options={ [
+                                                        { label: __( 'Links boven' ), value: 'left top' },
+                                                        { label: __( 'Midden boven' ), value: 'center top' },
+                                                        { label: __( 'Rechts boven' ), value: 'right top' },
+                                                        { label: __( 'Links midden' ), value: 'left center' },
+                                                        { label: __( 'Midden' ), value: 'center center' },
+                                                        { label: __( 'Rechts midden' ), value: 'right center' },
+                                                        { label: __( 'Links onder' ), value: 'left bottom' },
+                                                        { label: __( 'Midden onder' ), value: 'center bottom' },
+                                                        { label: __( 'Rechts onder' ), value: 'right bottom' },
+                                                    ] }
+                                                    onChange={ ( value ) => setContainerBackgroundPosition(value) }
+                                                />
+                                            </div>
+                                        </>
+                                    )}
+
                                     {/* Achtergrond herhaling */}
+                                    {  containerBackgroundImage && (
+                                        <div className="madeit-control">
+                                            <SelectControl
+                                                label={ __( 'Achtergrond herhaling' ) }
+                                                value={ computedContainerBackgroundRepeat }
+                                                options={ [
+                                                    { label: __( 'No-repeat' ), value: 'no-repeat' },
+                                                    { label: __( 'Repeat' ), value: 'repeat' },
+                                                    { label: __( 'Repeat-x' ), value: 'repeat-x' },
+                                                    { label: __( 'Repeat-y' ), value: 'repeat-y' },
+                                                ] }
+                                                onChange={ ( value ) => setContainerBackgroundRepeat(value) }
+                                            />
+                                        </div>
+                                    )}
 
                                     {/* Achtergrond grootte */}
+                                    {  containerBackgroundImage && (
+                                        <div className="madeit-control">
+                                            <SelectControl
+                                                label={ __( 'Achtergrond grootte' ) }
+                                                value={ computedContainerBackgroundSize }
+                                                options={ [
+                                                    { label: __( 'Auto' ), value: 'auto' },
+                                                    { label: __( 'Cover' ), value: 'cover' },
+                                                    { label: __( 'Contain' ), value: 'contain' },
+                                                ] }
+                                                onChange={ ( value ) => setContainerBackgroundSize(value) }
+                                            />
+                                        </div>
+                                    )}
                                 </>
                             )}
 
-                            { backgroundType === 'gradient' && (
+                            { computedBackgroundType === 'gradient' && (
                                 <>
                                     {/* Gradient instellingen */}
+                                    <div className="madeit-control">
+                                        <GradientControl
+                                            label={ __( 'Gradient' ) }
+                                            gradients={ gradients }
+                                            value={ computedBackgroundGradientValue }
+                                            onChange={ ( value ) => setContainerBackgroundGradient( { gradient: value } ) }
+                                        />
+                                    </div>
                                 </>
                             )}
                         </PanelBody>
@@ -1271,7 +1557,7 @@ export function ColumnsEditContainer( props ) {
                                                 isPressed={ currentRowGapUnit === 'px' }
                                                 onClick={ () =>
                                                     setAttributes( {
-                                                        [ RowGapUnitKey ]: 'px',
+                                                        [ rowGapUnitKey ]: 'px',
                                                     } )
                                                 }
                                             >
@@ -1282,7 +1568,7 @@ export function ColumnsEditContainer( props ) {
                                                 isPressed={ currentRowGapUnit === 'em' }
                                                 onClick={ () =>
                                                     setAttributes( {
-                                                        [ RowGapUnitKey ]: 'em',
+                                                        [ rowGapUnitKey ]: 'em',
                                                     } )
                                                 }
                                             >
@@ -1293,7 +1579,7 @@ export function ColumnsEditContainer( props ) {
                                                 isPressed={ currentRowGapUnit === 'rem' }
                                                 onClick={ () =>
                                                     setAttributes( {
-                                                        [ RowGapUnitKey ]: 'rem',
+                                                        [ rowGapUnitKey ]: 'rem',
                                                     } )
                                                 }
                                             >
@@ -1314,7 +1600,7 @@ export function ColumnsEditContainer( props ) {
                                         }
                                         onChange={ ( value ) =>
                                             setAttributes( {
-                                                [ RowGapValueKey ]: value,
+                                                [ rowGapValueKey ]: value,
                                             } )
                                         }
                                         min={ 0 }
@@ -1334,21 +1620,28 @@ export function ColumnsEditContainer( props ) {
 
 
                             {/* Padding */}
-                            <BoxControl
-                                label={ __( 'Padding' ) }
-                                onChange={ setContainerPadding }
-                                values={ containerPadding }
-                                allowReset={ false }
-                            />
+                            <div className="madeit-control">
+                                <BoxControl
+                                    __next40pxDefaultSize
+                                    label={ __( 'Padding' ) }
+                                    onChange={ setContainerPadding }
+                                    values={ containerPadding }
+                                    allowReset={ false }
+                                />
+                            </div>
 
                             {/* Margin */}
-                            <BoxControl
-                                label={ __( 'Margin' ) }
-                                onChange={ setContainerMargin }
-                                values={ containerMargin }
-                                allowReset={ false }
-                                sides={ [ 'bottom', 'top' ] }
-                            />
+                            <div className="madeit-control">
+                                <BoxControl
+                                    __next40pxDefaultSize
+                                    label={ __( 'Margin' ) }
+                                    onChange={ setContainerMargin }
+                                    values={ containerMargin }
+                                    allowReset={ false }
+                                    inputProps={ { min: -1000, max: 1000 } }
+                                    sides={ [ 'top', 'bottom', 'left', 'right' ] }
+                                />
+                            </div>
                         </PanelBody>
                     </>
                 )}

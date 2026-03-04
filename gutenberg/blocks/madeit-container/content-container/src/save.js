@@ -28,8 +28,13 @@ import { useBlockProps, InnerBlocks, getColorClassName } from '@wordpress/block-
 export default function save( props ) {
     const {
         verticalAlignment,
+        backgroundType,
         containerBackgroundColor,
         customContainerBackgroundColor,
+        containerBackgroundImage,
+        containerBackgroundPosition,
+        containerBackgroundRepeat,
+        containerBackgroundSize,
         size,
         contentWidth,
         rowBackgroundColor,
@@ -82,11 +87,18 @@ export default function save( props ) {
         className
     } = props
 
-    const FRONTEND_WRAPPER_CLASS = 'madeit-block-content--frontend';
+    // NOTE: Historically this block was saved without additional wrapper classes
+    // and without layout-related inline CSS vars. To avoid block validation
+    // failures on legacy/pasted content, we only serialize “enhanced” markup
+    // when the corresponding attributes are explicitly set.
     
     const containerBackgroundColorClass = containerBackgroundColor ? getColorClassName( 'background-color', containerBackgroundColor ) : undefined;
 	const rowBackgroundColorClass = rowBackgroundColor ? getColorClassName( 'background-color', rowBackgroundColor ) : undefined;
 	const rowTextColorClass = rowTextColor ? getColorClassName( 'color', rowTextColor ) : undefined;
+
+    const hasClassicBackground =
+        !! ( containerBackgroundImage?.url || containerBackgroundColor || customContainerBackgroundColor );
+    const computedBackgroundType = backgroundType || ( hasClassicBackground ? 'classic' : undefined );
     
     var classes = className;
     var classesChild = '';
@@ -119,6 +131,7 @@ export default function save( props ) {
          [ `is-hidden-desktop` ]: !! hideOnDesktop,
         [ `is-hidden-tablet` ]: !! hideOnTablet,
         [ `is-hidden-mobile` ]: !! hideOnMobile,
+        [ 'madeit-block-content--frontend' ]: true,
     } );
     
     if(defaultSize !== 'container-content-boxed') {
@@ -141,23 +154,102 @@ export default function save( props ) {
     } );
     
     var style = {
-        backgroundColor: containerBackgroundColorClass ? undefined : customContainerBackgroundColor,
+        backgroundColor:
+            backgroundType === 'transparent'
+                ? 'transparent'
+                : containerBackgroundColorClass
+                    ? undefined
+                    : customContainerBackgroundColor,
     };
 
-    // Apply overflow to outer wrapper.
-    if ( overflow ) {
+    const toCssLength = ( value, unit = 'px' ) => {
+        if ( typeof value === 'number' && Number.isFinite( value ) ) {
+            return `${ value }${ unit || 'px' }`;
+        }
+
+        if ( typeof value !== 'string' ) {
+            return undefined;
+        }
+
+        const trimmed = value.trim();
+        if ( trimmed === '' ) {
+            return undefined;
+        }
+
+        // Plain number string: treat as the number + provided unit.
+        if ( /^-?\d+(?:\.\d+)?$/.test( trimmed ) ) {
+            return `${ trimmed }${ unit || 'px' }`;
+        }
+
+        // Number with explicit unit (legacy): accept it as-is.
+        if ( /^-?\d+(?:\.\d+)?[a-z%]+$/i.test( trimmed ) ) {
+            return trimmed;
+        }
+
+        return undefined;
+    };
+
+    const hasBackgroundPosition =
+        typeof containerBackgroundPosition === 'string' &&
+        containerBackgroundPosition.length > 0;
+    const hasBackgroundRepeat =
+        typeof containerBackgroundRepeat === 'string' &&
+        containerBackgroundRepeat.length > 0;
+    const hasBackgroundSize =
+        typeof containerBackgroundSize === 'string' &&
+        containerBackgroundSize.length > 0;
+
+    const computedBackgroundGradient =
+        props.attributes.containerBackgroundGradient || {
+            gradient: '',
+        };
+
+    const computedBackgroundGradientValue =
+        typeof computedBackgroundGradient?.gradient === 'string' &&
+        computedBackgroundGradient.gradient.trim().length > 0
+            ? computedBackgroundGradient.gradient
+            : undefined;
+
+    if ( computedBackgroundType === 'classic' && containerBackgroundImage?.url ) {
+        style.backgroundImage = `url(${ containerBackgroundImage.url })`;
+        if ( hasBackgroundPosition ) {
+            style.backgroundPosition = containerBackgroundPosition;
+        }
+        if ( hasBackgroundRepeat ) {
+            style.backgroundRepeat = containerBackgroundRepeat;
+        }
+        if ( hasBackgroundSize ) {
+            style.backgroundSize = containerBackgroundSize;
+        }
+    }
+
+    if ( computedBackgroundType === 'gradient' && computedBackgroundGradientValue ) {
+        style.backgroundImage = computedBackgroundGradientValue;
+    }
+
+    // Apply overflow to outer wrapper (avoid serializing default `visible`).
+    if ( typeof overflow === 'string' && overflow.length > 0 && overflow !== 'visible' ) {
         style.overflow = overflow;
     }
 
     // Responsive min-height via CSS variables.
-    if ( typeof minHeight === 'number' ) {
-        style['--madeit-min-height-desktop'] = `${ minHeight }${ minHeightUnit || 'px' }`;
+    const minHeightDesktopCss = toCssLength( minHeight, minHeightUnit || 'px' );
+    if ( minHeightDesktopCss !== undefined ) {
+        style['--madeit-min-height-desktop'] = minHeightDesktopCss;
     }
-    if ( typeof minHeightTablet === 'number' ) {
-        style['--madeit-min-height-tablet'] = `${ minHeightTablet }${ minHeightUnitTablet || 'px' }`;
+    const minHeightTabletCss = toCssLength(
+        minHeightTablet,
+        minHeightUnitTablet || minHeightUnit || 'px'
+    );
+    if ( minHeightTabletCss !== undefined ) {
+        style['--madeit-min-height-tablet'] = minHeightTabletCss;
     }
-    if ( typeof minHeightMobile === 'number' ) {
-        style['--madeit-min-height-mobile'] = `${ minHeightMobile }${ minHeightUnitMobile || 'px' }`;
+    const minHeightMobileCss = toCssLength(
+        minHeightMobile,
+        minHeightUnitMobile || minHeightUnitTablet || minHeightUnit || 'px'
+    );
+    if ( minHeightMobileCss !== undefined ) {
+        style['--madeit-min-height-mobile'] = minHeightMobileCss;
     }
 
     // Responsive max-width via CSS variables.
@@ -172,48 +264,65 @@ export default function save( props ) {
     }
 
      // Responsive row-gap via CSS variables.
-    if ( typeof rowGap === 'number' ) {
-        style['--madeit-row-gap-desktop'] = `${ rowGap }${ rowGapUnit || 'px' }`;
-    }
-    if ( typeof rowGapTablet === 'number' ) {
-        style['--madeit-row-gap-tablet'] = `${ rowGapTablet }${ rowGapUnitTablet || 'px' }`;
-    }
-    if ( typeof rowGapMobile === 'number' ) {
-        style['--madeit-row-gap-mobile'] = `${ rowGapMobile }${ rowGapUnitMobile || 'px' }`;
+        // Row gap via CSS variables.
+        // Important for block validation stability: only serialize tablet/mobile overrides
+        // when a desktop rowGap is explicitly set.
+        const hasRowGapDesktop = typeof rowGap === 'number';
+        if ( hasRowGapDesktop ) {
+            style['--madeit-row-gap-desktop'] = `${ rowGap }${ rowGapUnit || 'px' }`;
+
+            if ( typeof rowGapTablet === 'number' ) {
+                style['--madeit-row-gap-tablet'] = `${ rowGapTablet }${
+                    rowGapUnitTablet || 'px'
+                }`;
+            }
+            if ( typeof rowGapMobile === 'number' ) {
+                style['--madeit-row-gap-mobile'] = `${ rowGapMobile }${
+                    rowGapUnitMobile || 'px'
+                }`;
+            }
     }
 
-    // Responsive flex-direction via CSS variables.
-    style['--madeit-flex-direction-desktop'] = flexDirection || 'row';
-    if ( flexDirectionTablet ) {
+    // Responsive flex-direction via CSS variables (only if explicitly set).
+    if ( typeof flexDirection === 'string' && flexDirection.length > 0 ) {
+        style['--madeit-flex-direction-desktop'] = flexDirection;
+    }
+    if ( typeof flexDirectionTablet === 'string' && flexDirectionTablet.length > 0 ) {
         style['--madeit-flex-direction-tablet'] = flexDirectionTablet;
     }
-    if ( flexDirectionMobile ) {
+    if ( typeof flexDirectionMobile === 'string' && flexDirectionMobile.length > 0 ) {
         style['--madeit-flex-direction-mobile'] = flexDirectionMobile;
     }
 
-    // Responsive align-items / justify-content via CSS variables.
-    style['--madeit-align-items-desktop'] = alignItems || 'stretch';
-    if ( alignItemsTablet ) {
+    // Responsive align-items / justify-content via CSS variables (only if explicitly set).
+    if ( typeof alignItems === 'string' && alignItems.length > 0 ) {
+        style['--madeit-align-items-desktop'] = alignItems;
+    }
+    if ( typeof alignItemsTablet === 'string' && alignItemsTablet.length > 0 ) {
         style['--madeit-align-items-tablet'] = alignItemsTablet;
     }
-    if ( alignItemsMobile ) {
+    if ( typeof alignItemsMobile === 'string' && alignItemsMobile.length > 0 ) {
         style['--madeit-align-items-mobile'] = alignItemsMobile;
     }
 
-    style['--madeit-justify-content-desktop'] = justifyContent || 'flex-start';
-    if ( justifyContentTablet ) {
+    if ( typeof justifyContent === 'string' && justifyContent.length > 0 ) {
+        style['--madeit-justify-content-desktop'] = justifyContent;
+    }
+    if ( typeof justifyContentTablet === 'string' && justifyContentTablet.length > 0 ) {
         style['--madeit-justify-content-tablet'] = justifyContentTablet;
     }
-    if ( justifyContentMobile ) {
+    if ( typeof justifyContentMobile === 'string' && justifyContentMobile.length > 0 ) {
         style['--madeit-justify-content-mobile'] = justifyContentMobile;
     }
 
-    // Responsive flex-wrap via CSS variables.
-    style['--madeit-flex-wrap-desktop'] = flexWrap || 'nowrap';
-    if ( flexWrapTablet ) {
+    // Responsive flex-wrap via CSS variables (only if explicitly set).
+    if ( typeof flexWrap === 'string' && flexWrap.length > 0 ) {
+        style['--madeit-flex-wrap-desktop'] = flexWrap;
+    }
+    if ( typeof flexWrapTablet === 'string' && flexWrapTablet.length > 0 ) {
         style['--madeit-flex-wrap-tablet'] = flexWrapTablet;
     }
-    if ( flexWrapMobile ) {
+    if ( typeof flexWrapMobile === 'string' && flexWrapMobile.length > 0 ) {
         style['--madeit-flex-wrap-mobile'] = flexWrapMobile;
     }
     
@@ -222,6 +331,12 @@ export default function save( props ) {
     }
     if(containerMargin !== undefined && containerMargin.bottom !== undefined) {
         style.marginBottom = containerMargin.bottom;
+    }
+    if(containerMargin !== undefined && containerMargin.left !== undefined) {
+        style.marginLeft = containerMargin.left;
+    }
+    if(containerMargin !== undefined && containerMargin.right !== undefined) {
+        style.marginRight = containerMargin.right;
     }
     if(containerPadding !== undefined && containerPadding.top !== undefined ) {
         style.paddingTop = containerPadding.top;
@@ -256,6 +371,12 @@ export default function save( props ) {
         if(rowMargin !== undefined && rowMargin.bottom !== undefined) {
             styleChild.marginBottom = rowMargin.bottom;
         }
+        if(rowMargin !== undefined && rowMargin.left !== undefined) {
+            styleChild.marginLeft = rowMargin.left;
+        }
+        if(rowMargin !== undefined && rowMargin.right !== undefined) {
+            styleChild.marginRight = rowMargin.right;
+        }
         if(rowPadding !== undefined && rowPadding.top !== undefined ) {
             styleChild.paddingTop = rowPadding.top;
         }
@@ -274,36 +395,58 @@ export default function save( props ) {
     }
     
     const blockProps = useBlockProps.save( {
-        className: classnames( classes, FRONTEND_WRAPPER_CLASS ),
+        className: classes,
         style: style,
-    });
+    } );
 
     const allowedHtmlTags = [ 'div', 'section', 'article', 'main', 'header', 'footer' ];
     const HtmlTag = allowedHtmlTags.includes( htmlTag ) ? htmlTag : 'div';
 
-    const dirDesktop = flexDirection || 'row';
-    const dirTablet = flexDirectionTablet || undefined;
-    const dirMobile = flexDirectionMobile || undefined;
+    const dirDesktop =
+        typeof flexDirection === 'string' && flexDirection.length > 0
+            ? flexDirection
+            : 'row';
+    const dirTablet =
+        typeof flexDirectionTablet === 'string' && flexDirectionTablet.length > 0
+            ? flexDirectionTablet
+            : undefined;
+    const dirMobile =
+        typeof flexDirectionMobile === 'string' && flexDirectionMobile.length > 0
+            ? flexDirectionMobile
+            : undefined;
+
+    const hasEnhancedRowWrapper =
+        Number.isFinite( columnsCount ) ||
+        ( typeof flexDirection === 'string' && flexDirection.length > 0 ) ||
+        ( typeof flexDirectionTablet === 'string' && flexDirectionTablet.length > 0 ) ||
+        ( typeof flexDirectionMobile === 'string' && flexDirectionMobile.length > 0 );
+
+    const rowsCount = Number.isFinite( columnsCount ) ? columnsCount : 0;
+    const rowClassName = hasEnhancedRowWrapper
+        ? `row madeit-container-row rows-${ rowsCount }`
+        : 'row';
+    const rowProps = hasEnhancedRowWrapper
+        ? {
+                className: rowClassName,
+                'data-madeit-dir': dirDesktop,
+                'data-madeit-dir-tablet': dirTablet,
+                'data-madeit-dir-mobile': dirMobile,
+            }
+        : {
+                className: rowClassName,
+            };
     
     if(size === 'container-content-boxed') {
         return (
             <HtmlTag { ...blockProps }>
-                <div
-                    className={`row madeit-container-row rows-${ columnsCount || 0 }`}
-                    data-madeit-dir={ dirDesktop }
-                    data-madeit-dir-tablet={ dirTablet }
-                    data-madeit-dir-mobile={ dirMobile }
-                >
+                <div { ...rowProps }>
                     <div className="col">
                         <div className={ classesChild }
                             style = {styleChild}>
-                            <div
-                                className={`row madeit-container-row rows-${ columnsCount || 0 }`}
-                                data-madeit-dir={ dirDesktop }
-                                data-madeit-dir-tablet={ dirTablet }
-                                data-madeit-dir-mobile={ dirMobile }
-                            >
+                            <div { ...rowProps }>
+                                { '\n\n' }
                                 <InnerBlocks.Content />
+                                { '\n\n' }
                             </div>
                         </div>
                     </div>
@@ -326,13 +469,10 @@ export default function save( props ) {
                             'container-fluid': contentWidthNormalized === 'container-fluid',
                         } ) }
                     >
-                        <div
-                            className={`row madeit-container-row rows-${ columnsCount || 0 }`}
-                            data-madeit-dir={ dirDesktop }
-                            data-madeit-dir-tablet={ dirTablet }
-                            data-madeit-dir-mobile={ dirMobile }
-                        >
+                        <div { ...rowProps }>
+                            { '\n\n' }
                             <InnerBlocks.Content />
+                            { '\n\n' }
                         </div>
                     </div>
                 </HtmlTag>
@@ -341,13 +481,10 @@ export default function save( props ) {
 
         return (
             <HtmlTag { ...blockProps }>
-                <div
-                    className={`row madeit-container-row rows-${ columnsCount || 0 }`}
-                    data-madeit-dir={ dirDesktop }
-                    data-madeit-dir-tablet={ dirTablet }
-                    data-madeit-dir-mobile={ dirMobile }
-                >
+                <div { ...rowProps }>
+                    { '\n\n' }
                     <InnerBlocks.Content />
+                    { '\n\n' }
                 </div>
             </HtmlTag>
         );

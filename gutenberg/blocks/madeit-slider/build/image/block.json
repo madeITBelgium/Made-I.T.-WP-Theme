@@ -1,5 +1,5 @@
 {
-  "apiVersion": 2,
+  "apiVersion": 3,
   "name": "madeit/slider-image",
   "title": "Slider Afbeelding",
   "parent": [
@@ -16,6 +16,18 @@
     },
     "id": {
       "type": "number"
+    },
+    "caption": {
+      "type": "string",
+      "default": ""
+    },
+    "linkUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "linkTarget": {
+      "type": "string",
+      "default": "_self"
     },
     "focalPoint": {
       "type": "object",

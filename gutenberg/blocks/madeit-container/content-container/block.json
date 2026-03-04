@@ -23,11 +23,29 @@
         "verticalAlignment": {
             "type": "string"
         },
+        "backgroundType": {
+            "type": "string"
+        },
         "containerBackgroundColor": {
             "type": "string"
         },
         "customContainerBackgroundColor": {
             "type": "string"
+        },
+        "containerBackgroundImage": {
+            "type": "object"
+        },
+        "containerBackgroundPosition": {
+            "type": "string"
+        },
+        "containerBackgroundRepeat": {
+            "type": "string"
+        },
+        "containerBackgroundSize": {
+            "type": "string"
+        },
+        "containerBackgroundGradient": {
+            "type": "object"
         },
         "size": {
             "type": "string",
@@ -61,16 +79,14 @@
             "type": "object"
         },
         "overflow": {
-            "type": "string",
-            "default": "visible"
+            "type": "string"
         },
         "htmlTag": {
             "type": "string",
             "default": "div"
         },
         "flexDirection": {
-            "type": "string",
-            "default": "row"
+            "type": "string"
         },
         "flexDirectionTablet": {
             "type": "string"
@@ -79,8 +95,7 @@
             "type": "string"
         },
         "alignItems": {
-            "type": "string",
-            "default": "stretch"
+            "type": "string"
         },
         "alignItemsTablet": {
             "type": "string"
@@ -89,8 +104,7 @@
             "type": "string"
         },
         "justifyContent": {
-            "type": "string",
-            "default": "flex-start"
+            "type": "string"
         },
         "justifyContentTablet": {
             "type": "string"
@@ -165,8 +179,7 @@
             "type": "number"
         },
         "flexWrap": {
-            "type": "string",
-            "default": "nowrap"
+            "type": "string"
         },
         "flexWrapTablet": {
             "type": "string"

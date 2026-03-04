@@ -1,0 +1,24 @@
+
+// Editor styles
+.madeit-maps-block {
+	.madeit-maps__placeholder {
+		padding: 24px;
+		border: 1px dashed #ccd0d4;
+		background: #f6f7f7;
+	}
+
+	.madeit-maps__placeholder-title {
+		margin: 0 0 12px;
+		font-weight: 600;
+	}
+
+	.madeit-maps__placeholder-error {
+		margin-top: 12px;
+		color: #b32d2e;
+	}
+
+	.madeit-maps__map {
+		width: 100%;
+	}
+}
+

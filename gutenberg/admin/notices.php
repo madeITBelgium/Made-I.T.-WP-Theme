@@ -91,35 +91,34 @@ function madeit_dashboard_widgets() {
 }
 function madeit_get_changelog_updates() {
     $updates = [];
-    $versions = madeit_get_all_changelogs();
     $blocks = madeit_get_all_blocks();
 
-        foreach ($blocks as $block => $block_data) {
-            if (empty($block_data['madeit']['changelog'] ?? [])) {
-                continue;
-            }
-            ?>
-            <li>
-                <strong><?php echo esc_html($block_data['title']); ?></strong>
-                <ul>
-                    <?php 
-                    $changelog = $block_data['madeit']['changelog'] ?? [];
-                    if (!empty($changelog)) {
-                        $latest_version = array_key_first($changelog);
-                        $latest_items = $changelog[$latest_version];
-                    ?>
-                        <li style="margin-bottom: 10px"><strong>v<?php echo esc_html($latest_version); ?>:</strong>
-                            <ul>
-                                <?php foreach ($latest_items as $item): ?>
-                                    <li><?php echo esc_html($item); ?></li>
-                                <?php endforeach; ?>
-                            </ul>
-                        </li>
-                    <?php } ?>
-                </ul>
-            </li>
-            <?php
+    if (!is_array($blocks)) {
+        return $updates;
+    }
+
+    foreach ($blocks as $block_data) {
+        $changelog = $block_data['madeit']['changelog'] ?? [];
+        if (!is_array($changelog) || empty($changelog)) {
+            continue;
         }
+
+        $latest_version = array_key_first($changelog);
+        $latest_items = $changelog[$latest_version] ?? [];
+
+        if (!is_array($latest_items)) {
+            $latest_items = [];
+        }
+
+        $updates[] = [
+            'title' => (string) ($block_data['title'] ?? ''),
+            'version' => (string) $latest_version,
+            'items' => $latest_items,
+            'description' => isset($latest_items[0]) ? (string) $latest_items[0] : '',
+        ];
+    }
+
+    return $updates;
 }
 function madeit_updates_widget_content() {
     ?>
@@ -128,8 +127,12 @@ function madeit_updates_widget_content() {
     <ul>
         <?php
         $updates = madeit_get_changelog_updates();
+        if (empty($updates)) {
+            echo '<li>Geen recente updates gevonden.</li>';
+        }
+
         foreach ($updates as $update) {
-            echo '<li><strong>' . esc_html($update['version']) . ':</strong> ' . esc_html($update['description']) . '</li>';
+            echo '<li><strong>' . esc_html($update['title']) . ' v' . esc_html($update['version']) . ':</strong> ' . esc_html($update['description']) . '</li>';
         }
         ?>
     </ul>
