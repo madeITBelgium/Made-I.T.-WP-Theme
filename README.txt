@@ -1,8 +1,8 @@
 === Made I.T. ===
 Contributors: madeit
 Requires at least: WordPress 5.0
-Tested up to: 6.6.2
-Version: 2.10.10
+Tested up to: 7.0
+Version: 3.0.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: madeit, bootstrap, bootstrap4, made i.t., Made I.T.
@@ -19,7 +19,7 @@ Tags: madeit, bootstrap, bootstrap4, made i.t., Made I.T.
 
 == Copyright ==
 
-Made I.T. WordPress Theme, Copyright 2017 - 2023 Made I.T.
+Made I.T. WordPress Theme, Copyright 2017 - 2026 Made I.T.
 Made I.T. Theme is distributed under the terms of the GNU GPL
 
 This program is free software: you can redistribute it and/or modify
@@ -56,10 +56,11 @@ Source: https://unsplash.com/@englr?photo=bIhpiQA009k
 
 == Changelog ==
 = 3.0.0 =
-* WooCommerce 9.4 - 10.5
+* WooCommerce 9.4 - 10.5.2
 * Bootstrap v5.3.7
 * AI functions
 * Default cookie banner
+* Many improvements and bug fixes
 
 = 2.10.7 =
 * WooCommerce 8.7 - 9.3
