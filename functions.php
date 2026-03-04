@@ -10,7 +10,7 @@
  * Made I.T. Theme only works in WordPress 4.7 or later.
  */
 if (!defined('MADEIT_VERSION')) {
-    define('MADEIT_VERSION', '2.10.0');
+    define('MADEIT_VERSION', '3.0.0');
 }
 
 // Updater configuration
@@ -200,7 +200,11 @@ if (!defined('MADEIT_TRACKING_IDS')) {
 
 // Added in 3.0.0
 if(!defined('MADEIT_SETUP_WIZARD')) {
-    define('MADEIT_SETUP_WIZARD', true);
+    define('MADEIT_SETUP_WIZARD', false);
+}
+
+if(!defined('MADEIT_NAME')) {
+    define('MADEIT_NAME', 'Made I.T.');
 }
 
 if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
@@ -947,15 +951,32 @@ if (!function_exists('madeit_admin_style')) {
 }
 
 if (!function_exists('remove_css_js_ver') && DISABLE_VER_URL) {
-    function remove_css_js_ver($src)
+    function remove_css_js_ver($src, $handle = null)
     {
-        if (!is_admin()) {
-            if (strpos($src, '?ver=')) {
-                $src = remove_query_arg('ver', $src);
+        // Only affect the frontend.
+        if (is_admin()) {
+            return $src;
+        }
+
+        if (!is_string($src) || $src === '' || strpos($src, '?ver=') === false) {
+            return $src;
+        }
+
+        // Keep version query strings for block assets so browsers can cache-bust
+        // when `build/` files change (otherwise frontend can get stuck on old CSS/JS).
+        $keep_ver_for = [
+            '/gutenberg/blocks/',
+            '/gutenberg/content/',
+            '/gutenberg-v2/',
+        ];
+
+        foreach ($keep_ver_for as $needle) {
+            if (strpos($src, $needle) !== false) {
+                return $src;
             }
         }
 
-        return $src;
+        return remove_query_arg('ver', $src);
     }
     add_filter('style_loader_src', 'remove_css_js_ver', 10, 2);
     add_filter('script_loader_src', 'remove_css_js_ver', 10, 2);
@@ -2298,6 +2319,16 @@ if (defined('MADEIT_POPUPS') && MADEIT_POPUPS) {
         require get_parent_theme_file_path('/inc/popup.php');
     }
 
+    add_action('wp_enqueue_scripts', static function (): void {
+        wp_enqueue_script(
+            'madeit-popup-frontend',
+            get_parent_theme_file_uri('/inc/core/popup/frontend.js'),
+            [],
+            defined('MADEIT_VERSION') ? MADEIT_VERSION : null,
+            true
+        );
+    });
+
     add_action('enqueue_block_editor_assets', static function (): void {
         wp_enqueue_script(
             'madeit-popup-toolbar',
@@ -2308,6 +2339,7 @@ if (defined('MADEIT_POPUPS') && MADEIT_POPUPS) {
                 'wp-element',
                 'wp-components',
                 'wp-block-editor',
+                'wp-api-fetch',
             ],
             defined('MADEIT_VERSION') ? MADEIT_VERSION : null,
             true
@@ -2402,4 +2434,12 @@ if (!in_array('cookie-law-info/cookie-law-info.php', apply_filters('active_plugi
 // Setup wizard
 if(MADEIT_SETUP_WIZARD) {
     require get_parent_theme_file_path('/inc/admin/setup-wizard/class-setup-wizard.php');
+}
+
+if(file_exists(__DIR__.'/inc/odoo.php')) {
+    require __DIR__.'/inc/odoo.php';
+}
+
+if(file_exists(__DIR__.'/inc/image-optimizer.php')) {
+    require __DIR__.'/inc/image-optimizer.php';
 }
