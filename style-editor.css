@@ -70,3 +70,7 @@ body.gutenberg-editor-page {
 .wp-block-image.alignright {
     margin-left: auto;
 }
+
+.h-100 {
+    height:100%;
+}
