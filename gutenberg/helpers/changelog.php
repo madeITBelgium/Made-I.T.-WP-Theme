@@ -1,20 +1,21 @@
 <?php
-if (!defined('ABSPATH')) exit;
 
-function madeit_get_all_changelogs() {
+if (!defined('ABSPATH')) {
+    exit;
+}
 
+function madeit_get_all_changelogs()
+{
     $blocks = madeit_get_all_blocks();
 
     $versions = [];
 
     foreach ($blocks as $slug => $block) {
-
         if (empty($block['madeit']['changelog'])) {
             continue;
         }
 
         foreach ($block['madeit']['changelog'] as $version => $items) {
-
             if (!isset($versions[$version])) {
                 $versions[$version] = [];
             }

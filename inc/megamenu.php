@@ -4,9 +4,9 @@
 
 //Menu items
 
-function madeit_megamenu_menuitems( $items, $args )
+function madeit_megamenu_menuitems($items, $args)
 {
-    if(!in_array($args->theme_location, ['top', 'upper-bottom'])) {
+    if (!in_array($args->theme_location, ['top', 'upper-bottom'])) {
         return $items;
     }
 
@@ -16,7 +16,7 @@ function madeit_megamenu_menuitems( $items, $args )
         $product_categories_by_parent = [];
 
         $all_product_categories = get_terms([
-            'taxonomy' => 'product_cat',
+            'taxonomy'   => 'product_cat',
             'hide_empty' => true,
         ]);
 
@@ -33,13 +33,13 @@ function madeit_megamenu_menuitems( $items, $args )
         }
     }
 
-    foreach($items as $k => $item) {
-        if($item->menu_item_parent != 0) {
+    foreach ($items as $k => $item) {
+        if ($item->menu_item_parent != 0) {
             continue;
         }
 
         $is_megamenu = get_field('megamenu', $item->ID);
-        if(!$is_megamenu) {
+        if (!$is_megamenu) {
             continue;
         }
 
@@ -47,43 +47,43 @@ function madeit_megamenu_menuitems( $items, $args )
 
         $megamenu_stijl = get_field('megamenu_stijl', $item->ID);
 
-        if($megamenu_stijl === 'style_woo' || $megamenu_stijl === 'style_woo_2') {
+        if ($megamenu_stijl === 'style_woo' || $megamenu_stijl === 'style_woo_2') {
             $top_level_categories = $product_categories_by_parent[0] ?? [];
 
-            foreach($top_level_categories as $product_category) {
+            foreach ($top_level_categories as $product_category) {
                 $product_category_id = (int) $product_category->term_id;
 
                 $items[] = (object) [
-                    'title' => $product_category->name,
+                    'title'            => $product_category->name,
                     'menu_item_parent' => $item->ID,
-                    'ID' => 'product_cat_'.$product_category_id,
-                    'db_id' => '',
-                    'url' => get_term_link($product_category),
-                    'classes' => ['menu-item']
+                    'ID'               => 'product_cat_'.$product_category_id,
+                    'db_id'            => '',
+                    'url'              => get_term_link($product_category),
+                    'classes'          => ['menu-item'],
                 ];
 
                 $product_subcategories = $product_categories_by_parent[$product_category_id] ?? [];
-                foreach($product_subcategories as $product_subcategory) {
+                foreach ($product_subcategories as $product_subcategory) {
                     $product_subcategory_id = (int) $product_subcategory->term_id;
 
                     $items[] = (object) [
-                        'title' => $product_subcategory->name,
+                        'title'            => $product_subcategory->name,
                         'menu_item_parent' => 'product_cat_'.$product_category_id,
-                        'ID' => 'product_cat_'.$product_subcategory_id,
-                        'db_id' => '',
-                        'url' => get_term_link($product_subcategory),
-                        'classes' => ['menu-item']
+                        'ID'               => 'product_cat_'.$product_subcategory_id,
+                        'db_id'            => '',
+                        'url'              => get_term_link($product_subcategory),
+                        'classes'          => ['menu-item'],
                     ];
 
                     $product_subsubcategories = $product_categories_by_parent[$product_subcategory_id] ?? [];
-                    foreach($product_subsubcategories as $product_subsubcategory) {
+                    foreach ($product_subsubcategories as $product_subsubcategory) {
                         $items[] = (object) [
-                            'title' => $product_subsubcategory->name,
+                            'title'            => $product_subsubcategory->name,
                             'menu_item_parent' => 'product_cat_'.$product_subcategory_id,
-                            'ID' => 'product_cat_'.(int) $product_subsubcategory->term_id,
-                            'db_id' => '',
-                            'url' => get_term_link($product_subsubcategory),
-                            'classes' => ['menu-item']
+                            'ID'               => 'product_cat_'.(int) $product_subsubcategory->term_id,
+                            'db_id'            => '',
+                            'url'              => get_term_link($product_subsubcategory),
+                            'classes'          => ['menu-item'],
                         ];
                     }
                 }
@@ -93,7 +93,7 @@ function madeit_megamenu_menuitems( $items, $args )
 
     return $items;
 }
-add_filter( 'wp_nav_menu_objects', 'madeit_megamenu_menuitems', 10, 2 );
+add_filter('wp_nav_menu_objects', 'madeit_megamenu_menuitems', 10, 2);
 
 add_action('acf/include_fields', function () {
     if (!function_exists('acf_add_local_field_group')) {

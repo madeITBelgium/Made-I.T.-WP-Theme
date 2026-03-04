@@ -1,4 +1,5 @@
 <?php
+
 // Versiebeheer
 if (!defined('MADEIT_BLOCKS_VERSION')) {
     define('MADEIT_BLOCKS_VERSION', '1.3.0');
@@ -19,7 +20,7 @@ if (is_admin()) {
 }
 
 // Blocks laden
-add_action('init', function() {
+add_action('init', function () {
     $blocks_dir = get_parent_theme_file_path('gutenberg/blocks');
     if (!is_dir($blocks_dir)) {
         return;
@@ -38,6 +39,7 @@ add_action('init', function() {
 
         // Discover all blocks in the theme folder.
         $all = [];
+
         try {
             $iterator = new DirectoryIterator($blocks_dir);
             foreach ($iterator as $entry) {
@@ -45,7 +47,7 @@ add_action('init', function() {
                     continue;
                 }
                 $slug = $entry->getBasename();
-                if (is_readable($entry->getPathname() . '/register.php')) {
+                if (is_readable($entry->getPathname().'/register.php')) {
                     $all[] = $slug;
                 }
             }
@@ -70,6 +72,7 @@ add_action('init', function() {
 
     // Keep legacy option in sync for any older code paths.
     $all = [];
+
     try {
         $iterator = new DirectoryIterator($blocks_dir);
         foreach ($iterator as $entry) {
@@ -77,7 +80,7 @@ add_action('init', function() {
                 continue;
             }
             $slug = $entry->getBasename();
-            if (is_readable($entry->getPathname() . '/register.php')) {
+            if (is_readable($entry->getPathname().'/register.php')) {
                 $all[] = $slug;
             }
         }
@@ -100,7 +103,7 @@ add_action('init', function() {
         }
 
         $slug = $entry->getBasename();
-        $register_file = $entry->getPathname() . '/register.php';
+        $register_file = $entry->getPathname().'/register.php';
         if (!is_readable($register_file)) {
             continue;
         }
@@ -126,7 +129,7 @@ add_filter('allowed_block_types_all', function ($allowed_block_types, $editor_co
         return false;
     }
 
-    $disabled_names = array_map(static fn($slug) => 'core/' . $slug, $disabled);
+    $disabled_names = array_map(static fn ($slug) => 'core/'.$slug, $disabled);
 
     // If true, treat as: all registered blocks are allowed.
     if ($allowed_block_types === true) {
@@ -136,6 +139,7 @@ add_filter('allowed_block_types_all', function ($allowed_block_types, $editor_co
 
         $registry = WP_Block_Type_Registry::get_instance();
         $all = array_keys($registry->get_all_registered());
+
         return array_values(array_diff($all, $disabled_names));
     }
 
