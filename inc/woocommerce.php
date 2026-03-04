@@ -174,67 +174,68 @@ if (defined('MADEIT_WOO_QUANTITY_LOOP') && MADEIT_WOO_QUANTITY_LOOP) {
 }
 
 /* Add tracking to email and My Account area */
-add_action( 'acf/include_fields', function() {
-    if ( ! function_exists( 'acf_add_local_field_group' ) ) {
-		return;
-	}
+add_action('acf/include_fields', function () {
+    if (!function_exists('acf_add_local_field_group')) {
+        return;
+    }
 
-	acf_add_local_field_group( array(
-        'key' => 'group_6891c4507a4fb',
-        'title' => 'Track en Trace',
-        'fields' => array(
-            array(
-                'key' => 'field_6891c452d0964',
-                'label' => 'Track & Trace URL',
-                'name' => 'tracking_url',
-                'aria-label' => '',
-                'type' => 'text',
-                'instructions' => '',
-                'required' => 0,
+    acf_add_local_field_group([
+        'key'    => 'group_6891c4507a4fb',
+        'title'  => 'Track en Trace',
+        'fields' => [
+            [
+                'key'               => 'field_6891c452d0964',
+                'label'             => 'Track & Trace URL',
+                'name'              => 'tracking_url',
+                'aria-label'        => '',
+                'type'              => 'text',
+                'instructions'      => '',
+                'required'          => 0,
                 'conditional_logic' => 0,
-                'wrapper' => array(
+                'wrapper'           => [
                     'width' => '',
                     'class' => '',
-                    'id' => '',
-                ),
-                'relevanssi_exclude' => 1,
+                    'id'    => '',
+                ],
+                'relevanssi_exclude'  => 1,
                 'wpml_cf_preferences' => 2,
-                'default_value' => '',
-                'maxlength' => '',
-                'allow_in_bindings' => 0,
-                'placeholder' => '',
-                'prepend' => '',
-                'append' => '',
-            ),
-        ),
-        'location' => array(
-            array(
-                array(
-                    'param' => 'post_type',
+                'default_value'       => '',
+                'maxlength'           => '',
+                'allow_in_bindings'   => 0,
+                'placeholder'         => '',
+                'prepend'             => '',
+                'append'              => '',
+            ],
+        ],
+        'location' => [
+            [
+                [
+                    'param'    => 'post_type',
                     'operator' => '==',
-                    'value' => 'shop_order',
-                ),
-            ),
-        ),
-        'menu_order' => 0,
-        'position' => 'normal',
-        'style' => 'default',
-        'label_placement' => 'top',
-        'instruction_placement' => 'label',
-        'hide_on_screen' => '',
-        'active' => true,
-        'description' => '',
-        'show_in_rest' => 0,
+                    'value'    => 'shop_order',
+                ],
+            ],
+        ],
+        'menu_order'             => 0,
+        'position'               => 'normal',
+        'style'                  => 'default',
+        'label_placement'        => 'top',
+        'instruction_placement'  => 'label',
+        'hide_on_screen'         => '',
+        'active'                 => true,
+        'description'            => '',
+        'show_in_rest'           => 0,
         'acfml_field_group_mode' => 'translation',
-    ) );
-} );
+    ]);
+});
 
 // Examine the tracking url and return a provider name.
-function madeit_get_tracking_info_to_order_completed_email( $url ) {
-    if ( strpos( $url, 'postnl' ) !== false ) {
+function madeit_get_tracking_info_to_order_completed_email($url)
+{
+    if (strpos($url, 'postnl') !== false) {
         return 'Post NL';
     }
-    if ( strpos( $url, 'bpost' ) !== false ) {
+    if (strpos($url, 'bpost') !== false) {
         return 'Bpost';
     }
 
@@ -242,54 +243,53 @@ function madeit_get_tracking_info_to_order_completed_email( $url ) {
     return null;
 }
 
-add_action( 'woocommerce_email_order_details', 'madeit_add_tracking_info_to_order_completed_email', 5, 4 ); 
-function madeit_add_tracking_info_to_order_completed_email( $order, $sent_to_admin, $plain_text, $email ) {
-    if ( 'customer_completed_order' == $email->id ) {
+add_action('woocommerce_email_order_details', 'madeit_add_tracking_info_to_order_completed_email', 5, 4);
+function madeit_add_tracking_info_to_order_completed_email($order, $sent_to_admin, $plain_text, $email)
+{
+    if ('customer_completed_order' == $email->id) {
         $order_id = $order->get_id();
-        $tracking_url = get_post_meta( $order_id, 'tracking_url', true );
+        $tracking_url = get_post_meta($order_id, 'tracking_url', true);
 
-        if (empty( $tracking_url ) ) {
+        if (empty($tracking_url)) {
             return;
         }
 
-        $tracking_provider = madeit_get_tracking_info_to_order_completed_email( $tracking_url );
+        $tracking_provider = madeit_get_tracking_info_to_order_completed_email($tracking_url);
 
-        if ( $plain_text ) {
-            if ( ! empty( $tracking_provider ) ) {
-                printf( "\n" . __('Uw order is verzonden met %s. Je kan uw order volgen via %s.', 'madeit') . "\n", $tracking_provider, esc_url($tracking_url, array('http', 'https')));
+        if ($plain_text) {
+            if (!empty($tracking_provider)) {
+                printf("\n".__('Uw order is verzonden met %s. Je kan uw order volgen via %s.', 'madeit')."\n", $tracking_provider, esc_url($tracking_url, ['http', 'https']));
+            } else {
+                printf("\n".__('Uw order is verzonden. Je kan uw order volgen via %s.', 'madeit')."\n", esc_url($tracking_url, ['http', 'https']));
             }
-            else {
-                printf( "\n" . __('Uw order is verzonden. Je kan uw order volgen via %s.', 'madeit') . "\n", esc_url($tracking_url, array( 'http', 'https' ) ) );
-            }
-        }
-        else {
-            if ( ! empty( $tracking_provider ) ) {
-                printf( '<p>' . __('Uw order is verzonden met <strong>%s</strong>. Je kan uw order volgen via <strong><a href="%s">%s</a></strong>.</p>', 'madeit') . '</p>', $tracking_provider, esc_url( $tracking_url, array( 'http', 'https' ) ), esc_url( $tracking_url, array( 'http', 'https' ) ) );
-            }
-            else {
-                printf( '<p>' . __('Uw order is verzonden. Je kan uw order volgen via <strong><a href="%s">%s</a></strong>.</p>', 'madeit') . '</p>', esc_url( $tracking_url, array( 'http', 'https' ) ), esc_url( $tracking_url, array( 'http', 'https' ) ) );
+        } else {
+            if (!empty($tracking_provider)) {
+                printf('<p>'.__('Uw order is verzonden met <strong>%s</strong>. Je kan uw order volgen via <strong><a href="%s">%s</a></strong>.</p>', 'madeit').'</p>', $tracking_provider, esc_url($tracking_url, ['http', 'https']), esc_url($tracking_url, ['http', 'https']));
+            } else {
+                printf('<p>'.__('Uw order is verzonden. Je kan uw order volgen via <strong><a href="%s">%s</a></strong>.</p>', 'madeit').'</p>', esc_url($tracking_url, ['http', 'https']), esc_url($tracking_url, ['http', 'https']));
             }
         }
     }
 }
 
 // Display tracking information in My Account area.
-add_action( 'woocommerce_view_order', 'madeit_add_tracking_info_to_view_order_page', 5 );
-function madeit_add_tracking_info_to_view_order_page( $order_id ) {
-    $tracking_url = get_post_meta( $order_id, 'tracking_url', true );
+add_action('woocommerce_view_order', 'madeit_add_tracking_info_to_view_order_page', 5);
+function madeit_add_tracking_info_to_view_order_page($order_id)
+{
+    $tracking_url = get_post_meta($order_id, 'tracking_url', true);
 
     // Quit if either tracking field is empty.
-    if (empty( $tracking_url ) ) {
+    if (empty($tracking_url)) {
         // Debugging code.
-        echo '<p>' . __('Sorry, er is momenteel nog geen tracking informatie beschikbaar.', 'madeit') . '</p>';
+        echo '<p>'.__('Sorry, er is momenteel nog geen tracking informatie beschikbaar.', 'madeit').'</p>';
+
         return;
     }
 
-    $tracking_provider = madeit_get_tracking_info_to_order_completed_email( $tracking_url );
-    if ( ! empty( $tracking_provider ) ) {
-        printf( '<p>' . __('Uw order is verzonden met <strong>%s</strong>. Je kan uw order volgen via <strong><a href="%s">%s</a></strong>.</p>', 'madeit') . '</p>', $tracking_provider, esc_url( $tracking_url, array( 'http', 'https' ) ), esc_url( $tracking_url, array( 'http', 'https' ) ) );
-    }
-    else {
-        printf( '<p>' . __('Uw order is verzonden. Je kan uw order volgen via <strong><a href="%s">%s</a></strong>.</p>', 'madeit') . '</p>', esc_url( $tracking_url, array( 'http', 'https' ) ), esc_url( $tracking_url, array( 'http', 'https' ) ) );
+    $tracking_provider = madeit_get_tracking_info_to_order_completed_email($tracking_url);
+    if (!empty($tracking_provider)) {
+        printf('<p>'.__('Uw order is verzonden met <strong>%s</strong>. Je kan uw order volgen via <strong><a href="%s">%s</a></strong>.</p>', 'madeit').'</p>', $tracking_provider, esc_url($tracking_url, ['http', 'https']), esc_url($tracking_url, ['http', 'https']));
+    } else {
+        printf('<p>'.__('Uw order is verzonden. Je kan uw order volgen via <strong><a href="%s">%s</a></strong>.</p>', 'madeit').'</p>', esc_url($tracking_url, ['http', 'https']), esc_url($tracking_url, ['http', 'https']));
     }
 }

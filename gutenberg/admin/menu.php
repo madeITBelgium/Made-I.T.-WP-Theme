@@ -1,6 +1,6 @@
 <?php
-add_action('admin_menu', function () {
 
+add_action('admin_menu', function () {
     add_menu_page(
         'Made I.T. Blocks',
         'Made I.T. Blocks',
@@ -41,7 +41,8 @@ add_action('admin_menu', function () {
 
 if (!function_exists('my_submenu_icon_css')) {
     add_action('admin_head', 'my_submenu_icon_css');
-    function my_submenu_icon_css() {
+    function my_submenu_icon_css()
+    {
         echo '<style>
             #toplevel_page_madeit-blocks a[href="admin.php?page=madeit-blocks-support"]::before {
                 content: "\f111";

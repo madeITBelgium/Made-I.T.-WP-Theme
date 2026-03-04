@@ -24,14 +24,15 @@ add_filter('wp_insert_post_data', function (array $data, array $postarr): array 
 
     $did_change = false;
     $stats = [
-        'posts_scanned' => 0,
-        'posts_changed' => 0,
-        'blocks_converted' => 0,
+        'posts_scanned'            => 0,
+        'posts_changed'            => 0,
+        'blocks_converted'         => 0,
         'blocks_skipped_no_images' => 0,
-        'errors' => 0,
+        'errors'                   => 0,
     ];
 
     $data['post_content'] = madeit_migrate_carousel_to_slider_in_content($data['post_content'], $did_change, $stats);
+
     return $data;
 }, 20, 2);
 
@@ -96,11 +97,11 @@ add_action('current_screen', function ($screen): void {
 
     $did_change = false;
     $stats = [
-        'posts_scanned' => 0,
-        'posts_changed' => 0,
-        'blocks_converted' => 0,
+        'posts_scanned'            => 0,
+        'posts_changed'            => 0,
+        'blocks_converted'         => 0,
         'blocks_skipped_no_images' => 0,
-        'errors' => 0,
+        'errors'                   => 0,
     ];
 
     $new_content = madeit_migrate_carousel_to_slider_in_content($post->post_content, $did_change, $stats);
@@ -109,7 +110,7 @@ add_action('current_screen', function ($screen): void {
     }
 
     wp_update_post([
-        'ID' => $post_id,
+        'ID'           => $post_id,
         'post_content' => $new_content,
     ]);
 }, 1);
@@ -178,6 +179,7 @@ function madeit_migrate_carousel_to_slider_post_types(): array
     }
 
     $types = array_values(array_unique(array_filter(array_map('strval', $types))));
+
     // Never touch revisions.
     return array_values(array_diff($types, ['revision']));
 }
@@ -222,11 +224,11 @@ function madeit_migrate_carousel_to_slider_run_batch(int $limit = 10): array
 
         $did_change = false;
         $stats = [
-            'posts_scanned' => 0,
-            'posts_changed' => 0,
-            'blocks_converted' => 0,
+            'posts_scanned'            => 0,
+            'posts_changed'            => 0,
+            'blocks_converted'         => 0,
             'blocks_skipped_no_images' => 0,
-            'errors' => 0,
+            'errors'                   => 0,
         ];
 
         $new_content = madeit_migrate_carousel_to_slider_in_content($post->post_content, $did_change, $stats);
@@ -235,7 +237,7 @@ function madeit_migrate_carousel_to_slider_run_batch(int $limit = 10): array
         }
 
         $result = wp_update_post([
-            'ID' => $post_id,
+            'ID'           => $post_id,
             'post_content' => $new_content,
         ], true);
 

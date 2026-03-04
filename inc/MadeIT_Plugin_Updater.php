@@ -35,13 +35,13 @@ class MadeIT_Plugin_Updater
 
     private function cacheKey(): string
     {
-        return 'madeit_plugin_updates_' . md5(home_url('/') . '|' . $this->endpoint . '|' . $this->level);
+        return 'madeit_plugin_updates_'.md5(home_url('/').'|'.$this->endpoint.'|'.$this->level);
     }
 
     private function getInstalledPlugins(): array
     {
         if (!function_exists('get_plugins')) {
-            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+            require_once ABSPATH.'wp-admin/includes/plugin.php';
         }
 
         $plugins = get_plugins();
@@ -267,7 +267,7 @@ class MadeIT_Plugin_Updater
 
     public function pluginUpgraderSourceSelection($source, $remote_source, $upgrader, $hook_extra = null)
     {
-        require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
+        require_once ABSPATH.'wp-admin/includes/class-wp-upgrader.php';
 
         if (!($upgrader instanceof \Plugin_Upgrader)) {
             return $source;
