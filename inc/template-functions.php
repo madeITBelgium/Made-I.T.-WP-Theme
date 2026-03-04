@@ -242,19 +242,36 @@ if (!function_exists('madeit_show_title_metabox')) {
 if (!function_exists('madeit_pagetitle_meta_box_cb')) {
     function madeit_pagetitle_meta_box_cb($post)
     {
-        $hidetitle = get_post_meta($post->ID, 'hide_title', true); ?>
-        <input name="hide_title" type="checkbox" id="hide_title" value="1" style="float: right; margin-top: 2px;" <?php if (!empty($hidetitle)) {
+        $hidetitle = get_post_meta($post->ID, 'hide_title', true);
+        // Default: hide the title unless explicitly set to 0.
+        $checked = ($hidetitle === '' || (string) $hidetitle !== '0'); ?>
+		<?php wp_nonce_field('madeit_hide_title', 'madeit_hide_title_nonce'); ?>
+		<input type="hidden" name="madeit_hide_title_present" value="1" />
+        <input name="hide_title" type="checkbox" id="hide_title" value="1" style="float: right; margin-top: 2px;" <?php if ($checked) {
             echo 'CHECKED';
         } ?> />
         <p class="post-attributes-label-wrapper"><label class="post-attributes-label" for="hide_title"><?php _e('Hide page title', 'madeit'); ?></label></p>
         <?php
     }
-    //add_action('page_attributes_misc_attributes', 'madeit_pagetitle_meta_box_cb');
 }
 
 if (!function_exists('madeit_pagetitle_meta_box_save')) {
     function madeit_pagetitle_meta_box_save($post_id, $post)
     {
+		// Don't run during autosaves, revisions, or if data isn't present.
+		if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+			return;
+		}
+		if (wp_is_post_autosave($post_id) || wp_is_post_revision($post_id)) {
+			return;
+		}
+		if (!isset($_POST['madeit_hide_title_present'])) {
+			return;
+		}
+		if (!isset($_POST['madeit_hide_title_nonce']) || !wp_verify_nonce($_POST['madeit_hide_title_nonce'], 'madeit_hide_title')) {
+			return;
+		}
+
         if (current_user_can('edit_post', $post_id) && in_array($post->post_type, apply_filters('madeit_hide_title_post_types', ['page']))) {
             remove_action('save_post', 'madeit_pagetitle_meta_box_save', 99, 2);
             if (isset($_POST['hide_title'])) {
