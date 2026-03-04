@@ -6,7 +6,7 @@
  *
  * @author  WooThemes
  *
- * @version 10.5.0
+ * @version 10.5.2
  */
 defined('ABSPATH') || exit;
 global $product;
@@ -26,7 +26,7 @@ global $product;
     $wooButtonClass = apply_filters('madeit_woo_btn_class', ['btn', 'btn-success', 'single_add_to_cart_button']);
     ?>
 
-	<button type="submit" class="single_add_to_cart_button <?php echo is_array($wooButtonClass) ? implode(' ', $wooButtonClass) : $wooButtonClass; ?><?php echo esc_attr(wc_wp_theme_get_element_class_name('button') ? ' '.wc_wp_theme_get_element_class_name('button') : ''); ?>" disabled><?php echo esc_html($product->single_add_to_cart_text()); ?></button>
+    <button type="submit" class="single_add_to_cart_button <?php echo is_array($wooButtonClass) ? implode(' ', $wooButtonClass) : $wooButtonClass; ?><?php echo esc_attr( wc_wp_theme_get_element_class_name( 'button' ) ? ' ' . wc_wp_theme_get_element_class_name( 'button' ) : '' ); ?>"><?php echo esc_html( $product->single_add_to_cart_text() ); ?></button>
 
 	<?php do_action('woocommerce_after_add_to_cart_button'); ?>
 
