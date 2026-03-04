@@ -16,7 +16,8 @@
     }
 
     $hidetitle = get_post_meta($postId, 'hide_title', true);
-    if (empty($hidetitle) || $hidetitle == 0) {
+    // Default: hide the title unless explicitly set to 0.
+    if ((string) $hidetitle === '0') {
         ?>
         <div class="container">
             <div class="row">

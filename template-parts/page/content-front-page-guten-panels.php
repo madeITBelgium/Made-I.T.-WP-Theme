@@ -11,7 +11,8 @@ global $madeitcounter;
 <article id="panel<?php echo $madeitcounter; ?>" <?php post_class('madeit-panel '); ?> >
     <?php
     $hidetitle = get_post_meta($post->ID, 'hide_title', true);
-    if (empty($hidetitle) || $hidetitle == 0) {
+    // Default: hide the title unless explicitly set to 0.
+    if ((string) $hidetitle === '0') {
         ?>
         <div class="container-fluid">
             <div class="row">

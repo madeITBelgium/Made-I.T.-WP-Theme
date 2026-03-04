@@ -10,7 +10,8 @@
 <div id="post-<?php the_ID(); ?>" <?php post_class(); ?> >
     <?php
     $hidetitle = get_post_meta($post->ID, 'hide_title', true);
-    if (empty($hidetitle) || $hidetitle == 0) {
+    // Default: hide the title unless explicitly set to 0.
+    if ((string) $hidetitle === '0') {
         ?>
         <div class="container">
             <div class="row">
