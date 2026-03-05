@@ -7,7 +7,7 @@
   },
 
   "devDependencies": {
-    "@wordpress/scripts": "^26.0.0"
+    "@wordpress/scripts": "^31.6.0"
   },
   "dependencies": {
     "swiper": "^11.2.7"
