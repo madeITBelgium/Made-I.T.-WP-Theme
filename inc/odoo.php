@@ -184,6 +184,7 @@ if (!function_exists('madeit_odoo_sync_product_category_from_meta')) {
             madeit_odoo_debug_log('Geen categorie wijziging nodig', [
                 'product_id' => (int) $postId,
             ]);
+
             return;
         }
 
