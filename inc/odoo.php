@@ -13,6 +13,21 @@ if (!function_exists('madeit_odoo_log')) {
     }
 }
 
+if (!function_exists('madeit_odoo_debug_log')) {
+    function madeit_odoo_debug_log($message, $context = [])
+    {
+        $line = '[madeit_odoo_debug] '.$message;
+        if (!empty($context)) {
+            $encoded = wp_json_encode($context);
+            if (is_string($encoded) && $encoded !== '') {
+                $line .= ' | '.$encoded;
+            }
+        }
+
+        error_log($line);
+    }
+}
+
 if (!function_exists('madeit_odoo_get_category_id_from_path')) {
     function madeit_odoo_get_category_id_from_path($path)
     {
@@ -102,13 +117,32 @@ if (!function_exists('madeit_odoo_sync_product_category_from_meta')) {
             return;
         }
 
-        $rawCategory = get_post_meta($postId, 'odoo_category_name', true);
-        if (empty($rawCategory) || $rawCategory === '[undefined]') {
-            return;
+        $metaKeys = [
+            'odoo_category_name',
+            'odoo_subcategory_1',
+            'odoo_subcategory_2',
+        ];
+
+        $paths = [];
+        foreach ($metaKeys as $metaKey) {
+            $rawValue = get_post_meta($postId, $metaKey, true);
+            if (empty($rawValue) || $rawValue === '[undefined]') {
+                continue;
+            }
+
+            $parts = preg_split('/\r\n|\r|\n|\s*\|\s*/', (string) $rawValue);
+            $parts = array_filter(array_map('trim', (array) $parts));
+            if (!empty($parts)) {
+                $paths = array_merge($paths, $parts);
+            }
         }
 
-        $paths = preg_split('/\r\n|\r|\n|\s*\|\s*/', (string) $rawCategory);
-        $paths = array_filter(array_map('trim', (array) $paths));
+        $paths = array_values(array_unique($paths));
+        madeit_odoo_debug_log('Meta category paths verzameld', [
+            'product_id' => (int) $postId,
+            'paths'      => $paths,
+        ]);
+
         if (empty($paths)) {
             return;
         }
@@ -122,6 +156,11 @@ if (!function_exists('madeit_odoo_sync_product_category_from_meta')) {
         }
 
         $newCategoryIds = array_values(array_unique($newCategoryIds));
+        madeit_odoo_debug_log('Category IDs bepaald uit paden', [
+            'product_id'        => (int) $postId,
+            'new_category_ids'  => $newCategoryIds,
+        ]);
+
         if (empty($newCategoryIds)) {
             return;
         }
@@ -142,6 +181,9 @@ if (!function_exists('madeit_odoo_sync_product_category_from_meta')) {
         sort($newSorted);
 
         if ($currentSorted === $newSorted) {
+            madeit_odoo_debug_log('Geen categorie wijziging nodig', [
+                'product_id' => (int) $postId,
+            ]);
             return;
         }
 
@@ -152,6 +194,12 @@ if (!function_exists('madeit_odoo_sync_product_category_from_meta')) {
             $product->save();
 
             update_post_meta($postId, '_yoast_wpseo_primary_product_cat', $newCategoryIds[0]);
+
+            madeit_odoo_debug_log('Product categorieen opgeslagen', [
+                'product_id'       => (int) $postId,
+                'old_category_ids' => $currentCategoryIds,
+                'new_category_ids' => $newCategoryIds,
+            ]);
 
             madeit_odoo_log('Product categorieen bijgewerkt vanuit Odoo', [
                 'product_id'          => (int) $postId,

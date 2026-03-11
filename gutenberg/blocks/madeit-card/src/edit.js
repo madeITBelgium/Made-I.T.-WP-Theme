@@ -11,10 +11,29 @@ import {
 	useBlockProps,
 } from '@wordpress/block-editor';
 
-import { PanelBody, ToggleControl } from '@wordpress/components';
+import { PanelBody, ToggleControl, __experimentalBoxControl as BoxControl, } from '@wordpress/components';
 import { withSelect } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
 import { __ } from '@wordpress/i18n';
+import classnames from 'classnames';
+
+const paddingToVars = (padding) => {
+	if (!padding) return {};
+	const vars = {};
+	if (padding.top !== undefined) {
+		vars['--madeit-card-content-padding-top'] = padding.top;
+	}
+	if (padding.right !== undefined) {
+		vars['--madeit-card-content-padding-right'] = padding.right;
+	}
+	if (padding.bottom !== undefined) {
+		vars['--madeit-card-content-padding-bottom'] = padding.bottom;
+	}
+	if (padding.left !== undefined) {
+		vars['--madeit-card-content-padding-left'] = padding.left;
+	}
+	return vars;
+};
 
 function CardEdit(props) {
 	const {
@@ -28,19 +47,28 @@ function CardEdit(props) {
 		className,
 	} = props;
 
-	const { level, cardTitle, hasTitle } = attributes;
+	const { level, cardTitle, hasTitle, contentPadding, mediaBleed } = attributes;
 	const TagName = 'h' + level;
 
 	const fallbackTextColor = '#FFFFFF';
 	const fallbackBackgroundColor = '#000000';
 
+	const wrapperClasses = classnames(className, {
+		'has-media-bleed': mediaBleed,
+	});
+
 	const blockProps = useBlockProps({
-		className,
+		className: wrapperClasses,
 		style: {
 			backgroundColor: backgroundColor.color,
 			color: textColor.color,
+			...paddingToVars(contentPadding),
 		},
 	});
+
+	const setContentPadding = (newPadding) => {
+		setAttributes({ contentPadding: newPadding });
+	};
 
 	return (
 		<div {...blockProps}>
@@ -77,6 +105,25 @@ function CardEdit(props) {
 						}}
 					/>
 				</PanelColorSettings>
+
+				<PanelBody title={__('Spatie')}>
+					<div className="madeit-control">
+						<BoxControl
+							__next40pxDefaultSize
+							label={__('Inhoud padding')}
+							onChange={setContentPadding}
+							values={contentPadding}
+							allowReset={ false }
+						/>
+					</div>
+
+					<ToggleControl
+						label={__('Afbeelding tot rand')}
+						help={__('Laat Image/Cover blocks de padding negeren zodat ze tegen de rand staan.')}
+						checked={!!mediaBleed}
+						onChange={(state) => setAttributes({ mediaBleed: state })}
+					/>
+				</PanelBody>
 			</InspectorControls>
 			{hasTitle && (
 				<BlockControls group="block">

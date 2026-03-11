@@ -66,6 +66,9 @@
     "titleGap": {
       "type": "number"
     },
+    "contentGap": {
+      "type": "number"
+    },
 
     "activeTabBackgroundColor": {
       "type": "string"
@@ -77,6 +80,9 @@
       "type": "string"
     },
     "inactiveTabTextColor": {
+      "type": "string"
+    },
+    "hoverTabBackgroundColor": {
       "type": "string"
     },
     "contentBackgroundColor": {
@@ -98,6 +104,10 @@
       "type": "string"
     },
     "contentBorderWidth": {
+      "type": "number",
+      "default": 1
+    },
+    "borderRadius": {
       "type": "number",
       "default": 1
     }

@@ -12,9 +12,14 @@
     "Made I.T."
   ],
   "status": "update",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "madeit": {
     "changelog": {
+      "1.3.1": [
+        "✨ Nieuwe functies:",
+        "- Hover achtergrondkleur toegevoegd voor tabbladen",
+        "- Afstand tussen tabbladen en content nu instelbaar"
+      ],
       "1.3.0": [
         "Toevoegen van eigen styling vanaf nu mogelijk.",
         "Uiterlijk in de editor komt nu overeen met het uiterlijk aan de voorkant."
@@ -101,6 +106,9 @@
     "titleGap": {
       "type": "number"
     },
+    "contentGap" : {
+      "type": "number"
+    },
 
     "activeTabBackgroundColor": {
       "type": "string"
@@ -112,6 +120,9 @@
       "type": "string"
     },
     "inactiveTabTextColor": {
+      "type": "string"
+    },
+    "hoverTabBackgroundColor": {
       "type": "string"
     },
     "contentBackgroundColor": {
@@ -135,7 +146,11 @@
     "contentBorderWidth": {
       "type": "number",
       "default": 1
-    }
+    },
+    "borderRadius": {
+      "type": "number",
+      "default": 1
+     }
   },
   "supports": {
     "customClassName": true,

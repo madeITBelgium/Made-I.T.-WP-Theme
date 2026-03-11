@@ -16,6 +16,8 @@ export default function save(props) {
 		cardTitle,
 		level,
 		hasTitle,
+		contentPadding,
+		mediaBleed,
 	} = props.attributes;
 
 	const { className } = props;
@@ -34,6 +36,10 @@ export default function save(props) {
 	});
 
 	wrapperClasses = classnames(wrapperClasses, {
+		'has-media-bleed': !!mediaBleed,
+	});
+
+	wrapperClasses = classnames(wrapperClasses, {
 		'has-text-color': textColorClass,
 		'has-background': backgroundColorClass,
 		[backgroundColorClass]: backgroundColorClass,
@@ -47,6 +53,10 @@ export default function save(props) {
 				? undefined
 				: customBackgroundColor,
 			color: textColorClass ? undefined : customTextColor,
+			'--madeit-card-content-padding-top': contentPadding?.top,
+			'--madeit-card-content-padding-right': contentPadding?.right,
+			'--madeit-card-content-padding-bottom': contentPadding?.bottom,
+			'--madeit-card-content-padding-left': contentPadding?.left,
 		},
 	});
 

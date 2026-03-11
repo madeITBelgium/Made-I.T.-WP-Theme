@@ -263,10 +263,11 @@
         flex-wrap: wrap;
         gap: var(--madeit-tabs-title-gap, 0.25rem);
         justify-content: var(--madeit-tabs-justify-desktop, flex-start);
+        border: none;
     
         list-style: none;
         padding-left: 0;
-        margin: 0;
+        margin: 0 0 var(--madeit-tabs-content-gap, 0) 0;
 
         .nav-item {
             margin: 0;
@@ -295,10 +296,11 @@
                     var(--madeit-tabs-title-border-right-width, 1px)
                     var(--madeit-tabs-title-border-bottom-width, 1px)
                     var(--madeit-tabs-title-border-left-width, 1px);
-                border-radius: calc(var(--madeit-tabs-radius) * 0.85) calc(var(--madeit-tabs-radius) * 0.85) 0 0;
+                border-radius: var(--madeit-tabs-border-radius, 0);
 
                 transition: box-shadow 0.2s ease-in-out, background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
 
+                
                 .madeit-tab-icon, i {
                     display: inline-flex;
                     margin-right: 0.5rem;
@@ -310,7 +312,7 @@
                 }
 
                 &:hover {
-                    background: rgba(0, 0, 0, 0.03);
+                    background: var(--madeit-tabs-tab-hover-bg, rgba(0, 0, 0, 0.03));
                 }
 
                 &:focus-visible {
@@ -337,7 +339,7 @@
         border: var(--madeit-tabs-content-border-width, 1px) solid
             var(--madeit-tabs-content-border-color, var(--madeit-tabs-border));
         border-top: none;
-        border-radius: 0 0 var(--madeit-tabs-radius) var(--madeit-tabs-radius);
+        border-radius: var(--madeit-tabs-border-radius, 0) var(--madeit-tabs-border-radius, 0);
         background: var(--madeit-tabs-content-bg, var(--wp--preset--color--base, transparent));
 
         padding: 1rem;

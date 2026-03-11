@@ -1784,7 +1784,21 @@ if (!function_exists('madeit_cookie_notice')) {
 if (!function_exists('madeit_extend_gutenberg')) {
     function madeit_extend_gutenberg()
     {
-        wp_enqueue_script('madeit-guten-script', get_theme_file_uri('/assets/js/gutenberg.js'), ['wp-blocks']);
+        wp_enqueue_script(
+            'madeit-guten-script',
+            get_theme_file_uri('/assets/js/gutenberg.js'),
+            [
+                'wp-blocks',
+                'wp-i18n',
+                'wp-element',
+                'wp-components',
+                'wp-compose',
+                'wp-hooks',
+                'wp-block-editor',
+            ],
+            defined('MADEIT_VERSION') ? MADEIT_VERSION : false,
+            true
+        );
     }
     add_action('enqueue_block_editor_assets', 'madeit_extend_gutenberg');
 }
@@ -2262,6 +2276,10 @@ require get_parent_theme_file_path('/gutenberg/gutenberg.php');
 // Gutenberg admin & blokken setup
 require_once get_parent_theme_file_path('/gutenberg/loader.php');
 
+/**
+ * Under construction notice.
+ */
+require_once get_parent_theme_file_path('/inc/admin/underConstruction/under-construction.php');
 
 /**
  * WooCommerce.

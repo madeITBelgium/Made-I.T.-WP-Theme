@@ -234,11 +234,13 @@ export default function Save({ attributes }) {
         titleItalic,
         titleUnderline,
         titleGap,
+        contentGap,
 
         activeTabBackgroundColor,
         activeTabTextColor,
         inactiveTabBackgroundColor,
         inactiveTabTextColor,
+        hoverTabBackgroundColor,
         contentBackgroundColor,
 
         titleBorderStyle = 'full',
@@ -246,6 +248,7 @@ export default function Save({ attributes }) {
         titleBorderWidth = 1,
         contentBorderColor,
         contentBorderWidth = 1,
+        borderRadius = 1,
     } = attributes;
 
     const justifyDesktop = justifyContent || 'flex-start';
@@ -256,6 +259,7 @@ export default function Save({ attributes }) {
     const safeContentBorderWidth = Number.isFinite(contentBorderWidth)
         ? Math.max(0, contentBorderWidth)
         : 1;
+    const safeBorderRadius = Number.isFinite(borderRadius) ? Math.max(0, borderRadius) : 1;
 
     const titleBorderSideWidths = (() => {
         switch (titleBorderStyle) {
@@ -302,6 +306,7 @@ export default function Save({ attributes }) {
             ...(titleItalic ? { '--madeit-tabs-title-font-style': 'italic' } : {}),
             ...(titleUnderline ? { '--madeit-tabs-title-text-decoration': 'underline' } : {}),
             ...(Number.isFinite(titleGap) ? { '--madeit-tabs-title-gap': `${titleGap}px` } : {}),
+            ...(Number.isFinite(attributes?.contentGap) ? { '--madeit-tabs-content-gap': `${attributes.contentGap}px` } : {}),
 
             ...(activeTabBackgroundColor
                 ? { '--madeit-tabs-tab-active-bg': activeTabBackgroundColor }
@@ -309,6 +314,7 @@ export default function Save({ attributes }) {
             ...(activeTabTextColor ? { '--madeit-tabs-tab-active-color': activeTabTextColor } : {}),
             ...(inactiveTabBackgroundColor ? { '--madeit-tabs-tab-bg': inactiveTabBackgroundColor } : {}),
             ...(inactiveTabTextColor ? { '--madeit-tabs-tab-color': inactiveTabTextColor } : {}),
+            ...(hoverTabBackgroundColor ? { '--madeit-tabs-tab-hover-bg': hoverTabBackgroundColor } : {}),
             ...(contentBackgroundColor ? { '--madeit-tabs-content-bg': contentBackgroundColor } : {}),
 
             ...(titleBorderColor ? { '--madeit-tabs-title-border-color': titleBorderColor } : {}),
@@ -324,6 +330,7 @@ export default function Save({ attributes }) {
 
             ...(contentBorderColor ? { '--madeit-tabs-content-border-color': contentBorderColor } : {}),
             '--madeit-tabs-content-border-width': `${safeContentBorderWidth}px`,
+            '--madeit-tabs-border-radius': `${safeBorderRadius}px`,
         },
     });
     const className = [blockProps.className, classes].filter(Boolean).join(' ');

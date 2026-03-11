@@ -86,9 +86,14 @@ $grid-size-large: 16px;
 	margin-left: auto;
 	margin-right: auto;
 
+	&.madeit-block-content--frontend {
+		width: calc(100% - var(--margin-left-desktop, 0) - var(--margin-right-desktop, 0));	
+		flex-direction: var(--madeit-flex-direction-desktop, var(--madeit-flex-direction-tablet), var(--madeit-flex-direction-mobile), row);
+	}
+
 	@media (max-width: 781px) {
 		min-height: var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto));
-		max-width: var(--madeit-max-width-tablet, var(--madeit-max-width-desktop, auto));
+		// max-width: var(--madeit-max-width-tablet, var(--madeit-max-width-desktop, auto));
 	}
 
 	@media (max-width: $mobile) {
@@ -163,11 +168,19 @@ $grid-size-large: 16px;
 		.madeit-container-row {
 			display: flex;
 			flex-wrap: var(--madeit-flex-wrap-desktop, nowrap);
-			flex-direction: var(--madeit-flex-direction-desktop, row);
 			align-items: var(--madeit-align-items-desktop, stretch);
 			justify-content: var(--madeit-justify-content-desktop, space-between);
 			gap: var(--madeit-row-gap-desktop, 20px);
 			min-height: var(--madeit-min-height-desktop, auto);
+
+			&:not(.madeit-container-row.rows-1) {
+				flex-direction: var(--madeit-flex-direction-desktop, row);
+				max-width: var(--madeit-max-width-desktop, auto);
+			}
+
+			&.rows-1 .wp-block-madeit-block-content-column {
+				max-width: var(--madeit-max-width-desktop, auto);
+			}
 
 			.madeit-content-column__inner {
 				min-height: var(--madeit-min-height-desktop, auto);
@@ -188,12 +201,15 @@ $grid-size-large: 16px;
 	@media (min-width: 600px) and (max-width: 991px) {
 		.madeit-container-row {
 			flex-wrap: var(--madeit-flex-wrap-tablet, var(--madeit-flex-wrap-desktop, wrap));
-			flex-direction: var(--madeit-flex-direction-tablet, var(--madeit-flex-direction-desktop, column));
 			align-items: var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch));
 			justify-content: var(--madeit-justify-content-tablet, var(--madeit-justify-content-desktop, space-between));
 			gap: var(--madeit-row-gap-tablet, var(--madeit-row-gap-desktop, 20px));
 			min-height: var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto));
+			max-width: var(--madeit-max-width-tablet, var(--madeit-max-width-desktop, auto));
 
+			&:not(.madeit-container-row.rows-1) {
+				flex-direction: var(--madeit-flex-direction-tablet, var(--madeit-flex-direction-desktop, column));
+			}
 			.madeit-content-column__inner {
 				min-height: var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto));
 				align-items: var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch));
@@ -205,7 +221,7 @@ $grid-size-large: 16px;
 			> .wp-block-madeit-block-content-column {
 				width: calc(100% - calc(var(--bs-gutter-x))) !important;
 				flex: 0 0 100% !important;
-				margin: auto;
+				// margin: auto;
 			}
 		}
 	}
@@ -213,12 +229,15 @@ $grid-size-large: 16px;
 	@media (max-width: $mobile) {
 		.madeit-container-row {
 			flex-wrap: var(--madeit-flex-wrap-mobile, var(--madeit-flex-wrap-tablet, var(--madeit-flex-wrap-desktop, wrap)));
-			flex-direction: var(--madeit-flex-direction-mobile, var(--madeit-flex-direction-tablet, var(--madeit-flex-direction-desktop, column)));
 			align-items: var(--madeit-align-items-mobile, var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch)));
 			justify-content: var(--madeit-justify-content-mobile, var(--madeit-justify-content-tablet, var(--madeit-justify-content-desktop, space-between)));
 			gap: var(--madeit-row-gap-mobile, var(--madeit-row-gap-tablet, var(--madeit-row-gap-desktop, 20px)));
 			min-height: var(--madeit-min-height-mobile, var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto)));
+			max-width: var(--madeit-max-width-mobile, var(--madeit-max-width-tablet, var(--madeit-max-width-desktop, auto)));
 
+			&:not(.madeit-container-row.rows-1) {
+				flex-direction: var(--madeit-flex-direction-mobile, var(--madeit-flex-direction-tablet, var(--madeit-flex-direction-desktop, column)));
+			}
 			.madeit-content-column__inner {
 				min-height: var(--madeit-min-height-mobile, var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto)));
 				align-items: var(--madeit-align-items-mobile, var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch)));
@@ -231,7 +250,7 @@ $grid-size-large: 16px;
 			> .wp-block-madeit-block-content-column {
 				width: calc(100% - calc(var(--bs-gutter-x))) !important;
 				flex: 0 0 100% !important;
-				margin: auto;
+				// margin: auto;
 			}
 		}
 	}

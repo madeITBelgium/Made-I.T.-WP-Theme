@@ -11,6 +11,11 @@
 	border: 1px solid rgba(0, 0, 0, 0.125);
 	border-radius: 0.25rem;
 
+	--madeit-card-content-padding-top: 1.25rem;
+	--madeit-card-content-padding-right: 1.25rem;
+	--madeit-card-content-padding-bottom: 1.25rem;
+	--madeit-card-content-padding-left: 1.25rem;
+
 	.card-header {
 		padding: 0.75rem 1.25rem;
 		margin-bottom: 0;
@@ -35,7 +40,39 @@
 		-ms-flex: 1 1 auto;
 		flex: 1 1 auto;
 		min-height: 1px;
-		padding: 1.25rem;
+		padding: var(--madeit-card-content-padding-top)
+			var(--madeit-card-content-padding-right)
+			var(--madeit-card-content-padding-bottom)
+			var(--madeit-card-content-padding-left);
+	}
+
+
+	&.has-media-bleed .card-body .block-editor-block-list__layout > :where(figure.wp-block-image, div.wp-block-cover, figure.wp-block-post-featured-image):not(.wp-block-group *) {
+		margin-left: calc(var(--madeit-card-content-padding-left) * -1);
+		margin-right: calc(var(--madeit-card-content-padding-right) * -1);
+		max-width: none;
+		width: calc(
+			100% + var(--madeit-card-content-padding-left) +
+				var(--madeit-card-content-padding-right)
+		);
+	}
+
+	&.has-media-bleed .card-body .block-editor-block-list__layout > :where(figure.wp-block-image, div.wp-block-cover, figure.wp-block-post-featured-image):first-child:not(.wp-block-group *) {
+		margin-top: calc(var(--madeit-card-content-padding-top) * -1);
+	}
+
+	&.has-media-bleed .card-body .block-editor-block-list__layout > :where(figure.wp-block-image, div.wp-block-cover, figure.wp-block-post-featured-image):last-child:not(.wp-block-group *),
+	&.has-media-bleed .card-body .block-editor-block-list__layout > :where(figure.wp-block-image, div.wp-block-cover, figure.wp-block-post-featured-image):nth-last-child(2):not(.wp-block-group *) {
+		margin-bottom: calc(var(--madeit-card-content-padding-bottom) * -1);
+	}
+
+	&.has-media-bleed .card-body .block-editor-block-list__layout > :where(figure.wp-block-image) {
+		display: block;
+	}
+
+	&.has-media-bleed .card-body .block-editor-block-list__layout > :where(figure.wp-block-image) img {
+		display: block;
+		width: 100%;
+		height: auto;
 	}
 }
-

@@ -110,6 +110,7 @@ export default function save( props ) {
     }
 
     const outerSizeNormalized = defaultSize === 'container' ? 'container' : 'container-fluid';
+    const applyContainerBackgroundToInner = defaultSize === 'container';
     const hasContentWidth = typeof contentWidth === 'string' && contentWidth.length > 0;
     const contentWidthResolvedRaw = hasContentWidth
         ? contentWidth
@@ -146,14 +147,27 @@ export default function save( props ) {
         [ `container-fluid` ]: contentWidthNormalized === 'container-fluid',
     } );
     
-    classes = classnames(classes, {
+    // Text color stays on the outer wrapper so it inherits everywhere.
+    classes = classnames( classes, {
         'has-text-color': rowTextColorClass,
-        'has-background': containerBackgroundColorClass,
-        [ containerBackgroundColorClass ]: containerBackgroundColorClass,
         [ rowTextColorClass ]: rowTextColorClass,
     } );
+
+    // Container background should live on the inner container when the block
+    // is boxed, so padding/margins on the wrapper don't get painted.
+    if ( applyContainerBackgroundToInner ) {
+        classesChild = classnames( classesChild, {
+            'has-background': containerBackgroundColorClass,
+            [ containerBackgroundColorClass ]: containerBackgroundColorClass,
+        } );
+    } else {
+        classes = classnames( classes, {
+            'has-background': containerBackgroundColorClass,
+            [ containerBackgroundColorClass ]: containerBackgroundColorClass,
+        } );
+    }
     
-    var style = {
+    const containerBackgroundStyle = {
         backgroundColor:
             backgroundType === 'transparent'
                 ? 'transparent'
@@ -161,6 +175,8 @@ export default function save( props ) {
                     ? undefined
                     : customContainerBackgroundColor,
     };
+
+    var style = {};
 
     const toCssLength = ( value, unit = 'px' ) => {
         if ( typeof value === 'number' && Number.isFinite( value ) ) {
@@ -211,20 +227,24 @@ export default function save( props ) {
             : undefined;
 
     if ( computedBackgroundType === 'classic' && containerBackgroundImage?.url ) {
-        style.backgroundImage = `url(${ containerBackgroundImage.url })`;
+        containerBackgroundStyle.backgroundImage = `url(${ containerBackgroundImage.url })`;
         if ( hasBackgroundPosition ) {
-            style.backgroundPosition = containerBackgroundPosition;
+            containerBackgroundStyle.backgroundPosition = containerBackgroundPosition;
         }
         if ( hasBackgroundRepeat ) {
-            style.backgroundRepeat = containerBackgroundRepeat;
+            containerBackgroundStyle.backgroundRepeat = containerBackgroundRepeat;
         }
         if ( hasBackgroundSize ) {
-            style.backgroundSize = containerBackgroundSize;
+            containerBackgroundStyle.backgroundSize = containerBackgroundSize;
         }
     }
 
     if ( computedBackgroundType === 'gradient' && computedBackgroundGradientValue ) {
-        style.backgroundImage = computedBackgroundGradientValue;
+        containerBackgroundStyle.backgroundImage = computedBackgroundGradientValue;
+    }
+
+    if ( ! applyContainerBackgroundToInner ) {
+        style = { ...style, ...containerBackgroundStyle };
     }
 
     // Apply overflow to outer wrapper (avoid serializing default `visible`).
@@ -334,9 +354,11 @@ export default function save( props ) {
     }
     if(containerMargin !== undefined && containerMargin.left !== undefined) {
         style.marginLeft = containerMargin.left;
+        style['--margin-left-desktop'] = containerMargin.left;
     }
     if(containerMargin !== undefined && containerMargin.right !== undefined) {
         style.marginRight = containerMargin.right;
+        style['--margin-right-desktop'] = containerMargin.right;
     }
     if(containerPadding !== undefined && containerPadding.top !== undefined ) {
         style.paddingTop = containerPadding.top;
@@ -392,6 +414,10 @@ export default function save( props ) {
     }
     else {
         style.color = rowTextColorClass ? undefined : rowTextColorClass;
+
+        if ( applyContainerBackgroundToInner ) {
+            styleChild = { ...styleChild, ...containerBackgroundStyle };
+        }
     }
     
     const blockProps = useBlockProps.save( {
@@ -459,6 +485,20 @@ export default function save( props ) {
             outerSizeNormalized !== 'container' &&
             hasContentWidth &&
             contentWidthNormalized !== outerSizeNormalized;
+
+        if ( applyContainerBackgroundToInner ) {
+            return (
+                <HtmlTag { ...blockProps }>
+                    <div className={ classesChild } style={ styleChild }>
+                        <div { ...rowProps }>
+                            { '\n\n' }
+                            <InnerBlocks.Content />
+                            { '\n\n' }
+                        </div>
+                    </div>
+                </HtmlTag>
+            );
+        }
 
         if ( shouldWrapContent ) {
             return (

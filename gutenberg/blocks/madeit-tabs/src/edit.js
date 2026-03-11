@@ -275,6 +275,7 @@ export default function Edit({ clientId, attributes, setAttributes }) {
     const contentBorderWidth = Number.isFinite(attributes?.contentBorderWidth)
         ? attributes.contentBorderWidth
         : 1;
+    const borderRadius = Number.isFinite(attributes?.borderRadius) ? attributes.borderRadius : 1;
 
     const titleBorderSideWidths = useMemo(() => {
         const width = Math.max(0, titleBorderWidth);
@@ -329,6 +330,10 @@ export default function Edit({ clientId, attributes, setAttributes }) {
                 ? { '--madeit-tabs-title-gap': `${attributes.titleGap}px` }
                 : {}),
 
+            ...(Number.isFinite(attributes?.contentGap)
+                ? { '--madeit-tabs-content-gap': `${attributes.contentGap}px` }
+                : {}),
+
             ...(attributes?.activeTabBackgroundColor
                 ? { '--madeit-tabs-tab-active-bg': attributes.activeTabBackgroundColor }
                 : {}),
@@ -341,6 +346,10 @@ export default function Edit({ clientId, attributes, setAttributes }) {
             ...(attributes?.inactiveTabTextColor
                 ? { '--madeit-tabs-tab-color': attributes.inactiveTabTextColor }
                 : {}),
+            ...(attributes?.hoverTabBackgroundColor
+                ? { '--madeit-tabs-tab-hover-bg': attributes.hoverTabBackgroundColor }
+                : {}
+            ),
             ...(attributes?.contentBackgroundColor
                 ? { '--madeit-tabs-content-bg': attributes.contentBackgroundColor }
                 : {}),
@@ -362,6 +371,7 @@ export default function Edit({ clientId, attributes, setAttributes }) {
                 ? { '--madeit-tabs-content-border-color': attributes.contentBorderColor }
                 : {}),
             '--madeit-tabs-content-border-width': `${Math.max(0, contentBorderWidth)}px`,
+            '--madeit-tabs-border-radius': `${Math.max(0, attributes?.borderRadius)}px`,
         },
     });
 
@@ -740,6 +750,7 @@ export default function Edit({ clientId, attributes, setAttributes }) {
             titleItalic: undefined,
             titleUnderline: undefined,
             titleGap: undefined,
+            contentGap: undefined,
         } );
 
 
@@ -1155,6 +1166,16 @@ export default function Edit({ clientId, attributes, setAttributes }) {
                                 max={40}
                             />
                         </div>
+                        
+                        <div className="madeit-control" style={{ marginTop: '16px' }}>
+                            <RangeControl
+                                label="Spacing between content (px)"
+                                value={Number.isFinite(attributes?.contentGap) ? attributes.contentGap : 4}
+                                onChange={(value) => setAttributes({ contentGap: value })}
+                                min={0}
+                                max={40}
+                            />
+                        </div>
 
                         <div className="madeit-control" style={{ marginTop: '16px' }}>
                             <PanelColorSettings
@@ -1218,6 +1239,23 @@ export default function Edit({ clientId, attributes, setAttributes }) {
                                         onChange: ( value ) =>
                                             setAttributes( {
                                                 inactiveTabTextColor: value || undefined,
+                                            } ),
+                                    },
+                                ] }
+                            />
+                        </div>
+
+                        <div className="madeit-control" style={{ marginTop: '16px' }}>
+                            <PanelColorSettings
+                                style={{ padding: '0', borderTop: 'none'}}
+                                initialOpen={ true }
+                                colorSettings={ [
+                                    {
+                                        label: __( 'Hover tab background' ),
+                                        value: attributes?.hoverTabBackgroundColor,
+                                        onChange: ( value ) =>
+                                            setAttributes( {
+                                                hoverTabBackgroundColor: value || undefined,
                                             } ),
                                     },
                                 ] }
@@ -1311,6 +1349,16 @@ export default function Edit({ clientId, attributes, setAttributes }) {
                                 onChange={(value) => setAttributes({ contentBorderWidth: value })}
                                 min={0}
                                 max={10}
+                            />
+                        </div>
+
+                        <div className="madeit-control" style={{ marginTop: '16px' }}>
+                            <RangeControl
+                                label="Border radius (px)"
+                                value={Number.isFinite(attributes?.borderRadius) ? attributes.borderRadius : 1}
+                                onChange={(value) => setAttributes({ borderRadius: value })}
+                                min={0}
+                                max={100}
                             />
                         </div>
                     </PanelBody>

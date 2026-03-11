@@ -1,0 +1,49 @@
+/*
+ * Post Template responsive columns.
+ * Supports:
+ * - Grid layout class: `.wp-block-post-template-is-layout-grid` (WP core)
+ * - Legacy layout class: `.is-layout-grid`
+ * - Flex “grid” variant: `.is-flex-container.columns-*` (WP core Query displayLayout)
+ */
+
+@media (max-width: 991px) {
+	.wp-block-post-template-is-layout-grid,
+	.wp-block-post-template.is-layout-grid {
+		grid-template-columns: repeat(
+			var(
+				--madeit-pt-cols-tablet,
+				var(--madeit-pt-cols-desktop, 3)
+			),
+			minmax(0, 1fr)
+		) !important;
+	}
+
+	/* Flex variant: compute item widths based on desired tablet columns. */
+	.wp-block-post-template.is-flex-container > li {
+		width: calc(
+			(100% - ((var(--madeit-pt-cols-tablet, 2) - 1) * 1.25em)) /
+				var(--madeit-pt-cols-tablet, 2)
+		) !important;
+	}
+}
+
+@media (max-width: 599px) {
+	.wp-block-post-template-is-layout-grid,
+	.wp-block-post-template.is-layout-grid {
+		grid-template-columns: repeat(
+			var(
+				--madeit-pt-cols-mobile,
+				var(--madeit-pt-cols-tablet, var(--madeit-pt-cols-desktop, 1))
+			),
+			minmax(0, 1fr)
+		) !important;
+	}
+
+	/* Flex variant: allow 1..6 columns on small screens too if configured. */
+	.wp-block-post-template.is-flex-container > li {
+		width: calc(
+			(100% - ((var(--madeit-pt-cols-mobile, 1) - 1) * 1.25em)) /
+				var(--madeit-pt-cols-mobile, 1)
+		) !important;
+	}
+}

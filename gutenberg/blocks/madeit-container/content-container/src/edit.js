@@ -330,23 +330,32 @@ export function ColumnsEditContainer( props ) {
     const allowedHtmlTags = [ 'div', 'section', 'article', 'main', 'header', 'footer' ];
     const HtmlTag = allowedHtmlTags.includes( computedHtmlTag ) ? computedHtmlTag : 'div';
 
-    var style = {
+    const applyContainerBackgroundToChild = size === 'container';
+
+    const containerBackgroundStyle = {
         backgroundColor:
             computedBackgroundType === 'transparent'
                 ? 'transparent'
                 : containerBackgroundColor.color,
-        overflow: computedOverflow,
     };
 
     if ( computedBackgroundType === 'classic' && containerBackgroundImage?.url ) {
-        style.backgroundImage = `url(${ containerBackgroundImage.url })`;
-        style.backgroundPosition = computedContainerBackgroundPosition;
-        style.backgroundRepeat = computedContainerBackgroundRepeat;
-        style.backgroundSize = computedContainerBackgroundSize;
+        containerBackgroundStyle.backgroundImage = `url(${ containerBackgroundImage.url })`;
+        containerBackgroundStyle.backgroundPosition = computedContainerBackgroundPosition;
+        containerBackgroundStyle.backgroundRepeat = computedContainerBackgroundRepeat;
+        containerBackgroundStyle.backgroundSize = computedContainerBackgroundSize;
     }
 
     if ( computedBackgroundType === 'gradient' && computedBackgroundGradientValue ) {
-        style.backgroundImage = computedBackgroundGradientValue;
+        containerBackgroundStyle.backgroundImage = computedBackgroundGradientValue;
+    }
+
+    var style = {
+        overflow: computedOverflow,
+    };
+
+    if ( ! applyContainerBackgroundToChild ) {
+        style = { ...style, ...containerBackgroundStyle };
     }
 
     // Responsive flex-direction via CSS variables.
@@ -476,6 +485,10 @@ export function ColumnsEditContainer( props ) {
     }
     else {
         style.color = rowTextColor.color;
+
+        if ( applyContainerBackgroundToChild ) {
+            styleChild = { ...styleChild, ...containerBackgroundStyle };
+        }
     }
     
     const blockProps = useBlockProps({
