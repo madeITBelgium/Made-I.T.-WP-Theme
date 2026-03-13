@@ -27,6 +27,8 @@ import { useBlockProps, InnerBlocks, getColorClassName } from '@wordpress/block-
  */
 export default function save( props ) {
     const {
+        wrapperClassName,
+        directRowClassName,
         verticalAlignment,
         backgroundType,
         containerBackgroundColor,
@@ -110,7 +112,32 @@ export default function save( props ) {
     }
 
     const outerSizeNormalized = defaultSize === 'container' ? 'container' : 'container-fluid';
-    const applyContainerBackgroundToInner = defaultSize === 'container';
+
+    const FRONTEND_WRAPPER_CLASS = 'madeit-block-content--frontend';
+    const hasWrapperClassNameFromMarkup =
+        typeof wrapperClassName === 'string' && wrapperClassName.trim().length > 0;
+    const wrapperHasFrontendClass =
+        hasWrapperClassNameFromMarkup &&
+        wrapperClassName.split( /\s+/ ).includes( FRONTEND_WRAPPER_CLASS );
+
+    // Legacy boxed markup (the one throwing validation errors):
+    // - Wrapper did NOT include `madeit-block-content--frontend`
+    // - `.row` was a direct child of the wrapper (no inner `.container`)
+    // We only switch to legacy serialization when we can positively detect
+    // legacy markup from the stored HTML (wrapperClassName derived attr).
+    const shouldUseLegacyBoxedMarkup =
+        defaultSize === 'container' &&
+        hasWrapperClassNameFromMarkup &&
+        ! wrapperHasFrontendClass;
+
+    // Keep the old direct-row detector as a secondary hint (some HTML parsers
+    // won't support :scope selectors), but do not rely on it as the primary
+    // switch.
+    const hasDirectRowWrapper =
+        typeof directRowClassName === 'string' && directRowClassName.trim().length > 0;
+
+    const applyContainerBackgroundToInner =
+        defaultSize === 'container' && ! shouldUseLegacyBoxedMarkup;
     const hasContentWidth = typeof contentWidth === 'string' && contentWidth.length > 0;
     const contentWidthResolvedRaw = hasContentWidth
         ? contentWidth
@@ -132,7 +159,7 @@ export default function save( props ) {
          [ `is-hidden-desktop` ]: !! hideOnDesktop,
         [ `is-hidden-tablet` ]: !! hideOnTablet,
         [ `is-hidden-mobile` ]: !! hideOnMobile,
-        [ 'madeit-block-content--frontend' ]: true,
+        [ 'madeit-block-content--frontend' ]: ! shouldUseLegacyBoxedMarkup,
     } );
     
     if(defaultSize !== 'container-content-boxed') {
@@ -155,6 +182,8 @@ export default function save( props ) {
 
     // Container background should live on the inner container when the block
     // is boxed, so padding/margins on the wrapper don't get painted.
+    // BUT: legacy boxed markup had no inner container wrapper, so in that case
+    // we keep the background on the outer wrapper for validation compatibility.
     if ( applyContainerBackgroundToInner ) {
         classesChild = classnames( classesChild, {
             'has-background': containerBackgroundColorClass,

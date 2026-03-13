@@ -20,6 +20,18 @@
     "editorStyle": "file:./build/index.css",
     "style": "file:./build/style-index.css",
     "attributes": {
+        "wrapperClassName": {
+            "type": "string",
+            "source": "attribute",
+            "selector": ".wp-block-madeit-block-content",
+            "attribute": "class"
+        },
+        "directRowClassName": {
+            "type": "string",
+            "source": "attribute",
+            "selector": ":scope > .row",
+            "attribute": "class"
+        },
         "verticalAlignment": {
             "type": "string"
         },

@@ -102,7 +102,7 @@ if (!function_exists('madeit_odoo_get_category_id_from_path')) {
 }
 
 if (!function_exists('madeit_odoo_sync_product_category_from_meta')) {
-    function madeit_odoo_sync_product_category_from_meta($postId, $post = null, $update = false)
+    function madeit_odoo_sync_product_category_from_meta($postId, $post = null)
     {
         if (wp_is_post_autosave($postId) || wp_is_post_revision($postId)) {
             return;
@@ -220,4 +220,6 @@ if (!function_exists('madeit_odoo_sync_product_category_from_meta')) {
     }
 }
 
-add_action('save_post_product', 'madeit_odoo_sync_product_category_from_meta', 20, 3);
+add_action('save_post_product', 'madeit_odoo_sync_product_category_from_meta', 20, 2);
+//add_action('save_post_product', 'madeit_odoo_sync_product_category_from_meta', 20, 3);
+add_action('woocommerce_update_product', 'madeit_odoo_sync_product_category_from_meta', 20, 2);

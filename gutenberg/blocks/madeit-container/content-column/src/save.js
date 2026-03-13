@@ -20,6 +20,7 @@ export default function save( props ) {
         margin,
         padding,
         maxContainerSize,
+        innerWrapperClassName,
     } = props.attributes;
     
     const {
@@ -53,6 +54,7 @@ export default function save( props ) {
     } );
 
     const hasBackground = !! ( backgroundColorClass || customBackgroundColor );
+    const hasInnerWrapper = !! innerWrapperClassName;
 
     const innerClasses = classnames( 'madeit-content-column__inner', {
         'has-background': backgroundColorClass,
@@ -92,10 +94,37 @@ export default function save( props ) {
     } );
 
     // Legacy markup: no inner wrapper when no background.
-    // This prevents block validation errors on older/pasted content.
     if ( ! hasBackground ) {
         return (
             <div { ...blockProps }>
+                { '\n\n' }
+                <InnerBlocks.Content />
+                { '\n\n' }
+            </div>
+        );
+    }
+
+    // Legacy markup (older saved posts): background classes lived on the OUTER
+    // wrapper and there was no inner wrapper.
+    // We keep this output for legacy blocks to avoid validation errors.
+    if ( hasBackground && ! hasInnerWrapper ) {
+        const legacyWrapperClasses = classnames( wrapperClasses, {
+            'has-background': !! backgroundColorClass,
+            [ backgroundColorClass ]: backgroundColorClass,
+        } );
+
+        const legacyStyle = {
+            ...style,
+            backgroundColor: backgroundColorClass ? undefined : customBackgroundColor,
+        };
+
+        const legacyBlockProps = useBlockProps.save( {
+            className: legacyWrapperClasses,
+            style: legacyStyle,
+        } );
+
+        return (
+            <div { ...legacyBlockProps }>
                 { '\n\n' }
                 <InnerBlocks.Content />
                 { '\n\n' }

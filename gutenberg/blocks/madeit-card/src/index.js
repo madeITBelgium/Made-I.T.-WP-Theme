@@ -13,4 +13,8 @@ registerBlockType(metadata.name, {
     icon,
     edit,
     save,
+
+    deprecated: [
+
+    ]
 });
