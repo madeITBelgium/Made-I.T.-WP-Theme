@@ -234,18 +234,21 @@ class Madeit_Image_Optimizer_Command
         if (!$file || !file_exists($file)) {
             $stats['errors']++;
             $error_log[] = $this->format_error($attachment_id, $file, 'File missing');
+
             return;
         }
 
         $mime = get_post_mime_type($attachment_id);
         if (!$this->is_supported_mime($mime)) {
             $stats['skipped']++;
+
             return;
         }
 
         $needs_optimize = $this->needs_optimization($file, $options['max_width'], $options['max_height']);
         if (!$needs_optimize) {
             $stats['skipped']++;
+
             return;
         }
 
@@ -254,12 +257,14 @@ class Madeit_Image_Optimizer_Command
             if (!copy($file, $backup_path)) {
                 $stats['errors']++;
                 $error_log[] = $this->format_error($attachment_id, $file, 'Backup copy failed');
+
                 return;
             }
         }
 
         if ($options['dry_run']) {
             $stats['optimized']++;
+
             return;
         }
 
@@ -268,6 +273,7 @@ class Madeit_Image_Optimizer_Command
             if (!$this->optimize_with_cli($file, $options['max_width'], $options['max_height'], $options['quality'], $mime, $cli_error)) {
                 $stats['errors']++;
                 $error_log[] = $this->format_error($attachment_id, $file, $cli_error);
+
                 return;
             }
         } else {
@@ -275,6 +281,7 @@ class Madeit_Image_Optimizer_Command
             if (is_wp_error($editor)) {
                 $stats['errors']++;
                 $error_log[] = $this->format_error($attachment_id, $file, $editor->get_error_message());
+
                 return;
             }
 
@@ -283,6 +290,7 @@ class Madeit_Image_Optimizer_Command
             if (is_wp_error($resize_result)) {
                 $stats['errors']++;
                 $error_log[] = $this->format_error($attachment_id, $file, $resize_result->get_error_message());
+
                 return;
             }
 
@@ -290,6 +298,7 @@ class Madeit_Image_Optimizer_Command
             if (is_wp_error($save_result)) {
                 $stats['errors']++;
                 $error_log[] = $this->format_error($attachment_id, $file, $save_result->get_error_message());
+
                 return;
             }
         }
