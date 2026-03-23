@@ -45,7 +45,6 @@ export default function save( props ) {
         customRowTextColor,
         containerMargin,
         containerPadding,
-        containerPaddingOnRow,
         rowMargin,
         rowPadding,
         overflow,
@@ -121,14 +120,6 @@ export default function save( props ) {
         hasWrapperClassNameFromMarkup &&
         wrapperClassName.split( /\s+/ ).includes( FRONTEND_WRAPPER_CLASS );
 
-    // General legacy compatibility:
-    // Older saved content may not include the frontend wrapper class at all
-    // (regardless of `size`). When we can detect that from parsed markup,
-    // we must not inject the class in `save()`, otherwise block validation
-    // fails and the editor shows recovery prompts.
-    const shouldUseLegacyWrapperClasses =
-        hasWrapperClassNameFromMarkup && ! wrapperHasFrontendClass;
-
     // Legacy boxed markup (the one throwing validation errors):
     // - Wrapper did NOT include `madeit-block-content--frontend`
     // - `.row` was a direct child of the wrapper (no inner `.container`)
@@ -146,9 +137,7 @@ export default function save( props ) {
         typeof directRowClassName === 'string' && directRowClassName.trim().length > 0;
 
     const applyContainerBackgroundToInner =
-        defaultSize === 'container' &&
-        ! shouldUseLegacyBoxedMarkup &&
-        ! hasDirectRowWrapper;
+        defaultSize === 'container' && ! shouldUseLegacyBoxedMarkup;
     const hasContentWidth = typeof contentWidth === 'string' && contentWidth.length > 0;
     const contentWidthResolvedRaw = hasContentWidth
         ? contentWidth
@@ -170,7 +159,7 @@ export default function save( props ) {
          [ `is-hidden-desktop` ]: !! hideOnDesktop,
         [ `is-hidden-tablet` ]: !! hideOnTablet,
         [ `is-hidden-mobile` ]: !! hideOnMobile,
-		[ 'madeit-block-content--frontend' ]: ! shouldUseLegacyWrapperClasses,
+        [ 'madeit-block-content--frontend' ]: ! shouldUseLegacyBoxedMarkup,
     } );
     
     if(defaultSize !== 'container-content-boxed') {
@@ -400,41 +389,17 @@ export default function save( props ) {
         style.marginRight = containerMargin.right;
         style['--margin-right-desktop'] = containerMargin.right;
     }
-
-    const shouldApplyContainerPaddingOnRow = containerPaddingOnRow === true;
-
-    // Legacy compatibility: existing content may have containerPadding serialized
-    // on the outer wrapper. Keep doing that unless explicitly migrated.
-    if ( ! shouldApplyContainerPaddingOnRow ) {
-        if(containerPadding !== undefined && containerPadding.top !== undefined ) {
-            style.paddingTop = containerPadding.top;
-        }
-        if(containerPadding !== undefined && containerPadding.bottom !== undefined) {
-            style.paddingBottom = containerPadding.bottom;
-        }
-        if(containerPadding !== undefined && containerPadding.left !== undefined) {
-            style.paddingLeft = containerPadding.left;
-        }
-        if(containerPadding !== undefined && containerPadding.right !== undefined) {
-            style.paddingRight = containerPadding.right;
-        }
+    if(containerPadding !== undefined && containerPadding.top !== undefined ) {
+        style.paddingTop = containerPadding.top;
     }
-
-    // New behaviour: apply containerPadding on `.madeit-container-row`.
-    const rowStyle = {};
-    if ( shouldApplyContainerPaddingOnRow ) {
-        if(containerPadding !== undefined && containerPadding.top !== undefined ) {
-            rowStyle.paddingTop = containerPadding.top;
-        }
-        if(containerPadding !== undefined && containerPadding.bottom !== undefined) {
-            rowStyle.paddingBottom = containerPadding.bottom;
-        }
-        if(containerPadding !== undefined && containerPadding.left !== undefined) {
-            rowStyle.paddingLeft = containerPadding.left;
-        }
-        if(containerPadding !== undefined && containerPadding.right !== undefined) {
-            rowStyle.paddingRight = containerPadding.right;
-        }
+    if(containerPadding !== undefined && containerPadding.bottom !== undefined) {
+        style.paddingBottom = containerPadding.bottom;
+    }
+    if(containerPadding !== undefined && containerPadding.left !== undefined) {
+        style.paddingLeft = containerPadding.left;
+    }
+    if(containerPadding !== undefined && containerPadding.right !== undefined) {
+        style.paddingRight = containerPadding.right;
     }
     
     var styleChild = {};
@@ -515,7 +480,7 @@ export default function save( props ) {
     const rowClassName = hasEnhancedRowWrapper
         ? `row madeit-container-row rows-${ rowsCount }`
         : 'row';
-    const baseRowProps = hasEnhancedRowWrapper
+    const rowProps = hasEnhancedRowWrapper
         ? {
                 className: rowClassName,
                 'data-madeit-dir': dirDesktop,
@@ -525,19 +490,15 @@ export default function save( props ) {
         : {
                 className: rowClassName,
             };
-
-    const hasRowStyle = Object.keys( rowStyle ).length > 0;
-    const outerRowProps = hasRowStyle ? { ...baseRowProps, style: rowStyle } : baseRowProps;
-    const innerRowProps = baseRowProps;
     
     if(size === 'container-content-boxed') {
         return (
             <HtmlTag { ...blockProps }>
-                <div { ...outerRowProps }>
+                <div { ...rowProps }>
                     <div className="col">
                         <div className={ classesChild }
                             style = {styleChild}>
-                            <div { ...innerRowProps }>
+                            <div { ...rowProps }>
                                 { '\n\n' }
                                 <InnerBlocks.Content />
                                 { '\n\n' }
@@ -549,22 +510,6 @@ export default function save( props ) {
         );
     }
     else {
-        // Legacy markup: some older saved content had `.row` directly under the
-        // wrapper (no inner `.container`). When detected via `directRowClassName`
-        // (derived from stored HTML), serialize the same structure to avoid
-        // block validation errors.
-        if ( hasDirectRowWrapper ) {
-            return (
-                <HtmlTag { ...blockProps }>
-                    <div { ...outerRowProps }>
-                        { '\n\n' }
-                        <InnerBlocks.Content />
-                        { '\n\n' }
-                    </div>
-                </HtmlTag>
-            );
-        }
-
         const shouldWrapContent =
             outerSizeNormalized !== 'container' &&
             hasContentWidth &&
@@ -574,7 +519,7 @@ export default function save( props ) {
             return (
                 <HtmlTag { ...blockProps }>
                     <div className={ classesChild } style={ styleChild }>
-                        <div { ...outerRowProps }>
+                        <div { ...rowProps }>
                             { '\n\n' }
                             <InnerBlocks.Content />
                             { '\n\n' }
@@ -593,7 +538,7 @@ export default function save( props ) {
                             'container-fluid': contentWidthNormalized === 'container-fluid',
                         } ) }
                     >
-                        <div { ...outerRowProps }>
+                        <div { ...rowProps }>
                             { '\n\n' }
                             <InnerBlocks.Content />
                             { '\n\n' }
@@ -605,7 +550,7 @@ export default function save( props ) {
 
         return (
             <HtmlTag { ...blockProps }>
-                <div { ...outerRowProps }>
+                <div { ...rowProps }>
                     { '\n\n' }
                     <InnerBlocks.Content />
                     { '\n\n' }

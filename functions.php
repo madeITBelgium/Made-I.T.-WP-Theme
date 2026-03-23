@@ -1803,6 +1803,142 @@ if (!function_exists('madeit_extend_gutenberg')) {
     add_action('enqueue_block_editor_assets', 'madeit_extend_gutenberg');
 }
 
+// Font Library uploader in the block inspector (core Font Library API).
+add_action('enqueue_block_editor_assets', static function (): void {
+    $madeitFontUploaderPath = get_parent_theme_file_path('/inc/core/fontStyles/edit.js');
+    $madeitFontUploaderVer = null;
+    if ($madeitFontUploaderPath && file_exists($madeitFontUploaderPath)) {
+        $madeitFontUploaderVer = (string) filemtime($madeitFontUploaderPath);
+    } elseif (defined('MADEIT_VERSION')) {
+        $madeitFontUploaderVer = MADEIT_VERSION;
+    }
+
+    wp_enqueue_script(
+        'madeit-fontstyles-uploader',
+        get_parent_theme_file_uri('/inc/core/fontStyles/edit.js'),
+        [
+            'wp-hooks',
+            'wp-compose',
+            'wp-element',
+            'wp-components',
+            'wp-block-editor',
+            'wp-api-fetch',
+            'wp-i18n',
+        ],
+        $madeitFontUploaderVer,
+        true
+    );
+});
+
+// responsive.js for responsive block editor preview (editor-only; uses wp.* globals).
+add_action('enqueue_block_editor_assets', static function (): void {
+    $madeitResponsivePath = get_theme_file_path('/inc/core/fontStyles/responsive.js');
+    $madeitResponsiveVer = null;
+    if ($madeitResponsivePath && file_exists($madeitResponsivePath)) {
+        $madeitResponsiveVer = (string) filemtime($madeitResponsivePath);
+    } elseif (defined('MADEIT_VERSION')) {
+        $madeitResponsiveVer = MADEIT_VERSION;
+    }
+
+    wp_enqueue_script(
+        'madeit-responsive',
+        get_theme_file_uri('/inc/core/fontStyles/responsive.js'),
+        [
+            'wp-plugins',
+            'wp-hooks',
+            'wp-compose',
+            'wp-element',
+            'wp-components',
+            'wp-block-editor',
+            'wp-editor',
+            'wp-data',
+        ],
+        $madeitResponsiveVer,
+        true
+    );
+});
+
+// Frontend output for responsive typography (without altering saved post content).
+add_filter('render_block', static function (string $block_content, array $block): string {
+    if (is_admin()) {
+        return $block_content;
+    }
+
+    $blockName = $block['blockName'] ?? '';
+    if (!in_array($blockName, ['core/paragraph', 'core/heading'], true)) {
+        return $block_content;
+    }
+
+    $attrs = $block['attrs'] ?? [];
+    if (!is_array($attrs) || empty($attrs['madeitTypoClass'])) {
+        return $block_content;
+    }
+
+    $uniqueClass = sanitize_html_class((string) $attrs['madeitTypoClass']);
+    if ($uniqueClass === '') {
+        return $block_content;
+    }
+
+    $allowedUnits = ['rem', 'px', 'em'];
+    $build = static function (string $key, ?int $maxWidth) use ($attrs, $uniqueClass, $allowedUnits): string {
+        $t = $attrs[$key] ?? null;
+        if (!is_array($t) || empty($t['value'])) {
+            return '';
+        }
+
+        $value = (float) $t['value'];
+        if ($value <= 0) {
+            return '';
+        }
+
+        $unit = isset($t['unit']) && in_array((string) $t['unit'], $allowedUnits, true) ? (string) $t['unit'] : 'rem';
+        $num = rtrim(rtrim(sprintf('%.4F', $value), '0'), '.');
+        $size = $num . $unit;
+
+        $rule = '.' . $uniqueClass . '{font-size:' . $size . ';}';
+        if ($maxWidth) {
+            return '@media (max-width:' . (int) $maxWidth . 'px){' . $rule . '}';
+        }
+
+        return $rule;
+    };
+
+    $css = $build('typoTablet', 1024) . $build('typoMobile', 767);
+    if ($css === '') {
+        return $block_content;
+    }
+
+    // Inject class into the first tag (p or h1-h6) and prepend a style tag.
+    $withClass = preg_replace_callback(
+        '/^\s*<(p|h[1-6])\b([^>]*)>/i',
+        static function (array $m) use ($uniqueClass): string {
+            $tag = $m[1];
+            $attrText = $m[2] ?? '';
+
+            if (preg_match('/\bclass\s*=\s*(["\'])(.*?)\1/i', $attrText, $cm)) {
+                $existing = $cm[2] ?? '';
+                $classes = preg_split('/\s+/', trim($existing)) ?: [];
+                if (!in_array($uniqueClass, $classes, true)) {
+                    $classes[] = $uniqueClass;
+                }
+                $newClassAttr = 'class="' . esc_attr(trim(implode(' ', array_filter($classes)))) . '"';
+                $attrText = preg_replace('/\bclass\s*=\s*(["\'])(.*?)\1/i', ' ' . $newClassAttr, $attrText, 1);
+                return '<' . $tag . $attrText . '>';
+            }
+
+            return '<' . $tag . $attrText . ' class="' . esc_attr($uniqueClass) . '">';
+        },
+        $block_content,
+        1
+    );
+
+    if (!is_string($withClass) || $withClass === '') {
+        $withClass = $block_content;
+    }
+
+    return '<style>' . $css . '</style>' . $withClass;
+}, 10, 2);
+
 if (false && !function_exists('madeit_extend_gutenberg_css')) {
     function madeit_extend_gutenberg_css()
     {
@@ -2310,9 +2446,9 @@ if (file_exists(get_parent_theme_file_path('/inc/admin/admin-menu/admin-menu.php
 /**
  * Customizer
  */
-if(file_exists(get_parent_theme_file_path('/inc/admin/admin-menu/customizer.php'))) {
-    require get_parent_theme_file_path('/inc/admin/admin-menu/customizer.php');
-}
+// if(file_exists(get_parent_theme_file_path('/inc/admin/admin-menu/customizer.php'))) {
+//     require get_parent_theme_file_path('/inc/admin/admin-menu/customizer.php');
+// }
 
 
 /**

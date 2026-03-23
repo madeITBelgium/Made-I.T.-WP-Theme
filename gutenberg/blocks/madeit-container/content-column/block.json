@@ -22,8 +22,17 @@
     "editorStyle": "file:./build/index.css",
     "style": "file:./build/style-index.css",
     "attributes": {
+        "wrapperClassName": {
+            "type": "string",
+            "source": "attribute",
+            "selector": ".wp-block-madeit-block-content-column",
+            "attribute": "class"
+        },
         "verticalAlignment": {
             "type": "string"
+        },
+        "hasCustomVerticalAlignment": {
+            "type": "boolean"
         },
         "width": {
             "type": "number",

@@ -69,6 +69,7 @@ export function ColumnsEditContainer( props ) {
         contentWidth,
         containerMargin,
         containerPadding,
+        containerPaddingOnRow,
         rowMargin,
         rowPadding,
         containerBackgroundImage,
@@ -438,17 +439,41 @@ export function ColumnsEditContainer( props ) {
     if(containerMargin !== undefined && containerMargin.right !== undefined) {
         style.marginRight = containerMargin.right;
     }
-    if(containerPadding !== undefined && containerPadding.top !== undefined) {
-        style.paddingTop = containerPadding.top;
+
+    const shouldApplyContainerPaddingOnRow = containerPaddingOnRow === true;
+
+    // Legacy compatibility: existing content may have containerPadding serialized
+    // on the outer wrapper. Keep doing that unless explicitly migrated.
+    if ( ! shouldApplyContainerPaddingOnRow ) {
+        if(containerPadding !== undefined && containerPadding.top !== undefined) {
+            style.paddingTop = containerPadding.top;
+        }
+        if(containerPadding !== undefined && containerPadding.bottom !== undefined) {
+            style.paddingBottom = containerPadding.bottom;
+        }
+        if(containerPadding !== undefined && containerPadding.left !== undefined) {
+            style.paddingLeft = containerPadding.left;
+        }
+        if(containerPadding !== undefined && containerPadding.right !== undefined) {
+            style.paddingRight = containerPadding.right;
+        }
     }
-    if(containerPadding !== undefined && containerPadding.bottom !== undefined) {
-        style.paddingBottom = containerPadding.bottom;
-    }
-    if(containerPadding !== undefined && containerPadding.left !== undefined) {
-        style.paddingLeft = containerPadding.left;
-    }
-    if(containerPadding !== undefined && containerPadding.right !== undefined) {
-        style.paddingRight = containerPadding.right;
+
+    // New behaviour: apply containerPadding on `.madeit-container-row`.
+    var rowStyle = {};
+    if ( shouldApplyContainerPaddingOnRow ) {
+        if(containerPadding !== undefined && containerPadding.top !== undefined) {
+            rowStyle.paddingTop = containerPadding.top;
+        }
+        if(containerPadding !== undefined && containerPadding.bottom !== undefined) {
+            rowStyle.paddingBottom = containerPadding.bottom;
+        }
+        if(containerPadding !== undefined && containerPadding.left !== undefined) {
+            rowStyle.paddingLeft = containerPadding.left;
+        }
+        if(containerPadding !== undefined && containerPadding.right !== undefined) {
+            rowStyle.paddingRight = containerPadding.right;
+        }
     }
     
     var styleChild = {};
@@ -498,6 +523,21 @@ export function ColumnsEditContainer( props ) {
         'data-madeit-dir-tablet': flexDirectionTablet || undefined,
         'data-madeit-dir-mobile': flexDirectionMobile || undefined,
     });
+
+    // Auto-migrate legacy blocks: if containerPadding exists but the new
+    // containerPaddingOnRow flag was never set, switch it on so the next save
+    // serializes padding on `.madeit-container-row`.
+    useEffect( () => {
+        if ( containerPaddingOnRow === true ) return;
+        if ( ! containerPadding ) return;
+        const hasAnyPadding =
+            containerPadding.top !== undefined ||
+            containerPadding.bottom !== undefined ||
+            containerPadding.left !== undefined ||
+            containerPadding.right !== undefined;
+        if ( ! hasAnyPadding ) return;
+        setAttributes( { containerPaddingOnRow: true } );
+    }, [ containerPaddingOnRow, containerPadding, setAttributes ] );
     
     const [activeTab, setActiveTab] = useState('layout');
     const [ activeMaxWidthBreakpoint, setActiveMaxWidthBreakpoint ] = useState( 'desktop' );
@@ -1866,9 +1906,14 @@ export function ColumnsEditContainer( props ) {
         <HtmlTag { ...blockProps }>
             <div className={ classesChild }
             style = { styleChild }>
-                <InnerBlocks
-                    orientation="horizontal"
-                    allowedBlocks={ ALLOWED_BLOCKS } />
+                <div
+                    className={ `row madeit-container-row rows-${ columnsCount || 0 }` }
+                    style={ rowStyle }
+                >
+                    <InnerBlocks
+                        orientation="horizontal"
+                        allowedBlocks={ ALLOWED_BLOCKS } />
+                </div>
             </div>
         </HtmlTag>
     ];

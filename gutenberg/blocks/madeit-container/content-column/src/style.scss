@@ -59,8 +59,15 @@
 
         .wp-block-madeit-block-content-column {
             flex: auto 1 !important;
+
+            &.is-vertically-aligned-center {
+                align-content: center !important;
+            }
+            &.is-vertically-aligned-bottom {
+                align-content: flex-end !important;
+            }
         
-            .madeit-content-column__inner {
+            .madeit-content-column__inner { 
                 width: 100%;
                 align-content: var(--madeit-align-items-desktop, flex-start);
                 padding-inline: 0;

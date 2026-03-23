@@ -66,6 +66,221 @@ registerBlockType( metadata.name, {
     
     deprecated: [
         {
+            // Deprecated (ultra-legacy markup): keep the exact wrapper class
+            // string from stored HTML (including duplicates / legacy grid
+            // classes) when there is NO inner wrapper and NO `col-md-*`.
+            // This prevents block validation errors on very old content.
+            attributes: {
+                wrapperClassName: {
+                    type: 'string',
+                    source: 'attribute',
+                    selector: '.wp-block-madeit-block-content-column',
+                    attribute: 'class',
+                },
+                verticalAlignment: {
+                    type: 'string',
+                },
+                hasCustomVerticalAlignment: {
+                    type: 'boolean',
+                },
+                margin: {
+                    type: 'object',
+                },
+                padding: {
+                    type: 'object',
+                },
+            },
+            save: function( props ) {
+                const {
+                    wrapperClassName,
+                    margin,
+                    padding,
+                } = props.attributes;
+
+                const rawWrapperClassName =
+                    typeof wrapperClassName === 'string' && wrapperClassName.trim().length > 0
+                        ? wrapperClassName.trim()
+                        : typeof props?.className === 'string' && props.className.trim().length > 0
+                            ? props.className.trim()
+                            : '';
+
+                // Only target the legacy variants we know can be matched safely.
+                if ( rawWrapperClassName === '' || /\bcol-md-\d+\b/.test( rawWrapperClassName ) ) {
+                    return save( props );
+                }
+
+                const style = {};
+                if ( margin !== undefined && margin.top !== undefined ) {
+                    style.marginTop = margin.top;
+                }
+                if ( margin !== undefined && margin.bottom !== undefined ) {
+                    style.marginBottom = margin.bottom;
+                }
+                if ( padding !== undefined && padding.top !== undefined ) {
+                    style.paddingTop = padding.top;
+                }
+                if ( padding !== undefined && padding.bottom !== undefined ) {
+                    style.paddingBottom = padding.bottom;
+                }
+                if ( padding !== undefined && padding.left !== undefined ) {
+                    style.paddingLeft = padding.left;
+                }
+                if ( padding !== undefined && padding.right !== undefined ) {
+                    style.paddingRight = padding.right;
+                }
+
+                // Do NOT use useBlockProps.save here, as it may normalize
+                // className and break exact legacy matching.
+                return (
+                    <div className={ rawWrapperClassName } style={ style }>
+                        { '\n\n' }
+                        <InnerBlocks.Content />
+                        { '\n\n' }
+                    </div>
+                );
+            },
+        },
+        {
+            // Deprecated (previous current markup): same as the modern markup but
+            // WITHOUT `col-md-*` classes. Keep to avoid block validation errors.
+            save: function( props ) {
+                const {
+                    verticalAlignment,
+                    width,
+                    customBackgroundColor,
+                    backgroundColor,
+                    customTextColor,
+                    textColor,
+                    margin,
+                    padding,
+                    maxContainerSize,
+                    innerWrapperClassName,
+                } = props.attributes;
+
+                const { className } = props;
+
+                const defaultBlockClassName = 'wp-block-madeit-block-content-column';
+                const extraClasses = stripBackgroundClasses( className || '' )
+                    .split( /\s+/ )
+                    .filter( Boolean )
+                    .filter( ( token ) => token !== defaultBlockClassName )
+                    .filter( ( token ) => token !== 'has-text-color' )
+                    .filter( ( token ) => token !== 'keep-max-container-size' )
+                    .filter( ( token ) => token !== 'col-12' )
+                    .filter( ( token ) => ! /^col-(?:sm|md|lg|xl|xxl)-\d+$/.test( token ) )
+                    .filter( ( token ) => ! /^is-vertically-aligned-/.test( token ) )
+                    .join( ' ' );
+
+                const backgroundColorClass = backgroundColor
+                    ? getColorClassName( 'background-color', backgroundColor )
+                    : undefined;
+                const textColorClass = textColor
+                    ? getColorClassName( 'color', textColor )
+                    : undefined;
+
+                const widthRounded = Math.round( width );
+
+                const wrapperClasses = [
+                    defaultBlockClassName,
+                    verticalAlignment ? `is-vertically-aligned-${ verticalAlignment }` : null,
+                    'col-12',
+                    widthRounded ? `col-lg-${ widthRounded }` : null,
+                    extraClasses || null,
+                    maxContainerSize ? 'keep-max-container-size' : null,
+                    textColorClass ? 'has-text-color' : null,
+                    textColorClass || null,
+                ]
+                    .filter( Boolean )
+                    .join( ' ' );
+
+                const hasBackground = !! ( backgroundColorClass || customBackgroundColor );
+                const hasInnerWrapper = !! innerWrapperClassName;
+
+                const innerClasses = classnames( 'madeit-content-column__inner', {
+                    'has-background': backgroundColorClass,
+                    [ backgroundColorClass ]: backgroundColorClass,
+                } );
+
+                const style = {
+                    color: textColorClass ? undefined : customTextColor,
+                };
+                const innerStyle = {
+                    backgroundColor: backgroundColorClass
+                        ? undefined
+                        : customBackgroundColor,
+                };
+
+                if ( margin !== undefined && margin.top !== undefined ) {
+                    style.marginTop = margin.top;
+                }
+                if ( margin !== undefined && margin.bottom !== undefined ) {
+                    style.marginBottom = margin.bottom;
+                }
+                if ( padding !== undefined && padding.top !== undefined ) {
+                    style.paddingTop = padding.top;
+                }
+                if ( padding !== undefined && padding.bottom !== undefined ) {
+                    style.paddingBottom = padding.bottom;
+                }
+                if ( padding !== undefined && padding.left !== undefined ) {
+                    style.paddingLeft = padding.left;
+                }
+                if ( padding !== undefined && padding.right !== undefined ) {
+                    style.paddingRight = padding.right;
+                }
+
+                const blockProps = useBlockProps.save( {
+                    className: wrapperClasses,
+                    style,
+                } );
+
+                if ( ! hasBackground ) {
+                    return (
+                        <div { ...blockProps }>
+                            { '\n\n' }
+                            <InnerBlocks.Content />
+                            { '\n\n' }
+                        </div>
+                    );
+                }
+
+                if ( hasBackground && ! hasInnerWrapper ) {
+                    const legacyWrapperClasses = classnames( wrapperClasses, {
+                        'has-background': !! backgroundColorClass,
+                        [ backgroundColorClass ]: backgroundColorClass,
+                    } );
+
+                    const legacyStyle = {
+                        ...style,
+                        backgroundColor: backgroundColorClass
+                            ? undefined
+                            : customBackgroundColor,
+                    };
+
+                    const legacyBlockProps = useBlockProps.save( {
+                        className: legacyWrapperClasses,
+                        style: legacyStyle,
+                    } );
+
+                    return (
+                        <div { ...legacyBlockProps }>
+                            { '\n\n' }
+                            <InnerBlocks.Content />
+                            { '\n\n' }
+                        </div>
+                    );
+                }
+
+                return (
+                    <div { ...blockProps }>
+                        <div className={ innerClasses } style={ innerStyle }>
+                            <InnerBlocks.Content />
+                        </div>
+                    </div>
+                );
+            },
+        },
+        {
             // Deprecated (legacy markup): background classes were saved on the
             // outer wrapper and there was no `.madeit-content-column__inner`.
             // This must match older post content to avoid requiring recovery.

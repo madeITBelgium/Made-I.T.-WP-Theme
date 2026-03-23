@@ -55,6 +55,7 @@ function ColumnEdit( props ) {
     
     const {
         verticalAlignment,
+        hasCustomVerticalAlignment,
         width,
         margin,
         padding,
@@ -78,7 +79,7 @@ function ColumnEdit( props ) {
 
 
     const classes = classnames( outerClassName, classnames( 'block-core-columns', {
-        [ `is-vertically-aligned-${ verticalAlignment }` ]: verticalAlignment,
+        [ `is-vertically-aligned-${ verticalAlignment }` ]: !! hasCustomVerticalAlignment && !! verticalAlignment,
         [ `col-12` ]: true,
         [ `col-lg-${ widthRounded }` ]: Number.isFinite( widthRounded ),
         [ `is-width-${ widthRounded }` ]: Number.isFinite( widthRounded ),
@@ -186,6 +187,7 @@ function ColumnEdit( props ) {
                         onDeselect={ () => setPadding( undefined ) }
                     >
                         <BoxControl
+                            __next40pxDefaultSize
                             label={ __( 'Padding' ) }
                             onChange={ setPadding }
                             values={ padding }
@@ -198,6 +200,7 @@ function ColumnEdit( props ) {
                         onDeselect={ () => setMargin( undefined ) }
                     >
                         <BoxControl
+                            __next40pxDefaultSize
                             label={ __( 'Margin' ) }
                             onChange={ setMargin }
                             values={ margin }
@@ -230,7 +233,17 @@ export default compose(
                 const { getBlockRootClientId } = registry.select( 'core/block-editor' );
 
                 // Update own alignment.
-                setAttributes( { verticalAlignment } );
+                if ( verticalAlignment ) {
+                    setAttributes( {
+                        verticalAlignment,
+                        hasCustomVerticalAlignment: true,
+                    } );
+                } else {
+                    setAttributes( {
+                        verticalAlignment,
+                        hasCustomVerticalAlignment: false,
+                    } );
+                }
 
                 // Reset Parent Columns Block
                 const rootClientId = getBlockRootClientId( clientId );

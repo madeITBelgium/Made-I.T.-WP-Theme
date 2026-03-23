@@ -318,12 +318,14 @@ export default function Edit({ attributes, setAttributes, clientId }) {
                             {/* Hoogte instellingen */}
                             <div className="m_slider_height_value" style={{ display: 'flex', gap: '10px' }}>
                                 <UnitControl
+                                    __next40pxDefaultSize
                                     label={__('Hoogte', 'slider')}
                                     value={height}
                                     onChange={(val) => setAttributes({ height: val })}
                                     units={DIMENSION_UNITS}
                                 />
                                 <UnitControl
+                                    __next40pxDefaultSize
                                     label={__('Min hoogte', 'slider')}
                                     value={effectiveMinHeight}
                                     onChange={(val) => setAttributes({ minHeight: val })}
@@ -335,6 +337,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
                             <div className="m_slider_setting" style={{ display: 'flex', gap: '10px' }}>
                                 <div style={{ width: '30%' }}>
                                     <UnitControl
+                                        __next40pxDefaultSize
                                         label={__('Ruimte', 'slider')}
                                         value={attributes.spaceBetween || '10px' }
                                         onChange={(val) => setAttributes({ spaceBetween: val })}
@@ -427,6 +430,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
                                     />
                                     <div className="m-slider-border-preview" style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
                                         <UnitControl
+                                            __next40pxDefaultSize
                                             label={__('Border', 'slider')}
                                             value={navigationBorderWidth || '1px'}
                                             onChange={(val) => setAttributes({ navigationBorderWidth: val })}

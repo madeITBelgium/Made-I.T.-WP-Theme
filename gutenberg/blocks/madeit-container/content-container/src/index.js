@@ -24,6 +24,13 @@ import save from './save';
 import metadata from './../block.json';
 import icon from './icon';
 
+// Oude save versies importeren
+import saveV1 from './save-versions/save-v1';
+import savePaddingOnWrapper from './save-versions/save-padding-on-wrapper';
+import savePaddingOnWrapperMin from './save-versions/save-padding-on-wrapper-min';
+
+
+
 /**
  * Every block starts by registering a new block type definition.
  *
@@ -52,6 +59,7 @@ registerBlockType( metadata.name, {
                 alignItems: 'stretch',
                 justifyContent: 'flex-start',
                 flexWrap: 'nowrap',
+                containerPaddingOnRow: true,
                 columnsCount: 0,
                 rowGap: 20,
                 rowGapUnit: 'px',
@@ -78,6 +86,19 @@ registerBlockType( metadata.name, {
     save: save,
 
     deprecated: [
+        {
+            // Deprecated (2026-03-17):
+            // Same as the wrapper-padding legacy serializer, but without
+            // explicit whitespace text nodes. This helps match older saved
+            // content across different serialization histories.
+            save: savePaddingOnWrapperMin,
+        },
+        {
+            // Deprecated (2026-03-17):
+            // containerPadding used to be serialized on the outer wrapper
+            // instead of `.madeit-container-row`.
+            save: savePaddingOnWrapper,
+        },
         {
             // Deprecated (2026-03-09):
             // Boxed (`size: container`) used to serialize the container background
@@ -1916,169 +1937,10 @@ registerBlockType( metadata.name, {
             },
         },
         {
-
-            save: function( props ) {
-                const {
-                    verticalAlignment,
-                    containerBackgroundColor,
-                    customContainerBackgroundColor,
-                    size,
-                    rowBackgroundColor,
-                    rowTextColor,
-                    customRowBackgroundColor,
-                    customRowTextColor,
-                    containerMargin,
-                    containerPadding,
-                    rowMargin,
-                    rowPadding,
-                } = props.attributes;
-                
-                const {
-                    className
-                } = props
-                
-                const containerBackgroundColorClass = containerBackgroundColor ? getColorClassName( 'background-color', containerBackgroundColor ) : undefined;
-                const rowBackgroundColorClass = rowBackgroundColor ? getColorClassName( 'background-color', rowBackgroundColor ) : undefined;
-                const rowTextColorClass = rowTextColor ? getColorClassName( 'color', rowTextColor ) : undefined;
-                
-                var classes = className;
-                var classesChild = '';
-                
-            
-                
-                var defaultSize = size;
-                if(defaultSize !== 'container' && defaultSize !== 'container-fluid' && defaultSize !== 'container-content-boxed') {
-                    defaultSize = 'container';
-                }
-                
-                
-                classes = classnames( classes, {
-                    [ `container` ]: 'container' === defaultSize,
-                    [ `container-fluid` ]: 'container-fluid' === defaultSize || 'container-content-boxed' === defaultSize,
-                } );
-                
-                if(defaultSize !== 'container-content-boxed') {
-                    classes = classnames( classes, {
-                        [ `are-vertically-aligned-${ verticalAlignment }` ]: verticalAlignment && defaultSize !== 'container-content-boxed',
-                    } );
-                }
-                
-                classesChild = classnames( classesChild, {
-                    [ `are-vertically-aligned-${ verticalAlignment }` ]: verticalAlignment && defaultSize === 'container-content-boxed',
-                    [ `container` ]: 'container' === defaultSize || 'container-content-boxed' === defaultSize,
-                    [ `container-fluid` ]: 'container-fluid' === defaultSize,
-                } );
-                
-                classes = classnames(classes, {
-                    'has-text-color': rowTextColorClass,
-                    'has-background': containerBackgroundColorClass,
-                    [ containerBackgroundColorClass ]: containerBackgroundColorClass,
-                    [ rowTextColorClass ]: rowTextColorClass,
-                } );
-                
-                var style = {
-                    backgroundColor: containerBackgroundColorClass ? undefined : customContainerBackgroundColor,
-                };
-                
-                if(containerMargin !== undefined && containerMargin.top !== undefined) {
-                    style.marginTop = containerMargin.top;
-                }
-                if(containerMargin !== undefined && containerMargin.bottom !== undefined) {
-                    style.marginBottom = containerMargin.bottom;
-                }
-                    if(containerMargin !== undefined && containerMargin.left !== undefined) {
-                    style.marginLeft = containerMargin.left;
-                }
-                if(containerMargin !== undefined && containerMargin.right !== undefined) {
-                    style.marginRight = containerMargin.right;
-                }
-                if(containerPadding !== undefined && containerPadding.top !== undefined ) {
-                    style.paddingTop = containerPadding.top;
-                }
-                if(containerPadding !== undefined && containerPadding.bottom !== undefined) {
-                    style.paddingBottom = containerPadding.bottom;
-                }
-                if(containerPadding !== undefined && containerPadding.left !== undefined) {
-                    style.paddingLeft = containerPadding.left;
-                }
-                if(containerPadding !== undefined && containerPadding.right !== undefined) {
-                    style.paddingRight = containerPadding.right;
-                }
-                
-                var styleChild = {};
-                if(defaultSize === 'container-content-boxed') {
-                    classesChild = classnames(classesChild, {
-                        'has-text-color': rowTextColor !== undefined,
-                        'has-background': rowBackgroundColor !== undefined,
-                        [ rowBackgroundColorClass ]: rowBackgroundColor !== undefined,
-                        [ rowTextColorClass ]: rowTextColor !== undefined,
-                    } );
-                    
-                    styleChild = {
-                        backgroundColor: rowBackgroundColorClass ? undefined : rowBackgroundColor,
-                        color: rowTextColorClass ? undefined : rowTextColorClass
-                    };
-            
-                    if(rowMargin !== undefined && rowMargin.top !== undefined) {
-                        style.marginTop = rowMargin.top;
-                    }
-                    if(rowMargin !== undefined && rowMargin.bottom !== undefined) {
-                        style.marginBottom = rowMargin.bottom;
-                    }
-                    if(rowMargin !== undefined && rowMargin.left !== undefined) {
-                        style.marginLeft = rowMargin.left;
-                    }
-                    if(rowMargin !== undefined && rowMargin.right !== undefined) {
-                        style.marginRight = rowMargin.right;
-                    }
-                    if(rowPadding !== undefined && rowPadding.top !== undefined ) {
-                        style.paddingTop = rowPadding.top;
-                    }
-                    if(rowPadding !== undefined && rowPadding.bottom !== undefined) {
-                        style.paddingBottom = rowPadding.bottom;
-                    }
-                    if(rowPadding !== undefined && rowPadding.left !== undefined) {
-                        style.paddingLeft = rowPadding.left;
-                    }
-                    if(rowPadding !== undefined && rowPadding.right !== undefined) {
-                        style.paddingRight = rowPadding.right;
-                    }
-                }
-                else {
-                    style.color = rowTextColorClass ? undefined : rowTextColorClass;
-                }
-                
-                const blockProps = useBlockProps.save( {
-                    className: classes,
-                    style: style,
-                });
-                
-                if(size === 'container-content-boxed') {
-                    return (
-                        <div { ...blockProps }>
-                            <div className="row">
-                                <div className="col">
-                                    <div className={ classesChild }
-                                        style = {styleChild}>
-                                        <div className="row">
-                                            <InnerBlocks.Content />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    );
-                }
-                else {
-                    return (
-                        <div { ...blockProps }>
-                            <div class="row">
-                                <InnerBlocks.Content />
-                            </div>
-                        </div>
-                    );
-                }
-            },
+            /**
+             * Deprecated version (2026-02)
+             */
+            save: saveV1,
         },
         {
             supports: {

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/block.json",
-  "apiVersion": 2,
+  "apiVersion": 3,
   "name": "madeit/block-color-image",
   "title": "Made I.T. color image",
   "category": "madeit",

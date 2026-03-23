@@ -378,33 +378,46 @@ function madeit_can_manage_core_blocks(): bool
 
 function madeit_custom_block_slugs(): array
 {
-    $blocks_dir = function_exists('get_theme_file_path')
+    $theme_blocks_dir = function_exists('get_theme_file_path')
         ? get_theme_file_path('gutenberg/blocks')
         : (get_stylesheet_directory() . '/gutenberg/blocks');
 
-    if (!is_dir($blocks_dir)) {
-        return [];
-    }
+    $plugin_blocks_dir = WP_PLUGIN_DIR . '/forms-by-made-it/gutenberg';
 
     $slugs = [];
-    try {
-        $iterator = new DirectoryIterator($blocks_dir);
-    } catch (Exception $e) {
+    $dirs_to_scan = [];
+    if (is_dir($theme_blocks_dir)) {
+        $dirs_to_scan[] = $theme_blocks_dir;
+    }
+    if (is_dir($plugin_blocks_dir)) {
+        $dirs_to_scan[] = $plugin_blocks_dir;
+    }
+
+    if (empty($dirs_to_scan)) {
         return [];
     }
 
-    foreach ($iterator as $entry) {
-        if ($entry->isDot() || !$entry->isDir()) {
+    foreach ($dirs_to_scan as $scan_dir) {
+        try {
+            $dirIterator = new DirectoryIterator($scan_dir);
+        } catch (Exception $e) {
             continue;
         }
 
-        $slug = $entry->getBasename();
-        $register_file = $entry->getPathname() . '/register.php';
-        if (is_readable($register_file)) {
-            $slugs[] = $slug;
+        foreach ($dirIterator as $entry) {
+            if ($entry->isDot() || !$entry->isDir()) {
+                continue;
+            }
+
+            $slug = $entry->getBasename();
+            $register_file = $entry->getPathname() . '/register.php';
+            if (is_readable($register_file)) {
+                $slugs[] = $slug;
+            }
         }
     }
 
+    $slugs = array_values(array_unique($slugs));
     sort($slugs);
     return $slugs;
 }
@@ -489,7 +502,10 @@ function madeit_get_all_blocks(): array
         ? get_theme_file_path('gutenberg/blocks')
         : (get_stylesheet_directory() . '/gutenberg/blocks');
 
-    if (!is_dir($blocks_dir)) {
+    // Also include the Forms plugin main block (gutenberg/madeit-forms) in this overview.
+    $forms_plugin_block_dir = WP_PLUGIN_DIR . '/forms-by-made-it/gutenberg/madeit-forms';
+
+    if (!is_dir($blocks_dir) && !is_dir($forms_plugin_block_dir)) {
         return [];
     }
 
@@ -498,7 +514,15 @@ function madeit_get_all_blocks(): array
     $enabled_blocks = madeit_blocks_enabled(); // voor checks
     $stored_statuses = get_option('madeit_blocks_status', []); // status per block
 
-    foreach (glob(trailingslashit($blocks_dir) . '*', GLOB_ONLYDIR) as $dir) {
+    $dirs = [];
+    if (is_dir($blocks_dir)) {
+        $dirs = array_merge($dirs, glob(trailingslashit($blocks_dir) . '*', GLOB_ONLYDIR) ?: []);
+    }
+    if (is_dir($forms_plugin_block_dir)) {
+        $dirs[] = $forms_plugin_block_dir;
+    }
+
+    foreach ($dirs as $dir) {
         $slug = basename($dir);
         if ($slug === 'advanced-controls') {
             continue;
@@ -519,6 +543,10 @@ function madeit_get_all_blocks(): array
                 $title = $decoded['title'] ?? $title;
                 $description = $decoded['description'] ?? $description;
                 $icon = $decoded['icon'] ?? null;
+                // In block.json, `icon` can be a dashicon slug or object; this overview expects raw SVG.
+                if (is_string($icon) && strpos(ltrim($icon), '<') !== 0) {
+                    $icon = null;
+                }
                 $status = $decoded['status'] ?? 'normal'; // ← hier haal je het uit JSON
                 $version = $decoded['version'] ?? null;
                 $madeit  = $decoded['madeit'] ?? [];

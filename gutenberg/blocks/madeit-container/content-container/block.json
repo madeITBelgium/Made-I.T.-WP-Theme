@@ -29,7 +29,7 @@
         "directRowClassName": {
             "type": "string",
             "source": "attribute",
-            "selector": ":scope > .row",
+            "selector": ".wp-block-madeit-block-content > .row",
             "attribute": "class"
         },
         "verticalAlignment": {
@@ -71,6 +71,9 @@
         },
         "containerPadding": {
             "type": "object"
+        },
+        "containerPaddingOnRow": {
+            "type": "boolean"
         },
         "rowBackgroundColor": {
             "type": "string"
