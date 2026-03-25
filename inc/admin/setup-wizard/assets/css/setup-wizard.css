@@ -93,6 +93,8 @@ html.wp-toolbar.madeit-setup-wizard-fullscreen {
     font-size: 14px;
     border-radius: 6px;
     box-shadow: 0 6px 18px rgba(58, 81, 129, 0.3);
+}
+.madeit-setup-content .button-primary.center {
     margin: auto auto 50px auto;
 }
 .madeit-setup-content .button-primaryGroup {

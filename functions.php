@@ -200,7 +200,7 @@ if (!defined('MADEIT_TRACKING_IDS')) {
 
 // Added in 3.0.0
 if(!defined('MADEIT_SETUP_WIZARD')) {
-    define('MADEIT_SETUP_WIZARD', false);
+    define('MADEIT_SETUP_WIZARD', true);
 }
 
 if(!defined('MADEIT_NAME')) {
@@ -2572,6 +2572,8 @@ add_filter('rest_endpoints', function ($endpoints) {
 if(MADEIT_FEEDBACK) {
     require get_parent_theme_file_path('/inc/feedback.php');
 }
+
+require get_parent_theme_file_path('/inc/ai.php');
 
 if (MADEIT_ADMIN_CHAT) {
     require get_parent_theme_file_path('/inc/admin-chat.php');
