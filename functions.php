@@ -2440,9 +2440,11 @@ if (in_array('woocommerce/woocommerce.php', $activePlugins) && in_array('sfwd-lm
 /**
  * Admin Menu Editor.
  */
+/*
 if (file_exists(get_parent_theme_file_path('/inc/admin-menu-editor.php'))) {
     require get_parent_theme_file_path('/inc/admin-menu-editor.php');
 }
+*/
 if (file_exists(get_parent_theme_file_path('/inc/admin/admin-menu/admin-menu.php'))) {
     require get_parent_theme_file_path('/inc/admin/admin-menu/admin-menu.php');
 }
