@@ -298,6 +298,7 @@ $breakpoints: (
                 display: flex;
                 align-items: var(--madeit-align-items-desktop, stretch);
                 justify-content: var(--madeit-justify-content-desktop, flex-start);
+                width: 100%;
 
                 > .block-editor-block-list__layout {
                     // max-width: var(--madeit-max-width-desktop);

@@ -329,54 +329,33 @@ export default function save( props ) {
         // when a desktop rowGap is explicitly set.
         const hasRowGapDesktop = typeof rowGap === 'number';
         if ( hasRowGapDesktop ) {
-            const rowGapDesktopCss = `${ rowGap }${ rowGapUnit || 'px' }`;
-            if ( rowGapDesktopCss !== '20px' ) {
-                style['--madeit-row-gap-desktop'] = rowGapDesktopCss;
-            }
+            style['--madeit-row-gap-desktop'] = `${ rowGap }${ rowGapUnit || 'px' }`;
 
             if ( typeof rowGapTablet === 'number' ) {
-                const rowGapTabletCss = `${ rowGapTablet }${ rowGapUnitTablet || 'px' }`;
-                if ( rowGapTabletCss !== '20px' ) {
-                    style['--madeit-row-gap-tablet'] = rowGapTabletCss;
-                }
+                style['--madeit-row-gap-tablet'] = `${ rowGapTablet }${
+                    rowGapUnitTablet || 'px'
+                }`;
             }
             if ( typeof rowGapMobile === 'number' ) {
-                const rowGapMobileCss = `${ rowGapMobile }${ rowGapUnitMobile || 'px' }`;
-                if ( rowGapMobileCss !== '20px' ) {
-                    style['--madeit-row-gap-mobile'] = rowGapMobileCss;
-                }
+                style['--madeit-row-gap-mobile'] = `${ rowGapMobile }${
+                    rowGapUnitMobile || 'px'
+                }`;
             }
     }
 
     // Responsive flex-direction via CSS variables (only if explicitly set).
-    if (
-        typeof flexDirection === 'string' &&
-        flexDirection.length > 0 &&
-        flexDirection !== 'row'
-    ) {
+    if ( typeof flexDirection === 'string' && flexDirection.length > 0 ) {
         style['--madeit-flex-direction-desktop'] = flexDirection;
     }
-    if (
-        typeof flexDirectionTablet === 'string' &&
-        flexDirectionTablet.length > 0 &&
-        flexDirectionTablet !== 'column'
-    ) {
+    if ( typeof flexDirectionTablet === 'string' && flexDirectionTablet.length > 0 ) {
         style['--madeit-flex-direction-tablet'] = flexDirectionTablet;
     }
-    if (
-        typeof flexDirectionMobile === 'string' &&
-        flexDirectionMobile.length > 0 &&
-        flexDirectionMobile !== 'column'
-    ) {
+    if ( typeof flexDirectionMobile === 'string' && flexDirectionMobile.length > 0 ) {
         style['--madeit-flex-direction-mobile'] = flexDirectionMobile;
     }
 
     // Responsive align-items / justify-content via CSS variables (only if explicitly set).
-    if (
-        typeof alignItems === 'string' &&
-        alignItems.length > 0 &&
-        alignItems !== 'stretch'
-    ) {
+    if ( typeof alignItems === 'string' && alignItems.length > 0 ) {
         style['--madeit-align-items-desktop'] = alignItems;
     }
     if ( typeof alignItemsTablet === 'string' && alignItemsTablet.length > 0 ) {
@@ -386,11 +365,7 @@ export default function save( props ) {
         style['--madeit-align-items-mobile'] = alignItemsMobile;
     }
 
-    if (
-        typeof justifyContent === 'string' &&
-        justifyContent.length > 0 &&
-        justifyContent !== 'flex-start'
-    ) {
+    if ( typeof justifyContent === 'string' && justifyContent.length > 0 ) {
         style['--madeit-justify-content-desktop'] = justifyContent;
     }
     if ( typeof justifyContentTablet === 'string' && justifyContentTablet.length > 0 ) {
@@ -401,11 +376,7 @@ export default function save( props ) {
     }
 
     // Responsive flex-wrap via CSS variables (only if explicitly set).
-    if (
-        typeof flexWrap === 'string' &&
-        flexWrap.length > 0 &&
-        flexWrap !== 'nowrap'
-    ) {
+    if ( typeof flexWrap === 'string' && flexWrap.length > 0 ) {
         style['--madeit-flex-wrap-desktop'] = flexWrap;
     }
     if ( typeof flexWrapTablet === 'string' && flexWrapTablet.length > 0 ) {

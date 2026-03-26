@@ -28,6 +28,18 @@ import icon from './icon';
 import saveV1 from './save-versions/save-v1';
 import savePaddingOnWrapper from './save-versions/save-padding-on-wrapper';
 import savePaddingOnWrapperMin from './save-versions/save-padding-on-wrapper-min';
+import save2026_03_26 from './save-versions/save-2026-03-26';
+
+const logDeprecated20260326 = (stage, details = {}) => {
+    if (typeof window === 'undefined') {
+        return;
+    }
+
+    // Debug only: this helps verify deprecation matching/migration flow.
+    // Enable by running in browser console:
+    // window.__madeitDeprecatedLogEnabled = true
+    console.info('[madeit/block-content][deprecated 2026-03-26]', stage, details);
+};
 
 
 
@@ -86,6 +98,59 @@ registerBlockType( metadata.name, {
     save: save,
 
     deprecated: [
+        {
+            /** Deprecated (2026-03-26):
+             * - Remove default css variables
+             */
+            isEligible: function( attributes ) {
+                const hasLegacyDefaultVars =
+                    typeof attributes?.rowGap === 'number' ||
+                    typeof attributes?.rowGapTablet === 'number' ||
+                    typeof attributes?.rowGapMobile === 'number' ||
+                    typeof attributes?.flexDirection === 'string' ||
+                    typeof attributes?.flexDirectionTablet === 'string' ||
+                    typeof attributes?.flexDirectionMobile === 'string' ||
+                    typeof attributes?.alignItems === 'string' ||
+                    typeof attributes?.justifyContent === 'string' ||
+                    typeof attributes?.flexWrap === 'string';
+
+                logDeprecated20260326(
+                    hasLegacyDefaultVars ? 'isEligible=true' : 'isEligible=false',
+                    {
+                        rowGap: attributes?.rowGap,
+                        rowGapTablet: attributes?.rowGapTablet,
+                        rowGapMobile: attributes?.rowGapMobile,
+                        flexDirection: attributes?.flexDirection,
+                        flexDirectionTablet: attributes?.flexDirectionTablet,
+                        flexDirectionMobile: attributes?.flexDirectionMobile,
+                        alignItems: attributes?.alignItems,
+                        justifyContent: attributes?.justifyContent,
+                        flexWrap: attributes?.flexWrap,
+                    }
+                );
+
+                return hasLegacyDefaultVars;
+            },
+            save: function( props ) {
+                logDeprecated20260326('save-called');
+                return save2026_03_26( props );
+            },
+            migrate: function( attributes ) {
+                logDeprecated20260326('migrate-called', {
+                    rowGap: attributes?.rowGap,
+                    rowGapTablet: attributes?.rowGapTablet,
+                    rowGapMobile: attributes?.rowGapMobile,
+                    flexDirection: attributes?.flexDirection,
+                    flexDirectionTablet: attributes?.flexDirectionTablet,
+                    flexDirectionMobile: attributes?.flexDirectionMobile,
+                    alignItems: attributes?.alignItems,
+                    justifyContent: attributes?.justifyContent,
+                    flexWrap: attributes?.flexWrap,
+                });
+
+                return attributes;
+            },
+        },
         {
             // Deprecated (2026-03-17):
             // Same as the wrapper-padding legacy serializer, but without

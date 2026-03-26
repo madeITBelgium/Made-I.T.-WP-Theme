@@ -87,6 +87,16 @@ $grid-size-large: 16px;
 	margin-right: auto;
 
 	&.madeit-block-content--frontend {
+		--madeit-row-gap-desktop: 20px;
+		--madeit-row-gap-tablet: 20px;
+		--madeit-row-gap-mobile: 20px;
+		--madeit-flex-direction-desktop: row;
+		--madeit-flex-direction-tablet: column;
+		--madeit-flex-direction-mobile: column;
+		--madeit-align-items-desktop: stretch;
+		--madeit-justify-content-desktop: flex-start;
+		--madeit-flex-wrap-desktop: nowrap;
+
 		width: calc(100% - var(--margin-left-desktop, 0) - var(--margin-right-desktop, 0));	
 	}
 
