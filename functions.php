@@ -207,6 +207,10 @@ if(!defined('MADEIT_NAME')) {
     define('MADEIT_NAME', 'Made I.T.');
 }
 
+if(!defined('MADEIT_RESTRICT_EDITOR')) {
+    define('MADEIT_RESTRICT_EDITOR', true);
+}
+
 if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
     require get_template_directory().'/inc/back-compat.php';
     return;
@@ -2567,7 +2571,50 @@ add_filter('rest_endpoints', function ($endpoints) {
     return $endpoints;
 });
 
+if(defined('MADEIT_RESTRICT_EDITOR') && MADEIT_RESTRICT_EDITOR) {
+    add_action('enqueue_block_editor_assets', function() {
+        $allowedPostTypes = ['page'];
 
+        if (defined('MADEIT_RESTRICT_EDITOR_POST_TYPES')) {
+            if (is_array(MADEIT_RESTRICT_EDITOR_POST_TYPES)) {
+                $allowedPostTypes = MADEIT_RESTRICT_EDITOR_POST_TYPES;
+            } elseif (is_string(MADEIT_RESTRICT_EDITOR_POST_TYPES)) {
+                $allowedPostTypes = array_map('trim', explode(',', MADEIT_RESTRICT_EDITOR_POST_TYPES));
+            }
+        }
+
+        $allowedPostTypes = apply_filters('madeit_restrict_editor_post_types', $allowedPostTypes);
+        $allowedPostTypes = array_values(array_filter(array_map('sanitize_key', (array) $allowedPostTypes)));
+
+        if (empty($allowedPostTypes)) {
+            return;
+        }
+
+        $screen = function_exists('get_current_screen') ? get_current_screen() : null;
+        $currentPostType = ($screen && !empty($screen->post_type)) ? (string) $screen->post_type : '';
+
+        if ($currentPostType === '' && isset($_GET['post_type'])) {
+            $currentPostType = sanitize_key((string) $_GET['post_type']);
+        }
+
+        if ($currentPostType === '' && isset($_GET['post'])) {
+            $currentPost = get_post((int) $_GET['post']);
+            if ($currentPost instanceof WP_Post) {
+                $currentPostType = (string) $currentPost->post_type;
+            }
+        }
+
+        if (!in_array($currentPostType, $allowedPostTypes, true)) {
+            return;
+        }
+
+        wp_enqueue_script(
+            'madeit-editor-restrict',
+            get_template_directory_uri() . '/assets/js/editor-restrict-blocks.js',
+            ['wp-data','wp-hooks','wp-dom-ready','wp-edit-post']
+        );
+    });
+}
 
 if(MADEIT_FEEDBACK) {
     require get_parent_theme_file_path('/inc/feedback.php');

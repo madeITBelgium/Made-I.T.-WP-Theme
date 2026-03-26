@@ -122,7 +122,6 @@ export default function save( props ) {
 
     // Legacy markup: no inner wrapper when no background.
     if ( ! hasBackground ) {
-        console.log('Save Column, ' + className + ': POS 1');
         return (
             <div { ...blockProps }>
                 { '\n\n' }
@@ -152,7 +151,6 @@ export default function save( props ) {
                 style: legacyStyle,
             };
 
-            console.log('Save Column, ' + className + ': POS 2');
             return (
                 <div { ...legacyBlockProps }>
                     { '\n\n' }
@@ -177,7 +175,6 @@ export default function save( props ) {
             style: legacyStyle,
         };
 
-        console.log('Save Column, ' + className + ': POS 3');
         return (
             <div { ...legacyBlockProps }>
                 { '\n\n' }
@@ -187,7 +184,6 @@ export default function save( props ) {
         );
     }
 
-    console.log('Save Column, ' + className + ': POS 4'); 
     return (
         <div { ...blockProps }>
             <div className={ innerClasses } style={ innerStyle }>

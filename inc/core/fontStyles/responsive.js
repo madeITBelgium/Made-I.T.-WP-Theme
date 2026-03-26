@@ -6,8 +6,8 @@
 const { addFilter } = wp.hooks;
 const { createHigherOrderComponent } = wp.compose;
 const { Fragment, createElement, useEffect, useState } = wp.element;
-const blockEditor = wp.blockEditor || wp.editor;
-const { InspectorControls } = blockEditor;
+//const blockEditor = wp.blockEditor || wp.editor;
+const { InspectorControls } = wp.blockEditor; // = blockEditor;
 
 const {
     RangeControl,

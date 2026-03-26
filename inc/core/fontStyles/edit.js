@@ -5,8 +5,8 @@ const { createHigherOrderComponent } = wp.compose;
 const { Fragment, useState, useEffect, createElement } = wp.element;
 const apiFetch = wp.apiFetch;
 
-const blockEditor = wp.blockEditor || wp.editor;
-const { InspectorControls } = blockEditor;
+//const blockEditor = wp.blockEditor || wp.editor;
+const { InspectorControls } = wp.blockEditor; //= blockEditor;
 
 const {
     PanelBody,

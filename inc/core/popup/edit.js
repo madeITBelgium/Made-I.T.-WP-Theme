@@ -1,7 +1,7 @@
 const { ToolbarButton, ToolbarGroup, Modal } = wp.components;
 
-const blockEditor = wp.blockEditor || wp.editor;
-const { BlockControls } = blockEditor;
+//const blockEditor = wp.blockEditor || wp.editor;
+const { BlockControls } = wp.blockEditor; //= blockEditor;
 
 const TARGET_BLOCK = 'core/button';
 

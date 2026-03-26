@@ -56,6 +56,8 @@ function madeit_get_default_admin_menu_order()
 
         // Woocomerce & shop manager
         'woocommerce', // WooCommerce
+        'edit.php?post_type=product', // Products
+        'admin.php?page=wc-settings&tab=checkout&from=PAYMENTS_MENU_ITEM', // Payments settings (WooCommerce 4.5+)
         'madeit_shoppingmanager', // Made I.T. Shopping Manager
         'admin.php?page=wc-admin&path=%2Fmarketing', // Marketing (WooCommerce 4.5+)
         'admin.php?page=wc-admin&path=%2Fanalytics', // Analytics (WooCommerce 4.5+)
@@ -74,7 +76,7 @@ function madeit_get_default_admin_menu_order()
 
     // Add WooCommerce separator only if WooCommerce is active
     if (class_exists('WooCommerce')) {
-        array_splice($order, 12, 0, ['madeit-separator-shop']);
+        //array_splice($order, 12, 0, ['madeit-separator-shop']);
     }
 
     return $order;
