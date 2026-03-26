@@ -392,6 +392,7 @@ export default function save( props ) {
     if(containerMargin !== undefined && containerMargin.bottom !== undefined) {
         style.marginBottom = containerMargin.bottom;
     }
+    /*
     if(containerMargin !== undefined && containerMargin.left !== undefined) {
         style.marginLeft = containerMargin.left;
         style['--margin-left-desktop'] = containerMargin.left;
@@ -400,6 +401,7 @@ export default function save( props ) {
         style.marginRight = containerMargin.right;
         style['--margin-right-desktop'] = containerMargin.right;
     }
+        */
 
     const shouldApplyContainerPaddingOnRow = containerPaddingOnRow === true;
 

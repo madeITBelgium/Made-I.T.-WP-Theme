@@ -1679,7 +1679,7 @@ export function ColumnsEditContainer( props ) {
                                     label={ __( 'Padding' ) }
                                     onChange={ setContainerPadding }
                                     values={ containerPadding }
-                                    allowReset={ false }
+                                    allowReset={ true }
                                 />
                             </div>
 
@@ -1690,9 +1690,9 @@ export function ColumnsEditContainer( props ) {
                                     label={ __( 'Margin' ) }
                                     onChange={ setContainerMargin }
                                     values={ containerMargin }
-                                    allowReset={ false }
+                                    allowReset={ true }
                                     inputProps={ { min: -1000, max: 1000 } }
-                                    sides={ [ 'top', 'bottom', 'left', 'right' ] }
+                                    sides={ [ 'top', 'bottom' ] }
                                 />
                             </div>
                         </PanelBody>
