@@ -11,14 +11,5 @@ if (!defined('ABSPATH')) {
 
 if (MADEIT_ADVANCED_BLOCKS) {
     require get_parent_theme_file_path('/gutenberg/container/plugin.php');
+    require get_parent_theme_file_path('/gutenberg/container-simple/plugin.php');
 }
-
-require get_parent_theme_file_path('/gutenberg/container-simple/plugin.php');
-// Legacy carousel intentionally not loaded; migrate existing content to madeit/slider.
-
-//TODO: cleanup code
-//require get_parent_theme_file_path('/gutenberg/tabs/plugin.php');
-//require get_parent_theme_file_path('/gutenberg/color-image-block/plugin.php');
-//require get_parent_theme_file_path('/gutenberg/content/plugin.php');
-//require get_parent_theme_file_path('/gutenberg/card/plugin.php');
-//require get_parent_theme_file_path('/gutenberg/carousel/plugin.php');
