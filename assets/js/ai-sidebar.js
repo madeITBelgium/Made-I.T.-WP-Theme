@@ -760,6 +760,129 @@ function buildLanguageCheckSnapshot(blocks) {
     }));
 }
 
+function countMissingImageAlts(blocks) {
+    if (!Array.isArray(blocks)) {
+        return 0;
+    }
+
+    return blocks.reduce((count, block) => {
+        const isImageBlock = block?.name === "core/image";
+        const url = String(block?.attributes?.url || "").trim();
+        const alt = String(block?.attributes?.alt || "").trim();
+        const hasImageSource = url !== "";
+        const ownCount = isImageBlock && hasImageSource && alt === "" ? 1 : 0;
+        return count + ownCount + countMissingImageAlts(block?.innerBlocks || []);
+    }, 0);
+}
+
+function flattenBlocksForContext(blocks, flat = []) {
+    if (!Array.isArray(blocks)) {
+        return flat;
+    }
+
+    blocks.forEach((block) => {
+        const attrs = block?.attributes || {};
+        const contentFields = ["content", "caption", "title", "text", "value", "values"];
+
+        contentFields.forEach((field) => {
+            if (typeof attrs[field] === "string") {
+                const text = stripHtml(attrs[field]);
+                if (text) {
+                    flat.push({ type: "text", text });
+                }
+            }
+        });
+
+        if (block?.name === "core/image") {
+            flat.push({
+                type: "image",
+                clientId: block.clientId,
+                url: String(attrs.url || ""),
+                alt: String(attrs.alt || ""),
+                caption: stripHtml(String(attrs.caption || "")),
+            });
+        }
+
+        flattenBlocksForContext(block?.innerBlocks || [], flat);
+    });
+
+    return flat;
+}
+
+function collectMissingAltTasks(blocks) {
+    const flat = flattenBlocksForContext(blocks);
+    const tasks = [];
+
+    flat.forEach((entry, index) => {
+        if (entry.type !== "image") {
+            return;
+        }
+
+        if (!entry.url || entry.alt.trim() !== "") {
+            return;
+        }
+
+        const contextParts = [];
+        for (let i = index - 1; i >= 0 && contextParts.length < 2; i -= 1) {
+            if (flat[i].type === "text") {
+                contextParts.unshift(flat[i].text);
+            }
+        }
+
+        for (let i = index + 1; i < flat.length && contextParts.length < 4; i += 1) {
+            if (flat[i].type === "text") {
+                contextParts.push(flat[i].text);
+            }
+        }
+
+        tasks.push({
+            clientId: entry.clientId,
+            url: entry.url,
+            caption: entry.caption,
+            contextText: contextParts.join("\n"),
+        });
+    });
+
+    return tasks;
+}
+
+function extractResponseText(payload) {
+    if (!payload) {
+        return "";
+    }
+
+    if (typeof payload.output_text === "string") {
+        return payload.output_text.trim();
+    }
+
+    if (Array.isArray(payload.output)) {
+        const textParts = [];
+        payload.output.forEach((item) => {
+            if (Array.isArray(item?.content)) {
+                item.content.forEach((part) => {
+                    if (typeof part?.text === "string") {
+                        textParts.push(part.text);
+                    }
+                });
+            }
+        });
+
+        if (textParts.length > 0) {
+            return textParts.join("\n").trim();
+        }
+    }
+
+    return String(payload?.choices?.[0]?.message?.content || "").trim();
+}
+
+function sanitizeAltText(text) {
+    return String(text || "")
+        .replace(/^['"]+|['"]+$/g, "")
+        .replace(/\s+/g, " ")
+        .trim()
+        .slice(0, 125);
+}
+
 const SIDEBAR_MODULES = {
     languageCheck: {
         key: "languageCheck",
@@ -773,6 +896,11 @@ const SIDEBAR_MODULES = {
         key: "chat",
         label: __("Chat", "madeit"),
         description: __("Vraag AI om contentblokken te genereren voor je pagina.", "madeit"),
+    },
+    altTags: {
+        key: "altTags",
+        label: __("ALT tags", "madeit"),
+        description: __("Vul ontbrekende alt-teksten voor afbeeldingen automatisch aan.", "madeit"),
     },
 };
 
@@ -1078,6 +1206,105 @@ function LanguageCheckModule({
     );
 }
 
+function AltTagsModule({
+    missingAltCount,
+    isLoading,
+    altProgress,
+    altSummary,
+    handleGenerateAltTags,
+}) {
+    const progressPercent = altProgress.total > 0
+        ? Math.round((altProgress.done / altProgress.total) * 100)
+        : 0;
+
+    return React.createElement(
+        Fragment,
+        null,
+        React.createElement(
+            "div",
+            { className: "madeit-alt-module" },
+            React.createElement(
+                "p",
+                { className: "madeit-alt-intro" },
+                __(
+                    "Deze module zoekt afbeeldingen zonder alt-tag en vult ze een voor een in via AI.",
+                    "madeit"
+                )
+            ),
+            React.createElement(
+                "p",
+                { className: "madeit-alt-meta" },
+                __("Afbeeldingen zonder alt:", "madeit") + " " + String(missingAltCount)
+            ),
+            React.createElement(
+                "div",
+                { className: "madeit-alt-actions" },
+                React.createElement(
+                    Button,
+                    {
+                        variant: "primary",
+                        onClick: handleGenerateAltTags,
+                        isBusy: isLoading,
+                        disabled: isLoading || missingAltCount === 0,
+                    },
+                    isLoading ? __("Bezig...", "madeit") : __("Start", "madeit")
+                )
+            ),
+            (isLoading || altProgress.total > 0) &&
+                React.createElement(
+                    "div",
+                    { className: "madeit-alt-progress" },
+                    React.createElement(
+                        "div",
+                        { className: "madeit-alt-progress-head" },
+                        React.createElement(
+                            "span",
+                            null,
+                            __("Voortgang", "madeit") +
+                                ": " +
+                                String(altProgress.done) +
+                                "/" +
+                                String(altProgress.total)
+                        ),
+                        React.createElement("span", null, String(progressPercent) + "%")
+                    ),
+                    React.createElement(
+                        "div",
+                        { className: "madeit-alt-progress-track" },
+                        React.createElement("div", {
+                            className: "madeit-alt-progress-bar",
+                            style: { width: String(progressPercent) + "%" },
+                        })
+                    ),
+                    altProgress.current &&
+                        React.createElement(
+                            "p",
+                            { className: "madeit-alt-progress-current" },
+                            altProgress.current
+                        )
+                ),
+            altSummary.total > 0 &&
+                React.createElement(
+                    "p",
+                    { className: "madeit-alt-summary" },
+                    __("Klaar", "madeit") +
+                        ": " +
+                        String(altSummary.updated) +
+                        " " +
+                        __("aangepast", "madeit") +
+                        ", " +
+                        String(altSummary.skipped) +
+                        " " +
+                        __("overgeslagen", "madeit") +
+                        ", " +
+                        String(altSummary.failed) +
+                        " " +
+                        __("fouten", "madeit")
+                )
+        )
+    );
+}
+
 function SidebarContent({
     selectedModule,
     onSelectModule,
@@ -1094,6 +1321,10 @@ function SidebarContent({
     handleLanguageCheck,
     handleAcceptIssue,
     handleFocusIssue,
+    missingAltCount,
+    altProgress,
+    altSummary,
+    handleGenerateAltTags,
 }) {
     return React.createElement(
         PluginSidebar,
@@ -1118,6 +1349,14 @@ function SidebarContent({
                       handleLanguageCheck,
                       handleAcceptIssue,
                       handleFocusIssue,
+                  })
+                : selectedModule === SIDEBAR_MODULES.altTags.key
+                ? React.createElement(AltTagsModule, {
+                      missingAltCount,
+                      isLoading,
+                      altProgress,
+                      altSummary,
+                      handleGenerateAltTags,
                   })
                 : React.createElement(ChatModule, {
                       uiChat,
@@ -1148,6 +1387,9 @@ registerPlugin("madeit-chatbot-sidebar", {
         const [languageResult, setLanguageResult] = useState("");
         const [languageIssues, setLanguageIssues] = useState([]);
         const [acceptedIssues, setAcceptedIssues] = useState({});
+        const [missingAltCount, setMissingAltCount] = useState(0);
+        const [altProgress, setAltProgress] = useState({ total: 0, done: 0, current: "" });
+        const [altSummary, setAltSummary] = useState({ total: 0, updated: 0, skipped: 0, failed: 0 });
         const [blockCount, setBlockCount] = useState(0);
         const [isLoading, setIsLoading] = useState(false);
         const [error, setError] = useState(null);
@@ -1178,6 +1420,7 @@ registerPlugin("madeit-chatbot-sidebar", {
             const getCurrentCount = () => {
                 const blocks = wp.data.select("core/block-editor").getBlocks() || [];
                 setBlockCount(blocks.length);
+                setMissingAltCount(countMissingImageAlts(blocks));
             };
 
             getCurrentCount();
@@ -1299,6 +1542,126 @@ registerPlugin("madeit-chatbot-sidebar", {
                 setIsLoading(false);
                 setAbortController(null);
             }
+        };
+
+        const handleGenerateAltTags = async () => {
+            if (isLoading) {
+                cancelActiveRequest();
+                return;
+            }
+
+            const blockEditorSelect = wp.data.select("core/block-editor");
+            const blocks = blockEditorSelect.getBlocks() || [];
+            const tasks = collectMissingAltTasks(blocks);
+
+            if (tasks.length === 0) {
+                createErrorNotice(__("Er zijn geen afbeeldingen zonder alt-tag gevonden.", "madeit"), {
+                    type: "default",
+                });
+                return;
+            }
+
+            setIsLoading(true);
+            setAltSummary({ total: tasks.length, updated: 0, skipped: 0, failed: 0 });
+            setAltProgress({ total: tasks.length, done: 0, current: "" });
+
+            const controller =
+                typeof AbortController === "undefined" ? undefined : new AbortController();
+
+            setAbortController(controller || null);
+
+            let updated = 0;
+            let skipped = 0;
+            let failed = 0;
+
+            for (let i = 0; i < tasks.length; i += 1) {
+                const task = tasks[i];
+
+                setAltProgress({
+                    total: tasks.length,
+                    done: i,
+                    current: __("Afbeelding", "madeit") + " " + String(i + 1),
+                });
+
+                try {
+                    const responsePayload = await wp.apiFetch({
+                        path: "/madeit-ai/v1/responses",
+                        method: "POST",
+                        data: {
+                            input: [
+                                {
+                                    role: "system",
+                                    content: [
+                                        {
+                                            type: "input_text",
+                                            text:
+                                                "Je schrijft alt-teksten voor webafbeeldingen. Geef exact 1 korte alt-tekst terug zonder aanhalingstekens, zonder punt op het einde, en zonder extra uitleg.",
+                                        },
+                                    ],
+                                },
+                                {
+                                    role: "user",
+                                    content: [
+                                        {
+                                            type: "input_text",
+                                            text:
+                                                "Context rond de afbeelding:\n" +
+                                                (task.contextText || "(geen extra context)") +
+                                                "\n\nBestaand bijschrift:\n" +
+                                                (task.caption || "(geen bijschrift)"),
+                                        },
+                                        {
+                                            type: "input_image",
+                                            image_url: task.url,
+                                        },
+                                    ],
+                                },
+                            ],
+                        },
+                        signal: controller?.signal,
+                    });
+
+                    const payload = responsePayload?.data ? responsePayload.data : responsePayload;
+                    const altText = sanitizeAltText(extractResponseText(payload));
+
+                    if (!altText) {
+                        skipped += 1;
+                        continue;
+                    }
+
+                    updateBlockAttributes(task.clientId, { alt: altText });
+                    if (typeof __unstableMarkLastChangeAsPersistent === "function") {
+                        __unstableMarkLastChangeAsPersistent();
+                    }
+                    updated += 1;
+                } catch (responseError) {
+                    if (responseError?.name === "AbortError") {
+                        createErrorNotice(__("ALT-tag generatie geannuleerd.", "madeit"), {
+                            type: "snackbar",
+                        });
+                        break;
+                    }
+
+                    failed += 1;
+                    // eslint-disable-next-line no-console
+                    console.error("[madeit-alt-tags] image processing failed", {
+                        clientId: task.clientId,
+                        imageUrl: task.url,
+                        error: responseError?.message || "unknown_error",
+                    });
+                } finally {
+                    setAltProgress({
+                        total: tasks.length,
+                        done: i + 1,
+                        current: __("Afbeelding", "madeit") + " " + String(i + 1),
+                    });
+                }
+            }
+
+            setAltSummary({ total: tasks.length, updated, skipped, failed });
+            setMissingAltCount(countMissingImageAlts(blockEditorSelect.getBlocks() || []));
+            setIsLoading(false);
+            setAbortController(null);
         };
 
         const handleAcceptIssue = (issueIndex) => {
@@ -1495,6 +1858,10 @@ registerPlugin("madeit-chatbot-sidebar", {
             handleLanguageCheck,
             handleAcceptIssue,
             handleFocusIssue,
+            missingAltCount,
+            altProgress,
+            altSummary,
+            handleGenerateAltTags,
             handleSendMessage: async () => {
                 if (isLoading) {
                     cancelActiveRequest();

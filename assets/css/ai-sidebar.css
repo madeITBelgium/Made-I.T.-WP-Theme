@@ -229,6 +229,70 @@ fade-in {
     justify-content: flex-end;
 }
 
+.madeit-sidebar .madeit-alt-module {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px 0;
+}
+
+.madeit-sidebar .madeit-alt-intro {
+    color: #1e1e1e;
+    font-size: 13px;
+    margin: 0;
+}
+
+.madeit-sidebar .madeit-alt-meta {
+    color: #50575e;
+    font-size: 12px;
+    margin: 0;
+}
+
+.madeit-sidebar .madeit-alt-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.madeit-sidebar .madeit-alt-progress {
+    background: #f6f7f7;
+    border: 1px solid #dcdcde;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.madeit-sidebar .madeit-alt-progress-head {
+    display: flex;
+    font-size: 12px;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.madeit-sidebar .madeit-alt-progress-track {
+    background: #dcdcde;
+    border-radius: 999px;
+    height: 8px;
+    overflow: hidden;
+}
+
+.madeit-sidebar .madeit-alt-progress-bar {
+    background: #3858e9;
+    height: 100%;
+    transition: width .2s ease;
+}
+
+.madeit-sidebar .madeit-alt-progress-current {
+    color: #50575e;
+    font-size: 12px;
+    margin: 8px 0 0;
+}
+
+.madeit-sidebar .madeit-alt-summary {
+    color: #1e1e1e;
+    font-size: 12px;
+    margin: 0;
+}
+
 .madeit-sidebar .madeit-chat-container {
     overflow-y: scroll;
     padding-right: 16px;
