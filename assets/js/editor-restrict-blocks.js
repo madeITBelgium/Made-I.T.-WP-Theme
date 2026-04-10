@@ -1,69 +1,60 @@
-// wp.domReady(function () {
+wp.domReady(function () {
 
-//     const dynamicParents = ['madeit/block-content-column'];
+    const dynamicParents = ['madeit/block-content-column'];
 
-//     // detecteer blocks waar inner blocks in kunnen
-//     wp.blocks.getBlockTypes().forEach(function (blockType) {
+    // detecteer blocks waar inner blocks in kunnen
+    wp.blocks.getBlockTypes().forEach(function (blockType) {
 
-//         if (
-//             blockType?.supports?.innerBlocks ||   // sommige custom blocks
-//             blockType?.name === 'core/group' ||
-//             blockType?.name === 'core/columns' ||
-//             blockType?.name === 'core/column' ||
-//             blockType?.name === 'core/buttons' ||
-//             blockType?.name === 'core/button' ||
-//             blockType?.name === 'core/navigation' ||
-//             blockType?.name === 'madeit/block-card' ||
-//             blockType?.name === 'madeit/block-tabs'
-//         ) {
-//             dynamicParents.push(blockType.name);
-//         }
+        if (
+            blockType?.supports?.innerBlocks ||   // sommige custom blocks
+            blockType?.name === 'core/group' ||
+            blockType?.name === 'core/columns' ||
+            blockType?.name === 'core/column' ||
+            blockType?.name === 'core/buttons' ||
+            blockType?.name === 'core/button' ||
+            blockType?.name === 'core/navigation' ||
+            blockType?.name === 'madeit/block-card' ||
+            blockType?.name === 'madeit/block-tabs'
+        ) {
+            dynamicParents.push(blockType.name);
+        }
 
-//     });
+    });
 
-//     const skipBlocks = [
-//         'madeit/block-content',
-//         'madeit/block-content-column',
-//         'core/block',
-//         'core/template-part',
-//         'core/post-content'
-//     ];
+    const skipBlocks = [
+        'madeit/block-content',
+        'madeit/block-content-column',
+        'core/block',
+        'core/template-part',
+        'core/post-content'
+    ];
 
-//     wp.blocks.getBlockTypes().forEach(function (blockType) {
+    wp.blocks.getBlockTypes().forEach(function (blockType) {
 
-//         const name = blockType.name;
+        const name = blockType.name;
+        const hasOwnParents = Array.isArray(blockType.parent) && blockType.parent.length > 0;
 
-//         if (skipBlocks.includes(name)) {
-//             return;
-//         }
+        if (skipBlocks.includes(name) || hasOwnParents) {
+            return;
+        }
 
-//         const newSettings = {
-//             ...blockType,
-//             parent: dynamicParents
-//         };
+        const newSettings = {
+            ...blockType,
+            parent: dynamicParents
+        };
 
-//         wp.blocks.unregisterBlockType(name);
-//         wp.blocks.registerBlockType(name, newSettings);
+        wp.blocks.unregisterBlockType(name);
+        wp.blocks.registerBlockType(name, newSettings);
+    });
 
-//     });
-
-// });
-
-wp.hooks.addFilter(
-    'editor.BlockListBlock',
-    'madeit/add-builder-ui',
-
-    (BlockListBlock) => {
-
+    wp.hooks.addFilter('editor.BlockListBlock', 'madeit/add-builder-ui', (BlockListBlock) => {
         return (props) => {
-
             const { createElement } = wp.element;
-
             const original = createElement(BlockListBlock, props);
 
             // enkel tonen bij laatste block
             const blocks = wp.data.select('core/block-editor').getBlocks();
-            const isLast = blocks[blocks.length - 1]?.clientId === props.clientId;
+            const isLast = blocks.length === 0 || blocks[blocks.length - 1]?.clientId === props.clientId;
 
             // styling
             const styles = {
@@ -109,7 +100,7 @@ wp.hooks.addFilter(
                     }, '+ Container'),
 
                     createElement('button', {
-                        className: 'madeit-template-btn',
+                        className: 'madeit-template-btn d-none',
                         style: btnStyles,
                         onClick: () => {
                             // create a modal with the templates
@@ -148,9 +139,7 @@ wp.hooks.addFilter(
 
                                 } else {
                                     // insert template blocks here
-                                    wp.data.dispatch('core/block-editor').insertBlocks(
-                                       
-                                    );
+                                    wp.data.dispatch('core/block-editor').insertBlocks();
                                     document.body.removeChild(modal);
                                 }
                             });
@@ -162,14 +151,5 @@ wp.hooks.addFilter(
             );
 
         };
-    }
-);
-
-
-/** 
- * TODO:
- * Als we in een container block zitten, zorg er dan voor dat de slache (/) niet werkt. Wel mag de insert block knop in de toolbar werken.
- * Als we BUITEN een container block zitten, zorg er dan voor dat de insert block knop niet werkt en verborgen is. OFWEL, ervoor zorgen dat die madeit-builder-block op deze plaats word weergegeven.
- * Zorgen dat je geen enter kunt doen bij een container block, zodat er geen lege blokken kunnen ontstaan onder de container.
- */
-
+    });
+});

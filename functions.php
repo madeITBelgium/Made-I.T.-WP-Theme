@@ -2508,6 +2508,22 @@ if (defined('MADEIT_POPUPS') && MADEIT_POPUPS) {
     });
 }
 
+if(!function_exists('madeit_default_blocks')) {
+    function madeit_default_blocks($content, $post) {
+        if ($post->post_type === 'page') {
+            return '<!-- wp:madeit/block-content {"containerPaddingOnRow":true,"overflow":"visible","flexDirection":"row","flexDirectionTablet":"column","flexDirectionMobile":"column","alignItems":"stretch","justifyContent":"flex-start","rowGap":20,"rowGapTablet":20,"rowGapMobile":20,"columnsCount":0,"flexWrap":"nowrap"} -->
+<div class="wp-block-madeit-block-content container madeit-block-content--frontend"><div class="container"><div class="row madeit-container-row rows-0" data-madeit-dir="row" data-madeit-dir-tablet="column" data-madeit-dir-mobile="column">
+
+
+
+</div></div></div>
+<!-- /wp:madeit/block-content -->';
+        }
+        return $content;
+    }
+    add_filter('default_content', 'madeit_default_blocks', 10, 2);
+}
+
 if (defined('MADEIT_RECEIVE_REVIEWS') && MADEIT_RECEIVE_REVIEWS && defined('MADEIT_REVIEWS') && MADEIT_REVIEWS && class_exists('ACF')) {
     require get_parent_theme_file_path('/inc/review-form.php');
 }
@@ -2626,7 +2642,23 @@ if(MADEIT_FEEDBACK) {
 require get_parent_theme_file_path('/inc/ai.php');
 
 if (MADEIT_ADMIN_CHAT) {
-    require get_parent_theme_file_path('/inc/admin-chat.php');
+    //Temp disabled, first improve before release.
+    //require get_parent_theme_file_path('/inc/admin-chat.php');
+    add_action('enqueue_block_editor_assets', function() {
+        wp_enqueue_script(
+            'madeit-editor-ai-sidebar',
+            get_template_directory_uri() . '/assets/js/ai-sidebar.js',
+            ['wp-data','wp-hooks','wp-dom-ready','wp-edit-post']
+        );
+    });
+
+    //enqueue style css/ai-sidebar.css
+    add_action('enqueue_block_editor_assets', function() {
+        wp_enqueue_style(
+            'madeit-editor-ai-sidebar',
+            get_template_directory_uri() . '/assets/css/ai-sidebar.css'
+        );
+    });
 }
 
 if (MADEIT_TRACKING_IDS) {
