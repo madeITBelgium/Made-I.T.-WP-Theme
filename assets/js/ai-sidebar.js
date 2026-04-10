@@ -883,6 +883,557 @@ function sanitizeAltText(text) {
         .slice(0, 125);
 }
 
+function isYoastSeoActive() {
+    try {
+        const hasYoastStore =
+            !!wp?.data?.hasStore &&
+            (wp.data.hasStore("yoast-seo/editor") || wp.data.hasStore("yoast-seo/settings"));
+
+        const hasYoastGlobal =
+            typeof window !== "undefined" &&
+            (typeof window.YoastSEO !== "undefined" || typeof window.wpseoScriptData !== "undefined");
+
+        return hasYoastStore || hasYoastGlobal;
+    } catch (error) {
+        return false;
+    }
+}
+
+function collectPostContextForKeyword() {
+    const editorSelect = wp.data.select("core/editor");
+    const blockEditorSelect = wp.data.select("core/block-editor");
+
+    const title = String(editorSelect?.getEditedPostAttribute("title") || "").trim();
+    const blocks = blockEditorSelect?.getBlocks() || [];
+    const blockSnapshot = buildLanguageCheckSnapshot(blocks);
+
+    return {
+        title,
+        blocks: blockSnapshot,
+    };
+}
+
+function sanitizeKeyword(text) {
+    return String(text || "")
+        .replace(/^['"]+|['"]+$/g, "")
+        .replace(/\.$/, "")
+        .replace(/\s+/g, " ")
+        .trim()
+        .slice(0, 80);
+}
+
+function sanitizeMetaTitle(text) {
+    return String(text || "")
+        .replace(/^['"]+|['"]+$/g, "")
+        .replace(/\s+/g, " ")
+        .trim()
+        .slice(0, 180);
+}
+
+function sanitizeMetaDescription(text) {
+    return String(text || "")
+        .replace(/^['"]+|['"]+$/g, "")
+        .replace(/\s+/g, " ")
+        .trim()
+        .slice(0, 320);
+}
+
+function applyYoastFocusKeyword(keyword) {
+    const sanitized = sanitizeKeyword(keyword);
+    if (!sanitized) {
+        return false;
+    }
+
+    let applied = false;
+
+    try {
+        const yoastDispatch = wp?.data?.dispatch?.("yoast-seo/editor");
+        if (yoastDispatch) {
+            const candidateActions = [
+                "setFocusKeyphrase",
+                "setFocusKeyword",
+                "setFocusKeywordValue",
+            ];
+
+            for (let i = 0; i < candidateActions.length; i += 1) {
+                const actionName = candidateActions[i];
+                if (typeof yoastDispatch[actionName] === "function") {
+                    yoastDispatch[actionName](sanitized);
+                    applied = true;
+                    break;
+                }
+            }
+        }
+    } catch (error) {
+        // noop
+    }
+
+    if (applied) {
+        return true;
+    }
+
+    const inputSelectors = [
+        "#focus-keyword-input-metabox",
+        "#yoast_wpseo_focuskw",
+        "input[name='yoast_wpseo_focuskw']",
+    ];
+
+    for (let i = 0; i < inputSelectors.length; i += 1) {
+        const input = document.querySelector(inputSelectors[i]);
+        if (input) {
+            input.value = sanitized;
+            input.dispatchEvent(new Event("input", { bubbles: true }));
+            input.dispatchEvent(new Event("change", { bubbles: true }));
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function getYoastFocusKeyword() {
+    try {
+        const yoastSelect = wp?.data?.select?.("yoast-seo/editor");
+        if (yoastSelect) {
+            const candidateSelectors = [
+                "getFocusKeyphrase",
+                "getFocusKeyword",
+                "getFocusKeywordValue",
+            ];
+
+            for (let i = 0; i < candidateSelectors.length; i += 1) {
+                const selector = candidateSelectors[i];
+                if (typeof yoastSelect[selector] === "function") {
+                    const value = sanitizeKeyword(yoastSelect[selector]());
+                    if (value) {
+                        return value;
+                    }
+                }
+            }
+        }
+    } catch (error) {
+        // noop
+    }
+
+    const inputSelectors = [
+        "#focus-keyword-input-metabox",
+        "#yoast_wpseo_focuskw",
+        "input[name='yoast_wpseo_focuskw']",
+    ];
+
+    for (let i = 0; i < inputSelectors.length; i += 1) {
+        const input = document.querySelector(inputSelectors[i]);
+        if (input?.value) {
+            const value = sanitizeKeyword(input.value);
+            if (value) {
+                return value;
+            }
+        }
+    }
+
+    return "";
+}
+
+function getYoastMetaTitleDebugSnapshot() {
+    const snapshot = {
+        yoastStore: {},
+        coreMeta: {},
+        dom: {},
+    };
+
+    try {
+        const yoastSelect = wp?.data?.select?.("yoast-seo/editor");
+        if (yoastSelect) {
+            const candidateSelectors = [
+                "getTitle",
+                "getSeoTitle",
+                "getSnippetTitle",
+                "getSnippetEditorTitle",
+                "getMetaTitle",
+            ];
+
+            candidateSelectors.forEach((selectorName) => {
+                if (typeof yoastSelect[selectorName] === "function") {
+                    try {
+                        snapshot.yoastStore[selectorName] = yoastSelect[selectorName]();
+                    } catch (selectorError) {
+                        snapshot.yoastStore[selectorName] = "[selector_error]";
+                    }
+                }
+            });
+        }
+    } catch (error) {
+        snapshot.yoastStore._error = error?.message || "unknown_error";
+    }
+
+    try {
+        const editorSelect = wp?.data?.select?.("core/editor");
+        const editedMeta = editorSelect?.getEditedPostAttribute?.("meta") || {};
+        snapshot.coreMeta._yoast_wpseo_title = editedMeta?._yoast_wpseo_title || "";
+    } catch (error) {
+        snapshot.coreMeta._error = error?.message || "unknown_error";
+    }
+
+    const inputSelectors = [
+        "#yoast_wpseo_title",
+        "input[name='yoast_wpseo_title']",
+        "#snippet-editor-title",
+        "input[id*='snippet-editor-title']",
+        "input[aria-label='SEO title']",
+    ];
+
+    inputSelectors.forEach((selector) => {
+        const input = document.querySelector(selector);
+        snapshot.dom[selector] = input ? String(input.value || "") : "[not_found]";
+    });
+
+    return snapshot;
+}
+
+function setNativeFieldValue(element, value) {
+    const isTextarea = String(element?.tagName || "").toUpperCase() === "TEXTAREA";
+    const prototype = isTextarea
+        ? window?.HTMLTextAreaElement?.prototype
+        : window?.HTMLInputElement?.prototype;
+
+    const descriptor = prototype
+        ? Object.getOwnPropertyDescriptor(prototype, "value")
+        : null;
+
+    if (descriptor?.set) {
+        descriptor.set.call(element, value);
+    } else {
+        element.value = value;
+    }
+}
+
+async function applyYoastMetaTitle(metaTitle) {
+    const sanitized = sanitizeMetaTitle(metaTitle);
+    if (!sanitized) {
+        // eslint-disable-next-line no-console
+        console.warn("[madeit-yoast-meta-title] empty meta title after sanitize", { metaTitle });
+        return { applied: false, restApplied: false, appliedPaths: [] };
+    }
+
+    // eslint-disable-next-line no-console
+    console.info("[madeit-yoast-meta-title] apply start", {
+        metaTitle,
+        sanitized,
+        before: getYoastMetaTitleDebugSnapshot(),
+    });
+
+    let applied = false;
+    let restApplied = false;
+    const appliedPaths = [];
+
+    try {
+        const editorSelect = wp?.data?.select?.("core/editor");
+        const postId = Number(editorSelect?.getCurrentPostId?.() || 0);
+
+        if (postId > 0) {
+            // eslint-disable-next-line no-console
+            console.info("[madeit-yoast-meta-title] trying REST meta save", { postId });
+            const restPayload = await wp.apiFetch({
+                path: "/madeit-ai/v1/yoast/meta-title",
+                method: "POST",
+                data: {
+                    postId,
+                    metaTitle: sanitized,
+                },
+            });
+
+            const savedValue = sanitizeMetaTitle(restPayload?.metaTitle || "");
+            if (restPayload?.success && savedValue === sanitized) {
+                restApplied = true;
+                applied = true;
+                appliedPaths.push("rest_api_meta");
+                // eslint-disable-next-line no-console
+                console.info("[madeit-yoast-meta-title] REST meta save succeeded", {
+                    postId,
+                    savedValue,
+                    changed: !!restPayload?.changed,
+                });
+            } else {
+                // eslint-disable-next-line no-console
+                console.warn("[madeit-yoast-meta-title] REST meta save mismatch", {
+                    postId,
+                    requested: sanitized,
+                    restPayload,
+                });
+            }
+        } else {
+            // eslint-disable-next-line no-console
+            console.warn("[madeit-yoast-meta-title] no valid postId for REST meta save");
+        }
+    } catch (restError) {
+        // eslint-disable-next-line no-console
+        console.error("[madeit-yoast-meta-title] REST meta save failed", {
+            error: restError?.message || "unknown_error",
+        });
+    }
+
+    try {
+        const yoastDispatch = wp?.data?.dispatch?.("yoast-seo/editor");
+        if (yoastDispatch) {
+            const candidateActions = [
+                "setTitle",
+                "setSeoTitle",
+                "setSnippetTitle",
+                "setSnippetEditorTitle",
+                "setMetaTitle",
+            ];
+
+            for (let i = 0; i < candidateActions.length; i += 1) {
+                const actionName = candidateActions[i];
+                if (typeof yoastDispatch[actionName] === "function") {
+                    try {
+                        // eslint-disable-next-line no-console
+                        console.info("[madeit-yoast-meta-title] trying yoast dispatch action", {
+                            actionName,
+                        });
+                        yoastDispatch[actionName](sanitized);
+                        applied = true;
+                        appliedPaths.push("yoast_store:" + actionName);
+                        // eslint-disable-next-line no-console
+                        console.info("[madeit-yoast-meta-title] yoast dispatch action succeeded", {
+                            actionName,
+                            afterAction: getYoastMetaTitleDebugSnapshot(),
+                        });
+                        break;
+                    } catch (dispatchError) {
+                        // eslint-disable-next-line no-console
+                        console.error("[madeit-yoast-meta-title] yoast dispatch action failed", {
+                            actionName,
+                            error: dispatchError?.message || "unknown_error",
+                        });
+                    }
+                }
+            }
+
+            if (!applied && typeof yoastDispatch.setSnippetEditorData === "function") {
+                try {
+                    // eslint-disable-next-line no-console
+                    console.info("[madeit-yoast-meta-title] trying setSnippetEditorData fallback");
+                    yoastDispatch.setSnippetEditorData({ title: sanitized });
+                    applied = true;
+                    appliedPaths.push("yoast_store:setSnippetEditorData");
+                    // eslint-disable-next-line no-console
+                    console.info("[madeit-yoast-meta-title] setSnippetEditorData succeeded", {
+                        afterAction: getYoastMetaTitleDebugSnapshot(),
+                    });
+                } catch (dispatchError) {
+                    // eslint-disable-next-line no-console
+                    console.error("[madeit-yoast-meta-title] setSnippetEditorData failed", {
+                        error: dispatchError?.message || "unknown_error",
+                    });
+                }
+            }
+        } else {
+            // eslint-disable-next-line no-console
+            console.warn("[madeit-yoast-meta-title] yoast dispatch store not available");
+        }
+    } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error("[madeit-yoast-meta-title] yoast dispatch block failed", {
+            error: error?.message || "unknown_error",
+        });
+    }
+
+    try {
+        const coreEditorDispatch = wp?.data?.dispatch?.("core/editor");
+        if (coreEditorDispatch?.editPost) {
+            // eslint-disable-next-line no-console
+            console.info("[madeit-yoast-meta-title] trying core/editor meta fallback");
+            const editorSelect = wp?.data?.select?.("core/editor");
+            const currentMeta = editorSelect?.getEditedPostAttribute?.("meta") || {};
+
+            coreEditorDispatch.editPost({
+                meta: {
+                    ...currentMeta,
+                    _yoast_wpseo_title: sanitized,
+                },
+            });
+            applied = true;
+            appliedPaths.push("core_editor_meta");
+            // eslint-disable-next-line no-console
+            console.info("[madeit-yoast-meta-title] core/editor meta fallback succeeded", {
+                afterAction: getYoastMetaTitleDebugSnapshot(),
+            });
+        } else {
+            // eslint-disable-next-line no-console
+            console.warn("[madeit-yoast-meta-title] core/editor editPost not available");
+        }
+    } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error("[madeit-yoast-meta-title] core/editor fallback failed", {
+            error: error?.message || "unknown_error",
+        });
+    }
+
+    const inputSelectors = [
+        "#yoast_wpseo_title",
+        "input[name='yoast_wpseo_title']",
+        "textarea[name='yoast_wpseo_title']",
+        "#snippet-editor-title",
+        "#snippet-editor-title-metabox",
+        "input[id*='snippet-editor-title']",
+        "input[id*='yoast-snippet-editor-title']",
+        "input[name='snippet-editor-title']",
+        "input[data-testid='snippet-editor-title']",
+        "input[aria-label='SEO title']",
+    ];
+
+    const seenInputs = new Set();
+    let domApplied = false;
+    for (let i = 0; i < inputSelectors.length; i += 1) {
+        const selector = inputSelectors[i];
+        const inputs = Array.from(document.querySelectorAll(selector));
+
+        for (let j = 0; j < inputs.length; j += 1) {
+            const input = inputs[j];
+            if (!input || seenInputs.has(input)) {
+                continue;
+            }
+
+            seenInputs.add(input);
+            // eslint-disable-next-line no-console
+            console.info("[madeit-yoast-meta-title] trying DOM input fallback", { selector });
+            setNativeFieldValue(input, sanitized);
+            input.dispatchEvent(new Event("input", { bubbles: true }));
+            input.dispatchEvent(new Event("change", { bubbles: true }));
+            input.dispatchEvent(new Event("blur", { bubbles: true }));
+            input.dispatchEvent(new KeyboardEvent("keyup", { bubbles: true, key: "Enter" }));
+            domApplied = true;
+            applied = true;
+            appliedPaths.push("dom_input:" + selector);
+            // eslint-disable-next-line no-console
+            console.info("[madeit-yoast-meta-title] DOM input fallback succeeded", {
+                selector,
+                afterAction: getYoastMetaTitleDebugSnapshot(),
+            });
+        }
+    }
+
+    if (domApplied) {
+        // eslint-disable-next-line no-console
+        console.info("[madeit-yoast-meta-title] DOM sync completed", { appliedPaths });
+    }
+
+    if (applied) {
+        // eslint-disable-next-line no-console
+        console.info("[madeit-yoast-meta-title] apply success", {
+            appliedPaths,
+            finalState: getYoastMetaTitleDebugSnapshot(),
+        });
+        return { applied: true, restApplied, appliedPaths };
+    }
+
+    // eslint-disable-next-line no-console
+    console.error("[madeit-yoast-meta-title] apply failed on all paths", {
+        appliedPaths,
+        finalState: getYoastMetaTitleDebugSnapshot(),
+    });
+    return { applied: false, restApplied, appliedPaths };
+}
+
+async function applyYoastMetaDescription(metaDescription) {
+    const sanitized = sanitizeMetaDescription(metaDescription);
+    if (!sanitized) {
+        // eslint-disable-next-line no-console
+        console.warn("[madeit-yoast-meta-description] empty meta description after sanitize", {
+            metaDescription,
+        });
+        return { applied: false, restApplied: false, appliedPaths: [] };
+    }
+
+    let applied = false;
+    let restApplied = false;
+    const appliedPaths = [];
+
+    try {
+        const editorSelect = wp?.data?.select?.("core/editor");
+        const postId = Number(editorSelect?.getCurrentPostId?.() || 0);
+
+        if (postId > 0) {
+            const restPayload = await wp.apiFetch({
+                path: "/madeit-ai/v1/yoast/meta-description",
+                method: "POST",
+                data: {
+                    postId,
+                    metaDescription: sanitized,
+                },
+            });
+
+            const savedValue = sanitizeMetaDescription(restPayload?.metaDescription || "");
+            if (restPayload?.success && savedValue === sanitized) {
+                restApplied = true;
+                applied = true;
+                appliedPaths.push("rest_api_meta_description");
+            }
+        }
+    } catch (restError) {
+        // eslint-disable-next-line no-console
+        console.error("[madeit-yoast-meta-description] REST meta save failed", {
+            error: restError?.message || "unknown_error",
+        });
+    }
+
+    try {
+        const coreEditorDispatch = wp?.data?.dispatch?.("core/editor");
+        if (coreEditorDispatch?.editPost) {
+            const editorSelect = wp?.data?.select?.("core/editor");
+            const currentMeta = editorSelect?.getEditedPostAttribute?.("meta") || {};
+
+            coreEditorDispatch.editPost({
+                meta: {
+                    ...currentMeta,
+                    _yoast_wpseo_metadesc: sanitized,
+                },
+            });
+
+            applied = true;
+            appliedPaths.push("core_editor_metadesc");
+        }
+    } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error("[madeit-yoast-meta-description] core/editor fallback failed", {
+            error: error?.message || "unknown_error",
+        });
+    }
+
+    const inputSelectors = [
+        "#yoast_wpseo_metadesc",
+        "textarea[name='yoast_wpseo_metadesc']",
+        "#snippet-editor-meta-description",
+        "textarea[id*='snippet-editor-meta-description']",
+        "textarea[name='snippet-editor-meta-description']",
+        "textarea[aria-label='Meta description']",
+    ];
+
+    const seenInputs = new Set();
+    for (let i = 0; i < inputSelectors.length; i += 1) {
+        const selector = inputSelectors[i];
+        const inputs = Array.from(document.querySelectorAll(selector));
+
+        for (let j = 0; j < inputs.length; j += 1) {
+            const input = inputs[j];
+            if (!input || seenInputs.has(input)) {
+                continue;
+            }
+
+            seenInputs.add(input);
+            setNativeFieldValue(input, sanitized);
+            input.dispatchEvent(new Event("input", { bubbles: true }));
+            input.dispatchEvent(new Event("change", { bubbles: true }));
+            input.dispatchEvent(new Event("blur", { bubbles: true }));
+            applied = true;
+            appliedPaths.push("dom_input:" + selector);
+        }
+    }
+
+    return { applied, restApplied, appliedPaths };
+}
+
 const SIDEBAR_MODULES = {
     languageCheck: {
         key: "languageCheck",
@@ -902,10 +1453,35 @@ const SIDEBAR_MODULES = {
         label: __("ALT tags", "madeit"),
         description: __("Vul ontbrekende alt-teksten voor afbeeldingen automatisch aan.", "madeit"),
     },
+    yoastKeyword: {
+        key: "yoastKeyword",
+        label: __("Focus keyword", "madeit"),
+        description: __("Genereer een Yoast focus keyword op basis van titel en inhoud.", "madeit"),
+    },
+    yoastMetaTitle: {
+        key: "yoastMetaTitle",
+        label: __("Meta titel", "madeit"),
+        description: __("Genereer een Yoast SEO-titel met placeholders.", "madeit"),
+    },
+    yoastMetaDescription: {
+        key: "yoastMetaDescription",
+        label: __("Meta beschrijving", "madeit"),
+        description: __("Genereer een Yoast SEO meta beschrijving.", "madeit"),
+    },
 };
 
-function ModuleSelector({ selectedModule, onSelect }) {
-    const modules = Object.values(SIDEBAR_MODULES);
+function ModuleSelector({ selectedModule, onSelect, yoastActive }) {
+    const modules = Object.values(SIDEBAR_MODULES).filter((moduleItem) => {
+        if (
+            moduleItem.key === SIDEBAR_MODULES.yoastKeyword.key ||
+            moduleItem.key === SIDEBAR_MODULES.yoastMetaTitle.key ||
+            moduleItem.key === SIDEBAR_MODULES.yoastMetaDescription.key
+        ) {
+            return !!yoastActive;
+        }
+
+        return true;
+    });
 
     return React.createElement(
         "div",
@@ -1305,6 +1881,159 @@ function AltTagsModule({
     );
 }
 
+function YoastKeywordModule({
+    isLoading,
+    generatedKeyword,
+    yoastApplyStatus,
+    handleGenerateFocusKeyword,
+}) {
+    return React.createElement(
+        Fragment,
+        null,
+        React.createElement(
+            "div",
+            { className: "madeit-yoast-module" },
+            React.createElement(
+                "p",
+                { className: "madeit-yoast-intro" },
+                __(
+                    "Genereer een focus keyword op basis van titel en paginainhoud.",
+                    "madeit"
+                )
+            ),
+            React.createElement(
+                "div",
+                { className: "madeit-yoast-actions" },
+                React.createElement(
+                    Button,
+                    {
+                        variant: "primary",
+                        isBusy: isLoading,
+                        onClick: handleGenerateFocusKeyword,
+                        disabled: isLoading,
+                    },
+                    isLoading ? __("Bezig...", "madeit") : __("Genereer focus keyword", "madeit")
+                )
+            ),
+            generatedKeyword &&
+                React.createElement(
+                    "div",
+                    { className: "madeit-yoast-result" },
+                    React.createElement("p", { className: "madeit-yoast-label" }, __("Keyword", "madeit")),
+                    React.createElement("p", { className: "madeit-yoast-keyword" }, generatedKeyword),
+                    yoastApplyStatus &&
+                        React.createElement("p", { className: "madeit-yoast-status" }, yoastApplyStatus)
+                )
+        )
+    );
+}
+
+function YoastMetaTitleModule({
+    isLoading,
+    generatedMetaTitle,
+    yoastMetaApplyStatus,
+    handleGenerateMetaTitle,
+}) {
+    return React.createElement(
+        Fragment,
+        null,
+        React.createElement(
+            "div",
+            { className: "madeit-yoast-module" },
+            React.createElement(
+                "p",
+                { className: "madeit-yoast-intro" },
+                __(
+                    "Genereer een Yoast SEO meta titel.",
+                    "madeit"
+                )
+            ),
+            React.createElement(
+                "div",
+                { className: "madeit-yoast-actions" },
+                React.createElement(
+                    Button,
+                    {
+                        variant: "primary",
+                        isBusy: isLoading,
+                        onClick: handleGenerateMetaTitle,
+                        disabled: isLoading,
+                    },
+                    isLoading ? __("Bezig...", "madeit") : __("Genereer meta titel", "madeit")
+                )
+            ),
+            generatedMetaTitle &&
+                React.createElement(
+                    "div",
+                    { className: "madeit-yoast-result" },
+                    React.createElement("p", { className: "madeit-yoast-label" }, __("Meta titel", "madeit")),
+                    React.createElement("p", { className: "madeit-yoast-keyword" }, generatedMetaTitle),
+                    yoastMetaApplyStatus &&
+                        React.createElement("p", { className: "madeit-yoast-status" }, yoastMetaApplyStatus)
+                )
+        )
+    );
+}
+
+function YoastMetaDescriptionModule({
+    isLoading,
+    generatedMetaDescription,
+    yoastMetaDescriptionApplyStatus,
+    handleGenerateMetaDescription,
+}) {
+    return React.createElement(
+        Fragment,
+        null,
+        React.createElement(
+            "div",
+            { className: "madeit-yoast-module" },
+            React.createElement(
+                "p",
+                { className: "madeit-yoast-intro" },
+                __(
+                    "Genereer een Yoast SEO meta beschrijving op basis van titel, content en focus keyword.",
+                    "madeit"
+                )
+            ),
+            React.createElement(
+                "div",
+                { className: "madeit-yoast-actions" },
+                React.createElement(
+                    Button,
+                    {
+                        variant: "primary",
+                        isBusy: isLoading,
+                        onClick: handleGenerateMetaDescription,
+                        disabled: isLoading,
+                    },
+                    isLoading ? __("Bezig...", "madeit") : __("Genereer meta beschrijving", "madeit")
+                )
+            ),
+            generatedMetaDescription &&
+                React.createElement(
+                    "div",
+                    { className: "madeit-yoast-result" },
+                    React.createElement(
+                        "p",
+                        { className: "madeit-yoast-label" },
+                        __("Meta beschrijving", "madeit")
+                    ),
+                    React.createElement(
+                        "p",
+                        { className: "madeit-yoast-keyword" },
+                        generatedMetaDescription
+                    ),
+                    yoastMetaDescriptionApplyStatus &&
+                        React.createElement(
+                            "p",
+                            { className: "madeit-yoast-status" },
+                            yoastMetaDescriptionApplyStatus
+                        )
+                )
+        )
+    );
+}
+
 function SidebarContent({
     selectedModule,
     onSelectModule,
@@ -1325,7 +2054,21 @@ function SidebarContent({
     altProgress,
     altSummary,
     handleGenerateAltTags,
+    yoastActive,
+    generatedFocusKeyword,
+    yoastApplyStatus,
+    handleGenerateFocusKeyword,
+    generatedMetaTitle,
+    yoastMetaApplyStatus,
+    handleGenerateMetaTitle,
+    generatedMetaDescription,
+    yoastMetaDescriptionApplyStatus,
+    handleGenerateMetaDescription,
 }) {
+    const showYoastModule = yoastActive && selectedModule === "yoastKeyword";
+    const showYoastMetaTitleModule = yoastActive && selectedModule === "yoastMetaTitle";
+    const showYoastMetaDescriptionModule = yoastActive && selectedModule === "yoastMetaDescription";
+
     return React.createElement(
         PluginSidebar,
         {
@@ -1338,6 +2081,7 @@ function SidebarContent({
             React.createElement(ModuleSelector, {
                 selectedModule,
                 onSelect: onSelectModule,
+                yoastActive,
             }),
             selectedModule === SIDEBAR_MODULES.languageCheck.key
                 ? React.createElement(LanguageCheckModule, {
@@ -1357,6 +2101,27 @@ function SidebarContent({
                       altProgress,
                       altSummary,
                       handleGenerateAltTags,
+                  })
+                : showYoastModule
+                ? React.createElement(YoastKeywordModule, {
+                      isLoading,
+                      generatedKeyword: generatedFocusKeyword,
+                      yoastApplyStatus,
+                      handleGenerateFocusKeyword,
+                  })
+                    : showYoastMetaTitleModule
+                    ? React.createElement(YoastMetaTitleModule, {
+                        isLoading,
+                        generatedMetaTitle,
+                        yoastMetaApplyStatus,
+                        handleGenerateMetaTitle,
+                    })
+                : showYoastMetaDescriptionModule
+                ? React.createElement(YoastMetaDescriptionModule, {
+                      isLoading,
+                      generatedMetaDescription,
+                      yoastMetaDescriptionApplyStatus,
+                      handleGenerateMetaDescription,
                   })
                 : React.createElement(ChatModule, {
                       uiChat,
@@ -1387,6 +2152,13 @@ registerPlugin("madeit-chatbot-sidebar", {
         const [languageResult, setLanguageResult] = useState("");
         const [languageIssues, setLanguageIssues] = useState([]);
         const [acceptedIssues, setAcceptedIssues] = useState({});
+        const [yoastActive, setYoastActive] = useState(false);
+        const [generatedFocusKeyword, setGeneratedFocusKeyword] = useState("");
+        const [yoastApplyStatus, setYoastApplyStatus] = useState("");
+        const [generatedMetaTitle, setGeneratedMetaTitle] = useState("");
+        const [yoastMetaApplyStatus, setYoastMetaApplyStatus] = useState("");
+        const [generatedMetaDescription, setGeneratedMetaDescription] = useState("");
+        const [yoastMetaDescriptionApplyStatus, setYoastMetaDescriptionApplyStatus] = useState("");
         const [missingAltCount, setMissingAltCount] = useState(0);
         const [altProgress, setAltProgress] = useState({ total: 0, done: 0, current: "" });
         const [altSummary, setAltSummary] = useState({ total: 0, updated: 0, skipped: 0, failed: 0 });
@@ -1421,6 +2193,7 @@ registerPlugin("madeit-chatbot-sidebar", {
                 const blocks = wp.data.select("core/block-editor").getBlocks() || [];
                 setBlockCount(blocks.length);
                 setMissingAltCount(countMissingImageAlts(blocks));
+                setYoastActive(isYoastSeoActive());
             };
 
             getCurrentCount();
@@ -1439,6 +2212,314 @@ registerPlugin("madeit-chatbot-sidebar", {
                 abortController.abort();
                 setAbortController(null);
                 setIsLoading(false);
+            }
+        };
+
+        const handleGenerateFocusKeyword = async () => {
+            if (isLoading) {
+                cancelActiveRequest();
+                return;
+            }
+
+            const context = collectPostContextForKeyword();
+            if (!context.title && (!Array.isArray(context.blocks) || context.blocks.length === 0)) {
+                createErrorNotice(__("Er is onvoldoende inhoud om een keyword te genereren.", "madeit"), {
+                    type: "default",
+                });
+                return;
+            }
+
+            setIsLoading(true);
+            setGeneratedFocusKeyword("");
+            setYoastApplyStatus("");
+
+            const controller =
+                typeof AbortController === "undefined" ? undefined : new AbortController();
+
+            setAbortController(controller || null);
+
+            try {
+                const completionResponse = await wp.apiFetch({
+                    path: "/madeit-ai/v1/chat/completions",
+                    method: "POST",
+                    data: {
+                        messages: [
+                            {
+                                role: "system",
+                                content:
+                                    "Je bent een SEO-assistent. Geef exact 1 focus keyword terug in het Nederlands (max 4 woorden), zonder extra uitleg, zonder aanhalingstekens en zonder leestekens op het einde.",
+                            },
+                            {
+                                role: "user",
+                                content:
+                                    "Titel:\n" +
+                                    (context.title || "(geen titel)") +
+                                    "\n\nInhoud (blocks):\n" +
+                                    JSON.stringify(context.blocks),
+                            },
+                        ],
+                    },
+                    signal: controller?.signal,
+                });
+
+                const payload = completionResponse.data
+                    ? completionResponse.data
+                    : completionResponse;
+                const responseText = String(payload?.choices?.[0]?.message?.content || "").trim();
+                const keyword = sanitizeKeyword(responseText.split("\n")[0] || "");
+
+                if (!keyword) {
+                    createErrorNotice(__("Er kon geen focus keyword worden gegenereerd.", "madeit"), {
+                        type: "default",
+                    });
+                    return;
+                }
+
+                setGeneratedFocusKeyword(keyword);
+
+                const applied = applyYoastFocusKeyword(keyword);
+                if (applied) {
+                    setYoastApplyStatus(__("Keyword toegepast in Yoast SEO.", "madeit"));
+                } else {
+                    setYoastApplyStatus(
+                        __("Keyword gegenereerd, maar niet automatisch toegepast in Yoast.", "madeit")
+                    );
+                }
+            } catch (requestError) {
+                if (requestError.name === "AbortError") {
+                    createErrorNotice(__("Focus keyword generatie geannuleerd.", "madeit"), {
+                        type: "snackbar",
+                    });
+                } else {
+                    createErrorNotice(
+                        requestError.message || __("Onbekende fout bij focus keyword generatie.", "madeit"),
+                        { type: "default" }
+                    );
+                }
+            } finally {
+                setIsLoading(false);
+                setAbortController(null);
+            }
+        };
+
+        const handleGenerateMetaTitle = async () => {
+            if (isLoading) {
+                cancelActiveRequest();
+                return;
+            }
+
+            const context = collectPostContextForKeyword();
+            if (!context.title && (!Array.isArray(context.blocks) || context.blocks.length === 0)) {
+                createErrorNotice(__("Er is onvoldoende inhoud om een meta titel te genereren.", "madeit"), {
+                    type: "default",
+                });
+                return;
+            }
+
+            const existingKeyword = getYoastFocusKeyword();
+
+            setIsLoading(true);
+            setGeneratedMetaTitle("");
+            setYoastMetaApplyStatus("");
+
+            const controller =
+                typeof AbortController === "undefined" ? undefined : new AbortController();
+
+            setAbortController(controller || null);
+
+            try {
+                const completionResponse = await wp.apiFetch({
+                    path: "/madeit-ai/v1/chat/completions",
+                    method: "POST",
+                    data: {
+                        messages: [
+                            {
+                                role: "system",
+                                content:
+                                    "Je bent een SEO-assistent voor Yoast. Geef exact 1 SEO meta titel terug zonder extra uitleg. Gebruik Yoast placeholders waar relevant, zoals %%title%%, %%sep%% en %%sitename%%. Gebruik de focus keyword natuurlijk indien beschikbaar. Geen markdown, geen bullets, geen aanhalingstekens.",
+                            },
+                            {
+                                role: "user",
+                                content:
+                                    "Titel:\n" +
+                                    (context.title || "(geen titel)") +
+                                    "\n\nFocus keyword:\n" +
+                                    (existingKeyword || "(geen focus keyword)") +
+                                    "\n\nInhoud (blocks):\n" +
+                                    JSON.stringify(context.blocks),
+                            },
+                        ],
+                    },
+                    signal: controller?.signal,
+                });
+
+                const payload = completionResponse.data
+                    ? completionResponse.data
+                    : completionResponse;
+                const responseText = String(payload?.choices?.[0]?.message?.content || "").trim();
+                const metaTitle = sanitizeMetaTitle(responseText.split("\n")[0] || "");
+
+                // eslint-disable-next-line no-console
+                console.info("[madeit-yoast-meta-title] generated candidate", {
+                    existingKeyword,
+                    responseText,
+                    metaTitle,
+                });
+
+                if (!metaTitle) {
+                    createErrorNotice(__("Er kon geen meta titel worden gegenereerd.", "madeit"), {
+                        type: "default",
+                    });
+                    return;
+                }
+
+                setGeneratedMetaTitle(metaTitle);
+
+                const applyResult = await applyYoastMetaTitle(metaTitle);
+                const applied = !!applyResult?.applied;
+                // eslint-disable-next-line no-console
+                console.info("[madeit-yoast-meta-title] apply result", {
+                    applied,
+                    metaTitle,
+                    applyResult,
+                });
+                if (applied) {
+                    setYoastMetaApplyStatus(__("Meta titel toegepast in Yoast SEO.", "madeit"));
+
+                    if (applyResult?.restApplied) {
+                        setYoastMetaApplyStatus(
+                            __("Meta titel opgeslagen via REST API. Pagina wordt herladen...", "madeit")
+                        );
+
+                        window.setTimeout(() => {
+                            window.location.reload();
+                        }, 700);
+                    }
+                } else {
+                    setYoastMetaApplyStatus(
+                        __("Meta titel gegenereerd, maar niet automatisch toegepast in Yoast.", "madeit")
+                    );
+                }
+            } catch (requestError) {
+                if (requestError.name === "AbortError") {
+                    createErrorNotice(__("Meta titel generatie geannuleerd.", "madeit"), {
+                        type: "snackbar",
+                    });
+                } else {
+                    createErrorNotice(
+                        requestError.message || __("Onbekende fout bij meta titel generatie.", "madeit"),
+                        { type: "default" }
+                    );
+                }
+            } finally {
+                setIsLoading(false);
+                setAbortController(null);
+            }
+        };
+
+        const handleGenerateMetaDescription = async () => {
+            if (isLoading) {
+                cancelActiveRequest();
+                return;
+            }
+
+            const context = collectPostContextForKeyword();
+            if (!context.title && (!Array.isArray(context.blocks) || context.blocks.length === 0)) {
+                createErrorNotice(
+                    __("Er is onvoldoende inhoud om een meta beschrijving te genereren.", "madeit"),
+                    { type: "default" }
+                );
+                return;
+            }
+
+            const existingKeyword = getYoastFocusKeyword();
+
+            setIsLoading(true);
+            setGeneratedMetaDescription("");
+            setYoastMetaDescriptionApplyStatus("");
+
+            const controller =
+                typeof AbortController === "undefined" ? undefined : new AbortController();
+
+            setAbortController(controller || null);
+
+            try {
+                const completionResponse = await wp.apiFetch({
+                    path: "/madeit-ai/v1/chat/completions",
+                    method: "POST",
+                    data: {
+                        messages: [
+                            {
+                                role: "system",
+                                content:
+                                    "Je bent een SEO-assistent voor Yoast. Geef exact 1 meta beschrijving terug in het Nederlands, zonder extra uitleg, zonder markdown of aanhalingstekens. Houd de lengte tussen 130 en 160 tekens en verwerk de focus keyword natuurlijk als die beschikbaar is.",
+                            },
+                            {
+                                role: "user",
+                                content:
+                                    "Titel:\n" +
+                                    (context.title || "(geen titel)") +
+                                    "\n\nFocus keyword:\n" +
+                                    (existingKeyword || "(geen focus keyword)") +
+                                    "\n\nInhoud (blocks):\n" +
+                                    JSON.stringify(context.blocks),
+                            },
+                        ],
+                    },
+                    signal: controller?.signal,
+                });
+
+                const payload = completionResponse.data
+                    ? completionResponse.data
+                    : completionResponse;
+                const responseText = String(payload?.choices?.[0]?.message?.content || "").trim();
+                const metaDescription = sanitizeMetaDescription(responseText.split("\n")[0] || "");
+
+                if (!metaDescription) {
+                    createErrorNotice(
+                        __("Er kon geen meta beschrijving worden gegenereerd.", "madeit"),
+                        { type: "default" }
+                    );
+                    return;
+                }
+
+                setGeneratedMetaDescription(metaDescription);
+
+                const applyResult = await applyYoastMetaDescription(metaDescription);
+                const applied = !!applyResult?.applied;
+                if (applied) {
+                    setYoastMetaDescriptionApplyStatus(
+                        __("Meta beschrijving toegepast in Yoast SEO.", "madeit")
+                    );
+
+                    if (applyResult?.restApplied) {
+                        setYoastMetaDescriptionApplyStatus(
+                            __("Meta beschrijving opgeslagen via REST API. Pagina wordt herladen...", "madeit")
+                        );
+
+                        window.setTimeout(() => {
+                            window.location.reload();
+                        }, 700);
+                    }
+                } else {
+                    setYoastMetaDescriptionApplyStatus(
+                        __("Meta beschrijving gegenereerd, maar niet automatisch toegepast in Yoast.", "madeit")
+                    );
+                }
+            } catch (requestError) {
+                if (requestError.name === "AbortError") {
+                    createErrorNotice(__("Meta beschrijving generatie geannuleerd.", "madeit"), {
+                        type: "snackbar",
+                    });
+                } else {
+                    createErrorNotice(
+                        requestError.message || __("Onbekende fout bij meta beschrijving generatie.", "madeit"),
+                        { type: "default" }
+                    );
+                }
+            } finally {
+                setIsLoading(false);
+                setAbortController(null);
             }
         };
 
@@ -1553,6 +2634,7 @@ registerPlugin("madeit-chatbot-sidebar", {
             const blockEditorSelect = wp.data.select("core/block-editor");
             const blocks = blockEditorSelect.getBlocks() || [];
             const tasks = collectMissingAltTasks(blocks);
+            const yoastKeyword = isYoastSeoActive() ? getYoastFocusKeyword() : "";
 
             if (tasks.length === 0) {
                 createErrorNotice(__("Er zijn geen afbeeldingen zonder alt-tag gevonden.", "madeit"), {
@@ -1595,7 +2677,9 @@ registerPlugin("madeit-chatbot-sidebar", {
                                         {
                                             type: "input_text",
                                             text:
-                                                "Je schrijft alt-teksten voor webafbeeldingen. Geef exact 1 korte alt-tekst terug zonder aanhalingstekens, zonder punt op het einde, en zonder extra uitleg.",
+                                                yoastKeyword
+                                                    ? "Je schrijft alt-teksten voor webafbeeldingen met SEO-focus. Verwerk de focus keyword indien dat natuurlijk en relevant is voor de afbeelding. Geef exact 1 korte alt-tekst terug zonder aanhalingstekens, zonder punt op het einde, en zonder extra uitleg."
+                                                    : "Je schrijft alt-teksten voor webafbeeldingen. Geef exact 1 korte alt-tekst terug zonder aanhalingstekens, zonder punt op het einde, en zonder extra uitleg.",
                                         },
                                     ],
                                 },
@@ -1605,6 +2689,9 @@ registerPlugin("madeit-chatbot-sidebar", {
                                         {
                                             type: "input_text",
                                             text:
+                                                (yoastKeyword
+                                                    ? "Yoast focus keyword:\n" + yoastKeyword + "\n\n"
+                                                    : "") +
                                                 "Context rond de afbeelding:\n" +
                                                 (task.contextText || "(geen extra context)") +
                                                 "\n\nBestaand bijschrift:\n" +
@@ -1862,6 +2949,16 @@ registerPlugin("madeit-chatbot-sidebar", {
             altProgress,
             altSummary,
             handleGenerateAltTags,
+            yoastActive,
+            generatedFocusKeyword,
+            yoastApplyStatus,
+            handleGenerateFocusKeyword,
+            generatedMetaTitle,
+            yoastMetaApplyStatus,
+            handleGenerateMetaTitle,
+            generatedMetaDescription,
+            yoastMetaDescriptionApplyStatus,
+            handleGenerateMetaDescription,
             handleSendMessage: async () => {
                 if (isLoading) {
                     cancelActiveRequest();

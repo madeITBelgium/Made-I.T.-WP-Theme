@@ -6,9 +6,9 @@ if (!defined('ABSPATH')) {
 
 if (!function_exists('madeit_ai_debug')) {
     function madeit_ai_debug($label, $data = null): void {
-        // if (!defined('WP_DEBUG') || !WP_DEBUG) {
-        // 	return;
-        // }
+        if (!defined('WP_DEBUG') || !WP_DEBUG) {
+        	return;
+        }
 
         $message = '[madeit-ai] '.$label;
         if (null !== $data) {
@@ -153,6 +153,22 @@ if(!function_exists('madeit_ai_rest_api_init')) {
                 return current_user_can('manage_options');
             },
         ]);
+
+        register_rest_route('madeit-ai/v1', '/yoast/meta-title', [
+            'methods' => 'POST',
+            'callback' => 'madeit_rest_ai_set_yoast_meta_title',
+            'permission_callback' => function() {
+                return current_user_can('edit_posts');
+            },
+        ]);
+
+        register_rest_route('madeit-ai/v1', '/yoast/meta-description', [
+            'methods' => 'POST',
+            'callback' => 'madeit_rest_ai_set_yoast_meta_description',
+            'permission_callback' => function() {
+                return current_user_can('edit_posts');
+            },
+        ]);
     }
     add_action('rest_api_init', 'madeit_ai_rest_api_init');
 }
@@ -182,5 +198,83 @@ if(!function_exists('madeit_rest_ai_rest_responses')) {
             ], 500);
         }
         return new WP_REST_Response($result, 200);
+    }
+}
+
+if(!function_exists('madeit_rest_ai_set_yoast_meta_title')) {
+    function madeit_rest_ai_set_yoast_meta_title(WP_REST_Request $request) {
+        $params = $request->get_json_params();
+        $post_id = isset($params['postId']) ? absint($params['postId']) : 0;
+        $meta_title = isset($params['metaTitle']) ? sanitize_text_field((string) $params['metaTitle']) : '';
+
+        if ($post_id <= 0) {
+            return new WP_REST_Response([
+                'success' => false,
+                'error' => 'invalid_post_id',
+            ], 400);
+        }
+
+        if (!current_user_can('edit_post', $post_id)) {
+            return new WP_REST_Response([
+                'success' => false,
+                'error' => 'forbidden',
+            ], 403);
+        }
+
+        $updated = update_post_meta($post_id, '_yoast_wpseo_title', $meta_title);
+        $saved_value = (string) get_post_meta($post_id, '_yoast_wpseo_title', true);
+
+        madeit_ai_debug('yoast_meta_title_saved', [
+            'post_id' => $post_id,
+            'updated' => (bool) $updated,
+            'requested' => $meta_title,
+            'saved' => $saved_value,
+        ]);
+
+        return new WP_REST_Response([
+            'success' => true,
+            'postId' => $post_id,
+            'metaTitle' => $saved_value,
+            'changed' => (bool) $updated,
+        ], 200);
+    }
+}
+
+if(!function_exists('madeit_rest_ai_set_yoast_meta_description')) {
+    function madeit_rest_ai_set_yoast_meta_description(WP_REST_Request $request) {
+        $params = $request->get_json_params();
+        $post_id = isset($params['postId']) ? absint($params['postId']) : 0;
+        $meta_description = isset($params['metaDescription']) ? sanitize_text_field((string) $params['metaDescription']) : '';
+
+        if ($post_id <= 0) {
+            return new WP_REST_Response([
+                'success' => false,
+                'error' => 'invalid_post_id',
+            ], 400);
+        }
+
+        if (!current_user_can('edit_post', $post_id)) {
+            return new WP_REST_Response([
+                'success' => false,
+                'error' => 'forbidden',
+            ], 403);
+        }
+
+        $updated = update_post_meta($post_id, '_yoast_wpseo_metadesc', $meta_description);
+        $saved_value = (string) get_post_meta($post_id, '_yoast_wpseo_metadesc', true);
+
+        madeit_ai_debug('yoast_meta_description_saved', [
+            'post_id' => $post_id,
+            'updated' => (bool) $updated,
+            'requested' => $meta_description,
+            'saved' => $saved_value,
+        ]);
+
+        return new WP_REST_Response([
+            'success' => true,
+            'postId' => $post_id,
+            'metaDescription' => $saved_value,
+            'changed' => (bool) $updated,
+        ], 200);
     }
 }

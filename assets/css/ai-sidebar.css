@@ -293,6 +293,53 @@ fade-in {
     margin: 0;
 }
 
+.madeit-sidebar .madeit-yoast-module {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px 0;
+}
+
+.madeit-sidebar .madeit-yoast-intro {
+    color: #1e1e1e;
+    font-size: 13px;
+    margin: 0;
+}
+
+.madeit-sidebar .madeit-yoast-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.madeit-sidebar .madeit-yoast-result {
+    background: #f6f7f7;
+    border: 1px solid #dcdcde;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.madeit-sidebar .madeit-yoast-label {
+    color: #50575e;
+    font-size: 11px;
+    font-weight: 600;
+    margin: 0 0 4px;
+    text-transform: uppercase;
+}
+
+.madeit-sidebar .madeit-yoast-keyword {
+    color: #1e1e1e;
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.madeit-sidebar .madeit-yoast-status {
+    color: #50575e;
+    font-size: 12px;
+    margin: 8px 0 0;
+}
+
 .madeit-sidebar .madeit-chat-container {
     overflow-y: scroll;
     padding-right: 16px;
