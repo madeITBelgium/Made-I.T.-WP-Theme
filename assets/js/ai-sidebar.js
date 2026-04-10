@@ -971,7 +971,7 @@ function LanguageCheckModule({
                 "p",
                 { className: "madeit-language-intro" },
                 __(
-                    "De volledige block-source wordt automatisch ingeladen. Klik op Start voor JSON-output met correcties.",
+                    "Klik op Start om de taalcontrole te starten.",
                     "madeit"
                 )
             ),
@@ -1133,7 +1133,12 @@ function SidebarContent({
 
 registerPlugin("madeit-chatbot-sidebar", {
     render: () => {
-        const { insertBlocks, updateBlockAttributes, selectBlock } = useDispatch("core/block-editor");
+        const {
+            insertBlocks,
+            updateBlockAttributes,
+            selectBlock,
+            __unstableMarkLastChangeAsPersistent,
+        } = useDispatch("core/block-editor");
         const { createErrorNotice } = useDispatch(noticesStore);
 
         const [message, setMessage] = useState("");
@@ -1238,7 +1243,7 @@ registerPlugin("madeit-chatbot-sidebar", {
                             {
                                 role: "system",
                                 content:
-                                    "Je bent een taalassistent. Je ontvangt de actuele Gutenberg block-state als JSON (met clientId, attributes en serializedHtml). Geef ALLEEN geldige JSON terug (geen markdown of extra tekst) met dit formaat: {\"issues\":[{\"source\":\"...\",\"fix\":\"...\",\"clientId\":\"...\",\"positie\":\"...\"}]}. In 'source' markeer je de fout met [FOUT]...[/FOUT]. Gebruik ALTIJD de echte Gutenberg clientId van het block met de fout in 'clientId'. 'positie' mag als extra context, maar 'clientId' is verplicht. Baseer je op de huidige state, niet op historische/originalContent velden.",
+                                    "Je bent een taalassistent. Je ontvangt de actuele Gutenberg block-state als JSON (met clientId, attributes en serializedHtml). Geef ALLEEN geldige JSON terug (geen markdown of extra tekst) met dit formaat: {\"issues\":[{\"source\":\"...\",\"fix\":\"...\",\"clientId\":\"...\",\"positie\":\"...\"}]}. Voeg ALLEEN een issue toe wanneer er een echte taal- of spellingsfout is. Doe GEEN stijlvoorstellen of herschrijvingen als de tekst al correct is. Als er geen echte fouten zijn, geef exact terug: {\"issues\":[]}. In 'source' markeer je de fout met [FOUT]...[/FOUT]. Gebruik ALTIJD de echte Gutenberg clientId van het block met de fout in 'clientId'. 'positie' mag als extra context, maar 'clientId' is verplicht. Baseer je op de huidige state, niet op historische/originalContent velden.",
                             },
                             {
                                 role: "user",
@@ -1390,6 +1395,10 @@ registerPlugin("madeit-chatbot-sidebar", {
                 updateBlockAttributes(targetBlock.clientId, {
                     [attributeUpdate.key]: attributeUpdate.updatedValue,
                 });
+
+                if (typeof __unstableMarkLastChangeAsPersistent === "function") {
+                    __unstableMarkLastChangeAsPersistent();
+                }
             } catch (updateError) {
                 logApplyFailure("update_block_attributes_error", {
                     issue,
@@ -1517,6 +1526,12 @@ registerPlugin("madeit-chatbot-sidebar", {
                     },
                 ];
 
+                const systemMessage = {
+                    role: "system",
+                    content:
+                        "Je bent een behulpzame AI-assistent. Antwoord in de taal van de gebruiker. Als er twijfel is over de taal, antwoord dan in het Nederlands (Belgisch).",
+                };
+
                 setChatHistory(nextMessages);
                 setUiChat((previous) => [
                     ...previous,
@@ -1532,7 +1547,7 @@ registerPlugin("madeit-chatbot-sidebar", {
                         path: "/madeit-ai/v1/chat/completions",
                         method: "POST",
                         data: {
-                            messages: nextMessages,
+                            messages: [systemMessage, ...nextMessages],
                             //functions,
                         },
                         signal: controller?.signal,
@@ -1680,18 +1695,43 @@ registerPlugin("madeit-chatbot-sidebar", {
         "svg",
         {
             xmlns: "http://www.w3.org/2000/svg",
-            width: "800",
-            height: "800",
-            fill: "currentColor",
-            version: "1.1",
-            viewBox: "0 0 512.002 512.002",
-            xmlSpace: "preserve",
+            viewBox: "0 0 64 64",
+            fill: "none",
         },
-        React.createElement("path", {
-            d: "M247.527 264.474l-54.037-16.785-188.598 188.6c-6.521 6.521-6.521 17.086 0 23.607l47.214 47.214a16.64 16.64 0 0011.803 4.891c4.272 0 8.543-1.63 11.803-4.891L264.31 318.512l-16.783-54.038z",
+        React.createElement("circle", {
+            cx: "32",
+            cy: "32",
+            r: "30",
+            fill: "white",
         }),
         React.createElement("path", {
-            d: "M508.684 231.248l-61.051-81.81 32.78-96.678a16.696 16.696 0 00-4.011-17.162 16.736 16.736 0 00-17.162-4.01l-96.678 32.78-81.81-61.051a16.697 16.697 0 00-17.564-1.5 16.721 16.721 0 00-9.119 15.096l1.304 102.069-83.354 58.953a16.693 16.693 0 00-6.847 16.238 16.695 16.695 0 0011.531 13.336l97.494 30.292 30.292 97.494a16.693 16.693 0 0013.336 11.531c.869.141 1.74.207 2.609.207 5.369 0 10.466-2.516 13.63-6.985l58.953-83.283 102.069 1.443h.217c6.272 0 12.021-3.661 14.879-9.258 2.881-5.662 2.306-12.605-1.498-17.702z",
-        })
+            d: "M12 20l1.5 3 3 1.5-3 1.5-1.5 3-1.5-3-3-1.5 3-1.5 1.5-3z",
+            fill: "black",
+            opacity: "0.8",
+        }),
+        React.createElement("path", {
+            d: "M50 14l1 2 2 1-2 1-1 2-1-2-2-1 2-1 1-2z",
+            fill: "black",
+            opacity: "0.6",
+        }),
+        React.createElement("path", {
+            d: "M52 46l1.5 3 3 1.5-3 1.5-1.5 3-1.5-3-3-1.5 3-1.5 1.5-3z",
+            fill: "black",
+            opacity: "0.7",
+        }),
+        React.createElement("path", {
+            d: "M10 48l1 2 2 1-2 1-1 2-1-2-2-1 2-1 1-2z",
+            fill: "black",
+            opacity: "0.5",
+        }),
+        React.createElement("text", {
+            x: "32",
+            y: "38",
+            textAnchor: "middle",
+            fontFamily: "system-ui, -apple-system, sans-serif",
+            fontSize: "20",
+            fontWeight: "700",
+            fill: "black",
+        }, "AI")
     ),
 });
