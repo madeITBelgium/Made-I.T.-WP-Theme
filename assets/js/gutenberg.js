@@ -34,7 +34,7 @@ wp.blocks.registerBlockStyle('core/image', {
     var RangeControl = wp.components.RangeControl;
     var __ = wp.i18n.__;
 
-    var BLOCK_NAME = 'core/post-template';
+    var BLOCK_NAME = ['core/post-template', 'core/group'];
 
     var getLayoutType = function ( attrs ) {
         return attrs && attrs.layout && attrs.layout.type ? attrs.layout.type : undefined;
@@ -60,7 +60,7 @@ wp.blocks.registerBlockStyle('core/image', {
         'blocks.registerBlockType',
         'madeit/post-template-responsive-columns/attributes',
         function ( settings, name ) {
-            if ( name !== BLOCK_NAME ) return settings;
+            if ( !BLOCK_NAME.includes(name) ) return settings;
 
             settings.attributes = Object.assign( {}, settings.attributes, {
                 madeitColumnsTablet: { type: 'number' },
@@ -73,7 +73,7 @@ wp.blocks.registerBlockStyle('core/image', {
 
     var withResponsiveColumnsControls = createHigherOrderComponent( function ( BlockEdit ) {
         return function ( props ) {
-            if ( props.name !== BLOCK_NAME ) {
+            if ( !BLOCK_NAME.includes(props.name) ) {
                 return wp.element.createElement( BlockEdit, props );
             }
 
@@ -183,7 +183,7 @@ wp.blocks.registerBlockStyle('core/image', {
         'madeit/post-template-responsive-columns/editor-wrapper-props',
         function ( BlockListBlock ) {
             return function ( props ) {
-                if ( props.name !== BLOCK_NAME ) {
+                if ( !BLOCK_NAME.includes(props.name) ) {
                     return wp.element.createElement( BlockListBlock, props );
                 }
 
@@ -202,7 +202,7 @@ wp.blocks.registerBlockStyle('core/image', {
         'blocks.getSaveContent.extraProps',
         'madeit/post-template-responsive-columns/save-style-props',
         function ( extraProps, blockType, attributes ) {
-            if ( blockType && blockType.name !== BLOCK_NAME ) return extraProps;
+            if ( blockType && !BLOCK_NAME.includes(blockType.name) ) return extraProps;
             if ( ! attributes ) return extraProps;
 
             var nextExtraProps = Object.assign( {}, extraProps );

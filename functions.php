@@ -1834,6 +1834,8 @@ add_action('enqueue_block_editor_assets', static function (): void {
     );
 });
 
+require_once get_parent_theme_file_path('/inc/core/fontStyles/local-fonts.php');
+
 // responsive.js for responsive block editor preview (editor-only; uses wp.* globals).
 add_action('enqueue_block_editor_assets', static function (): void {
     $madeitResponsivePath = get_theme_file_path('/inc/core/fontStyles/responsive.js');

@@ -29,6 +29,8 @@ import saveV1 from './save-versions/save-v1';
 import savePaddingOnWrapper from './save-versions/save-padding-on-wrapper';
 import savePaddingOnWrapperMin from './save-versions/save-padding-on-wrapper-min';
 import save2026_03_26 from './save-versions/save-2026-03-26';
+import save2026_04_08 from './save-versions/save-2026-04-08';
+import save2026_04_08_vars from './save-versions/save-2026-04-08-vars';
 
 const logDeprecated20260326 = (stage, details = {}) => {
     if (typeof window === 'undefined') {
@@ -98,6 +100,23 @@ registerBlockType( metadata.name, {
     save: save,
 
     deprecated: [
+        {
+            // Deprecated (2026-04-08): spacing serialized entirely as CSS vars
+            // (desktop/tablet/mobile). Kept for validation.
+            save: save2026_04_08_vars,
+            migrate: function( attributes ) {
+                return attributes;
+            },
+        },
+        {
+            // Deprecated (2026-04-08): spacing was serialized as direct inline
+            // margin/padding styles. Current save() uses CSS variables for
+            // responsive padding/margin.
+            save: save2026_04_08,
+            migrate: function( attributes ) {
+                return attributes;
+            },
+        },
         {
             /** Deprecated (2026-03-26):
              * - Remove default css variables

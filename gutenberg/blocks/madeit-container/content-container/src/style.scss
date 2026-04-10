@@ -86,6 +86,96 @@ $grid-size-large: 16px;
 	margin-left: auto;
 	margin-right: auto;
 
+	// Responsive margin (top/bottom) via CSS variables.
+	// Note: no fallback on purpose; if the var is unset, the declaration becomes
+	// invalid and existing/theme margins remain untouched.
+	margin-top: var(--madeit-container-margin-top-desktop);
+	margin-bottom: var(--madeit-container-margin-bottom-desktop);
+
+	@media (min-width: 600px) and (max-width: 991px) {
+		margin-top: var(
+			--madeit-container-margin-top-tablet,
+			var(--madeit-container-margin-top-desktop)
+		) !important;
+		margin-bottom: var(
+			--madeit-container-margin-bottom-tablet,
+			var(--madeit-container-margin-bottom-desktop)
+		) !important;
+	}
+
+	@media (max-width: $mobile) {
+		margin-top: var(
+			--madeit-container-margin-top-mobile,
+			var(
+				--madeit-container-margin-top-tablet,
+				var(--madeit-container-margin-top-desktop)
+			)
+		) !important;
+		margin-bottom: var(
+			--madeit-container-margin-bottom-mobile,
+			var(
+				--madeit-container-margin-bottom-tablet,
+				var(--madeit-container-margin-bottom-desktop)
+			)
+		) !important;
+	}
+
+	// Responsive wrapper padding via CSS variables.
+	padding-top: var(--madeit-container-padding-top-desktop);
+	padding-right: var(--madeit-container-padding-right-desktop);
+	padding-bottom: var(--madeit-container-padding-bottom-desktop);
+	padding-left: var(--madeit-container-padding-left-desktop);
+
+	@media (min-width: 600px) and (max-width: 991px) {
+		padding-top: var(
+			--madeit-container-padding-top-tablet,
+			var(--madeit-container-padding-top-desktop)
+		) !important;
+		padding-right: var(
+			--madeit-container-padding-right-tablet,
+			var(--madeit-container-padding-right-desktop)
+		) !important;
+		padding-bottom: var(
+			--madeit-container-padding-bottom-tablet,
+			var(--madeit-container-padding-bottom-desktop)
+		) !important;
+		padding-left: var(
+			--madeit-container-padding-left-tablet,
+			var(--madeit-container-padding-left-desktop)
+		) !important;
+	}
+
+	@media (max-width: $mobile) {
+		padding-top: var(
+			--madeit-container-padding-top-mobile,
+			var(
+				--madeit-container-padding-top-tablet,
+				var(--madeit-container-padding-top-desktop)
+			)
+		) !important;
+		padding-right: var(
+			--madeit-container-padding-right-mobile,
+			var(
+				--madeit-container-padding-right-tablet,
+				var(--madeit-container-padding-right-desktop)
+			)
+		) !important;
+		padding-bottom: var(
+			--madeit-container-padding-bottom-mobile,
+			var(
+				--madeit-container-padding-bottom-tablet,
+				var(--madeit-container-padding-bottom-desktop)
+			)
+		) !important;
+		padding-left: var(
+			--madeit-container-padding-left-mobile,
+			var(
+				--madeit-container-padding-left-tablet,
+				var(--madeit-container-padding-left-desktop)
+			)
+		) !important;
+	}
+
 	&.madeit-block-content--frontend {
 		--madeit-row-gap-desktop: 20px;
 		--madeit-row-gap-tablet: 20px;
@@ -129,8 +219,38 @@ $grid-size-large: 16px;
 	}
 
 	&.container, &.container-fluid {
-		padding-right: 0;
-		padding-left: 0;
+		// Baseline: neutralize Bootstrap container padding,
+		// but allow block-level responsive padding variables to override.
+		padding-right: var(--madeit-container-padding-right-desktop, 0px);
+		padding-left: var(--madeit-container-padding-left-desktop, 0px);
+
+		@media (min-width: 600px) and (max-width: 991px) {
+			padding-right: var(
+				--madeit-container-padding-right-tablet,
+				var(--madeit-container-padding-right-desktop, 0px)
+			);
+			padding-left: var(
+				--madeit-container-padding-left-tablet,
+				var(--madeit-container-padding-left-desktop, 0px)
+			);
+		}
+
+		@media (max-width: $mobile) {
+			padding-right: var(
+				--madeit-container-padding-right-mobile,
+				var(
+					--madeit-container-padding-right-tablet,
+					var(--madeit-container-padding-right-desktop, 0px)
+				)
+			);
+			padding-left: var(
+				--madeit-container-padding-left-mobile,
+				var(
+					--madeit-container-padding-left-tablet,
+					var(--madeit-container-padding-left-desktop, 0px)
+				)
+			);
+		}
 
 		> .row {
 			margin-right: auto;
@@ -147,6 +267,64 @@ $grid-size-large: 16px;
 	// .madeit-container-row {
 	// 	display: flex;
 	// }
+
+	// Responsive row padding via CSS variables.
+	.madeit-container-row {
+		padding-top: var(--madeit-container-row-padding-top-desktop);
+		padding-right: var(--madeit-container-row-padding-right-desktop);
+		padding-bottom: var(--madeit-container-row-padding-bottom-desktop);
+		padding-left: var(--madeit-container-row-padding-left-desktop);
+
+		@media (min-width: 600px) and (max-width: 991px) {
+			padding-top: var(
+				--madeit-container-row-padding-top-tablet,
+				var(--madeit-container-row-padding-top-desktop)
+			) !important;
+			padding-right: var(
+				--madeit-container-row-padding-right-tablet,
+				var(--madeit-container-row-padding-right-desktop)
+			) !important;
+			padding-bottom: var(
+				--madeit-container-row-padding-bottom-tablet,
+				var(--madeit-container-row-padding-bottom-desktop)
+			) !important;
+			padding-left: var(
+				--madeit-container-row-padding-left-tablet,
+				var(--madeit-container-row-padding-left-desktop)
+			) !important;
+		}
+
+		@media (max-width: $mobile) {
+			padding-top: var(
+				--madeit-container-row-padding-top-mobile,
+				var(
+					--madeit-container-row-padding-top-tablet,
+					var(--madeit-container-row-padding-top-desktop)
+				)
+			) !important;
+			padding-right: var(
+				--madeit-container-row-padding-right-mobile,
+				var(
+					--madeit-container-row-padding-right-tablet,
+					var(--madeit-container-row-padding-right-desktop)
+				)
+			) !important;
+			padding-bottom: var(
+				--madeit-container-row-padding-bottom-mobile,
+				var(
+					--madeit-container-row-padding-bottom-tablet,
+					var(--madeit-container-row-padding-bottom-desktop)
+				)
+			) !important;
+			padding-left: var(
+				--madeit-container-row-padding-left-mobile,
+				var(
+					--madeit-container-row-padding-left-tablet,
+					var(--madeit-container-row-padding-left-desktop)
+				)
+			) !important;
+		}
+	}
 	
 
 	.madeit-container-row > .col,
@@ -357,6 +535,15 @@ $grid-size-large: 16px;
 	&.is-vertically-aligned-bottom {
 		align-self: flex-end;
 	}
+
+	.madeit-content-column__inner {
+		padding-right: calc(var(--bs-gutter-x) * 0.5);
+    	padding-left: calc(var(--bs-gutter-x) * 0.5);
+	}
+}
+.row > * {
+	padding-right: 0;
+    padding-left: 0;
 }
 
 .justify-content-center > .row {
@@ -430,4 +617,11 @@ $grid-size-large: 16px;
 			width: calc(percentage($i / 12) - var(--madeit-row-gap-desktop, 20px));
 		}
 	}
+}
+
+
+@media (max-width: 575px) {
+    .flex-grow > div > .wp-block-madeit-block-content {
+        padding: 0 20px !important;
+    }
 }

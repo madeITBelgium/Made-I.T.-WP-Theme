@@ -131,10 +131,14 @@ $breakpoints: (
 
 // Container block editor styles
 .wp-block-madeit-block-content {
-    border: 1px dashed #2d2e6c;
+    border: 1px dashed transparent;
     display:block;
     position: relative;
-    max-width: none;    
+    max-width: none;   
+
+    &:hover {
+        border: 1px dashed #2d2e6c;
+    } 
 
     // STEP 1: Placeholder styles when no inner blocks are present.
     &.madeit-container-placeholder {
@@ -262,6 +266,7 @@ $breakpoints: (
         }
 
         > .madeit-container-row {
+            width: 100%;
             flex: 1;
 
             &.rows-1 {
@@ -276,12 +281,18 @@ $breakpoints: (
                 > .block-editor-block-list__layout {
 
                     [data-type="madeit/block-content-column"] {
-                        border: 1px dashed #bbb;
-                        padding-right: calc(1.5rem * 0.5);
-                        padding-left: calc(1.5rem * 0.5);
+                        border: 1px dashed transparent;
 
                         &.keep-max-container-size > .block-editor-block-list__layout {
-                            border: 1px dashed #bbb;
+                            border: 1px dashed transparent;
+
+                            &:hover {
+                                border-color: #bbb;
+                            }
+                        }
+
+                        &:hover {
+                            border-color: #bbb;
                         }
                     }
                 }
@@ -313,17 +324,25 @@ $breakpoints: (
                     flex-wrap: var(--madeit-flex-wrap-desktop, nowrap);
 
                     > .block-core-columns {
-                        padding-right: calc(1.5rem * 0.5);
-                        padding-left: calc(1.5rem * 0.5);
-                        border: 1px dashed #bbb;
+                        border: 1px dashed transparent;
+
+                        &:hover {
+                            border-color: #bbb;
+                        }
 
                         &.keep-max-container-size > .block-editor-block-list__layout {
-                            border: 1px dashed #bbb;
+                            border: 1px dashed transparent;
+
+                            &:hover {
+                                border-color: #bbb;
+                            }
                         }
 
                         > .block-editor-block-list__layout {
                             align-content: var(--madeit-align-items-mobile, var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch)));
                             min-height: var(--madeit-min-height-mobile, var(--madeit-min-height-tablet, var(--madeit-min-height-desktop))) !important;
+                            padding-right: calc(1.5rem * 0.5);
+                            padding-left: calc(1.5rem * 0.5);
                         }
                     }
                 }
@@ -644,3 +663,6 @@ body.madeit-content-container-advanced-tabs .block-editor-block-inspector__advan
         }
     }
 }
+
+
+

@@ -25,6 +25,9 @@ import save from './save';
 import metadata from './../block.json';
 import icon from './icon';
 
+// Oude save versies importeren
+import save_20260407 from './save-versions/save_20260407';
+
 const stripBackgroundClasses = ( className = '' ) =>
     className
         .split( /\s+/ )
@@ -65,6 +68,112 @@ registerBlockType( metadata.name, {
     save,
     
     deprecated: [
+        {
+            // Deprecated (previous markup): padding was saved on the OUTER wrapper,
+            // while background classes were stored on the INNER wrapper.
+            //
+            // This must use the raw `innerWrapperClassName` to preserve legacy
+            // duplicated tokens and exact class strings from post content.
+            attributes: {
+                wrapperClassName: {
+                    type: 'string',
+                    source: 'attribute',
+                    selector: '.wp-block-madeit-block-content-column',
+                    attribute: 'class',
+                },
+                // Legacy HTML stored padding/margins on the wrapper `style`.
+                legacyWrapperStyle: {
+                    type: 'string',
+                    source: 'attribute',
+                    selector: '.wp-block-madeit-block-content-column',
+                    attribute: 'style',
+                },
+                innerWrapperClassName: {
+                    type: 'string',
+                    source: 'attribute',
+                    selector: '.madeit-content-column__inner',
+                    attribute: 'class',
+                },
+                verticalAlignment: { type: 'string' },
+                hasCustomVerticalAlignment: { type: 'boolean' },
+                width: { type: 'number', min: 0, max: 12 },
+                backgroundColor: { type: 'string' },
+                customBackgroundColor: { type: 'string' },
+                textColor: { type: 'string' },
+                customTextColor: { type: 'string' },
+                margin: { type: 'object' },
+                padding: { type: 'object' },
+                maxContainerSize: { type: 'boolean' },
+            },
+            save: function( props ) {
+                const {
+                    wrapperClassName,
+                    legacyWrapperStyle,
+                    verticalAlignment,
+                    width,
+                    margin,
+                    padding,
+                    maxContainerSize,
+                    innerWrapperClassName,
+                } = props.attributes;
+
+                // Prefer the raw class string sourced from saved HTML so we don't
+                // accidentally normalize, reorder, or dedupe legacy tokens.
+                const rawOuterClassName =
+                    typeof wrapperClassName === 'string' && wrapperClassName.trim().length > 0
+                        ? wrapperClassName.trim()
+                        : typeof props?.className === 'string' && props.className.trim().length > 0
+                            ? props.className.trim()
+                            : classnames( 'wp-block-madeit-block-content-column', {
+                                    'col-12': true,
+                                    [ `col-lg-${ Math.round( width ) }` ]: Number.isFinite( width ),
+                                    [ `is-vertically-aligned-${ verticalAlignment }` ]: verticalAlignment,
+                                    'keep-max-container-size': maxContainerSize,
+                                } );
+
+                const style = {};
+                if ( margin?.top !== undefined ) style.marginTop = margin.top;
+                if ( margin?.bottom !== undefined ) style.marginBottom = margin.bottom;
+                if ( padding?.top !== undefined ) style.paddingTop = padding.top;
+                if ( padding?.bottom !== undefined ) style.paddingBottom = padding.bottom;
+                if ( padding?.left !== undefined ) style.paddingLeft = padding.left;
+                if ( padding?.right !== undefined ) style.paddingRight = padding.right;
+
+                // If this legacy block stored spacing only on the wrapper style
+                // attribute (without JSON attributes), fall back to parsing it.
+                if ( legacyWrapperStyle && Object.keys( style ).length === 0 ) {
+                    const readPx = ( key ) => {
+                        const re = new RegExp( `${ key }\\s*:\\s*([0-9.]+)px`, 'i' );
+                        const m = String( legacyWrapperStyle ).match( re );
+                        return m ? `${ m[ 1 ] }px` : undefined;
+                    };
+
+                    const pt = readPx( 'padding-top' );
+                    const pb = readPx( 'padding-bottom' );
+                    const pl = readPx( 'padding-left' );
+                    const pr = readPx( 'padding-right' );
+                    const mt = readPx( 'margin-top' );
+                    const mb = readPx( 'margin-bottom' );
+
+                    if ( pt !== undefined ) style.paddingTop = pt;
+                    if ( pb !== undefined ) style.paddingBottom = pb;
+                    if ( pl !== undefined ) style.paddingLeft = pl;
+                    if ( pr !== undefined ) style.paddingRight = pr;
+                    if ( mt !== undefined ) style.marginTop = mt;
+                    if ( mb !== undefined ) style.marginBottom = mb;
+                }
+
+                return (
+                    <div className={ rawOuterClassName } style={ style }>
+                        <div className={ innerWrapperClassName || 'madeit-content-column__inner' }>
+                            { '\n\n' }
+                            <InnerBlocks.Content />
+                            { '\n\n' }
+                        </div>
+                    </div>
+                );
+            },
+        },
         {
             // Deprecated (ultra-legacy markup): keep the exact wrapper class
             // string from stored HTML (including duplicates / legacy grid
@@ -471,6 +580,9 @@ registerBlockType( metadata.name, {
                     </div>
                 );
             },
+        },
+        {
+            save: save_20260407,
         },
 
         {

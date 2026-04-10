@@ -89,32 +89,37 @@ function ColumnEdit( props ) {
     const fallbackTextColor = '#FFFFFF';
     const fallbackBackgroundColor = '#000000';
     
-    var style = {
-        color: textColor.color,
+    const outerStyle = {
+        color: textColor?.color,
     };
 
-    if(margin !== undefined && margin.top !== undefined) {
-        style.marginTop = margin.top;
+    const innerStyle = {
+        backgroundColor: backgroundColor?.color,
+        height: '100%',
+    };
+
+    if ( margin !== undefined && margin.top !== undefined ) {
+        outerStyle.marginTop = margin.top;
     }
-    if(margin !== undefined && margin.bottom !== undefined) {
-        style.marginBottom = margin.bottom;
+    if ( margin !== undefined && margin.bottom !== undefined ) {
+        outerStyle.marginBottom = margin.bottom;
     }
-    if(padding !== undefined && padding.top !== undefined) {
-        style.paddingTop = padding.top;
+    if ( padding !== undefined && padding.top !== undefined ) {
+        innerStyle.paddingTop = padding.top;
     }
-    if(padding !== undefined && padding.bottom !== undefined) {
-        style.paddingBottom = padding.bottom;
+    if ( padding !== undefined && padding.bottom !== undefined ) {
+        innerStyle.paddingBottom = padding.bottom;
     }
-    if(padding !== undefined && padding.left !== undefined) {
-        style.paddingLeft = padding.left;
+    if ( padding !== undefined && padding.left !== undefined ) {
+        innerStyle.paddingLeft = padding.left;
     }
-    if(padding !== undefined && padding.right !== undefined) {
-        style.paddingRight = padding.right;
+    if ( padding !== undefined && padding.right !== undefined ) {
+        innerStyle.paddingRight = padding.right;
     }
 
     const blockProps = useBlockProps({
         className: classes,
-        style: style,
+        style: outerStyle,
     });
 
     const sanitizedBlockProps = {
@@ -124,10 +129,7 @@ function ColumnEdit( props ) {
 
     const innerBlocksProps = useInnerBlocksProps(
         {
-            style: {
-                backgroundColor: backgroundColor.color,
-                height: '100%',
-            },
+            style: innerStyle,
         },
         {
             templateLock: false,

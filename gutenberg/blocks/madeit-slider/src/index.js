@@ -11,6 +11,7 @@ import metadata from './block.json';
 import Edit from './edit';
 import Save from './save';
 import './style.scss';
+import { useBlockProps, InnerBlocks } from '@wordpress/block-editor';
 
 const icon = {
     src: (
@@ -48,9 +49,141 @@ const icon = {
     ),
 };
 
+function normalizeSpaceBetween(value) {
+    if (value === undefined || value === null || value === '') return '10px';
+    if (typeof value === 'number' && Number.isFinite(value)) return `${value}px`;
+    const raw = String(value).trim();
+    if (!raw) return '10px';
+    // If it's a plain number, treat as px.
+    if (/^[0-9]*\.?[0-9]+$/.test(raw)) return `${raw}px`;
+    return raw;
+}
+
+// Deprecated save: older content did not include `data-space-between` and `data-touch-slides`.
+function DeprecatedSaveV1({ attributes }) {
+    const {
+        effect = 'slide',
+        slidesDesktop = 1, slidesTablet = 1, slidesMobile = 1,
+        height = '300px',
+        spaceBetween = '10px', objectFit = 'cover',
+        navigation = false,
+        navigationPosition = 'outside',
+        navigationIconColor = '#000',
+        navigationBackgroundColor = '#fff',
+        navigationIconSize = 24,
+        navigationBorderRadius = 50,
+        navigationBorderWidth = '1px',
+        navigationBorderStyle = 'solid',
+        navigationBorderColor = '#ccc',
+        // IMPORTANT: older markup did not serialize data-touch-slides
+        pagination = false,
+        paginationType = 'bullets',
+        paginationInside = false,
+        paginationDynamic = false,
+        paginationMaxBullets = 5,
+        paginationActiveColor = '#000',
+        autoplay = true,
+        speed = 5000,
+        loop = false,
+    } = attributes;
+
+    const effectiveMinHeight = attributes?.minHeight ?? attributes?.minheight ?? '300px';
+    const normalizedSpaceBetween = normalizeSpaceBetween(spaceBetween);
+
+    const blockProps = useBlockProps.save({
+        className: 'm-slider_front',
+        style: {
+            '--height': height,
+            '--spaceBetween': normalizedSpaceBetween,
+            '--minheight': effectiveMinHeight,
+            '--swiper-space-between': normalizedSpaceBetween,
+            '--navigationIconSize': navigationIconSize + 'px',
+            '--paginationActiveColor': paginationActiveColor,
+            '--objectFit': objectFit || 'cover',
+        },
+    });
+
+    return (
+        <div
+            className="m-slider"
+            data-slides-desktop={slidesDesktop}
+            data-slides-tablet={slidesTablet}
+            data-slides-mobile={slidesMobile}
+            data-speed={speed}
+            data-autoplay={autoplay}
+            data-loop={loop}
+            data-navigation={navigation}
+            data-pagination={pagination}
+            data-effect={effect}
+            data-cross-fade={effect === 'fade'}
+            data-pagination-type={pagination ? paginationType : 'false'}
+            {...blockProps}
+        >
+            <div className="swiper" style={{ overflow: 'hidden', height: height, minHeight: effectiveMinHeight }}>
+                <div className="swiper-wrapper">
+                    <InnerBlocks.Content />
+                </div>
+            </div>
+
+            {navigation && (
+                <>
+                    <div className={`swiper-button ${navigationPosition}`}>
+                        <button className="swiper-button-prev" aria-label="Vorige slide" style={{ backgroundColor: navigationBackgroundColor, color: navigationIconColor, width: navigationIconSize, height: navigationIconSize, border: navigationBorderWidth ? `${navigationBorderWidth} ${navigationBorderStyle} ${navigationBorderColor}` : 'none', borderRadius: navigationBorderRadius }}></button>
+                        <button className="swiper-button-next" aria-label="Volgende slide" style={{ backgroundColor: navigationBackgroundColor, color: navigationIconColor, width: navigationIconSize, height: navigationIconSize, border: navigationBorderWidth ? `${navigationBorderWidth} ${navigationBorderStyle} ${navigationBorderColor}` : 'none', borderRadius: navigationBorderRadius }}></button>
+                    </div>
+                </>
+            )}
+
+            {pagination && (
+                <div className={`swiper-pagination swiper-pagination-${paginationType} ${paginationInside ? 'inside' : 'outside'}${paginationDynamic ? ' swiper-pagination-dynamic' : ''}`}>
+                    {paginationType === 'bullets' && !paginationDynamic && (
+                        <>
+                            <span className="swiper-pagination-bullet swiper-pagination-bullet-active" />
+                            <span className="swiper-pagination-bullet" />
+                            <span className="swiper-pagination-bullet" />
+                        </>
+                    )}
+                    {paginationType === 'fraction' && (
+                        <span className="swiper-pagination-fraction">1 / 3</span>
+                    )}
+                    {paginationType === 'progressbar' && (
+                        <div className="progressbar--preview" style={{ width: '30%', height: '4px', background: '#888' }} />
+                    )}
+
+                    {paginationDynamic && (
+                        <div className="swiper-pagination-dynamic">
+                            {Array.from({ length: paginationMaxBullets }, (_, i) => (
+                                <span key={i} className={`swiper-pagination-bullet ${i === 0 ? 'swiper-pagination-bullet-active' : ''}`} />
+                            ))}
+                        </div>
+                    )}
+                </div>
+            )}
+        </div>
+    );
+}
+
 registerBlockType(metadata.name, {
     ...metadata,
     icon,
+    deprecated: [
+        {
+            attributes: {
+                ...metadata.attributes,
+                // Prior schema accepted `spaceBetween` as number in some posts.
+                spaceBetween: { type: 'string', default: '10px' },
+            },
+            migrate: (attributes) => {
+                return {
+                    ...attributes,
+                    spaceBetween: normalizeSpaceBetween(attributes?.spaceBetween),
+                    // Ensure newer attributes exist so next save writes them.
+                    touchSlides: attributes?.touchSlides ?? true,
+                };
+            },
+            save: DeprecatedSaveV1,
+        },
+    ],
     transforms: {
         from: [
             {

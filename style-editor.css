@@ -79,3 +79,9 @@ body.gutenberg-editor-page {
 [data-wp-component="VisuallyHidden"] {
     min-height: 200px;
 }
+
+/* :not([data-type="madeit/block-content-column"] .components-popover.block-editor-block-popover__inbetween) {
+    display: none !important;
+} */
+
+

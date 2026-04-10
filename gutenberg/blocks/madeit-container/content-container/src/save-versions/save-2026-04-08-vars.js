@@ -17,15 +17,13 @@ import { __ } from '@wordpress/i18n';
 import { useBlockProps, InnerBlocks, getColorClassName } from '@wordpress/block-editor';
 
 /**
- * The save function defines the way in which the different attributes should
- * be combined into the final markup, which is then serialized by the block
- * editor into `post_content`.
+ * Deprecated save (2026-04-08): responsive spacing via CSS variables.
  *
- * @see https://developer.wordpress.org/block-editor/developers/block-api/block-edit-save/#save
- *
- * @return {WPElement} Element to render.
+ * This is the first responsive implementation that stored desktop/tablet/mobile
+ * spacing entirely as CSS variables (no inline margin/padding properties).
+ * Kept to avoid block validation errors if content was saved in that window.
  */
-export default function save( props ) {
+export default function save20260408Vars( props ) {
     const {
         wrapperClassName,
         directRowClassName,
@@ -89,30 +87,28 @@ export default function save( props ) {
         hideOnTablet,
         hideOnMobile,
     } = props.attributes;
-    
-    const {
-        className
-    } = props
 
-    // NOTE: Historically this block was saved without additional wrapper classes
-    // and without layout-related inline CSS vars. To avoid block validation
-    // failures on legacy/pasted content, we only serialize “enhanced” markup
-    // when the corresponding attributes are explicitly set.
-    
-    const containerBackgroundColorClass = containerBackgroundColor ? getColorClassName( 'background-color', containerBackgroundColor ) : undefined;
-	const rowBackgroundColorClass = rowBackgroundColor ? getColorClassName( 'background-color', rowBackgroundColor ) : undefined;
-	const rowTextColorClass = rowTextColor ? getColorClassName( 'color', rowTextColor ) : undefined;
+    const { className } = props;
+
+    const containerBackgroundColorClass = containerBackgroundColor
+        ? getColorClassName( 'background-color', containerBackgroundColor )
+        : undefined;
+    const rowBackgroundColorClass = rowBackgroundColor
+        ? getColorClassName( 'background-color', rowBackgroundColor )
+        : undefined;
+    const rowTextColorClass = rowTextColor
+        ? getColorClassName( 'color', rowTextColor )
+        : undefined;
 
     const hasClassicBackground =
         !! ( containerBackgroundImage?.url || containerBackgroundColor || customContainerBackgroundColor );
     const computedBackgroundType = backgroundType || ( hasClassicBackground ? 'classic' : undefined );
-    
+
     var classes = className;
     var classesChild = '';
-    
-    
+
     var defaultSize = size;
-    if(defaultSize !== 'container' && defaultSize !== 'container-fluid' && defaultSize !== 'container-content-boxed') {
+    if ( defaultSize !== 'container' && defaultSize !== 'container-fluid' && defaultSize !== 'container-content-boxed' ) {
         defaultSize = 'container';
     }
 
@@ -125,27 +121,14 @@ export default function save( props ) {
         hasWrapperClassNameFromMarkup &&
         wrapperClassName.split( /\s+/ ).includes( FRONTEND_WRAPPER_CLASS );
 
-    // General legacy compatibility:
-    // Older saved content may not include the frontend wrapper class at all
-    // (regardless of `size`). When we can detect that from parsed markup,
-    // we must not inject the class in `save()`, otherwise block validation
-    // fails and the editor shows recovery prompts.
     const shouldUseLegacyWrapperClasses =
         hasWrapperClassNameFromMarkup && ! wrapperHasFrontendClass;
 
-    // Legacy boxed markup (the one throwing validation errors):
-    // - Wrapper did NOT include `madeit-block-content--frontend`
-    // - `.row` was a direct child of the wrapper (no inner `.container`)
-    // We only switch to legacy serialization when we can positively detect
-    // legacy markup from the stored HTML (wrapperClassName derived attr).
     const shouldUseLegacyBoxedMarkup =
         defaultSize === 'container' &&
         hasWrapperClassNameFromMarkup &&
         ! wrapperHasFrontendClass;
 
-    // Keep the old direct-row detector as a secondary hint (some HTML parsers
-    // won't support :scope selectors), but do not rely on it as the primary
-    // switch.
     const hasDirectRowWrapper =
         typeof directRowClassName === 'string' && directRowClassName.trim().length > 0;
 
@@ -162,43 +145,39 @@ export default function save( props ) {
     let contentWidthNormalized =
         contentWidthResolvedRaw === 'container-fluid' ? 'container-fluid' : 'container';
 
-    // If the outer container is boxed, content cannot be full width.
     if ( outerSizeNormalized === 'container' ) {
         contentWidthNormalized = 'container';
     }
-    
-    
+
     classes = classnames( classes, {
-        [ `container` ]: 'container' === defaultSize,
-        [ `container-fluid` ]: 'container-fluid' === defaultSize || 'container-content-boxed' === defaultSize,
-         [ `is-hidden-desktop` ]: !! hideOnDesktop,
-        [ `is-hidden-tablet` ]: !! hideOnTablet,
-        [ `is-hidden-mobile` ]: !! hideOnMobile,
-		[ 'madeit-block-content--frontend' ]: ! shouldUseLegacyWrapperClasses,
+        container: 'container' === defaultSize,
+        'container-fluid':
+            'container-fluid' === defaultSize || 'container-content-boxed' === defaultSize,
+        'is-hidden-desktop': !! hideOnDesktop,
+        'is-hidden-tablet': !! hideOnTablet,
+        'is-hidden-mobile': !! hideOnMobile,
+        'madeit-block-content--frontend': ! shouldUseLegacyWrapperClasses,
     } );
-    
-    if(defaultSize !== 'container-content-boxed') {
+
+    if ( defaultSize !== 'container-content-boxed' ) {
         classes = classnames( classes, {
-            [ `are-vertically-aligned-${ verticalAlignment }` ]: verticalAlignment && defaultSize !== 'container-content-boxed',
+            [ `are-vertically-aligned-${ verticalAlignment }` ]:
+                verticalAlignment && defaultSize !== 'container-content-boxed',
         } );
     }
-    
+
     classesChild = classnames( classesChild, {
-        [ `are-vertically-aligned-${ verticalAlignment }` ]: verticalAlignment && defaultSize === 'container-content-boxed',
-        [ `container` ]: contentWidthNormalized === 'container',
-        [ `container-fluid` ]: contentWidthNormalized === 'container-fluid',
+        [ `are-vertically-aligned-${ verticalAlignment }` ]:
+            verticalAlignment && defaultSize === 'container-content-boxed',
+        container: contentWidthNormalized === 'container',
+        'container-fluid': contentWidthNormalized === 'container-fluid',
     } );
-    
-    // Text color stays on the outer wrapper so it inherits everywhere.
+
     classes = classnames( classes, {
         'has-text-color': rowTextColorClass,
         [ rowTextColorClass ]: rowTextColorClass,
     } );
 
-    // Container background should live on the inner container when the block
-    // is boxed, so padding/margins on the wrapper don't get painted.
-    // BUT: legacy boxed markup had no inner container wrapper, so in that case
-    // we keep the background on the outer wrapper for validation compatibility.
     if ( applyContainerBackgroundToInner ) {
         classesChild = classnames( classesChild, {
             'has-background': containerBackgroundColorClass,
@@ -210,7 +189,7 @@ export default function save( props ) {
             [ containerBackgroundColorClass ]: containerBackgroundColorClass,
         } );
     }
-    
+
     const containerBackgroundStyle = {
         backgroundColor:
             backgroundType === 'transparent'
@@ -236,12 +215,10 @@ export default function save( props ) {
             return undefined;
         }
 
-        // Plain number string: treat as the number + provided unit.
         if ( /^-?\d+(?:\.\d+)?$/.test( trimmed ) ) {
             return `${ trimmed }${ unit || 'px' }`;
         }
 
-        // Number with explicit unit (legacy): accept it as-is.
         if ( /^-?\d+(?:\.\d+)?[a-z%]+$/i.test( trimmed ) ) {
             return trimmed;
         }
@@ -291,12 +268,10 @@ export default function save( props ) {
         style = { ...style, ...containerBackgroundStyle };
     }
 
-    // Apply overflow to outer wrapper (avoid serializing default `visible`).
     if ( typeof overflow === 'string' && overflow.length > 0 && overflow !== 'visible' ) {
         style.overflow = overflow;
     }
 
-    // Responsive min-height via CSS variables.
     const minHeightDesktopCss = toCssLength( minHeight, minHeightUnit || 'px' );
     if ( minHeightDesktopCss !== undefined ) {
         style['--madeit-min-height-desktop'] = minHeightDesktopCss;
@@ -316,7 +291,6 @@ export default function save( props ) {
         style['--madeit-min-height-mobile'] = minHeightMobileCss;
     }
 
-    // Responsive max-width via CSS variables.
     if ( typeof maxWidth === 'number' ) {
         style['--madeit-max-width-desktop'] = `${ maxWidth }${ maxWidthUnit || 'px' }`;
     }
@@ -327,32 +301,27 @@ export default function save( props ) {
         style['--madeit-max-width-mobile'] = `${ maxWidthMobile }${ maxWidthUnitMobile || 'px' }`;
     }
 
-     // Responsive row-gap via CSS variables.
-        // Row gap via CSS variables.
-        // Important for block validation stability: only serialize tablet/mobile overrides
-        // when a desktop rowGap is explicitly set.
-        const hasRowGapDesktop = typeof rowGap === 'number';
-        if ( hasRowGapDesktop ) {
-            const rowGapDesktopCss = `${ rowGap }${ rowGapUnit || 'px' }`;
-            if ( rowGapDesktopCss !== '20px' ) {
-                style['--madeit-row-gap-desktop'] = rowGapDesktopCss;
-            }
+    const hasRowGapDesktop = typeof rowGap === 'number';
+    if ( hasRowGapDesktop ) {
+        const rowGapDesktopCss = `${ rowGap }${ rowGapUnit || 'px' }`;
+        if ( rowGapDesktopCss !== '20px' ) {
+            style['--madeit-row-gap-desktop'] = rowGapDesktopCss;
+        }
 
-            if ( typeof rowGapTablet === 'number' ) {
-                const rowGapTabletCss = `${ rowGapTablet }${ rowGapUnitTablet || 'px' }`;
-                if ( rowGapTabletCss !== '20px' ) {
-                    style['--madeit-row-gap-tablet'] = rowGapTabletCss;
-                }
+        if ( typeof rowGapTablet === 'number' ) {
+            const rowGapTabletCss = `${ rowGapTablet }${ rowGapUnitTablet || 'px' }`;
+            if ( rowGapTabletCss !== '20px' ) {
+                style['--madeit-row-gap-tablet'] = rowGapTabletCss;
             }
-            if ( typeof rowGapMobile === 'number' ) {
-                const rowGapMobileCss = `${ rowGapMobile }${ rowGapUnitMobile || 'px' }`;
-                if ( rowGapMobileCss !== '20px' ) {
-                    style['--madeit-row-gap-mobile'] = rowGapMobileCss;
-                }
+        }
+        if ( typeof rowGapMobile === 'number' ) {
+            const rowGapMobileCss = `${ rowGapMobile }${ rowGapUnitMobile || 'px' }`;
+            if ( rowGapMobileCss !== '20px' ) {
+                style['--madeit-row-gap-mobile'] = rowGapMobileCss;
             }
+        }
     }
 
-    // Responsive flex-direction via CSS variables (only if explicitly set).
     if (
         typeof flexDirection === 'string' &&
         flexDirection.length > 0 &&
@@ -375,7 +344,6 @@ export default function save( props ) {
         style['--madeit-flex-direction-mobile'] = flexDirectionMobile;
     }
 
-    // Responsive align-items / justify-content via CSS variables (only if explicitly set).
     if (
         typeof alignItems === 'string' &&
         alignItems.length > 0 &&
@@ -404,7 +372,6 @@ export default function save( props ) {
         style['--madeit-justify-content-mobile'] = justifyContentMobile;
     }
 
-    // Responsive flex-wrap via CSS variables (only if explicitly set).
     if (
         typeof flexWrap === 'string' &&
         flexWrap.length > 0 &&
@@ -430,38 +397,15 @@ export default function save( props ) {
     const setSpacingVars = ( targetStyle, prefix, spacing, breakpoint ) => {
         if ( ! spacing || typeof spacing !== 'object' ) return;
 
-        setCssVarIfDefined(
-            targetStyle,
-            `--${ prefix }-top-${ breakpoint }`,
-            spacing.top
-        );
-        setCssVarIfDefined(
-            targetStyle,
-            `--${ prefix }-right-${ breakpoint }`,
-            spacing.right
-        );
-        setCssVarIfDefined(
-            targetStyle,
-            `--${ prefix }-bottom-${ breakpoint }`,
-            spacing.bottom
-        );
-        setCssVarIfDefined(
-            targetStyle,
-            `--${ prefix }-left-${ breakpoint }`,
-            spacing.left
-        );
+        setCssVarIfDefined( targetStyle, `--${ prefix }-top-${ breakpoint }`, spacing.top );
+        setCssVarIfDefined( targetStyle, `--${ prefix }-right-${ breakpoint }`, spacing.right );
+        setCssVarIfDefined( targetStyle, `--${ prefix }-bottom-${ breakpoint }`, spacing.bottom );
+        setCssVarIfDefined( targetStyle, `--${ prefix }-left-${ breakpoint }`, spacing.left );
     };
 
-    // Desktop margin stays as inline style for backward compatibility.
-    // Tablet/mobile overrides are stored as CSS variables (overriding inline via
-    // `!important` rules in the stylesheet when set).
     if ( containerMargin && typeof containerMargin === 'object' ) {
-        if ( containerMargin.top !== undefined ) {
-            style.marginTop = containerMargin.top;
-        }
-        if ( containerMargin.bottom !== undefined ) {
-            style.marginBottom = containerMargin.bottom;
-        }
+        setCssVarIfDefined( style, '--madeit-container-margin-top-desktop', containerMargin.top );
+        setCssVarIfDefined( style, '--madeit-container-margin-bottom-desktop', containerMargin.bottom );
     }
     if ( containerMarginTablet && typeof containerMarginTablet === 'object' ) {
         setCssVarIfDefined( style, '--madeit-container-margin-top-tablet', containerMarginTablet.top );
@@ -474,78 +418,63 @@ export default function save( props ) {
 
     const shouldApplyContainerPaddingOnRow = containerPaddingOnRow === true;
 
-    // Desktop padding stays as inline style for backward compatibility.
-    // Tablet/mobile overrides are stored as CSS variables.
     const rowStyle = {};
     if ( shouldApplyContainerPaddingOnRow ) {
-        if ( containerPadding && typeof containerPadding === 'object' ) {
-            if ( containerPadding.top !== undefined ) rowStyle.paddingTop = containerPadding.top;
-            if ( containerPadding.right !== undefined ) rowStyle.paddingRight = containerPadding.right;
-            if ( containerPadding.bottom !== undefined ) rowStyle.paddingBottom = containerPadding.bottom;
-            if ( containerPadding.left !== undefined ) rowStyle.paddingLeft = containerPadding.left;
-        }
-
+        setSpacingVars( rowStyle, 'madeit-container-row-padding', containerPadding, 'desktop' );
         setSpacingVars( rowStyle, 'madeit-container-row-padding', containerPaddingTablet, 'tablet' );
         setSpacingVars( rowStyle, 'madeit-container-row-padding', containerPaddingMobile, 'mobile' );
     } else {
-        if ( containerPadding && typeof containerPadding === 'object' ) {
-            if ( containerPadding.top !== undefined ) style.paddingTop = containerPadding.top;
-            if ( containerPadding.right !== undefined ) style.paddingRight = containerPadding.right;
-            if ( containerPadding.bottom !== undefined ) style.paddingBottom = containerPadding.bottom;
-            if ( containerPadding.left !== undefined ) style.paddingLeft = containerPadding.left;
-        }
-
+        setSpacingVars( style, 'madeit-container-padding', containerPadding, 'desktop' );
         setSpacingVars( style, 'madeit-container-padding', containerPaddingTablet, 'tablet' );
         setSpacingVars( style, 'madeit-container-padding', containerPaddingMobile, 'mobile' );
     }
-    
+
     var styleChild = {};
-    if(defaultSize === 'container-content-boxed') {
-        classesChild = classnames(classesChild, {
+    if ( defaultSize === 'container-content-boxed' ) {
+        classesChild = classnames( classesChild, {
             'has-text-color': rowTextColor !== undefined,
             'has-background': rowBackgroundColor !== undefined,
             [ rowBackgroundColorClass ]: rowBackgroundColor !== undefined,
             [ rowTextColorClass ]: rowTextColor !== undefined,
         } );
-        
+
         styleChild = {
             backgroundColor: rowBackgroundColorClass ? undefined : rowBackgroundColor,
-            color: rowTextColorClass ? undefined : rowTextColorClass
+            color: rowTextColorClass ? undefined : rowTextColorClass,
         };
 
-        if(rowMargin !== undefined && rowMargin.top !== undefined) {
+        if ( rowMargin !== undefined && rowMargin.top !== undefined ) {
             styleChild.marginTop = rowMargin.top;
         }
-        if(rowMargin !== undefined && rowMargin.bottom !== undefined) {
+        if ( rowMargin !== undefined && rowMargin.bottom !== undefined ) {
             styleChild.marginBottom = rowMargin.bottom;
         }
-        if(rowMargin !== undefined && rowMargin.left !== undefined) {
+        if ( rowMargin !== undefined && rowMargin.left !== undefined ) {
             styleChild.marginLeft = rowMargin.left;
         }
-        if(rowMargin !== undefined && rowMargin.right !== undefined) {
+        if ( rowMargin !== undefined && rowMargin.right !== undefined ) {
             styleChild.marginRight = rowMargin.right;
         }
-        if(rowPadding !== undefined && rowPadding.top !== undefined ) {
+        if ( rowPadding !== undefined && rowPadding.top !== undefined ) {
             styleChild.paddingTop = rowPadding.top;
         }
-        if(rowPadding !== undefined && rowPadding.bottom !== undefined) {
+        if ( rowPadding !== undefined && rowPadding.bottom !== undefined ) {
             styleChild.paddingBottom = rowPadding.bottom;
         }
-        if(rowPadding !== undefined && rowPadding.left !== undefined) {
+        if ( rowPadding !== undefined && rowPadding.left !== undefined ) {
             styleChild.paddingLeft = rowPadding.left;
         }
-        if(rowPadding !== undefined && rowPadding.right !== undefined) {
+        if ( rowPadding !== undefined && rowPadding.right !== undefined ) {
             styleChild.paddingRight = rowPadding.right;
         }
-    }
-    else {
+    } else {
         style.color = rowTextColorClass ? undefined : rowTextColorClass;
 
         if ( applyContainerBackgroundToInner ) {
             styleChild = { ...styleChild, ...containerBackgroundStyle };
         }
     }
-    
+
     const blockProps = useBlockProps.save( {
         className: classes,
         style: style,
@@ -579,26 +508,25 @@ export default function save( props ) {
         : 'row';
     const baseRowProps = hasEnhancedRowWrapper
         ? {
-                className: rowClassName,
-                'data-madeit-dir': dirDesktop,
-                'data-madeit-dir-tablet': dirTablet,
-                'data-madeit-dir-mobile': dirMobile,
-            }
+            className: rowClassName,
+            'data-madeit-dir': dirDesktop,
+            'data-madeit-dir-tablet': dirTablet,
+            'data-madeit-dir-mobile': dirMobile,
+        }
         : {
-                className: rowClassName,
-            };
+            className: rowClassName,
+        };
 
     const hasRowStyle = Object.keys( rowStyle ).length > 0;
     const outerRowProps = hasRowStyle ? { ...baseRowProps, style: rowStyle } : baseRowProps;
     const innerRowProps = baseRowProps;
-    
-    if(size === 'container-content-boxed') {
+
+    if ( size === 'container-content-boxed' ) {
         return (
             <HtmlTag { ...blockProps }>
                 <div { ...outerRowProps }>
                     <div className="col">
-                        <div className={ classesChild }
-                            style = {styleChild}>
+                        <div className={ classesChild } style={ styleChild }>
                             <div { ...innerRowProps }>
                                 { '\n\n' }
                                 <InnerBlocks.Content />
@@ -610,61 +538,8 @@ export default function save( props ) {
             </HtmlTag>
         );
     }
-    else {
-        // Legacy markup: some older saved content had `.row` directly under the
-        // wrapper (no inner `.container`). When detected via `directRowClassName`
-        // (derived from stored HTML), serialize the same structure to avoid
-        // block validation errors.
-        if ( hasDirectRowWrapper ) {
-            return (
-                <HtmlTag { ...blockProps }>
-                    <div { ...outerRowProps }>
-                        { '\n\n' }
-                        <InnerBlocks.Content />
-                        { '\n\n' }
-                    </div>
-                </HtmlTag>
-            );
-        }
 
-        const shouldWrapContent =
-            outerSizeNormalized !== 'container' &&
-            hasContentWidth &&
-            contentWidthNormalized !== outerSizeNormalized;
-
-        if ( applyContainerBackgroundToInner ) {
-            return (
-                <HtmlTag { ...blockProps }>
-                    <div className={ classesChild } style={ styleChild }>
-                        <div { ...outerRowProps }>
-                            { '\n\n' }
-                            <InnerBlocks.Content />
-                            { '\n\n' }
-                        </div>
-                    </div>
-                </HtmlTag>
-            );
-        }
-
-        if ( shouldWrapContent ) {
-            return (
-                <HtmlTag { ...blockProps }>
-                    <div
-                        className={ classnames( {
-                            container: contentWidthNormalized === 'container',
-                            'container-fluid': contentWidthNormalized === 'container-fluid',
-                        } ) }
-                    >
-                        <div { ...outerRowProps }>
-                            { '\n\n' }
-                            <InnerBlocks.Content />
-                            { '\n\n' }
-                        </div>
-                    </div>
-                </HtmlTag>
-            );
-        }
-
+    if ( hasDirectRowWrapper ) {
         return (
             <HtmlTag { ...blockProps }>
                 <div { ...outerRowProps }>
@@ -675,4 +550,52 @@ export default function save( props ) {
             </HtmlTag>
         );
     }
+
+    const shouldWrapContent =
+        outerSizeNormalized !== 'container' &&
+        hasContentWidth &&
+        contentWidthNormalized !== outerSizeNormalized;
+
+    if ( applyContainerBackgroundToInner ) {
+        return (
+            <HtmlTag { ...blockProps }>
+                <div className={ classesChild } style={ styleChild }>
+                    <div { ...outerRowProps }>
+                        { '\n\n' }
+                        <InnerBlocks.Content />
+                        { '\n\n' }
+                    </div>
+                </div>
+            </HtmlTag>
+        );
+    }
+
+    if ( shouldWrapContent ) {
+        return (
+            <HtmlTag { ...blockProps }>
+                <div
+                    className={ classnames( {
+                        container: contentWidthNormalized === 'container',
+                        'container-fluid': contentWidthNormalized === 'container-fluid',
+                    } ) }
+                >
+                    <div { ...outerRowProps }>
+                        { '\n\n' }
+                        <InnerBlocks.Content />
+                        { '\n\n' }
+                    </div>
+                </div>
+            </HtmlTag>
+        );
+    }
+
+    return (
+        <HtmlTag { ...blockProps }>
+            <div { ...outerRowProps }>
+                { '\n\n' }
+                <InnerBlocks.Content />
+                { '\n\n' }
+            </div>
+        </HtmlTag>
+    );
 }
