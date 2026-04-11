@@ -66,6 +66,10 @@ fade-in {
     height: calc(100% - 47px)
 }
 
+#madeit-chatbot-sidebar\:madeit .components-panel {
+    overflow: hidden;
+}
+
 .madeit-sidebar {
     display: flex;
     flex-direction: column;

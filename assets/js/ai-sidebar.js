@@ -2,7 +2,7 @@ const React = window.React;
 
 const { registerPlugin } = wp.plugins;
 const { useDispatch } = wp.data;
-const { useState, useEffect, useCallback, Fragment } = wp.element;
+const { useState, useEffect, useCallback, useRef, Fragment } = wp.element;
 const { store: noticesStore } = wp.notices;
 const { __ } = wp.i18n;
 const { createBlock, serialize } = wp.blocks;
@@ -478,77 +478,6 @@ function getFunctionsForModel(modelName) {
                 "An array of arrays, each containing objects specifying the block type and content for each block in a column (only for core/columns)",
         },
     };
-
-    if (modelName !== "m3") {
-        blockProps.head = {
-            type: "object",
-            description:
-                "An object representing the table header, containing a 'cells' array where each cell is a header cell object. Example: { cells: [{ content: 'Header 1' }, { content: 'Header 2' }] }",
-            properties: {
-                cells: {
-                    type: "array",
-                    items: {
-                        type: "object",
-                        properties: {
-                            content: {
-                                type: "string",
-                                description: "The content of the cell",
-                            },
-                        },
-                    },
-                },
-            },
-        };
-
-        blockProps.body = {
-            type: "object",
-            description:
-                "An object containing a 'cells' array for the table body, with cells grouped to match the header's cell count.",
-            properties: {
-                cells: {
-                    type: "array",
-                    description:
-                        "An array of cell objects, with cells grouped to match the header's cell count. Example: If the header has 2 cells, group body cells in pairs. Example: { cells: [{ content: 'Row 1, Cell 1' }, { content: 'Row 1, Cell 2' }] }",
-                    items: {
-                        type: "object",
-                        properties: {
-                            content: {
-                                type: "string",
-                                description: "The content of the cell",
-                            },
-                        },
-                    },
-                },
-            },
-        };
-
-        blockProps.foot = {
-            type: "object",
-            description:
-                "An object containing a 'cells' array for the table footer, with cells grouped to match the header's cell count.",
-            properties: {
-                cells: {
-                    type: "array",
-                    description:
-                        "An array of cell objects, with cells grouped to match the header's cell count. Example: If the header has 2 cells, group footer cells in pairs. Example: { cells: [{ content: 'Footer 1, Cell 1' }, { content: 'Footer 1, Cell 2' }] }",
-                    items: {
-                        type: "object",
-                        properties: {
-                            content: {
-                                type: "string",
-                                description: "The content of the cell",
-                            },
-                        },
-                    },
-                },
-            },
-        };
-
-        blockProps.caption = {
-            type: "string",
-            description: "The caption for the table (only for core/table)",
-        };
-    }
 
     const sectionSchema = {
         type: "object",
@@ -1111,15 +1040,20 @@ function buildResponsesInputFromMessages(messages) {
         return [];
     }
 
-    return messages.map((message) => ({
-        role: message?.role || "user",
-        content: [
-            {
-                type: "input_text",
-                text: String(message?.content || ""),
-            },
-        ],
-    }));
+    return messages.map((message) => {
+        const role = message?.role || "user";
+        const contentType = role === "assistant" ? "output_text" : "input_text";
+
+        return {
+            role,
+            content: [
+                {
+                    type: contentType,
+                    text: String(message?.content || ""),
+                },
+            ],
+        };
+    });
 }
 
 function extractResponseFunctionArgs(payload, allowedNames = []) {
@@ -1786,7 +1720,30 @@ function ModuleSelector({ selectedModule, onSelect, yoastActive }) {
     );
 }
 
-function ChatModule({ uiChat, message, setMessage, isLoading, hasScrolled, handleSendMessage }) {
+function ChatModule({
+    uiChat,
+    message,
+    setMessage,
+    isLoading,
+    hasScrolled,
+    handleSendMessage,
+    handleResetChat,
+}) {
+    const textareaRef = useRef(null);
+
+    const resizeTextarea = useCallback((element) => {
+        if (!element) {
+            return;
+        }
+
+        element.style.height = "auto";
+        element.style.height = `${element.scrollHeight}px`;
+    }, []);
+
+    useEffect(() => {
+        resizeTextarea(textareaRef.current);
+    }, [message, resizeTextarea]);
+
     const endRef = useCallback(
         (element) => {
             if (element !== null) {
@@ -1900,16 +1857,33 @@ function ChatModule({ uiChat, message, setMessage, isLoading, hasScrolled, handl
         ),
         React.createElement(
             "div",
+            { className: "madeit-chat-reset-row" },
+            React.createElement(
+                Button,
+                {
+                    variant: "tertiary",
+                    className: "madeit-reset-button",
+                    onClick: handleResetChat,
+                    disabled: isLoading || uiChat.length === 0,
+                },
+                __("Reset", "madeit")
+            )
+        ),
+        React.createElement(
+            "div",
             { className: "madeit-input-container" },
             React.createElement(
                 "div",
                 { className: "madeit-textarea-wrap" },
                 React.createElement("textarea", {
+                    ref: textareaRef,
                     className: "madeit-textarea",
                     value: message,
                     onChange: (event) => setMessage(event.target.value),
+                    onInput: (event) => resizeTextarea(event.target),
                     placeholder: __("Write a message...", "madeit"),
                     rows: 1,
+                    style: { overflow: "hidden" },
                 }),
                 React.createElement(
                     "div",
@@ -2377,6 +2351,7 @@ function SidebarContent({
     isLoading,
     hasScrolled,
     handleSendMessage,
+    handleResetChat,
     blockCount,
     languageResult,
     languageIssues,
@@ -2476,6 +2451,7 @@ function SidebarContent({
                       isLoading,
                       hasScrolled,
                       handleSendMessage,
+                      handleResetChat,
                   })
         )
     );
@@ -2515,6 +2491,8 @@ registerPlugin("madeit-chatbot-sidebar", {
         const [error, setError] = useState(null);
         const [hasScrolled, setHasScrolled] = useState(false);
         const [abortController, setAbortController] = useState(null);
+        const [chatStorageKey, setChatStorageKey] = useState("");
+        const chatStorageReadyRef = useRef(false);
 
         useEffect(() => {
             let activeSidebar = wp.data.select("core/edit-post").getActiveGeneralSidebarName();
@@ -2555,11 +2533,78 @@ registerPlugin("madeit-chatbot-sidebar", {
             };
         }, []);
 
+        useEffect(() => {
+            const postId = Number(wp.data.select("core/editor")?.getCurrentPostId?.() || 0);
+            const storageKey =
+                "madeit_ai_chat_history_post_" + String(postId > 0 ? postId : "new");
+
+            setChatStorageKey(storageKey);
+
+            try {
+                const raw = window.localStorage.getItem(storageKey);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+
+                    if (Array.isArray(parsed?.chatHistory)) {
+                        setChatHistory(parsed.chatHistory);
+                    }
+
+                    if (Array.isArray(parsed?.uiChat)) {
+                        setUiChat(parsed.uiChat);
+                    }
+                }
+            } catch (storageError) {
+                // eslint-disable-next-line no-console
+                console.warn("[madeit-chat] unable to load local chat history", storageError);
+            } finally {
+                chatStorageReadyRef.current = true;
+            }
+        }, []);
+
+        useEffect(() => {
+            if (!chatStorageReadyRef.current || !chatStorageKey) {
+                return;
+            }
+
+            try {
+                window.localStorage.setItem(
+                    chatStorageKey,
+                    JSON.stringify({
+                        chatHistory,
+                        uiChat,
+                    })
+                );
+            } catch (storageError) {
+                // eslint-disable-next-line no-console
+                console.warn("[madeit-chat] unable to save local chat history", storageError);
+            }
+        }, [chatHistory, uiChat, chatStorageKey]);
+
         const cancelActiveRequest = () => {
             if (abortController) {
                 abortController.abort();
                 setAbortController(null);
                 setIsLoading(false);
+            }
+        };
+
+        const handleResetChat = () => {
+            if (isLoading) {
+                cancelActiveRequest();
+            }
+
+            setChatHistory([]);
+            setUiChat([]);
+            setMessage("");
+            setHasScrolled(false);
+
+            if (chatStorageKey) {
+                try {
+                    window.localStorage.removeItem(chatStorageKey);
+                } catch (storageError) {
+                    // eslint-disable-next-line no-console
+                    console.warn("[madeit-chat] unable to clear local chat history", storageError);
+                }
             }
         };
 
@@ -3417,6 +3462,7 @@ registerPlugin("madeit-chatbot-sidebar", {
             setMessage,
             isLoading,
             hasScrolled,
+            handleResetChat,
             blockCount,
             languageResult,
             languageIssues,
@@ -3509,6 +3555,23 @@ registerPlugin("madeit-chatbot-sidebar", {
                             ? settings.ai_editor_model
                             : "";
                     const functions = getFunctionsForModel(modelName);
+                    const responseTools = functions.map((tool) => {
+                        const functionDef = tool?.function || null;
+
+                        if (tool?.type === "function" && functionDef?.name) {
+                            return {
+                                type: "function",
+                                name: functionDef.name,
+                                description: functionDef.description || "",
+                                parameters: functionDef.parameters || {
+                                    type: "object",
+                                    properties: {},
+                                },
+                            };
+                        }
+
+                        return tool;
+                    });
                     const responsesInput = buildResponsesInputFromMessages([
                         systemMessage,
                         insertionContextMessage,
@@ -3519,7 +3582,7 @@ registerPlugin("madeit-chatbot-sidebar", {
                         method: "POST",
                         data: {
                             input: responsesInput,
-                            tools: functions,
+                            tools: responseTools,
                         },
                         signal: controller?.signal,
                     });
@@ -3535,13 +3598,16 @@ registerPlugin("madeit-chatbot-sidebar", {
                         ? completionResponse.data
                         : completionResponse;
 
-                    const toolArgsJson = extractResponseFunctionArgs(payload, [
+                    const layoutToolArgsJson = extractResponseFunctionArgs(payload, [
                         "create_madeit_layout_blocks",
+                    ]);
+                    const gutenbergToolArgsJson = extractResponseFunctionArgs(payload, [
+                        "create_gutenberg_blocks",
                     ]);
                     const assistantContentText = extractResponseText(payload);
                     const contentJson = extractJsonFromText(assistantContentText);
-                    const layoutPayload = toolArgsJson?.sections
-                        ? toolArgsJson
+                    const layoutPayload = layoutToolArgsJson?.sections
+                        ? layoutToolArgsJson
                         : contentJson?.sections
                         ? {
                               sections: contentJson.sections,
@@ -3550,7 +3616,52 @@ registerPlugin("madeit-chatbot-sidebar", {
                         : null;
 
                     if (layoutPayload) {
-                        const sections = normalizeAutoBlockSections(layoutPayload);
+                        const layoutCompletionResponse = await wp.apiFetch({
+                            path: "/madeit-ai/v1/chat/completions",
+                            method: "POST",
+                            data: {
+                                response_format: {
+                                    type: "json_object",
+                                },
+                                messages: [
+                                    {
+                                        role: "system",
+                                        content:
+                                            "Je bent een Gutenberg layout-assistent. Geef ALLEEN geldige JSON terug, zonder markdown of extra tekst. Formaat: {\"insert\":{\"position\":\"before|after\",\"clientId\":\"...\"},\"sections\":[{\"columns\":[{\"width\":6,\"blocks\":[{\"blockType\":\"core/heading\",\"content\":\"...\"},{\"blockType\":\"core/paragraph\",\"content\":\"...\"}]}]}]}. Op root niveau worden sections altijd omgezet naar madeit/block-content. Gebruik in blocks uitsluitend deze blockTypes: " +
+                                            ALLOWED_BLOCKS.join(", ") +
+                                            ". Als je geen specifieke clientId hebt, laat insert.clientId leeg.",
+                                    },
+                                    {
+                                        role: "user",
+                                        content:
+                                            "Gebruikersvraag:\n" +
+                                            outgoingMessage +
+                                            "\n\nHuidige geselecteerde clientId:\n" +
+                                            (selectedClientId || "") +
+                                            "\n\nHuidige Gutenberg structuur (met clientId):\n" +
+                                            JSON.stringify(currentStructure),
+                                    },
+                                ],
+                            },
+                            signal: controller?.signal,
+                        });
+
+                        const layoutPayloadResponse = layoutCompletionResponse?.data
+                            ? layoutCompletionResponse.data
+                            : layoutCompletionResponse;
+                        const layoutResponseText = String(
+                            layoutPayloadResponse?.choices?.[0]?.message?.content || ""
+                        ).trim();
+                        const generatedLayoutPayload = extractJsonFromText(layoutResponseText);
+
+                        if (!generatedLayoutPayload) {
+                            createErrorNotice(__("De AI gaf geen valide JSON terug voor de layout.", "madeit"), {
+                                type: "default",
+                            });
+                            return;
+                        }
+
+                        const sections = normalizeAutoBlockSections(generatedLayoutPayload);
                         const madeitBlocks = createMadeitContentBlocksFromSections(sections);
 
                         if (madeitBlocks.length === 0) {
@@ -3561,7 +3672,7 @@ registerPlugin("madeit-chatbot-sidebar", {
                             return;
                         }
 
-                        const insertSpec = normalizeAutoInsertSpec(layoutPayload);
+                        const insertSpec = normalizeAutoInsertSpec(generatedLayoutPayload);
                         const effectiveClientId = insertSpec.clientId || selectedClientId;
                         const latestBlocks = wp.data.select("core/block-editor").getBlocks() || [];
                         const insertionIndex = effectiveClientId
@@ -3577,6 +3688,79 @@ registerPlugin("madeit-chatbot-sidebar", {
                         } else {
                             insertBlocks(madeitBlocks);
                         }
+
+                        const successMessage = __("Blocks added successfully!", "madeit");
+                        setUiChat((previous) => [
+                            ...previous,
+                            {
+                                role: "assistant",
+                                content: successMessage,
+                                blockAdded: true,
+                            },
+                        ]);
+
+                        setChatHistory((previous) => [
+                            ...previous,
+                            {
+                                role: "assistant",
+                                content: successMessage,
+                            },
+                        ]);
+
+                        return;
+                    }
+
+                    if (
+                        Array.isArray(gutenbergToolArgsJson?.blocks) &&
+                        gutenbergToolArgsJson.blocks.length > 0
+                    ) {
+                        const blocksCompletionResponse = await wp.apiFetch({
+                            path: "/madeit-ai/v1/chat/completions",
+                            method: "POST",
+                            data: {
+                                response_format: {
+                                    type: "json_object",
+                                },
+                                messages: [
+                                    {
+                                        role: "system",
+                                        content:
+                                            "Je bent een Gutenberg block-assistent. Geef ALLEEN geldige JSON terug, zonder markdown of extra tekst, met formaat: {\"blocks\":[{\"blockType\":\"core/heading\",\"content\":\"...\"}]}. Gebruik uitsluitend deze blockTypes: " +
+                                            ALLOWED_BLOCKS.join(", ") +
+                                            ".",
+                                    },
+                                    {
+                                        role: "user",
+                                        content:
+                                            "Gebruikersvraag:\n" +
+                                            outgoingMessage +
+                                            "\n\nHuidige Gutenberg structuur (met clientId):\n" +
+                                            JSON.stringify(currentStructure),
+                                    },
+                                ],
+                            },
+                            signal: controller?.signal,
+                        });
+
+                        const blocksPayload = blocksCompletionResponse?.data
+                            ? blocksCompletionResponse.data
+                            : blocksCompletionResponse;
+                        const blocksResponseText = String(
+                            blocksPayload?.choices?.[0]?.message?.content || ""
+                        ).trim();
+                        const generatedBlocksPayload = extractJsonFromText(blocksResponseText);
+
+                        if (!Array.isArray(generatedBlocksPayload?.blocks)) {
+                            createErrorNotice(
+                                __("De AI gaf geen valide JSON terug voor blocks.", "madeit"),
+                                { type: "default" }
+                            );
+                            return;
+                        }
+
+                        const generatedBlocks = generatedBlocksPayload.blocks;
+                        normalizeTableBodies(generatedBlocks);
+                        await insertGeneratedBlocks(generatedBlocks, insertBlocks);
 
                         const successMessage = __("Blocks added successfully!", "madeit");
                         setUiChat((previous) => [
