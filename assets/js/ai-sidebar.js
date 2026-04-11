@@ -1,3 +1,12 @@
+/**
+ * TODO:
+ * - Interne Link Suggesties.
+ * - FAQ
+ * - CTA-optimalisatie module
+ * - Content Gap module
+ * - Titel analyse module
+ */
+
 const React = window.React;
 
 const { registerPlugin } = wp.plugins;
@@ -665,6 +674,101 @@ function extractJsonFromText(text) {
     }
 }
 
+function getApiPayload(response) {
+    return response?.data ? response.data : response;
+}
+
+function getCompletionTextFromApiResponse(response) {
+    const payload = getApiPayload(response);
+    return String(payload?.choices?.[0]?.message?.content || "").trim();
+}
+
+function buildLayoutSystemPrompt() {
+    return (
+        "Je bent een Gutenberg layout-assistent. Geef ALLEEN geldige JSON terug, zonder markdown of extra tekst. Formaat: {\"insert\":{\"position\":\"before|after\",\"clientId\":\"...\"},\"sections\":[{\"columns\":[{\"width\":6,\"blocks\":[{\"blockType\":\"core/heading\",\"content\":\"...\"},{\"blockType\":\"core/paragraph\",\"content\":\"...\"}]}]}]}. Op root niveau worden sections altijd omgezet naar madeit/block-content. Gebruik in blocks uitsluitend deze blockTypes: " +
+        ALLOWED_BLOCKS.join(", ") +
+        ". Als je geen specifieke clientId hebt, laat insert.clientId leeg."
+    );
+}
+
+function buildLayoutUserPrompt(prompt, selectedClientId, currentStructure) {
+    return (
+        "Gebruikersvraag:\n" +
+        prompt +
+        "\n\nHuidige geselecteerde clientId:\n" +
+        (selectedClientId || "") +
+        "\n\nHuidige Gutenberg structuur (met clientId):\n" +
+        JSON.stringify(currentStructure)
+    );
+}
+
+async function requestLayoutJson({ prompt, selectedClientId, currentStructure, signal }) {
+    const completionResponse = await wp.apiFetch({
+        path: "/madeit-ai/v1/chat/completions",
+        method: "POST",
+        data: {
+            response_format: {
+                type: "json_object",
+            },
+            messages: [
+                {
+                    role: "system",
+                    content: buildLayoutSystemPrompt(),
+                },
+                {
+                    role: "user",
+                    content: buildLayoutUserPrompt(prompt, selectedClientId, currentStructure),
+                },
+            ],
+        },
+        signal,
+    });
+
+    return extractJsonFromText(getCompletionTextFromApiResponse(completionResponse));
+}
+
+function buildBlocksSystemPrompt() {
+    return (
+        "Je bent een Gutenberg block-assistent. Geef ALLEEN geldige JSON terug, zonder markdown of extra tekst, met formaat: {\"blocks\":[{\"blockType\":\"core/heading\",\"content\":\"...\"}]}. Gebruik uitsluitend deze blockTypes: " +
+        ALLOWED_BLOCKS.join(", ") +
+        "."
+    );
+}
+
+function buildBlocksUserPrompt(prompt, currentStructure) {
+    return (
+        "Gebruikersvraag:\n" +
+        prompt +
+        "\n\nHuidige Gutenberg structuur (met clientId):\n" +
+        JSON.stringify(currentStructure)
+    );
+}
+
+async function requestBlocksJson({ prompt, currentStructure, signal }) {
+    const completionResponse = await wp.apiFetch({
+        path: "/madeit-ai/v1/chat/completions",
+        method: "POST",
+        data: {
+            response_format: {
+                type: "json_object",
+            },
+            messages: [
+                {
+                    role: "system",
+                    content: buildBlocksSystemPrompt(),
+                },
+                {
+                    role: "user",
+                    content: buildBlocksUserPrompt(prompt, currentStructure),
+                },
+            ],
+        },
+        signal,
+    });
+
+    return extractJsonFromText(getCompletionTextFromApiResponse(completionResponse));
+}
+
 function extractMarkedError(source) {
     const text = String(source || "");
     const match = text.match(/\[FOUT\]([\s\S]*?)\[\/FOUT\]/i);
@@ -779,6 +883,13 @@ function getBlockFromPosition(blocks, position) {
     return target || null;
 }
 
+function previewText(value, limit = 180) {
+    return String(value || "")
+        .replace(/\s+/g, " ")
+        .trim()
+        .slice(0, limit);
+}
+
 function applyIssueToContent(content, issue) {
     const original = String(content || "");
     const incorrectText = extractMarkedError(issue?.source);
@@ -787,20 +898,55 @@ function applyIssueToContent(content, issue) {
         .replace(/\[FOUT\]|\[\/FOUT\]/gi, "")
         .trim();
 
-    const isLikelySentenceFix = /\s/.test(replacementText);
-
-    // For sentence-level fixes, only replace the full source sentence.
-    if (isLikelySentenceFix) {
-        if (sourcePlain && original.includes(sourcePlain)) {
-            return original.replace(sourcePlain, replacementText);
+    const replaceFirstInsensitive = (haystack, needle, replacement) => {
+        const source = String(haystack || "");
+        const target = String(needle || "").trim();
+        if (!source || !target) {
+            return null;
         }
 
-        return original;
-    }
+        const escaped = target.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        const regex = new RegExp(escaped, "i");
+        if (!regex.test(source)) {
+            return null;
+        }
+
+        return source.replace(regex, replacement);
+    };
+
+    const normalizeWhitespace = (value) => String(value || "").replace(/\s+/g, " ").trim();
 
     // Prefer exact marked-fault replacement when available.
     if (incorrectText && original.includes(incorrectText)) {
         return original.replace(incorrectText, replacementText);
+    }
+
+    // Fallback: case-insensitive replacement for marked fault.
+    if (incorrectText) {
+        const replacedInsensitive = replaceFirstInsensitive(original, incorrectText, replacementText);
+        if (replacedInsensitive !== null) {
+            return replacedInsensitive;
+        }
+    }
+
+    // For sentence-level fixes, prefer replacing the full source sentence.
+    if (/\s/.test(replacementText)) {
+        if (sourcePlain && original.includes(sourcePlain)) {
+            return original.replace(sourcePlain, replacementText);
+        }
+
+        const replacedInsensitive = replaceFirstInsensitive(original, sourcePlain, replacementText);
+        if (replacedInsensitive !== null) {
+            return replacedInsensitive;
+        }
+
+        const originalCollapsed = normalizeWhitespace(original);
+        const sourceCollapsed = normalizeWhitespace(sourcePlain);
+        if (sourceCollapsed && originalCollapsed.includes(sourceCollapsed)) {
+            return originalCollapsed.replace(sourceCollapsed, replacementText);
+        }
+
+        return original;
     }
 
     const parsedPosition = parseIssuePosition(issue?.positie);
@@ -859,12 +1005,19 @@ function findFirstBlockWithContent(blocks, needle) {
     return null;
 }
 
-function findBestAttributeUpdate(block, issue) {
+function findBestAttributeUpdate(block, issue, options = {}) {
     if (!block?.attributes) {
+        if (options.debugNamespace) {
+            // eslint-disable-next-line no-console
+            console.info("[" + options.debugNamespace + "] no block attributes for update", {
+                clientId: block?.clientId || null,
+            });
+        }
         return null;
     }
 
     const priorityKeys = ["content", "title", "text", "caption", "value", "values"];
+    const allAttributeKeys = Object.keys(block.attributes);
     const allStringKeys = Object.keys(block.attributes).filter(
         (key) => typeof block.attributes[key] === "string"
     );
@@ -880,6 +1033,16 @@ function findBestAttributeUpdate(block, issue) {
         const updatedValue = applyIssueToContent(currentValue, issue);
 
         if (currentValue !== updatedValue) {
+            if (options.debugNamespace) {
+                // eslint-disable-next-line no-console
+                console.info("[" + options.debugNamespace + "] attribute update match found", {
+                    key,
+                    sourceType: "attribute",
+                    before: previewText(currentValue),
+                    after: previewText(updatedValue),
+                });
+            }
+
             return {
                 key,
                 currentValue,
@@ -893,13 +1056,83 @@ function findBestAttributeUpdate(block, issue) {
         const updatedMarkup = applyIssueToContent(block.originalContent, issue);
 
         if (updatedMarkup !== block.originalContent) {
+            const preferredMarkupKey = allAttributeKeys.includes("content")
+                ? "content"
+                : allAttributeKeys.includes("value")
+                ? "value"
+                : allAttributeKeys.includes("values")
+                ? "values"
+                : "";
+            const preferredTextKey = block.name === "core/button" && allAttributeKeys.includes("text")
+                ? "text"
+                : allAttributeKeys.includes("text")
+                ? "text"
+                : allAttributeKeys.includes("title")
+                ? "title"
+                : "";
+
+            const updatedInnerHtml = extractInnerHtmlFromMarkup(updatedMarkup);
+            const updatedPlainText = stripHtml(updatedMarkup);
+            const targetKey = preferredTextKey || preferredMarkupKey || "content";
+            const targetValue = preferredTextKey ? updatedPlainText : updatedInnerHtml;
+            const currentAttributeValue = String(block.attributes?.[targetKey] || "");
+
+            if (options.debugNamespace) {
+                // eslint-disable-next-line no-console
+                console.info("[" + options.debugNamespace + "] originalContent fallback match found", {
+                    key: targetKey,
+                    sourceType: "originalContent",
+                    before: previewText(block.originalContent),
+                    after: previewText(targetValue),
+                });
+            }
+
             return {
-                key: "content",
-                currentValue: block.originalContent,
-                updatedValue: extractInnerHtmlFromMarkup(updatedMarkup),
+                key: targetKey,
+                currentValue: currentAttributeValue,
+                updatedValue: targetValue,
                 sourceType: "originalContent",
             };
         }
+    }
+
+    if (options.allowDirectReplace) {
+        const fallbackValue = String(issue?.fix || "").trim();
+        const preferredDirectKeys = ["text", "content", "value", "values", "title", "caption"];
+        const directTargetKey = preferredDirectKeys.find((key) => allAttributeKeys.includes(key)) || "";
+
+        if (fallbackValue && directTargetKey) {
+            const targetKey = directTargetKey;
+            const currentValue = String(block.attributes[targetKey] || "");
+
+            if (currentValue !== fallbackValue) {
+                if (options.debugNamespace) {
+                    // eslint-disable-next-line no-console
+                    console.info("[" + options.debugNamespace + "] direct fallback used", {
+                        key: targetKey,
+                        sourceType: "directFallback",
+                        before: previewText(currentValue),
+                        after: previewText(fallbackValue),
+                    });
+                }
+
+                return {
+                    key: targetKey,
+                    currentValue,
+                    updatedValue: fallbackValue,
+                    sourceType: "directFallback",
+                };
+            }
+        }
+    }
+
+    if (options.debugNamespace) {
+        // eslint-disable-next-line no-console
+        console.info("[" + options.debugNamespace + "] no attribute update match", {
+            availableStringKeys: orderedKeys,
+            issueSource: previewText(issue?.source),
+            issueFix: previewText(issue?.fix),
+        });
     }
 
     return null;
@@ -1660,6 +1893,11 @@ const SIDEBAR_MODULES = {
         label: __("ALT tags", "madeit"),
         description: __("Vul ontbrekende alt-teksten voor afbeeldingen automatisch aan.", "madeit"),
     },
+    ctaOptimization: {
+        key: "ctaOptimization",
+        label: __("CTA-optimalisatie", "madeit"),
+        description: __("Krijg CTA-voorstellen en keur wijzigingen manueel goed.", "madeit"),
+    },
     yoastKeyword: {
         key: "yoastKeyword",
         label: __("Focus keyword", "madeit"),
@@ -2038,6 +2276,131 @@ function LanguageCheckModule({
     );
 }
 
+function CtaOptimizationModule({
+    blockCount,
+    ctaResult,
+    ctaIssues,
+    acceptedCtaIssues,
+    isLoading,
+    handleCtaCheck,
+    handleAcceptCtaIssue,
+    handleFocusCtaIssue,
+}) {
+    return React.createElement(
+        Fragment,
+        null,
+        React.createElement(
+            "div",
+            { className: "madeit-language-check" },
+            React.createElement(
+                "p",
+                { className: "madeit-language-intro" },
+                __("Klik op Start om CTA-voorstellen te genereren.", "madeit")
+            ),
+            React.createElement(
+                "p",
+                { className: "madeit-language-meta" },
+                __("Gevonden blocks:", "madeit") + " " + String(blockCount)
+            ),
+            React.createElement(
+                "div",
+                { className: "madeit-language-actions" },
+                React.createElement(
+                    Button,
+                    {
+                        variant: "primary",
+                        onClick: handleCtaCheck,
+                        isBusy: isLoading,
+                        disabled: isLoading || blockCount === 0,
+                    },
+                    isLoading
+                        ? __("Bezig met analyseren...", "madeit")
+                        : __("Start", "madeit")
+                )
+            ),
+            ctaResult &&
+                React.createElement(
+                    "div",
+                    { className: "madeit-language-result" },
+                    React.createElement("h3", null, __("CTA-voorstellen", "madeit")),
+                    Array.isArray(ctaIssues) && ctaIssues.length > 0
+                        ? React.createElement(
+                              "div",
+                              { className: "madeit-language-issues" },
+                              ctaIssues.map((issue, index) =>
+                                  React.createElement(
+                                      "div",
+                                      { key: index, className: "madeit-language-issue" },
+                                      React.createElement(
+                                          "p",
+                                          { className: "madeit-language-issue-label" },
+                                          __("Huidige CTA", "madeit")
+                                      ),
+                                      React.createElement(
+                                          "p",
+                                          {
+                                              className: "madeit-language-issue-source",
+                                              role: "button",
+                                              tabIndex: 0,
+                                              onClick: () => handleFocusCtaIssue(index),
+                                              onKeyDown: (event) => {
+                                                  if (
+                                                      event.key === "Enter" ||
+                                                      event.key === " "
+                                                  ) {
+                                                      event.preventDefault();
+                                                      handleFocusCtaIssue(index);
+                                                  }
+                                              },
+                                          },
+                                          renderSourceWithHighlight(String(issue.source || ""))
+                                      ),
+                                      React.createElement(
+                                          "p",
+                                          { className: "madeit-language-issue-label" },
+                                          __("Voorstel", "madeit")
+                                      ),
+                                      React.createElement(
+                                          "p",
+                                          { className: "madeit-language-issue-fix" },
+                                          String(issue.fix || "")
+                                      ),
+                                      React.createElement(
+                                          "div",
+                                          { className: "madeit-language-issue-actions" },
+                                          React.createElement(
+                                              Button,
+                                              {
+                                                  variant: "secondary",
+                                                  onClick: () => handleAcceptCtaIssue(index),
+                                                  disabled: !!acceptedCtaIssues[index] || isLoading,
+                                              },
+                                              acceptedCtaIssues[index]
+                                                  ? __("Toegepast", "madeit")
+                                                  : __("Accepteer", "madeit")
+                                          ),
+                                          React.createElement(
+                                              Button,
+                                              {
+                                                  variant: "tertiary",
+                                                  onClick: () => handleFocusCtaIssue(index),
+                                              },
+                                              __("Ga naar CTA", "madeit")
+                                          )
+                                      )
+                                  )
+                              )
+                          )
+                        : React.createElement(
+                              "p",
+                              { className: "madeit-language-no-issues" },
+                              __("Geen CTA-verbeteringen gevonden.", "madeit")
+                          )
+                )
+        )
+    );
+}
+
 function AltTagsModule({
     missingAltCount,
     isLoading,
@@ -2359,6 +2722,12 @@ function SidebarContent({
     handleLanguageCheck,
     handleAcceptIssue,
     handleFocusIssue,
+    ctaResult,
+    ctaIssues,
+    acceptedCtaIssues,
+    handleCtaCheck,
+    handleAcceptCtaIssue,
+    handleFocusCtaIssue,
     missingAltCount,
     altProgress,
     altSummary,
@@ -2406,6 +2775,17 @@ function SidebarContent({
                       handleLanguageCheck,
                       handleAcceptIssue,
                       handleFocusIssue,
+                  })
+                : selectedModule === SIDEBAR_MODULES.ctaOptimization.key
+                ? React.createElement(CtaOptimizationModule, {
+                      blockCount,
+                      ctaResult,
+                      ctaIssues,
+                      acceptedCtaIssues,
+                      isLoading,
+                      handleCtaCheck,
+                      handleAcceptCtaIssue,
+                      handleFocusCtaIssue,
                   })
                 : selectedModule === SIDEBAR_MODULES.altTags.key
                 ? React.createElement(AltTagsModule, {
@@ -2474,6 +2854,9 @@ registerPlugin("madeit-chatbot-sidebar", {
         const [languageResult, setLanguageResult] = useState("");
         const [languageIssues, setLanguageIssues] = useState([]);
         const [acceptedIssues, setAcceptedIssues] = useState({});
+        const [ctaResult, setCtaResult] = useState("");
+        const [ctaIssues, setCtaIssues] = useState([]);
+        const [acceptedCtaIssues, setAcceptedCtaIssues] = useState({});
         const [yoastActive, setYoastActive] = useState(false);
         const [generatedFocusKeyword, setGeneratedFocusKeyword] = useState("");
         const [yoastApplyStatus, setYoastApplyStatus] = useState("");
@@ -2944,41 +3327,12 @@ registerPlugin("madeit-chatbot-sidebar", {
                 const selectedClientId =
                     wp.data.select("core/block-editor")?.getSelectedBlockClientId?.() || "";
 
-                const completionResponse = await wp.apiFetch({
-                    path: "/madeit-ai/v1/chat/completions",
-                    method: "POST",
-                    data: {
-                        response_format: {
-                            type: "json_object",
-                        },
-                        messages: [
-                            {
-                                role: "system",
-                                content:
-                                    "Je bent een Gutenberg layout-assistent. Geef ALLEEN geldige JSON terug, zonder markdown of extra tekst. Formaat: {\"insert\":{\"position\":\"before|after\",\"clientId\":\"...\"},\"sections\":[{\"columns\":[{\"width\":6,\"blocks\":[{\"blockType\":\"core/heading\",\"content\":\"...\"},{\"blockType\":\"core/paragraph\",\"content\":\"...\"}]}]}]}. Op root niveau worden sections altijd omgezet naar madeit/block-content. Gebruik in blocks uitsluitend deze blockTypes: " +
-                                    ALLOWED_BLOCKS.join(", ") +
-                                    ". Als je geen specifieke clientId hebt, laat insert.clientId leeg.",
-                            },
-                            {
-                                role: "user",
-                                content:
-                                    "Gebruikersvraag:\n" +
-                                    prompt +
-                                    "\n\nHuidige geselecteerde clientId:\n" +
-                                    (selectedClientId || "") +
-                                    "\n\nHuidige Gutenberg structuur (met clientId):\n" +
-                                    JSON.stringify(currentStructure),
-                            },
-                        ],
-                    },
+                const parsed = await requestLayoutJson({
+                    prompt,
+                    selectedClientId,
+                    currentStructure,
                     signal: controller?.signal,
                 });
-
-                const payload = completionResponse.data
-                    ? completionResponse.data
-                    : completionResponse;
-                const responseText = String(payload?.choices?.[0]?.message?.content || "").trim();
-                const parsed = extractJsonFromText(responseText);
 
                 if (!parsed) {
                     createErrorNotice(__("De AI gaf geen valide JSON terug.", "madeit"), {
@@ -3149,6 +3503,133 @@ registerPlugin("madeit-chatbot-sidebar", {
             }
         };
 
+        const handleCtaCheck = async () => {
+            if (isLoading) {
+                cancelActiveRequest();
+                return;
+            }
+
+            const editorBlocks = wp.data.select("core/block-editor").getBlocks() || [];
+            const blockSnapshot = buildLanguageCheckSnapshot(editorBlocks);
+            const textToCheck = JSON.stringify(blockSnapshot, null, 2);
+
+            if (!textToCheck) {
+                createErrorNotice(
+                    __(
+                        "Er is geen bruikbare tekst in de huidige blocks gevonden.",
+                        "madeit"
+                    ),
+                    { type: "default" }
+                );
+                return;
+            }
+
+            setIsLoading(true);
+            setError(null);
+            setCtaResult("");
+            setCtaIssues([]);
+            setAcceptedCtaIssues({});
+
+            const controller =
+                typeof AbortController === "undefined" ? undefined : new AbortController();
+
+            setAbortController(controller || null);
+
+            try {
+                const completionResponse = await wp.apiFetch({
+                    path: "/madeit-ai/v1/chat/completions",
+                    method: "POST",
+                    data: {
+                        response_format: {
+                            type: "json_object",
+                        },
+                        messages: [
+                            {
+                                role: "system",
+                                content:
+                                    "Je bent een senior SEO + CRO-assistent voor CTA-optimalisatie. Je ontvangt de actuele Gutenberg block-state als JSON (met clientId, attributes en serializedHtml). Geef ALLEEN geldige JSON terug (geen markdown of extra tekst) met dit formaat: {\"issues\":[{\"source\":\"...\",\"fix\":\"...\",\"clientId\":\"...\",\"positie\":\"...\"}]}. Voeg ALLEEN een issue toe als de wijziging aantoonbaar beter is voor SEO-intentie of conversie-intentie (meer duidelijkheid, sterkere actie, concreter voordeel, hogere klikkans, beter zoekintentie-signaal). Doe GEEN cosmetische of subjectieve herschrijvingen. Als de huidige CTA al goed is of de winst te klein/onzeker is, voeg GEEN issue toe. Als er geen duidelijke verbetering is, geef exact terug: {\"issues\":[]}. Beperk je tot echte CTA-tekst (zoals knoptekst, link-ankers of directe actie-zinnen), niet tot gewone body copy. In 'source' markeer je de huidige CTA met [FOUT]...[/FOUT]. Gebruik ALTIJD de echte Gutenberg clientId van het block in 'clientId'. 'positie' mag als extra context, maar 'clientId' is verplicht.",
+                            },
+                            {
+                                role: "user",
+                                content:
+                                    "Analyseer deze Gutenberg blocks op CTA-optimalisatie en geef uitsluitend JSON terug volgens het gevraagde formaat:\n\n" +
+                                    textToCheck,
+                            },
+                        ],
+                    },
+                    signal: controller?.signal,
+                });
+
+                const payload = completionResponse.data
+                    ? completionResponse.data
+                    : completionResponse;
+
+                const responseText = payload?.choices?.[0]?.message?.content;
+
+                // eslint-disable-next-line no-console
+                console.info("[madeit-cta-check] raw AI response", {
+                    hasResponseText: !!responseText,
+                    responsePreview: previewText(responseText, 320),
+                });
+
+                if (responseText) {
+                    const jsonResult = extractJsonFromText(responseText);
+
+                    if (jsonResult) {
+                        // eslint-disable-next-line no-console
+                        console.info("[madeit-cta-check] parsed issues", {
+                            issuesCount: Array.isArray(jsonResult.issues)
+                                ? jsonResult.issues.length
+                                : 0,
+                            issuesPreview: Array.isArray(jsonResult.issues)
+                                ? jsonResult.issues.slice(0, 5).map((issue) => ({
+                                      clientId: issue?.clientId || null,
+                                      source: previewText(issue?.source),
+                                      fix: previewText(issue?.fix),
+                                  }))
+                                : [],
+                        });
+
+                        setCtaResult(JSON.stringify(jsonResult, null, 2));
+                        setCtaIssues(Array.isArray(jsonResult.issues) ? jsonResult.issues : []);
+                    } else {
+                        // eslint-disable-next-line no-console
+                        console.warn("[madeit-cta-check] failed to parse CTA JSON", {
+                            responsePreview: previewText(responseText, 500),
+                        });
+
+                        createErrorNotice(
+                            __(
+                                "De AI gaf geen valide JSON terug. Probeer opnieuw.",
+                                "madeit"
+                            ),
+                            { type: "default" }
+                        );
+                    }
+                } else {
+                    createErrorNotice(
+                        __(
+                            "Er konden geen CTA-voorstellen worden gegenereerd. Probeer het opnieuw.",
+                            "madeit"
+                        ),
+                        { type: "default" }
+                    );
+                }
+            } catch (requestError) {
+                if (requestError.name === "AbortError") {
+                    createErrorNotice(__("De CTA-check is geannuleerd.", "madeit"), {
+                        type: "snackbar",
+                    });
+                } else {
+                    const messageText = requestError.message || "An unknown error occurred.";
+                    createErrorNotice(messageText, { type: "default" });
+                }
+            } finally {
+                setIsLoading(false);
+                setAbortController(null);
+            }
+        };
+
         const handleGenerateAltTags = async () => {
             if (isLoading) {
                 cancelActiveRequest();
@@ -3275,21 +3756,21 @@ registerPlugin("madeit-chatbot-sidebar", {
             setAbortController(null);
         };
 
-        const handleAcceptIssue = (issueIndex) => {
-            if (!Array.isArray(languageIssues) || !languageIssues[issueIndex]) {
+        const applyIssueFromList = (issues, issueIndex, setAccepted, logNamespace) => {
+            if (!Array.isArray(issues) || !issues[issueIndex]) {
                 return;
             }
 
             const logApplyFailure = (reason, details = {}) => {
                 // eslint-disable-next-line no-console
-                console.error("[madeit-language-check] apply issue failed", {
+                console.error("[" + logNamespace + "] apply issue failed", {
                     reason,
                     issueIndex,
                     details,
                 });
             };
 
-            const issue = languageIssues[issueIndex];
+            const issue = issues[issueIndex];
             const blockEditorSelect = wp.data.select("core/block-editor");
             const blocks = blockEditorSelect.getBlocks() || [];
             const position = parseIssuePosition(issue.positie);
@@ -3298,6 +3779,17 @@ registerPlugin("madeit-chatbot-sidebar", {
             const sourcePlain = stripHtml(String(issue?.source || ""))
                 .replace(/\[FOUT\]|\[\/FOUT\]/gi, "")
                 .trim();
+
+            // eslint-disable-next-line no-console
+            console.info("[" + logNamespace + "] apply start", {
+                issueIndex,
+                issueClientId,
+                position,
+                source: previewText(issue?.source),
+                fix: previewText(issue?.fix),
+                sourcePlain: previewText(sourcePlain),
+                markedError: previewText(markedError),
+            });
 
             const resolveIssueBlock = () => {
                 let resolved = issueClientId
@@ -3321,6 +3813,14 @@ registerPlugin("madeit-chatbot-sidebar", {
 
             const targetBlock = resolveIssueBlock();
 
+            // eslint-disable-next-line no-console
+            console.info("[" + logNamespace + "] resolved target block", {
+                found: !!targetBlock,
+                clientId: targetBlock?.clientId || null,
+                name: targetBlock?.name || null,
+                attributeKeys: Object.keys(targetBlock?.attributes || {}),
+            });
+
             if (!targetBlock || !targetBlock.clientId) {
                 logApplyFailure("target_block_not_found", {
                     issue,
@@ -3340,7 +3840,19 @@ registerPlugin("madeit-chatbot-sidebar", {
                 return;
             }
 
-            const attributeUpdate = findBestAttributeUpdate(targetBlock, issue);
+            const attributeUpdate = findBestAttributeUpdate(targetBlock, issue, {
+                allowDirectReplace: logNamespace === "madeit-cta-check",
+                debugNamespace: logNamespace,
+            });
+
+            // eslint-disable-next-line no-console
+            console.info("[" + logNamespace + "] attribute update result", {
+                hasUpdate: !!attributeUpdate,
+                key: attributeUpdate?.key || null,
+                sourceType: attributeUpdate?.sourceType || "attribute",
+                before: previewText(attributeUpdate?.currentValue),
+                after: previewText(attributeUpdate?.updatedValue),
+            });
 
             if (!attributeUpdate) {
                 logApplyFailure("no_content_change", {
@@ -3370,6 +3882,17 @@ registerPlugin("madeit-chatbot-sidebar", {
                     [attributeUpdate.key]: attributeUpdate.updatedValue,
                 });
 
+                const updatedBlock = wp.data
+                    .select("core/block-editor")
+                    .getBlock(targetBlock.clientId);
+
+                // eslint-disable-next-line no-console
+                console.info("[" + logNamespace + "] update applied", {
+                    clientId: targetBlock.clientId,
+                    key: attributeUpdate.key,
+                    persistedValuePreview: previewText(updatedBlock?.attributes?.[attributeUpdate.key]),
+                });
+
                 if (typeof __unstableMarkLastChangeAsPersistent === "function") {
                     __unstableMarkLastChangeAsPersistent();
                 }
@@ -3393,18 +3916,18 @@ registerPlugin("madeit-chatbot-sidebar", {
                 return;
             }
 
-            setAcceptedIssues((previous) => ({
+            setAccepted((previous) => ({
                 ...previous,
                 [issueIndex]: true,
             }));
         };
 
-        const handleFocusIssue = (issueIndex) => {
-            if (!Array.isArray(languageIssues) || !languageIssues[issueIndex]) {
+        const focusIssueFromList = (issues, issueIndex) => {
+            if (!Array.isArray(issues) || !issues[issueIndex]) {
                 return;
             }
 
-            const issue = languageIssues[issueIndex];
+            const issue = issues[issueIndex];
             const blockEditorSelect = wp.data.select("core/block-editor");
             const blocks = blockEditorSelect.getBlocks() || [];
             const position = parseIssuePosition(issue.positie);
@@ -3451,6 +3974,32 @@ registerPlugin("madeit-chatbot-sidebar", {
             });
         };
 
+        const handleAcceptIssue = (issueIndex) => {
+            applyIssueFromList(
+                languageIssues,
+                issueIndex,
+                setAcceptedIssues,
+                "madeit-language-check"
+            );
+        };
+
+        const handleFocusIssue = (issueIndex) => {
+            focusIssueFromList(languageIssues, issueIndex);
+        };
+
+        const handleAcceptCtaIssue = (issueIndex) => {
+            applyIssueFromList(
+                ctaIssues,
+                issueIndex,
+                setAcceptedCtaIssues,
+                "madeit-cta-check"
+            );
+        };
+
+        const handleFocusCtaIssue = (issueIndex) => {
+            focusIssueFromList(ctaIssues, issueIndex);
+        };
+
         return React.createElement(SidebarContent, {
             selectedModule,
             onSelectModule: (moduleKey) => {
@@ -3470,6 +4019,12 @@ registerPlugin("madeit-chatbot-sidebar", {
             handleLanguageCheck,
             handleAcceptIssue,
             handleFocusIssue,
+            ctaResult,
+            ctaIssues,
+            acceptedCtaIssues,
+            handleCtaCheck,
+            handleAcceptCtaIssue,
+            handleFocusCtaIssue,
             missingAltCount,
             altProgress,
             altSummary,
@@ -3616,43 +4171,12 @@ registerPlugin("madeit-chatbot-sidebar", {
                         : null;
 
                     if (layoutPayload) {
-                        const layoutCompletionResponse = await wp.apiFetch({
-                            path: "/madeit-ai/v1/chat/completions",
-                            method: "POST",
-                            data: {
-                                response_format: {
-                                    type: "json_object",
-                                },
-                                messages: [
-                                    {
-                                        role: "system",
-                                        content:
-                                            "Je bent een Gutenberg layout-assistent. Geef ALLEEN geldige JSON terug, zonder markdown of extra tekst. Formaat: {\"insert\":{\"position\":\"before|after\",\"clientId\":\"...\"},\"sections\":[{\"columns\":[{\"width\":6,\"blocks\":[{\"blockType\":\"core/heading\",\"content\":\"...\"},{\"blockType\":\"core/paragraph\",\"content\":\"...\"}]}]}]}. Op root niveau worden sections altijd omgezet naar madeit/block-content. Gebruik in blocks uitsluitend deze blockTypes: " +
-                                            ALLOWED_BLOCKS.join(", ") +
-                                            ". Als je geen specifieke clientId hebt, laat insert.clientId leeg.",
-                                    },
-                                    {
-                                        role: "user",
-                                        content:
-                                            "Gebruikersvraag:\n" +
-                                            outgoingMessage +
-                                            "\n\nHuidige geselecteerde clientId:\n" +
-                                            (selectedClientId || "") +
-                                            "\n\nHuidige Gutenberg structuur (met clientId):\n" +
-                                            JSON.stringify(currentStructure),
-                                    },
-                                ],
-                            },
+                        const generatedLayoutPayload = await requestLayoutJson({
+                            prompt: outgoingMessage,
+                            selectedClientId,
+                            currentStructure,
                             signal: controller?.signal,
                         });
-
-                        const layoutPayloadResponse = layoutCompletionResponse?.data
-                            ? layoutCompletionResponse.data
-                            : layoutCompletionResponse;
-                        const layoutResponseText = String(
-                            layoutPayloadResponse?.choices?.[0]?.message?.content || ""
-                        ).trim();
-                        const generatedLayoutPayload = extractJsonFromText(layoutResponseText);
 
                         if (!generatedLayoutPayload) {
                             createErrorNotice(__("De AI gaf geen valide JSON terug voor de layout.", "madeit"), {
@@ -3714,41 +4238,11 @@ registerPlugin("madeit-chatbot-sidebar", {
                         Array.isArray(gutenbergToolArgsJson?.blocks) &&
                         gutenbergToolArgsJson.blocks.length > 0
                     ) {
-                        const blocksCompletionResponse = await wp.apiFetch({
-                            path: "/madeit-ai/v1/chat/completions",
-                            method: "POST",
-                            data: {
-                                response_format: {
-                                    type: "json_object",
-                                },
-                                messages: [
-                                    {
-                                        role: "system",
-                                        content:
-                                            "Je bent een Gutenberg block-assistent. Geef ALLEEN geldige JSON terug, zonder markdown of extra tekst, met formaat: {\"blocks\":[{\"blockType\":\"core/heading\",\"content\":\"...\"}]}. Gebruik uitsluitend deze blockTypes: " +
-                                            ALLOWED_BLOCKS.join(", ") +
-                                            ".",
-                                    },
-                                    {
-                                        role: "user",
-                                        content:
-                                            "Gebruikersvraag:\n" +
-                                            outgoingMessage +
-                                            "\n\nHuidige Gutenberg structuur (met clientId):\n" +
-                                            JSON.stringify(currentStructure),
-                                    },
-                                ],
-                            },
+                        const generatedBlocksPayload = await requestBlocksJson({
+                            prompt: outgoingMessage,
+                            currentStructure,
                             signal: controller?.signal,
                         });
-
-                        const blocksPayload = blocksCompletionResponse?.data
-                            ? blocksCompletionResponse.data
-                            : blocksCompletionResponse;
-                        const blocksResponseText = String(
-                            blocksPayload?.choices?.[0]?.message?.content || ""
-                        ).trim();
-                        const generatedBlocksPayload = extractJsonFromText(blocksResponseText);
 
                         if (!Array.isArray(generatedBlocksPayload?.blocks)) {
                             createErrorNotice(
