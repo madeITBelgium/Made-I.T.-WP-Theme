@@ -134,12 +134,36 @@ function mapBlockDataToWpBlock(blockData) {
             return createListBlock(blockData.content || "", blockData.ordered || false);
 
         case "core/buttons": {
-            const buttonBlocks = (blockData.buttonsContent || []).map((button) =>
-                createBlock("core/button", {
-                    text: button.text,
-                    url: button.url,
+            const buttonsFromArray = Array.isArray(blockData.buttonsContent)
+                ? blockData.buttonsContent
+                : [];
+
+            const fallbackText = String(
+                blockData.content || blockData.text || blockData.label || ""
+            ).trim();
+
+            const normalizedButtons =
+                buttonsFromArray.length > 0
+                    ? buttonsFromArray
+                    : fallbackText
+                    ? [{ text: fallbackText, url: "" }]
+                    : [];
+
+            const buttonBlocks = normalizedButtons
+                .map((button) => {
+                    const text = String(button?.text || "").trim();
+                    const url = String(button?.url || "").trim();
+
+                    if (!text) {
+                        return null;
+                    }
+
+                    return createBlock("core/button", {
+                        text,
+                        url,
+                    });
                 })
-            );
+                .filter((buttonBlock) => buttonBlock !== null);
 
             return createBlock("core/buttons", {}, buttonBlocks);
         }
@@ -206,6 +230,154 @@ function mapBlockDataToWpBlock(blockData) {
             throw error;
         }
     }
+}
+
+function clampColumnWidth(width) {
+    const numeric = Number(width);
+    if (!Number.isFinite(numeric)) {
+        return 12;
+    }
+
+    return Math.max(1, Math.min(12, Math.round(numeric)));
+}
+
+function normalizeAutoBlockSections(payload) {
+    if (Array.isArray(payload?.sections)) {
+        return payload.sections;
+    }
+
+    if (Array.isArray(payload?.columns)) {
+        return [{ columns: payload.columns }];
+    }
+
+    if (Array.isArray(payload?.blocks)) {
+        return [
+            {
+                columns: [
+                    {
+                        width: 12,
+                        blocks: payload.blocks,
+                    },
+                ],
+            },
+        ];
+    }
+
+    return [];
+}
+
+function createMadeitContentBlocksFromSections(sections) {
+    if (!Array.isArray(sections)) {
+        return [];
+    }
+
+    return sections
+        .map((section) => {
+            const sectionColumns = Array.isArray(section?.columns) ? section.columns : [];
+            const fallbackBlocks = Array.isArray(section?.blocks) ? section.blocks : [];
+
+            const normalizedColumns =
+                sectionColumns.length > 0
+                    ? sectionColumns
+                    : [
+                          {
+                              width: 12,
+                              blocks: fallbackBlocks,
+                          },
+                      ];
+
+            const columnBlocks = normalizedColumns
+                .map((column) => {
+                    const innerRawBlocks = Array.isArray(column?.blocks) ? column.blocks : [];
+
+                    const innerBlocks = innerRawBlocks
+                        .map((item) => mapBlockDataToWpBlock(item))
+                        .filter((item) => item !== null);
+
+                    if (innerBlocks.length === 0) {
+                        return null;
+                    }
+
+                    return createBlock(
+                        "madeit/block-content-column",
+                        {
+                            width: clampColumnWidth(column?.width),
+                        },
+                        innerBlocks
+                    );
+                })
+                .filter((columnBlock) => columnBlock !== null);
+
+            if (columnBlocks.length === 0) {
+                return null;
+            }
+
+            return createBlock(
+                "madeit/block-content",
+                {
+                    containerPaddingOnRow: true,
+                    overflow: "visible",
+                    flexDirection: "row",
+                    flexDirectionTablet: "column",
+                    flexDirectionMobile: "column",
+                    alignItems: "stretch",
+                    justifyContent: "flex-start",
+                    rowGap: 20,
+                    rowGapTablet: 20,
+                    rowGapMobile: 20,
+                    columnsCount: columnBlocks.length,
+                    flexWrap: "nowrap",
+                },
+                columnBlocks
+            );
+        })
+        .filter((sectionBlock) => sectionBlock !== null);
+}
+
+function blockTreeContainsClientId(block, targetClientId) {
+    if (!block || !targetClientId) {
+        return false;
+    }
+
+    if (block.clientId === targetClientId) {
+        return true;
+    }
+
+    const innerBlocks = Array.isArray(block.innerBlocks) ? block.innerBlocks : [];
+    for (let i = 0; i < innerBlocks.length; i += 1) {
+        if (blockTreeContainsClientId(innerBlocks[i], targetClientId)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function resolveRootInsertIndexByClientId(rootBlocks, targetClientId, position) {
+    if (!Array.isArray(rootBlocks) || !targetClientId) {
+        return null;
+    }
+
+    for (let i = 0; i < rootBlocks.length; i += 1) {
+        if (blockTreeContainsClientId(rootBlocks[i], targetClientId)) {
+            return position === "before" ? i : i + 1;
+        }
+    }
+
+    return null;
+}
+
+function normalizeAutoInsertSpec(payload) {
+    const rawInsert = payload?.insert || {};
+    const position = rawInsert?.position === "before" || rawInsert?.position === "after"
+        ? rawInsert.position
+        : "after";
+    const clientId = String(rawInsert?.clientId || "").trim();
+
+    return {
+        position,
+        clientId,
+    };
 }
 
 function insertGeneratedBlocks(rawBlocks, insertBlocks) {
@@ -378,6 +550,35 @@ function getFunctionsForModel(modelName) {
         };
     }
 
+    const sectionSchema = {
+        type: "object",
+        properties: {
+            columns: {
+                type: "array",
+                items: {
+                    type: "object",
+                    properties: {
+                        width: {
+                            type: "integer",
+                            minimum: 1,
+                            maximum: 12,
+                        },
+                        blocks: {
+                            type: "array",
+                            items: {
+                                type: "object",
+                                properties: blockProps,
+                                required: ["blockType"],
+                            },
+                        },
+                    },
+                    required: ["blocks"],
+                },
+            },
+        },
+        required: ["columns"],
+    };
+
     return [
         {
             type: "function",
@@ -398,6 +599,36 @@ function getFunctionsForModel(modelName) {
                         },
                     },
                     required: ["blocks"],
+                },
+            },
+        },
+        {
+            type: "function",
+            function: {
+                name: "create_madeit_layout_blocks",
+                description:
+                    "Create madeit/block-content root sections with columns and inner Gutenberg blocks. Optionally insert before/after a specific clientId.",
+                parameters: {
+                    type: "object",
+                    properties: {
+                        insert: {
+                            type: "object",
+                            properties: {
+                                position: {
+                                    type: "string",
+                                    enum: ["before", "after"],
+                                },
+                                clientId: {
+                                    type: "string",
+                                },
+                            },
+                        },
+                        sections: {
+                            type: "array",
+                            items: sectionSchema,
+                        },
+                    },
+                    required: ["sections"],
                 },
             },
         },
@@ -873,6 +1104,48 @@ function extractResponseText(payload) {
     }
 
     return String(payload?.choices?.[0]?.message?.content || "").trim();
+}
+
+function buildResponsesInputFromMessages(messages) {
+    if (!Array.isArray(messages)) {
+        return [];
+    }
+
+    return messages.map((message) => ({
+        role: message?.role || "user",
+        content: [
+            {
+                type: "input_text",
+                text: String(message?.content || ""),
+            },
+        ],
+    }));
+}
+
+function extractResponseFunctionArgs(payload, allowedNames = []) {
+    const outputItems = Array.isArray(payload?.output) ? payload.output : [];
+
+    for (let i = 0; i < outputItems.length; i += 1) {
+        const item = outputItems[i];
+        const itemName = String(item?.name || item?.function?.name || "");
+        const itemType = String(item?.type || "");
+        const rawArgs = String(item?.arguments || item?.function?.arguments || "").trim();
+
+        const isFunctionCallType = itemType === "function_call" || itemType === "tool_call";
+        const isAllowedName =
+            allowedNames.length === 0 || (itemName && allowedNames.includes(itemName));
+
+        if (!isFunctionCallType || !isAllowedName || !rawArgs) {
+            continue;
+        }
+
+        const parsed = extractJsonFromText(rawArgs);
+        if (parsed) {
+            return parsed;
+        }
+    }
+
+    return null;
 }
 
 function sanitizeAltText(text) {
@@ -1468,6 +1741,11 @@ const SIDEBAR_MODULES = {
         label: __("Meta beschrijving", "madeit"),
         description: __("Genereer een Yoast SEO meta beschrijving.", "madeit"),
     },
+    autoBlocks: {
+        key: "autoBlocks",
+        label: __("Auto blokken", "madeit"),
+        description: __("Genereer automatisch contentblokken in madeit containers.", "madeit"),
+    },
 };
 
 function ModuleSelector({ selectedModule, onSelect, yoastActive }) {
@@ -1776,7 +2054,11 @@ function LanguageCheckModule({
                                   )
                               )
                           )
-                        : React.createElement("pre", null, languageResult)
+                        : React.createElement(
+                              "p",
+                              { className: "madeit-language-no-issues" },
+                              __("Geen verbeteringen gevonden. De tekst lijkt correct.", "madeit")
+                          )
                 )
         )
     );
@@ -2034,6 +2316,58 @@ function YoastMetaDescriptionModule({
     );
 }
 
+function AutoBlocksModule({
+    isLoading,
+    autoBlocksPrompt,
+    setAutoBlocksPrompt,
+    autoBlocksStatus,
+    handleGenerateAutoBlocks,
+}) {
+    return React.createElement(
+        Fragment,
+        null,
+        React.createElement(
+            "div",
+            { className: "madeit-yoast-module" },
+            React.createElement(
+                "p",
+                { className: "madeit-yoast-intro" },
+                __(
+                    "Genereer automatisch inhoud. Op root-niveau wordt altijd madeit/block-content gebruikt, met kolommen voor de effectieve inhoud.",
+                    "madeit"
+                )
+            ),
+            React.createElement("textarea", {
+                className: "madeit-textarea",
+                value: autoBlocksPrompt,
+                onChange: (event) => setAutoBlocksPrompt(event.target.value),
+                rows: 4,
+                placeholder: __("Beschrijf welke secties en inhoud je wil genereren...", "madeit"),
+            }),
+            React.createElement(
+                "div",
+                { className: "madeit-yoast-actions" },
+                React.createElement(
+                    Button,
+                    {
+                        variant: "primary",
+                        isBusy: isLoading,
+                        onClick: handleGenerateAutoBlocks,
+                        disabled: isLoading || autoBlocksPrompt.trim() === "",
+                    },
+                    isLoading ? __("Bezig...", "madeit") : __("Genereer blokken", "madeit")
+                )
+            ),
+            autoBlocksStatus &&
+                React.createElement(
+                    "div",
+                    { className: "madeit-yoast-result" },
+                    React.createElement("p", { className: "madeit-yoast-status" }, autoBlocksStatus)
+                )
+        )
+    );
+}
+
 function SidebarContent({
     selectedModule,
     onSelectModule,
@@ -2064,6 +2398,10 @@ function SidebarContent({
     generatedMetaDescription,
     yoastMetaDescriptionApplyStatus,
     handleGenerateMetaDescription,
+    autoBlocksPrompt,
+    setAutoBlocksPrompt,
+    autoBlocksStatus,
+    handleGenerateAutoBlocks,
 }) {
     const showYoastModule = yoastActive && selectedModule === "yoastKeyword";
     const showYoastMetaTitleModule = yoastActive && selectedModule === "yoastMetaTitle";
@@ -2123,6 +2461,14 @@ function SidebarContent({
                       yoastMetaDescriptionApplyStatus,
                       handleGenerateMetaDescription,
                   })
+                    : selectedModule === SIDEBAR_MODULES.autoBlocks.key
+                    ? React.createElement(AutoBlocksModule, {
+                        isLoading,
+                        autoBlocksPrompt,
+                        setAutoBlocksPrompt,
+                        autoBlocksStatus,
+                        handleGenerateAutoBlocks,
+                    })
                 : React.createElement(ChatModule, {
                       uiChat,
                       message,
@@ -2159,6 +2505,8 @@ registerPlugin("madeit-chatbot-sidebar", {
         const [yoastMetaApplyStatus, setYoastMetaApplyStatus] = useState("");
         const [generatedMetaDescription, setGeneratedMetaDescription] = useState("");
         const [yoastMetaDescriptionApplyStatus, setYoastMetaDescriptionApplyStatus] = useState("");
+        const [autoBlocksPrompt, setAutoBlocksPrompt] = useState("");
+        const [autoBlocksStatus, setAutoBlocksStatus] = useState("");
         const [missingAltCount, setMissingAltCount] = useState(0);
         const [altProgress, setAltProgress] = useState({ total: 0, done: 0, current: "" });
         const [altSummary, setAltSummary] = useState({ total: 0, updated: 0, skipped: 0, failed: 0 });
@@ -2514,6 +2862,137 @@ registerPlugin("madeit-chatbot-sidebar", {
                 } else {
                     createErrorNotice(
                         requestError.message || __("Onbekende fout bij meta beschrijving generatie.", "madeit"),
+                        { type: "default" }
+                    );
+                }
+            } finally {
+                setIsLoading(false);
+                setAbortController(null);
+            }
+        };
+
+        const handleGenerateAutoBlocks = async () => {
+            if (isLoading) {
+                cancelActiveRequest();
+                return;
+            }
+
+            const prompt = String(autoBlocksPrompt || "").trim();
+            if (!prompt) {
+                createErrorNotice(__("Geef eerst een beschrijving op voor de blokken.", "madeit"), {
+                    type: "default",
+                });
+                return;
+            }
+
+            setIsLoading(true);
+            setAutoBlocksStatus("");
+
+            const controller =
+                typeof AbortController === "undefined" ? undefined : new AbortController();
+
+            setAbortController(controller || null);
+
+            try {
+                const currentBlocks = wp.data.select("core/block-editor").getBlocks() || [];
+                const currentStructure = buildLanguageCheckSnapshot(currentBlocks);
+                const selectedClientId =
+                    wp.data.select("core/block-editor")?.getSelectedBlockClientId?.() || "";
+
+                const completionResponse = await wp.apiFetch({
+                    path: "/madeit-ai/v1/chat/completions",
+                    method: "POST",
+                    data: {
+                        response_format: {
+                            type: "json_object",
+                        },
+                        messages: [
+                            {
+                                role: "system",
+                                content:
+                                    "Je bent een Gutenberg layout-assistent. Geef ALLEEN geldige JSON terug, zonder markdown of extra tekst. Formaat: {\"insert\":{\"position\":\"before|after\",\"clientId\":\"...\"},\"sections\":[{\"columns\":[{\"width\":6,\"blocks\":[{\"blockType\":\"core/heading\",\"content\":\"...\"},{\"blockType\":\"core/paragraph\",\"content\":\"...\"}]}]}]}. Op root niveau worden sections altijd omgezet naar madeit/block-content. Gebruik in blocks uitsluitend deze blockTypes: " +
+                                    ALLOWED_BLOCKS.join(", ") +
+                                    ". Als je geen specifieke clientId hebt, laat insert.clientId leeg.",
+                            },
+                            {
+                                role: "user",
+                                content:
+                                    "Gebruikersvraag:\n" +
+                                    prompt +
+                                    "\n\nHuidige geselecteerde clientId:\n" +
+                                    (selectedClientId || "") +
+                                    "\n\nHuidige Gutenberg structuur (met clientId):\n" +
+                                    JSON.stringify(currentStructure),
+                            },
+                        ],
+                    },
+                    signal: controller?.signal,
+                });
+
+                const payload = completionResponse.data
+                    ? completionResponse.data
+                    : completionResponse;
+                const responseText = String(payload?.choices?.[0]?.message?.content || "").trim();
+                const parsed = extractJsonFromText(responseText);
+
+                if (!parsed) {
+                    createErrorNotice(__("De AI gaf geen valide JSON terug.", "madeit"), {
+                        type: "default",
+                    });
+                    return;
+                }
+
+                const sections = normalizeAutoBlockSections(parsed);
+                const insertSpec = normalizeAutoInsertSpec(parsed);
+                const effectiveClientId = insertSpec.clientId || selectedClientId;
+                const madeitBlocks = createMadeitContentBlocksFromSections(sections);
+
+                if (madeitBlocks.length === 0) {
+                    createErrorNotice(
+                        __("Er konden geen geldige blokken worden opgebouwd uit de AI-output.", "madeit"),
+                        { type: "default" }
+                    );
+                    return;
+                }
+
+                const latestBlocks = wp.data.select("core/block-editor").getBlocks() || [];
+                const insertionIndex = effectiveClientId
+                    ? resolveRootInsertIndexByClientId(
+                          latestBlocks,
+                          effectiveClientId,
+                          insertSpec.position
+                      )
+                    : null;
+
+                if (Number.isInteger(insertionIndex)) {
+                    insertBlocks(madeitBlocks, insertionIndex);
+                    setAutoBlocksStatus(
+                        __("Klaar. Toegevoegd op positie", "madeit") +
+                            " " +
+                            String(insertionIndex) +
+                            " (" +
+                            insertSpec.position +
+                            ")."
+                    );
+                } else {
+                    insertBlocks(madeitBlocks);
+                    setAutoBlocksStatus(
+                        __("Klaar. Toegevoegde root containers:", "madeit") +
+                            " " +
+                            String(madeitBlocks.length) +
+                            (effectiveClientId
+                                ? " (fallback append; clientId niet gevonden)"
+                                : "")
+                    );
+                }
+            } catch (requestError) {
+                if (requestError.name === "AbortError") {
+                    createErrorNotice(__("Generatie geannuleerd.", "madeit"), {
+                        type: "snackbar",
+                    });
+                } else {
+                    createErrorNotice(
+                        requestError.message || __("Onbekende fout bij blokgeneratie.", "madeit"),
                         { type: "default" }
                     );
                 }
@@ -2959,6 +3438,10 @@ registerPlugin("madeit-chatbot-sidebar", {
             generatedMetaDescription,
             yoastMetaDescriptionApplyStatus,
             handleGenerateMetaDescription,
+            autoBlocksPrompt,
+            setAutoBlocksPrompt,
+            autoBlocksStatus,
+            handleGenerateAutoBlocks,
             handleSendMessage: async () => {
                 if (isLoading) {
                     cancelActiveRequest();
@@ -2982,6 +3465,12 @@ registerPlugin("madeit-chatbot-sidebar", {
 
                 setAbortController(controller || null);
 
+                const selectedClientId =
+                    wp.data.select("core/block-editor")?.getSelectedBlockClientId?.() || "";
+                const currentStructure = buildLanguageCheckSnapshot(
+                    wp.data.select("core/block-editor")?.getBlocks?.() || []
+                );
+
                 const nextMessages = [
                     ...chatHistory,
                     {
@@ -2996,6 +3485,15 @@ registerPlugin("madeit-chatbot-sidebar", {
                         "Je bent een behulpzame AI-assistent. Antwoord in de taal van de gebruiker. Als er twijfel is over de taal, antwoord dan in het Nederlands (Belgisch).",
                 };
 
+                const insertionContextMessage = {
+                    role: "system",
+                    content:
+                        "Voor layout-aanvragen: gebruik tool-calls. Root-blokken moeten madeit/block-content zijn met kolommen. De huidige selectie clientId is: " +
+                        (selectedClientId || "") +
+                        ". Als de gebruiker 'hier' zegt, mag je deze clientId gebruiken voor insert before/after. Huidige Gutenberg structuur met clientIds: " +
+                        JSON.stringify(currentStructure),
+                };
+
                 setChatHistory(nextMessages);
                 setUiChat((previous) => [
                     ...previous,
@@ -3006,13 +3504,22 @@ registerPlugin("madeit-chatbot-sidebar", {
                 ]);
 
                 try {
-                    //const functions = getFunctionsForModel(settings.ai_editor_model);
+                    const modelName =
+                        typeof settings !== "undefined" && settings?.ai_editor_model
+                            ? settings.ai_editor_model
+                            : "";
+                    const functions = getFunctionsForModel(modelName);
+                    const responsesInput = buildResponsesInputFromMessages([
+                        systemMessage,
+                        insertionContextMessage,
+                        ...nextMessages,
+                    ]);
                     const completionResponse = await wp.apiFetch({
-                        path: "/madeit-ai/v1/chat/completions",
+                        path: "/madeit-ai/v1/responses",
                         method: "POST",
                         data: {
-                            messages: [systemMessage, ...nextMessages],
-                            //functions,
+                            input: responsesInput,
+                            tools: functions,
                         },
                         signal: controller?.signal,
                     });
@@ -3028,11 +3535,75 @@ registerPlugin("madeit-chatbot-sidebar", {
                         ? completionResponse.data
                         : completionResponse;
 
-                    if (payload?.choices?.[0]?.message?.blocks) {
+                    const toolArgsJson = extractResponseFunctionArgs(payload, [
+                        "create_madeit_layout_blocks",
+                    ]);
+                    const assistantContentText = extractResponseText(payload);
+                    const contentJson = extractJsonFromText(assistantContentText);
+                    const layoutPayload = toolArgsJson?.sections
+                        ? toolArgsJson
+                        : contentJson?.sections
+                        ? {
+                              sections: contentJson.sections,
+                              insert: contentJson.insert,
+                          }
+                        : null;
+
+                    if (layoutPayload) {
+                        const sections = normalizeAutoBlockSections(layoutPayload);
+                        const madeitBlocks = createMadeitContentBlocksFromSections(sections);
+
+                        if (madeitBlocks.length === 0) {
+                            createErrorNotice(
+                                __("Er konden geen geldige layoutblokken worden opgebouwd.", "madeit"),
+                                { type: "default" }
+                            );
+                            return;
+                        }
+
+                        const insertSpec = normalizeAutoInsertSpec(layoutPayload);
+                        const effectiveClientId = insertSpec.clientId || selectedClientId;
+                        const latestBlocks = wp.data.select("core/block-editor").getBlocks() || [];
+                        const insertionIndex = effectiveClientId
+                            ? resolveRootInsertIndexByClientId(
+                                  latestBlocks,
+                                  effectiveClientId,
+                                  insertSpec.position
+                              )
+                            : null;
+
+                        if (Number.isInteger(insertionIndex)) {
+                            insertBlocks(madeitBlocks, insertionIndex);
+                        } else {
+                            insertBlocks(madeitBlocks);
+                        }
+
+                        const successMessage = __("Blocks added successfully!", "madeit");
+                        setUiChat((previous) => [
+                            ...previous,
+                            {
+                                role: "assistant",
+                                content: successMessage,
+                                blockAdded: true,
+                            },
+                        ]);
+
+                        setChatHistory((previous) => [
+                            ...previous,
+                            {
+                                role: "assistant",
+                                content: successMessage,
+                            },
+                        ]);
+
+                        return;
+                    }
+
+                    if (contentJson?.blocks) {
                         let hasError = false;
 
                         try {
-                            const blocks = payload.choices[0].message.blocks;
+                            const blocks = contentJson.blocks;
 
                             if (Array.isArray(blocks) && blocks.length > 0) {
                                 normalizeTableBodies(blocks);
@@ -3089,8 +3660,8 @@ registerPlugin("madeit-chatbot-sidebar", {
                                 },
                             ]);
                         }
-                    } else if (payload?.choices?.[0]?.message?.content) {
-                        const assistantContent = payload.choices[0].message.content;
+                    } else if (assistantContentText) {
+                        const assistantContent = assistantContentText;
 
                         setChatHistory((previous) => [
                             ...previous,
