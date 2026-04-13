@@ -570,6 +570,28 @@ function getFunctionsForModel(modelName) {
                 },
             },
         },
+        {
+            type: "function",
+            function: {
+                name: "delete_gutenberg_block",
+                description:
+                    "Delete exactly one Gutenberg block by clientId when the user asks to remove specific content.",
+                parameters: {
+                    type: "object",
+                    properties: {
+                        clientId: {
+                            type: "string",
+                            description: "The exact Gutenberg clientId of the block to remove.",
+                        },
+                        reason: {
+                            type: "string",
+                            description: "Optional short reason why this block should be removed.",
+                        },
+                    },
+                    required: ["clientId"],
+                },
+            },
+        },
     ];
 }
 
@@ -767,6 +789,52 @@ async function requestBlocksJson({ prompt, currentStructure, signal }) {
     });
 
     return extractJsonFromText(getCompletionTextFromApiResponse(completionResponse));
+}
+
+function buildDeleteBlockSystemPrompt() {
+    return (
+        "Je bent een Gutenberg assistent die exact 1 block clientId kiest om te verwijderen. Geef ALLEEN geldige JSON terug zonder markdown of extra tekst in dit formaat: {\"clientId\":\"...\",\"reason\":\"...\"}. Gebruik enkel een bestaande clientId uit de meegegeven Gutenberg structuur. Als je niet zeker bent, geef {\"clientId\":\"\",\"reason\":\"\"} terug."
+    );
+}
+
+function buildDeleteBlockUserPrompt(prompt, currentStructure) {
+    return (
+        "Gebruikersvraag:\n" +
+        prompt +
+        "\n\nHuidige Gutenberg structuur (met clientId):\n" +
+        JSON.stringify(currentStructure)
+    );
+}
+
+async function requestDeleteBlockJson({ prompt, currentStructure, signal }) {
+    const completionResponse = await wp.apiFetch({
+        path: "/madeit-ai/v1/chat/completions",
+        method: "POST",
+        data: {
+            response_format: {
+                type: "json_object",
+            },
+            messages: [
+                {
+                    role: "system",
+                    content: buildDeleteBlockSystemPrompt(),
+                },
+                {
+                    role: "user",
+                    content: buildDeleteBlockUserPrompt(prompt, currentStructure),
+                },
+            ],
+        },
+        signal,
+    });
+
+    return extractJsonFromText(getCompletionTextFromApiResponse(completionResponse));
+}
+
+function sanitizeClientId(value) {
+    const raw = String(value || "").trim();
+    const match = raw.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i);
+    return match ? match[0] : "";
 }
 
 function extractMarkedError(source) {
@@ -1918,6 +1986,11 @@ const SIDEBAR_MODULES = {
         label: __("Auto blokken", "madeit"),
         description: __("Genereer automatisch contentblokken in madeit containers.", "madeit"),
     },
+    deleteBlock: {
+        key: "deleteBlock",
+        label: __("Blok verwijderen", "madeit"),
+        description: __("Beschrijf welk blok weg mag. AI kiest een clientId en verwijdert dat blok.", "madeit"),
+    },
 };
 
 function ModuleSelector({ selectedModule, onSelect, yoastActive }) {
@@ -2705,6 +2778,58 @@ function AutoBlocksModule({
     );
 }
 
+function DeleteBlockModule({
+    isLoading,
+    deleteBlockPrompt,
+    setDeleteBlockPrompt,
+    deleteBlockStatus,
+    handleDeleteBlock,
+}) {
+    return React.createElement(
+        Fragment,
+        null,
+        React.createElement(
+            "div",
+            { className: "madeit-yoast-module" },
+            React.createElement(
+                "p",
+                { className: "madeit-yoast-intro" },
+                __(
+                    "Beschrijf welk onderdeel verwijderd moet worden.",
+                    "madeit"
+                )
+            ),
+            React.createElement("textarea", {
+                className: "madeit-textarea",
+                value: deleteBlockPrompt,
+                onChange: (event) => setDeleteBlockPrompt(event.target.value),
+                rows: 4,
+                placeholder: __("Bijv. verwijder de sectie met de oude prijstabel", "madeit"),
+            }),
+            React.createElement(
+                "div",
+                { className: "madeit-yoast-actions" },
+                React.createElement(
+                    Button,
+                    {
+                        variant: "primary",
+                        isBusy: isLoading,
+                        onClick: handleDeleteBlock,
+                        disabled: isLoading || deleteBlockPrompt.trim() === "",
+                    },
+                    isLoading ? __("Bezig...", "madeit") : __("Zoek en verwijder blok", "madeit")
+                )
+            ),
+            deleteBlockStatus &&
+                React.createElement(
+                    "div",
+                    { className: "madeit-yoast-result" },
+                    React.createElement("p", { className: "madeit-yoast-status" }, deleteBlockStatus)
+                )
+        )
+    );
+}
+
 function SidebarContent({
     selectedModule,
     onSelectModule,
@@ -2746,6 +2871,10 @@ function SidebarContent({
     setAutoBlocksPrompt,
     autoBlocksStatus,
     handleGenerateAutoBlocks,
+    deleteBlockPrompt,
+    setDeleteBlockPrompt,
+    deleteBlockStatus,
+    handleDeleteBlock,
 }) {
     const showYoastModule = yoastActive && selectedModule === "yoastKeyword";
     const showYoastMetaTitleModule = yoastActive && selectedModule === "yoastMetaTitle";
@@ -2816,6 +2945,14 @@ function SidebarContent({
                       yoastMetaDescriptionApplyStatus,
                       handleGenerateMetaDescription,
                   })
+                    : selectedModule === SIDEBAR_MODULES.deleteBlock.key
+                    ? React.createElement(DeleteBlockModule, {
+                        isLoading,
+                        deleteBlockPrompt,
+                        setDeleteBlockPrompt,
+                        deleteBlockStatus,
+                        handleDeleteBlock,
+                    })
                     : selectedModule === SIDEBAR_MODULES.autoBlocks.key
                     ? React.createElement(AutoBlocksModule, {
                         isLoading,
@@ -2841,6 +2978,7 @@ registerPlugin("madeit-chatbot-sidebar", {
     render: () => {
         const {
             insertBlocks,
+            removeBlocks,
             updateBlockAttributes,
             selectBlock,
             __unstableMarkLastChangeAsPersistent,
@@ -2866,6 +3004,8 @@ registerPlugin("madeit-chatbot-sidebar", {
         const [yoastMetaDescriptionApplyStatus, setYoastMetaDescriptionApplyStatus] = useState("");
         const [autoBlocksPrompt, setAutoBlocksPrompt] = useState("");
         const [autoBlocksStatus, setAutoBlocksStatus] = useState("");
+        const [deleteBlockPrompt, setDeleteBlockPrompt] = useState("");
+        const [deleteBlockStatus, setDeleteBlockStatus] = useState("");
         const [missingAltCount, setMissingAltCount] = useState(0);
         const [altProgress, setAltProgress] = useState({ total: 0, done: 0, current: "" });
         const [altSummary, setAltSummary] = useState({ total: 0, updated: 0, skipped: 0, failed: 0 });
@@ -3392,6 +3532,93 @@ registerPlugin("madeit-chatbot-sidebar", {
                 } else {
                     createErrorNotice(
                         requestError.message || __("Onbekende fout bij blokgeneratie.", "madeit"),
+                        { type: "default" }
+                    );
+                }
+            } finally {
+                setIsLoading(false);
+                setAbortController(null);
+            }
+        };
+
+        const handleDeleteBlock = async () => {
+            if (isLoading) {
+                cancelActiveRequest();
+                return;
+            }
+
+            const prompt = String(deleteBlockPrompt || "").trim();
+            if (!prompt) {
+                createErrorNotice(__("Geef eerst aan welk blok verwijderd moet worden.", "madeit"), {
+                    type: "default",
+                });
+                return;
+            }
+
+            setIsLoading(true);
+            setDeleteBlockStatus("");
+
+            const controller =
+                typeof AbortController === "undefined" ? undefined : new AbortController();
+
+            setAbortController(controller || null);
+
+            try {
+                const currentBlocks = wp.data.select("core/block-editor").getBlocks() || [];
+                const currentStructure = buildLanguageCheckSnapshot(currentBlocks);
+                const parsed = await requestDeleteBlockJson({
+                    prompt,
+                    currentStructure,
+                    signal: controller?.signal,
+                });
+                const resolvedClientId = sanitizeClientId(parsed?.clientId);
+
+                if (!resolvedClientId) {
+                    createErrorNotice(
+                        __(
+                            "De AI kon geen geldige clientId kiezen voor verwijdering.",
+                            "madeit"
+                        ),
+                        { type: "default" }
+                    );
+                    return;
+                }
+
+                const blockEditorSelect = wp.data.select("core/block-editor");
+                const targetBlock = blockEditorSelect.getBlock(resolvedClientId);
+
+                if (!targetBlock) {
+                    createErrorNotice(
+                        __(
+                            "De gekozen clientId bestaat niet meer in de huidige editor.",
+                            "madeit"
+                        ),
+                        { type: "default" }
+                    );
+                    setDeleteBlockStatus(
+                        __("Geen verwijdering uitgevoerd. clientId niet gevonden:", "madeit") +
+                            " " +
+                            resolvedClientId
+                    );
+                    return;
+                }
+
+                removeBlocks([resolvedClientId], false);
+                if (typeof __unstableMarkLastChangeAsPersistent === "function") {
+                    __unstableMarkLastChangeAsPersistent();
+                }
+
+                setDeleteBlockStatus(
+                    __("Blok verwijderd met clientId:", "madeit") + " " + resolvedClientId
+                );
+            } catch (requestError) {
+                if (requestError.name === "AbortError") {
+                    createErrorNotice(__("Verwijderen geannuleerd.", "madeit"), {
+                        type: "snackbar",
+                    });
+                } else {
+                    createErrorNotice(
+                        requestError.message || __("Onbekende fout bij verwijderen.", "madeit"),
                         { type: "default" }
                     );
                 }
@@ -4043,6 +4270,10 @@ registerPlugin("madeit-chatbot-sidebar", {
             setAutoBlocksPrompt,
             autoBlocksStatus,
             handleGenerateAutoBlocks,
+            deleteBlockPrompt,
+            setDeleteBlockPrompt,
+            deleteBlockStatus,
+            handleDeleteBlock,
             handleSendMessage: async () => {
                 if (isLoading) {
                     cancelActiveRequest();
@@ -4091,7 +4322,7 @@ registerPlugin("madeit-chatbot-sidebar", {
                     content:
                         "Voor layout-aanvragen: gebruik tool-calls. Root-blokken moeten madeit/block-content zijn met kolommen. De huidige selectie clientId is: " +
                         (selectedClientId || "") +
-                        ". Als de gebruiker 'hier' zegt, mag je deze clientId gebruiken voor insert before/after. Huidige Gutenberg structuur met clientIds: " +
+                        ". Als de gebruiker 'hier' zegt, mag je deze clientId gebruiken voor insert before/after. Voor verwijder-aanvragen gebruik je delete_gutenberg_block met exact 1 clientId. Huidige Gutenberg structuur met clientIds: " +
                         JSON.stringify(currentStructure),
                 };
 
@@ -4159,6 +4390,9 @@ registerPlugin("madeit-chatbot-sidebar", {
                     const gutenbergToolArgsJson = extractResponseFunctionArgs(payload, [
                         "create_gutenberg_blocks",
                     ]);
+                    const deleteToolArgsJson = extractResponseFunctionArgs(payload, [
+                        "delete_gutenberg_block",
+                    ]);
                     const assistantContentText = extractResponseText(payload);
                     const contentJson = extractJsonFromText(assistantContentText);
                     const layoutPayload = layoutToolArgsJson?.sections
@@ -4169,6 +4403,57 @@ registerPlugin("madeit-chatbot-sidebar", {
                               insert: contentJson.insert,
                           }
                         : null;
+
+                    if (deleteToolArgsJson?.clientId || contentJson?.clientId) {
+                        const requestedClientId = sanitizeClientId(
+                            deleteToolArgsJson?.clientId || contentJson?.clientId
+                        );
+
+                        if (!requestedClientId) {
+                            createErrorNotice(
+                                __("De AI gaf geen geldige clientId terug voor verwijdering.", "madeit"),
+                                { type: "default" }
+                            );
+                            return;
+                        }
+
+                        const blockEditorSelect = wp.data.select("core/block-editor");
+                        const targetBlock = blockEditorSelect.getBlock(requestedClientId);
+
+                        if (!targetBlock) {
+                            createErrorNotice(
+                                __("De gekozen clientId bestaat niet meer in de editor.", "madeit"),
+                                { type: "default" }
+                            );
+                            return;
+                        }
+
+                        removeBlocks([requestedClientId], false);
+                        if (typeof __unstableMarkLastChangeAsPersistent === "function") {
+                            __unstableMarkLastChangeAsPersistent();
+                        }
+
+                        const successMessage =
+                            __("Blok verwijderd met clientId:", "madeit") + " " + requestedClientId;
+                        setUiChat((previous) => [
+                            ...previous,
+                            {
+                                role: "assistant",
+                                content: successMessage,
+                                blockAdded: true,
+                            },
+                        ]);
+
+                        setChatHistory((previous) => [
+                            ...previous,
+                            {
+                                role: "assistant",
+                                content: successMessage,
+                            },
+                        ]);
+
+                        return;
+                    }
 
                     if (layoutPayload) {
                         const generatedLayoutPayload = await requestLayoutJson({
