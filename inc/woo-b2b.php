@@ -1,8 +1,22 @@
 <?php
 
 if(defined('MADEIT_WOO_B2B_ONLY') && MADEIT_WOO_B2B_ONLY) {
+    function madeit_b2b_product_is_public( $product ) {
+        if ( ! $product || ! is_a( $product, 'WC_Product' ) ) {
+            return false;
+        }
+
+        $show_price = get_post_meta( $product->get_id(), 'show_price', true );
+        return in_array( $show_price, array( '1', 1, true, 'true', 'yes', 'on' ), true );
+    }
+
     //Only registered and approved accounts are valid.
     function madeit_b2b_is_purchasable($isPurchasable, $product) {
+        // Products marked with show_price stay publicly purchasable.
+        if ( madeit_b2b_product_is_public( $product ) ) {
+            return $isPurchasable;
+        }
+
         //check if user is logged in
         $user = wp_get_current_user();
         if($user->ID == 0) {
