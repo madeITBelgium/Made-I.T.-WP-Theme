@@ -15,8 +15,8 @@ if (!defined('ABSPATH')) {
 if (!function_exists('thema1_fonts_dir')) {
     function thema1_fonts_dir(): array
     {
-        $basePath = trailingslashit(get_stylesheet_directory()) . 'assets/fonts';
-        $baseUrl  = trailingslashit(get_stylesheet_directory_uri()) . 'assets/fonts';
+        $basePath = trailingslashit(get_stylesheet_directory()).'assets/fonts';
+        $baseUrl = trailingslashit(get_stylesheet_directory_uri()).'assets/fonts';
 
         return [
             'path' => $basePath,
@@ -44,15 +44,15 @@ if (!function_exists('thema1_infer_font_variant_from_filename')) {
             $fontWeight = $m[2];
         } else {
             $weightMap = [
-                '/(thin|hairline)/' => '100',
+                '/(thin|hairline)/'                                     => '100',
                 '/(extra\s*light|ultra\s*light|extralight|ultralight)/' => '200',
-                '/(light)/' => '300',
-                '/(regular|normal|book|roman)/' => '400',
-                '/(medium)/' => '500',
-                '/(semi\s*bold|demi\s*bold|semibold|demibold)/' => '600',
-                '/(bold)/' => '700',
-                '/(extra\s*bold|ultra\s*bold|extrabold|ultrabold)/' => '800',
-                '/(black|heavy)/' => '900',
+                '/(light)/'                                             => '300',
+                '/(regular|normal|book|roman)/'                         => '400',
+                '/(medium)/'                                            => '500',
+                '/(semi\s*bold|demi\s*bold|semibold|demibold)/'         => '600',
+                '/(bold)/'                                              => '700',
+                '/(extra\s*bold|ultra\s*bold|extrabold|ultrabold)/'     => '800',
+                '/(black|heavy)/'                                       => '900',
             ];
             foreach ($weightMap as $re => $value) {
                 if (preg_match($re, $lower)) {
@@ -64,7 +64,7 @@ if (!function_exists('thema1_infer_font_variant_from_filename')) {
 
         // Family name guess: take first chunk before '-' or '_' (common font naming), otherwise use full base.
         $normalized = preg_replace('/_+/', '-', (string) $base);
-        $chunks = array_values(array_filter(explode('-', (string) $normalized), static fn($v) => $v !== ''));
+        $chunks = array_values(array_filter(explode('-', (string) $normalized), static fn ($v) => $v !== ''));
         $familyChunk = $chunks[0] ?? $base;
         $familyName = trim(
             preg_replace(
@@ -91,7 +91,7 @@ if (!function_exists('thema1_collect_local_font_families_for_theme_json')) {
             return [];
         }
 
-        $files = glob(trailingslashit($path) . '*.{otf,ttf,woff,woff2}', GLOB_BRACE);
+        $files = glob(trailingslashit($path).'*.{otf,ttf,woff,woff2}', GLOB_BRACE);
         if (!$files) {
             return [];
         }
@@ -107,8 +107,8 @@ if (!function_exists('thema1_collect_local_font_families_for_theme_json')) {
             }
 
             $familySlug = sanitize_title($familyName);
-            $cssFamilyName = preg_match('/\s/', $familyName) ? '"' . str_replace('"', '\\"', $familyName) . '"' : $familyName;
-            $fontFamilyStack = $cssFamilyName . ', system-ui, sans-serif';
+            $cssFamilyName = preg_match('/\s/', $familyName) ? '"'.str_replace('"', '\\"', $familyName).'"' : $familyName;
+            $fontFamilyStack = $cssFamilyName.', system-ui, sans-serif';
 
             if (!isset($families[$familySlug])) {
                 $families[$familySlug] = [
@@ -124,7 +124,7 @@ if (!function_exists('thema1_collect_local_font_families_for_theme_json')) {
                 'fontStyle'  => (string) ($inferred['fontStyle'] ?? 'normal'),
                 'fontWeight' => (string) ($inferred['fontWeight'] ?? '400'),
                 'src'        => [
-                    'file:./' . trailingslashit((string) ($dir['rel'] ?? 'assets/fonts')) . $basename,
+                    'file:./'.trailingslashit((string) ($dir['rel'] ?? 'assets/fonts')).$basename,
                 ],
             ];
         }
@@ -134,7 +134,7 @@ if (!function_exists('thema1_collect_local_font_families_for_theme_json')) {
             $seen = [];
             $uniqueFaces = [];
             foreach (($family['fontFace'] ?? []) as $face) {
-                $key = ($face['fontStyle'] ?? '') . '|' . ($face['fontWeight'] ?? '') . '|' . implode(',', (array) ($face['src'] ?? []));
+                $key = ($face['fontStyle'] ?? '').'|'.($face['fontWeight'] ?? '').'|'.implode(',', (array) ($face['src'] ?? []));
                 if (isset($seen[$key])) {
                     continue;
                 }
@@ -239,8 +239,8 @@ if (!function_exists('thema1_register_fonts_upload_route')) {
                     return new WP_Error('thema1_not_writable', __('De fonts-map in het actieve theme is niet schrijfbaar.', 'madeit'), ['status' => 500]);
                 }
 
-                $uniqueName = wp_unique_filename($destDir, $sanitizedName ?: ('font.' . $ext));
-                $destPath = trailingslashit($destDir) . $uniqueName;
+                $uniqueName = wp_unique_filename($destDir, $sanitizedName ?: ('font.'.$ext));
+                $destPath = trailingslashit($destDir).$uniqueName;
 
                 $moved = @move_uploaded_file((string) ($file['tmp_name'] ?? ''), $destPath);
                 if (!$moved) {
@@ -259,8 +259,8 @@ if (!function_exists('thema1_register_fonts_upload_route')) {
                 return rest_ensure_response([
                     'stored'   => 'active-theme',
                     'file'     => $uniqueName,
-                    'relative' => trailingslashit((string) ($dir['rel'] ?? 'assets/fonts')) . $uniqueName,
-                    'url'      => trailingslashit((string) ($dir['url'] ?? '')) . $uniqueName,
+                    'relative' => trailingslashit((string) ($dir['rel'] ?? 'assets/fonts')).$uniqueName,
+                    'url'      => trailingslashit((string) ($dir['url'] ?? '')).$uniqueName,
                 ]);
             },
         ]);
