@@ -61,7 +61,7 @@
         },
         "size": {
             "type": "string",
-            "default": "container"
+            "default": "container-content-boxed"
         },
         "contentWidth": {
             "type": "string"
