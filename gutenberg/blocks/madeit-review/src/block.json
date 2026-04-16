@@ -1,0 +1,59 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "madeit/reviews",
+	"title": "Madeit reviews",
+	"category": "madeit",
+	"keywords": ["review", "reviews", "recensie", "recensies", "testimonial", "klantreview"],
+	
+	"icon": "star-filled",
+	"description": "Haal reviews op van een externe bron en toon deze in een mooie layout.",
+	"status": "nieuw",
+	"version": "1.0.0",
+	"madeit": {
+		"changelog": {
+		"1.0.0": [
+			"Eerste versie van de reviews block"
+		]
+		}
+	},
+
+
+	"example": {},
+	"attributes": {
+		"layout": { "type": "string", "default": "standaard" },
+		"slidesDesktop": { "type": "number", "default": 3 },
+		"slidesTablet": { "type": "number", "default": 2 },
+		"slidesMobile": { "type": "number", "default": 1 },
+		"showArrows": { "type": "boolean", "default": true },
+		"paginationType": { "type": "string", "default": "bullets" },
+		"transitionDuration": { "type": "number", "default": 500 },
+		"autoplay": { "type": "boolean", "default": true },
+		"autoplaySpeed": { "type": "number", "default": 5000 },
+		"infiniteLoop": { "type": "boolean", "default": false },
+		"pauseOnInteraction": { "type": "boolean", "default": true },
+		"textColor": { "type": "string", "default": "" },
+		"containerBackgroundColor": { "type": "string", "default": "" },
+		"showImage": { "type": "boolean", "default": true },
+		"width": { "type": "string", "default": "48px" },
+		"height": { "type": "string", "default": "48px" },
+		"objectFit": { "type": "string", "default": "cover" },
+		"borderRadius_leftTop": { "type": "string", "default": "50%" },
+		"borderRadius_rightTop": { "type": "string", "default": "50%" },
+		"borderRadius_rightBottom": { "type": "string", "default": "50%" },
+		"borderRadius_leftBottom": { "type": "string", "default": "50%" },
+		"arrowSize": { "type": "string", "default": "24px" },
+		"arrowColor": { "type": "string", "default": "" },
+		"paginationSize": { "type": "string", "default": "8px" },
+		"paginationColor": { "type": "string", "default": "" },
+		"categoryIds": { "type": "array", "items": { "type": "number" }, "default": [] }
+	},
+	"supports": {
+		"html": false
+	},
+	"textdomain": "madeit-review",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

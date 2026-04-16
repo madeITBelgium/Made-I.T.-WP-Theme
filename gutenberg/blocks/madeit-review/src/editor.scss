@@ -1,0 +1,79 @@
+/**
+ * The following styles get applied inside the editor only.
+ *
+ * Replace them with your own styles or remove the file completely.
+ */
+
+.layout-selector {
+	display: flex;
+    flex-wrap: nowrap;
+    gap: 10px;
+	overflow: scroll;
+	padding-top: 20px;
+
+	.layout-box {
+
+		.screen-reader-text {
+			all: unset;
+			opacity: 0;
+			position: absolute !important;
+			top: 0 !important;
+			background: black;
+			color: white;
+			padding: 5px 10px;
+			left: 5px;
+			right: 5px;
+			text-align: center;
+			font-size: x-small;
+		}
+
+		&:hover .screen-reader-text {
+			opacity: 1;
+			top: -22px !important;
+			transition: all 0.3s ease, top 0.3s ease;
+		}
+
+		position: relative;
+		border: 1px solid rgba(0, 0, 0, 0.12);
+		padding: 10px;
+		cursor: pointer;
+		user-select: none;
+		min-width: 40%;
+
+		.card {
+			background: #fff none repeat scroll 0 0;
+			border: none !important;
+			box-shadow: none;
+			margin-top: 0;
+			max-width: 100%;
+			border-radius: 0;
+			padding: 0;
+			position: relative;
+			min-width: auto;
+		}
+
+		&.active {
+			border: 2px solid currentColor;
+		}
+
+		&.is-disabled {
+			opacity: 0.6;
+			cursor: not-allowed;
+		}
+		
+		.layout-overlay {
+			position: absolute;
+			inset: 0;
+			display: flex;
+			align-items: center;
+			text-align: center;
+			justify-content: center;
+			background: rgba(255, 255, 255, 0.75);
+		}
+	}
+
+}
+
+
+
+

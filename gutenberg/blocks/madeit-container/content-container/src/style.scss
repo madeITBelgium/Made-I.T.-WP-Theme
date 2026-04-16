@@ -377,6 +377,8 @@ $grid-size-large: 16px;
 			justify-content: var(--madeit-justify-content-desktop, space-between);
 			gap: var(--madeit-row-gap-desktop, 20px);
 			// min-height: var(--madeit-min-height-desktop, auto);
+			max-width: 100%;
+
 			.wp-block-madeit-block-content-column {
 				min-height: var(--madeit-min-height-desktop, auto);
 				align-content: var(--madeit-align-items-desktop, stretch);
@@ -414,7 +416,7 @@ $grid-size-large: 16px;
 			justify-content: var(--madeit-justify-content-tablet, var(--madeit-justify-content-desktop, space-between));
 			gap: var(--madeit-row-gap-tablet, var(--madeit-row-gap-desktop, 20px));
 			// min-height: var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto));
-			max-width: var(--madeit-max-width-tablet, var(--madeit-max-width-desktop, auto));
+			max-width: var(--madeit-max-width-tablet, var(--madeit-max-width-desktop, 100%));
 
 			.wp-block-madeit-block-content-column {
 				min-height: var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto));
