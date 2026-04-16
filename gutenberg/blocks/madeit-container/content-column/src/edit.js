@@ -17,6 +17,7 @@ import {
 } from "@wordpress/components";
 import { withDispatch, withSelect } from "@wordpress/data";
 import { compose } from "@wordpress/compose";
+import { useEffect } from '@wordpress/element';
 import { __ } from "@wordpress/i18n";
 
 /**
@@ -36,6 +37,27 @@ const stripBackgroundClasses = ( className = '' ) =>
         .filter( Boolean )
         .filter( ( token ) => token !== 'has-background' && ! /^has-.*-background-color$/.test( token ) )
         .join( ' ' );
+
+const inferWidthFromClassNames = ( ...classNameCandidates ) => {
+    const className = classNameCandidates
+        .filter( ( value ) => typeof value === 'string' && value.trim().length > 0 )
+        .join( ' ' );
+
+    if ( ! className ) {
+        return undefined;
+    }
+
+    const breakpointMatch = className.match( /\bcol-(?:lg|md|sm|xl|xxl)-(\d{1,2})\b/ );
+    if ( breakpointMatch ) {
+        return Number( breakpointMatch[ 1 ] );
+    }
+
+    if ( /\bcol-12\b/.test( className ) ) {
+        return 12;
+    }
+
+    return undefined;
+};
 
 function ColumnEdit( props ) {
     const {
@@ -62,7 +84,18 @@ function ColumnEdit( props ) {
         maxContainerSize
     } = attributes;
 
-    const widthRounded = Math.round( width );
+    const inferredWidth = inferWidthFromClassNames( className, attributes.wrapperClassName );
+    const effectiveWidth = Number.isFinite( width ) ? width : inferredWidth;
+
+    useEffect( () => {
+        if ( Number.isFinite( width ) || ! Number.isFinite( inferredWidth ) ) {
+            return;
+        }
+
+        setAttributes( { width: inferredWidth } );
+    }, [ width, inferredWidth, setAttributes ] );
+
+    const widthRounded = Math.round( effectiveWidth );
     
     const setPadding = ( padding ) => {
         setAttributes( { padding } );
@@ -149,7 +182,7 @@ function ColumnEdit( props ) {
                 <PanelBody title={ __( 'Column Settings' ) }>
                     <RangeControl
                         label={ __( 'Percentage width' ) }
-                        value={ width || '' }
+                        value={ effectiveWidth || '' }
                         onChange={ updateWidth }
                         min={ 1 }
                         max={ 12 }

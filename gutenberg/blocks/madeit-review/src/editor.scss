@@ -74,6 +74,12 @@
 
 }
 
-
+// Make the SSR preview non-interactive in the editor so the block stays selectable.
+.wp-block-madeit-reviews {
+	.swiper,
+	.swiper * {
+		pointer-events: none;
+	}
+}
 
 

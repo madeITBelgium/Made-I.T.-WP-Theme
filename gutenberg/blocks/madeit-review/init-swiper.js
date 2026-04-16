@@ -185,7 +185,8 @@
       var options = {
         loop: loop,
         speed: transitionDuration,
-        gap: 20,
+        spaceBetween: 20,
+        watchOverflow: false,
         // In the editor canvas we always want the "desktop" preview (so the UI matches the setting).
         slidesPerView: slidesDesktop,
         breakpoints: inEditorCanvas
@@ -204,6 +205,17 @@
             : false,
         autoplay: autoplayEnabled ? { delay: autoplaySpeed, disableOnInteraction: pauseOnInteraction } : false,
       };
+
+      // In the block editor we want the block to remain selectable.
+      // Swiper can stop click propagation / prevent default on touch events.
+      if (inEditorCanvas) {
+        options.allowTouchMove = false;
+        options.simulateTouch = false;
+        options.preventClicks = false;
+        options.preventClicksPropagation = false;
+        options.touchStartPreventDefault = false;
+        options.touchStartForcePreventDefault = false;
+      }
 
       var instance;
       try {
@@ -240,7 +252,8 @@
             loop: loop,
             speed: transitionDuration,
             slidesPerView: slidesDesktop,
-            gap: 20,
+            spaceBetween: 20,
+            watchOverflow: false,
             breakpoints: {
               0: { slidesPerView: slidesMobile },
               768: { slidesPerView: slidesTablet },

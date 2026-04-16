@@ -10,6 +10,18 @@
 
 .wp-block-madeit-reviews .swiper {
 	overflow: hidden;
+
+	.swiper-wrapper {
+		padding-bottom: 40px;
+
+		.swiper-pagination {
+			bottom: 0; 
+		}
+
+		.madeit-review-card {
+			padding: 20px; 
+		}
+	}
 }
 
 .wp-block-madeit-reviews .swiper-button-next,
@@ -31,5 +43,15 @@
 
 .wp-block-madeit-reviews .swiper-pagination-bullet-active {
 	opacity: 1;
+}
+
+// Swiper hides controls with display:none when it thinks there is no overflow.
+// We keep them visible when enabled.
+.wp-block-madeit-reviews .swiper-button-lock {
+	display: flex !important;
+}
+
+.wp-block-madeit-reviews .swiper-pagination-lock {
+	display: block !important;
 }
 

@@ -1,5 +1,4 @@
 
-const { __ } = wp.i18n;
 const { addFilter } = wp.hooks;
 const { createHigherOrderComponent } = wp.compose;
 const { Fragment, useState, useEffect, createElement } = wp.element;
@@ -149,7 +148,7 @@ function UploadFontFamily() {
         });
         if (invalid) {
             setFiles([]);
-            setNotice({ status: 'error', message: __('Ongeldig bestandstype. Gebruik otf, ttf, woff of woff2.', 'madeit') });
+            setNotice({ status: 'error', message: wp.i18n.__('Ongeldig bestandstype. Gebruik otf, ttf, woff of woff2.', 'madeit') });
             return;
         }
 
@@ -166,7 +165,7 @@ function UploadFontFamily() {
 
     const uploadLocalFontFile = async (fontFile) => {
         if (!fontFile) {
-            throw new Error(__('Kies eerst één of meerdere fontbestanden.', 'madeit'));
+            throw new Error(wp.i18n.__('Kies eerst één of meerdere fontbestanden.', 'madeit'));
         }
 
         const body = new FormData();
@@ -190,7 +189,7 @@ function UploadFontFamily() {
         setNotice(null);
         try {
             if (!files.length) {
-                throw new Error(__('Kies eerst één of meerdere fontbestanden.', 'madeit'));
+                throw new Error(wp.i18n.__('Kies eerst één of meerdere fontbestanden.', 'madeit'));
             }
 
             for (const f of files) {
@@ -199,10 +198,10 @@ function UploadFontFamily() {
 
             setNotice({
                 status: 'success',
-                message: __('Font(s) geüpload naar het child theme (assets/fonts) en toegevoegd aan theme.json. Herlaad de editor om ze meteen in de dropdown te zien.', 'madeit'),
+                message: wp.i18n.__('Font(s) geüpload naar het child theme (assets/fonts) en toegevoegd aan theme.json. Herlaad de editor om ze meteen in de dropdown te zien.', 'madeit'),
             });
         } catch (e) {
-            const message = e?.message || __('Upload mislukt.', 'madeit');
+            const message = e?.message || wp.i18n.__('Upload mislukt.', 'madeit');
             setNotice({ status: 'error', message });
         } finally {
             setIsBusy(false);
@@ -228,12 +227,12 @@ function UploadFontFamily() {
             )
             : null,
         el(TextControl, {
-            label: __('Font naam', 'madeit'),
+            label: wp.i18n.__('Font naam', 'madeit'),
             value: name,
             onChange: (val) => {
                 setName(val);
             },
-            help: __('Wordt automatisch uit de bestandsnaam gehaald (bv. Mayfest.ttf).', 'madeit'),
+            help: wp.i18n.__('Wordt automatisch uit de bestandsnaam gehaald (bv. Mayfest.ttf).', 'madeit'),
         }),
         el(
             FormFileUpload,
@@ -245,9 +244,9 @@ function UploadFontFamily() {
             },
             files.length
                 ? (files.length === 1
-                    ? __('Bestand gekozen: ', 'madeit') + files[0].name
-                    : __('Bestanden gekozen: ', 'madeit') + files.length)
-                : __('Kies fontbestand(en)…', 'madeit')
+                    ? wp.i18n.__('Bestand gekozen: ', 'madeit') + files[0].name
+                    : wp.i18n.__('Bestanden gekozen: ', 'madeit') + files.length)
+                : wp.i18n.__('Kies fontbestand(en)…', 'madeit')
         ),
         el(
             'div',
@@ -259,7 +258,7 @@ function UploadFontFamily() {
                     onClick: onUpload,
                     disabled: isBusy || !files.length,
                 },
-                isBusy ? __('Uploaden…', 'madeit') : __('Upload', 'madeit')
+                isBusy ? wp.i18n.__('Uploaden…', 'madeit') : wp.i18n.__('Upload', 'madeit')
             ),
             isBusy ? el(Spinner, null) : null
         )
@@ -293,7 +292,7 @@ function UploadFontFamilyTypographyItem() {
         // Fallback: still show something if ToolsPanelItem isn't available.
         return el(
             PanelBody,
-            { title: __('Upload font', 'madeit'), initialOpen: false, style: { gridColumn: '1 / -1' } },
+            { title: wp.i18n.__('Upload font', 'madeit'), initialOpen: false, style: { gridColumn: '1 / -1' } },
             el(UploadFontFamily, null)
         );
     }
@@ -301,7 +300,7 @@ function UploadFontFamilyTypographyItem() {
     return el(
         __experimentalToolsPanelItem,
         {
-            label: __('Upload font', 'madeit'),
+            label: wp.i18n.__('Upload font', 'madeit'),
             hasValue: () => false,
             onDeselect: () => {},
             isShownByDefault: true,

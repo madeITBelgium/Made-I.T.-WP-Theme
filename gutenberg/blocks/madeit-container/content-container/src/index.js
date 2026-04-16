@@ -32,19 +32,6 @@ import save2026_03_26 from './save-versions/save-2026-03-26';
 import save2026_04_08 from './save-versions/save-2026-04-08';
 import save2026_04_08_vars from './save-versions/save-2026-04-08-vars';
 
-const logDeprecated20260326 = (stage, details = {}) => {
-    if (typeof window === 'undefined') {
-        return;
-    }
-
-    // Debug only: this helps verify deprecation matching/migration flow.
-    // Enable by running in browser console:
-    // window.__madeitDeprecatedLogEnabled = true
-    console.info('[madeit/block-content][deprecated 2026-03-26]', stage, details);
-};
-
-
-
 /**
  * Every block starts by registering a new block type definition.
  *
@@ -133,40 +120,12 @@ registerBlockType( metadata.name, {
                     typeof attributes?.justifyContent === 'string' ||
                     typeof attributes?.flexWrap === 'string';
 
-                logDeprecated20260326(
-                    hasLegacyDefaultVars ? 'isEligible=true' : 'isEligible=false',
-                    {
-                        rowGap: attributes?.rowGap,
-                        rowGapTablet: attributes?.rowGapTablet,
-                        rowGapMobile: attributes?.rowGapMobile,
-                        flexDirection: attributes?.flexDirection,
-                        flexDirectionTablet: attributes?.flexDirectionTablet,
-                        flexDirectionMobile: attributes?.flexDirectionMobile,
-                        alignItems: attributes?.alignItems,
-                        justifyContent: attributes?.justifyContent,
-                        flexWrap: attributes?.flexWrap,
-                    }
-                );
-
                 return hasLegacyDefaultVars;
             },
             save: function( props ) {
-                logDeprecated20260326('save-called');
                 return save2026_03_26( props );
             },
             migrate: function( attributes ) {
-                logDeprecated20260326('migrate-called', {
-                    rowGap: attributes?.rowGap,
-                    rowGapTablet: attributes?.rowGapTablet,
-                    rowGapMobile: attributes?.rowGapMobile,
-                    flexDirection: attributes?.flexDirection,
-                    flexDirectionTablet: attributes?.flexDirectionTablet,
-                    flexDirectionMobile: attributes?.flexDirectionMobile,
-                    alignItems: attributes?.alignItems,
-                    justifyContent: attributes?.justifyContent,
-                    flexWrap: attributes?.flexWrap,
-                });
-
                 return attributes;
             },
         },

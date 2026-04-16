@@ -193,16 +193,17 @@ ob_start();
 
                                     if ($layout === 'standaard') {
                                         // Import the /layouts/standaard.php file if it exists.
-                                        $default_layout_file = __DIR__ . '/layouts/standaard.php';
+                                        $default_layout_file = dirname(__DIR__) . '/src/layouts/standaard.php';
                                         if (is_readable($default_layout_file)) {
                                             include $default_layout_file;
                                         } else {
                                             echo 'Kan layout niet vinden.';
                                         }
                                     } else {
-                                        echo 'Ongeldige layout.';
+                                        echo 'Ongeldige layout.'; 
                                     }
                                 ?>
+                            
                             </div>
                         </div>
                         <?php

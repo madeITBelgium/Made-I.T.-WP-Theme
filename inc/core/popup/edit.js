@@ -1,14 +1,15 @@
+// Use var so this script can be loaded multiple times without redeclare errors.
+var React = window.React || (window.wp && window.wp.element);
 const { ToolbarButton, ToolbarGroup, Modal } = wp.components;
 
-//const blockEditor = wp.blockEditor || wp.editor;
-const { BlockControls } = wp.blockEditor; //= blockEditor;
+const { BlockControls } = wp.blockEditor;
 
 const TARGET_BLOCK = 'core/button';
 
 /**
  * Attributes toevoegen
  */
-addFilter(
+wp.hooks.addFilter(
     'blocks.registerBlockType',
     'madeit/add-popup-attributes',
     (settings, name) => {
@@ -28,11 +29,11 @@ addFilter(
 /**
  * HOC
  */
-const withPopupToolbarButton = createHigherOrderComponent((BlockEdit) => {
+const withPopupToolbarButton = wp.compose.createHigherOrderComponent((BlockEdit) => {
     return (props) => {
 
         if (props.name !== TARGET_BLOCK) {
-            return createElement(BlockEdit, props);
+            returnReact.createElement(BlockEdit, props);
         }
 
         const { attributes, setAttributes } = props;
@@ -106,18 +107,18 @@ const withPopupToolbarButton = createHigherOrderComponent((BlockEdit) => {
             setView('select');
         };
 
-        return createElement(
+        returnReact.createElement(
             Fragment,
             null,
 
             // Toolbar knop
-            createElement(
+           React.createElement(
                 BlockControls,
                 null,
-                createElement(
+               React.createElement(
                     ToolbarGroup,
                     null,
-                    createElement(ToolbarButton, {
+                   React.createElement(ToolbarButton, {
                         className: hasPopup ? 'has-popup' : '',
                         icon: 'welcome-view-site',
                         label: 'Popup',
@@ -128,10 +129,10 @@ const withPopupToolbarButton = createHigherOrderComponent((BlockEdit) => {
                 )
             ),
 
-            createElement(BlockEdit, props),
+           React.createElement(BlockEdit, props),
 
             // Modal
-            isOpen && createElement(
+            isOpen &&React.createElement(
                 Modal,
                 {
                     title: null,
@@ -145,7 +146,7 @@ const withPopupToolbarButton = createHigherOrderComponent((BlockEdit) => {
                 },
 
                 // 👇 Eigen header
-                createElement(
+               React.createElement(
                     'div',
                     {
                         style: {
@@ -158,19 +159,19 @@ const withPopupToolbarButton = createHigherOrderComponent((BlockEdit) => {
                         }
                     },
 
-                    createElement(
+                   React.createElement(
                         'h2',
                         { style: { margin: 0 } },
                         view === 'edit' ? 'Popup bewerken' : 'Popup koppelen'
                     ),
 
-                    createElement(
+                   React.createElement(
                         'div',
                         null,
 
                         // only show "Vorige" in edit view
                         view === 'edit' &&
-                        createElement(
+                       React.createElement(
                             Button,
                             {
                                 variant: 'primary',
@@ -186,7 +187,7 @@ const withPopupToolbarButton = createHigherOrderComponent((BlockEdit) => {
                             'Vorige'
                         ),
 
-                        createElement(
+                       React.createElement(
                             Button,
                             {
                                 variant: 'secondary',
@@ -196,7 +197,7 @@ const withPopupToolbarButton = createHigherOrderComponent((BlockEdit) => {
                             'Nieuwe popup aanmaken'
                         ),
 
-                        createElement(
+                       React.createElement(
                             Button,
                             {
                                 variant: '',
@@ -212,14 +213,14 @@ const withPopupToolbarButton = createHigherOrderComponent((BlockEdit) => {
                 ),
 
                 // === SELECT VIEW ===
-                view === 'select' && createElement(
+                view === 'select' &&React.createElement(
                     Fragment,
                     null,
 
-                    errorMessage && createElement(Notice, { status: 'error' }, errorMessage),
-                    isLoading && createElement(Spinner),
+                    errorMessage &&React.createElement(Notice, { status: 'error' }, errorMessage),
+                    isLoading &&React.createElement(Spinner),
 
-                    createElement(SelectControl, {
+                   React.createElement(SelectControl, {
                         label: 'Kies een popup',
                         value: String(selectedPopupId),
                         options: [
@@ -236,7 +237,7 @@ const withPopupToolbarButton = createHigherOrderComponent((BlockEdit) => {
 
 
                     selectedPopupId > 0 &&
-                    createElement(
+                   React.createElement(
                         Button,
                         {
                             variant: 'secondary',
@@ -247,7 +248,7 @@ const withPopupToolbarButton = createHigherOrderComponent((BlockEdit) => {
                     ),
 
                     view === 'select' && hasPopup &&
-                    createElement(
+                   React.createElement(
                         Button,
                         {
                             variant: 'secondary',
@@ -264,7 +265,7 @@ const withPopupToolbarButton = createHigherOrderComponent((BlockEdit) => {
                         'Popup verwijderen'
                     ),
 
-                    createElement(
+                   React.createElement(
                         Button,
                         {
                             variant: 'primary',
@@ -277,11 +278,11 @@ const withPopupToolbarButton = createHigherOrderComponent((BlockEdit) => {
 
                 // === EDIT VIEW (IFRAME) ===
                 view === 'edit' && selectedPopupId > 0 &&
-                createElement(
+               React.createElement(
                     Fragment,
                     null,
 
-                    createElement('iframe', {
+                   React.createElement('iframe', {
                         src: `/wp-admin/post.php?post=${selectedPopupId}&action=edit`,
                         style: {
                             width: '100%',
@@ -295,7 +296,7 @@ const withPopupToolbarButton = createHigherOrderComponent((BlockEdit) => {
     };
 }, 'withPopupToolbarButton');
 
-addFilter(
+wp.hooks.addFilter(
     'editor.BlockEdit',
     'madeit/add-popup-toolbar-button',
     withPopupToolbarButton

@@ -35,7 +35,7 @@ import {
     getMappedColumnWidths,
     getRedistributedColumnWidths,
     toWidthPrecision,
-} from './utils';
+} from './utils.js';
 import { ControlHeader, ResponsiveBoxControl } from '../../../../shared';
 import containerVariations from './variations';
 import './editor.scss';

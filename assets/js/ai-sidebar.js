@@ -2,7 +2,6 @@
  * TODO:
  * - Interne Link Suggesties.
  * - FAQ
- * - CTA-optimalisatie module
  * - Content Gap module
  * - Titel analyse module
  */

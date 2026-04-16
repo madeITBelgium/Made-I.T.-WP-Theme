@@ -35,6 +35,27 @@ const stripBackgroundClasses = ( className = '' ) =>
         .filter( ( token ) => token !== 'has-background' && ! /^has-.*-background-color$/.test( token ) )
         .join( ' ' );
 
+const inferWidthFromClassNames = ( ...classNameCandidates ) => {
+    const className = classNameCandidates
+        .filter( ( value ) => typeof value === 'string' && value.trim().length > 0 )
+        .join( ' ' );
+
+    if ( ! className ) {
+        return undefined;
+    }
+
+    const breakpointMatch = className.match( /\bcol-(?:lg|md|sm|xl|xxl)-(\d{1,2})\b/ );
+    if ( breakpointMatch ) {
+        return Number( breakpointMatch[ 1 ] );
+    }
+
+    if ( /\bcol-12\b/.test( className ) ) {
+        return 12;
+    }
+
+    return undefined;
+};
+
 /**
  * Every block starts by registering a new block type definition.
  *
@@ -45,10 +66,14 @@ registerBlockType( metadata.name, {
     icon,
     
     getEditWrapperProps( attributes ) {
-        const { width } = attributes;
-        if ( Number.isFinite( width ) ) {
-            const widthRounded = Math.round( width );
-            const widthPercent = ( width * ( 100 / 12 ) ) + '%';
+        const { width, wrapperClassName } = attributes;
+        const effectiveWidth = Number.isFinite( width )
+            ? width
+            : inferWidthFromClassNames( wrapperClassName );
+
+        if ( Number.isFinite( effectiveWidth ) ) {
+            const widthRounded = Math.round( effectiveWidth );
+            const widthPercent = ( effectiveWidth * ( 100 / 12 ) ) + '%';
             return {
                 className: `is-width-${ widthRounded }`,
                 style: {

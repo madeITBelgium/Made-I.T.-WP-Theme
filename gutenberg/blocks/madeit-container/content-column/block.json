@@ -36,6 +36,7 @@
         },
         "width": {
             "type": "number",
+            "default": 12,
             "min": 0,
             "max": 12
         },
