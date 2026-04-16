@@ -81,41 +81,176 @@ $grid-size-large: 16px;
  * All Columns Alignment
  */
 .wp-block-madeit-block-content {
-	min-height: var(--madeit-min-height-desktop, auto);
+	// min-height: var(--madeit-min-height-desktop, auto);
 	// max-width: var(--madeit-max-width-desktop);
 	margin-left: auto;
 	margin-right: auto;
 
+	// Responsive margin (top/bottom) via CSS variables.
+	// Note: no fallback on purpose; if the var is unset, the declaration becomes
+	// invalid and existing/theme margins remain untouched.
+	margin-top: var(--madeit-container-margin-top-desktop);
+	margin-bottom: var(--madeit-container-margin-bottom-desktop);
+
+	@media (min-width: 600px) and (max-width: 991px) {
+		margin-top: var(
+			--madeit-container-margin-top-tablet,
+			var(--madeit-container-margin-top-desktop)
+		) !important;
+		margin-bottom: var(
+			--madeit-container-margin-bottom-tablet,
+			var(--madeit-container-margin-bottom-desktop)
+		) !important;
+	}
+
+	@media (max-width: $mobile) {
+		margin-top: var(
+			--madeit-container-margin-top-mobile,
+			var(
+				--madeit-container-margin-top-tablet,
+				var(--madeit-container-margin-top-desktop)
+			)
+		) !important;
+		margin-bottom: var(
+			--madeit-container-margin-bottom-mobile,
+			var(
+				--madeit-container-margin-bottom-tablet,
+				var(--madeit-container-margin-bottom-desktop)
+			)
+		) !important;
+	}
+
+	// Responsive wrapper padding via CSS variables.
+	padding-top: var(--madeit-container-padding-top-desktop);
+	padding-right: var(--madeit-container-padding-right-desktop);
+	padding-bottom: var(--madeit-container-padding-bottom-desktop);
+	padding-left: var(--madeit-container-padding-left-desktop);
+
+	@media (min-width: 600px) and (max-width: 991px) {
+		padding-top: var(
+			--madeit-container-padding-top-tablet,
+			var(--madeit-container-padding-top-desktop)
+		) !important;
+		padding-right: var(
+			--madeit-container-padding-right-tablet,
+			var(--madeit-container-padding-right-desktop)
+		) !important;
+		padding-bottom: var(
+			--madeit-container-padding-bottom-tablet,
+			var(--madeit-container-padding-bottom-desktop)
+		) !important;
+		padding-left: var(
+			--madeit-container-padding-left-tablet,
+			var(--madeit-container-padding-left-desktop)
+		) !important;
+	}
+
+	@media (max-width: $mobile) {
+		padding-top: var(
+			--madeit-container-padding-top-mobile,
+			var(
+				--madeit-container-padding-top-tablet,
+				var(--madeit-container-padding-top-desktop)
+			)
+		) !important;
+		padding-right: var(
+			--madeit-container-padding-right-mobile,
+			var(
+				--madeit-container-padding-right-tablet,
+				var(--madeit-container-padding-right-desktop)
+			)
+		) !important;
+		padding-bottom: var(
+			--madeit-container-padding-bottom-mobile,
+			var(
+				--madeit-container-padding-bottom-tablet,
+				var(--madeit-container-padding-bottom-desktop)
+			)
+		) !important;
+		padding-left: var(
+			--madeit-container-padding-left-mobile,
+			var(
+				--madeit-container-padding-left-tablet,
+				var(--madeit-container-padding-left-desktop)
+			)
+		) !important;
+	}
+
 	&.madeit-block-content--frontend {
+		--madeit-row-gap-desktop: 20px;
+		--madeit-row-gap-tablet: 20px;
+		--madeit-row-gap-mobile: 20px;
+		--madeit-flex-direction-desktop: row;
+		--madeit-flex-direction-tablet: column;
+		--madeit-flex-direction-mobile: column;
+		--madeit-align-items-desktop: stretch;
+		--madeit-justify-content-desktop: flex-start;
+		--madeit-flex-wrap-desktop: nowrap;
+
 		width: calc(100% - var(--margin-left-desktop, 0) - var(--margin-right-desktop, 0));	
-		flex-direction: var(--madeit-flex-direction-desktop, var(--madeit-flex-direction-tablet), var(--madeit-flex-direction-mobile), row);
 	}
 
 	@media (max-width: 781px) {
-		min-height: var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto));
+		// min-height: var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto));
 		// max-width: var(--madeit-max-width-tablet, var(--madeit-max-width-desktop, auto));
 	}
 
 	@media (max-width: $mobile) {
-		min-height: var(--madeit-min-height-mobile, var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto)));
-		max-width: var(--madeit-max-width-mobile, var(--madeit-max-width-tablet, var(--madeit-max-width-desktop, 100%)));
+		.container {
+			// min-height: var(--madeit-min-height-mobile, var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto)));
+			max-width: var(--madeit-max-width-mobile, var(--madeit-max-width-tablet, var(--madeit-max-width-desktop, 100%)));
+			// align-content: var(--madeit-align-items-mobile, var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch)));
+		}
 	}
 
-	.wp-block-madeit-block-content-column .madeit-block-content--frontend {
-		min-height: var(--madeit-min-height-desktop, auto);
+	.wp-block-madeit-block-content-column {
+		// min-height: var(--madeit-min-height-desktop, auto);
+		align-content: var(--madeit-align-items-desktop, stretch);
 
 		@media (max-width: $tablet) {
-			min-height: var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto));
+			// min-height: var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto));
+			align-content: var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch));
 		}
 
 		@media (max-width: $mobile) {
-			min-height: var(--madeit-min-height-mobile, var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto)));
+			// min-height: var(--madeit-min-height-mobile, var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto)));
+			align-content: var(--madeit-align-items-mobile, var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch)));
 		}
 	}
 
 	&.container, &.container-fluid {
-		padding-right: 0;
-		padding-left: 0;
+		// Baseline: neutralize Bootstrap container padding,
+		// but allow block-level responsive padding variables to override.
+		padding-right: var(--madeit-container-padding-right-desktop, 0px);
+		padding-left: var(--madeit-container-padding-left-desktop, 0px);
+
+		@media (min-width: 600px) and (max-width: 991px) {
+			padding-right: var(
+				--madeit-container-padding-right-tablet,
+				var(--madeit-container-padding-right-desktop, 0px)
+			);
+			padding-left: var(
+				--madeit-container-padding-left-tablet,
+				var(--madeit-container-padding-left-desktop, 0px)
+			);
+		}
+
+		@media (max-width: $mobile) {
+			padding-right: var(
+				--madeit-container-padding-right-mobile,
+				var(
+					--madeit-container-padding-right-tablet,
+					var(--madeit-container-padding-right-desktop, 0px)
+				)
+			);
+			padding-left: var(
+				--madeit-container-padding-left-mobile,
+				var(
+					--madeit-container-padding-left-tablet,
+					var(--madeit-container-padding-left-desktop, 0px)
+				)
+			);
+		}
 
 		> .row {
 			margin-right: auto;
@@ -129,6 +264,67 @@ $grid-size-large: 16px;
 	// Row wrapper that contains the Column blocks.
 	// Provide a safe baseline so columns don't shrink to content-width
 	// when flex-direction is set to `row`.
+	// .madeit-container-row {
+	// 	display: flex;
+	// }
+
+	// Responsive row padding via CSS variables.
+	.madeit-container-row {
+		padding-top: var(--madeit-container-row-padding-top-desktop);
+		padding-right: var(--madeit-container-row-padding-right-desktop);
+		padding-bottom: var(--madeit-container-row-padding-bottom-desktop);
+		padding-left: var(--madeit-container-row-padding-left-desktop);
+
+		@media (min-width: 600px) and (max-width: 991px) {
+			padding-top: var(
+				--madeit-container-row-padding-top-tablet,
+				var(--madeit-container-row-padding-top-desktop)
+			) !important;
+			padding-right: var(
+				--madeit-container-row-padding-right-tablet,
+				var(--madeit-container-row-padding-right-desktop)
+			) !important;
+			padding-bottom: var(
+				--madeit-container-row-padding-bottom-tablet,
+				var(--madeit-container-row-padding-bottom-desktop)
+			) !important;
+			padding-left: var(
+				--madeit-container-row-padding-left-tablet,
+				var(--madeit-container-row-padding-left-desktop)
+			) !important;
+		}
+
+		@media (max-width: $mobile) {
+			padding-top: var(
+				--madeit-container-row-padding-top-mobile,
+				var(
+					--madeit-container-row-padding-top-tablet,
+					var(--madeit-container-row-padding-top-desktop)
+				)
+			) !important;
+			padding-right: var(
+				--madeit-container-row-padding-right-mobile,
+				var(
+					--madeit-container-row-padding-right-tablet,
+					var(--madeit-container-row-padding-right-desktop)
+				)
+			) !important;
+			padding-bottom: var(
+				--madeit-container-row-padding-bottom-mobile,
+				var(
+					--madeit-container-row-padding-bottom-tablet,
+					var(--madeit-container-row-padding-bottom-desktop)
+				)
+			) !important;
+			padding-left: var(
+				--madeit-container-row-padding-left-mobile,
+				var(
+					--madeit-container-row-padding-left-tablet,
+					var(--madeit-container-row-padding-left-desktop)
+				)
+			) !important;
+		}
+	}
 	
 
 	.madeit-container-row > .col,
@@ -180,14 +376,20 @@ $grid-size-large: 16px;
 			align-items: var(--madeit-align-items-desktop, stretch);
 			justify-content: var(--madeit-justify-content-desktop, space-between);
 			gap: var(--madeit-row-gap-desktop, 20px);
-			min-height: var(--madeit-min-height-desktop, auto);
+			// min-height: var(--madeit-min-height-desktop, auto);
+			max-width: 100%;
+
+			.wp-block-madeit-block-content-column {
+				min-height: var(--madeit-min-height-desktop, auto);
+				align-content: var(--madeit-align-items-desktop, stretch);
+			}
 
 			&:not(.madeit-container-row.rows-1) {
 				flex-direction: var(--madeit-flex-direction-desktop, row);
 				max-width: var(--madeit-max-width-desktop, auto);
 			}
 
-			&.rows-1 .wp-block-madeit-block-content-column {
+			&.rows-1 .wp-block-madeit-block-content-column:not([data-type="madeit/block-content-column"]) {
 				max-width: var(--madeit-max-width-desktop, auto);
 			}
 
@@ -213,14 +415,18 @@ $grid-size-large: 16px;
 			align-items: var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch));
 			justify-content: var(--madeit-justify-content-tablet, var(--madeit-justify-content-desktop, space-between));
 			gap: var(--madeit-row-gap-tablet, var(--madeit-row-gap-desktop, 20px));
-			min-height: var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto));
-			max-width: var(--madeit-max-width-tablet, var(--madeit-max-width-desktop, auto));
+			// min-height: var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto));
+			max-width: var(--madeit-max-width-tablet, var(--madeit-max-width-desktop, 100%));
 
+			.wp-block-madeit-block-content-column {
+				min-height: var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto));
+				align-content: var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch));
+			}
 			&:not(.madeit-container-row.rows-1) {
-				flex-direction: var(--madeit-flex-direction-tablet, var(--madeit-flex-direction-desktop, column));
+				flex-direction: var(--madeit-flex-direction-tablet, var(--madeit-flex-direction-desktop, row));
 			}
 			.madeit-content-column__inner {
-				min-height: var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto));
+				// min-height: var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto));
 				align-items: var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch));
 			}
 		}
@@ -228,7 +434,7 @@ $grid-size-large: 16px;
 		.madeit-container-row[data-madeit-dir-tablet="column"],
 		.madeit-container-row[data-madeit-dir-tablet="column-reverse"] {
 			> .wp-block-madeit-block-content-column {
-				width: calc(100% - calc(var(--bs-gutter-x))) !important;
+				width: calc(100% - var(--bs-gutter-x, 0px)) !important;
 				flex: 0 0 100% !important;
 				// margin: auto;
 			}
@@ -238,17 +444,21 @@ $grid-size-large: 16px;
 	@media (max-width: $mobile) {
 		.madeit-container-row {
 			flex-wrap: var(--madeit-flex-wrap-mobile, var(--madeit-flex-wrap-tablet, var(--madeit-flex-wrap-desktop, wrap)));
-			align-items: var(--madeit-align-items-mobile, var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch)));
+			align-content: var(--madeit-align-items-mobile, var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch)));
 			justify-content: var(--madeit-justify-content-mobile, var(--madeit-justify-content-tablet, var(--madeit-justify-content-desktop, space-between)));
 			gap: var(--madeit-row-gap-mobile, var(--madeit-row-gap-tablet, var(--madeit-row-gap-desktop, 20px)));
-			min-height: var(--madeit-min-height-mobile, var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto)));
+			// min-height: var(--madeit-min-height-mobile, var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto)));
 			max-width: var(--madeit-max-width-mobile, var(--madeit-max-width-tablet, var(--madeit-max-width-desktop, 100%)));
 
+			.wp-block-madeit-block-content-column {
+				min-height: var(--madeit-min-height-mobile, var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto)));
+				align-content: var(--madeit-align-items-mobile, var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch)));
+			}
 			&:not(.madeit-container-row.rows-1) {
 				flex-direction: var(--madeit-flex-direction-mobile, var(--madeit-flex-direction-tablet, var(--madeit-flex-direction-desktop, column)));
 			}
 			.madeit-content-column__inner {
-				min-height: var(--madeit-min-height-mobile, var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto)));
+				// min-height: var(--madeit-min-height-mobile, var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto)));
 				align-items: var(--madeit-align-items-mobile, var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch)));
 
 			}
@@ -257,7 +467,7 @@ $grid-size-large: 16px;
 		.madeit-container-row[data-madeit-dir-mobile="column"],
 		.madeit-container-row[data-madeit-dir-mobile="column-reverse"] {
 			> .wp-block-madeit-block-content-column {
-				width: calc(100% - calc(var(--bs-gutter-x))) !important;
+				width: calc(100% - var(--bs-gutter-x, 0px)) !important;
 				flex: 0 0 100% !important;
 				// margin: auto;
 			}
@@ -271,7 +481,6 @@ $grid-size-large: 16px;
 		.block-editor-block-list__layout > [data-type="madeit/block-content-column"],
 		.block-editor-block-list__layout > .wp-block-madeit-block-content-column {
 			width: 100% !important;
-			flex: 0 0 100% !important;
 		}
 	}
 
@@ -280,8 +489,7 @@ $grid-size-large: 16px;
 		&[data-madeit-dir-tablet="column-reverse"] {
 			.block-editor-block-list__layout > [data-type="madeit/block-content-column"],
 			.block-editor-block-list__layout > .wp-block-madeit-block-content-column {
-				width: calc(100% - calc(var(--bs-gutter-x))) !important;
-				flex: 0 0 100% !important;
+				width: calc(100% - var(--bs-gutter-x, 0px)) !important;
 				margin: auto;
 			}
 		}
@@ -292,8 +500,7 @@ $grid-size-large: 16px;
 		&[data-madeit-dir-mobile="column-reverse"] {
 			.block-editor-block-list__layout > [data-type="madeit/block-content-column"],
 			.block-editor-block-list__layout > .wp-block-madeit-block-content-column {
-				width: calc(100% - calc(var(--bs-gutter-x))) !important;
-				flex: 0 0 100% !important;
+				width: calc(100% - var(--bs-gutter-x, 0px)) !important;
 				margin: auto;
 			}
 		}
@@ -316,6 +523,7 @@ $grid-size-large: 16px;
  * Individual Column Alignment
  */
 .wp-block-madeit-block-content-column {
+	flex: auto !important;
 	// padding: 0 !important;
 
 	&.is-vertically-aligned-top {
@@ -329,15 +537,21 @@ $grid-size-large: 16px;
 	&.is-vertically-aligned-bottom {
 		align-self: flex-end;
 	}
+
+	.madeit-content-column__inner {
+		padding-right: calc(var(--bs-gutter-x) * 0.5);
+    	padding-left: calc(var(--bs-gutter-x) * 0.5);
+	}
+}
+.row > * {
+	padding-right: 0;
+    padding-left: 0;
 }
 
 .justify-content-center > .row {
     -ms-flex-pack: center !important;
     justify-content: center !important;
 }
-
-
-
 
 
 @media (max-width: $mobile) {
@@ -363,7 +577,8 @@ $grid-size-large: 16px;
 
 
 	// Max-width calculations for columns, based on the number of rows and the column width class.
-	.madeit-container-row.rows-2 {
+	[data-madeit-dir="row"] .madeit-container-row.rows-2,
+	[data-madeit-dir="row-reverse"] .madeit-container-row.rows-2 {
 		@for $i from 1 through 12 {
 			.wp-block-madeit-block-content-column.col-lg-#{$i} {
 				max-width: calc(
@@ -374,7 +589,8 @@ $grid-size-large: 16px;
 		}
 	}
 
-	.madeit-container-row.rows-3 {
+	[data-madeit-dir="row"] .madeit-container-row.rows-3,
+	[data-madeit-dir="row-reverse"] .madeit-container-row.rows-3 {
 		@for $i from 1 through 12 {
 			.wp-block-madeit-block-content-column.col-lg-#{$i} {
 				max-width: calc(
@@ -385,7 +601,8 @@ $grid-size-large: 16px;
 		}
 	}
 
-	.madeit-container-row.rows-4 {
+	[data-madeit-dir="row"] .madeit-container-row.rows-4,
+	[data-madeit-dir="row-reverse"] .madeit-container-row.rows-4{
 		@for $i from 1 through 12 {
 			.wp-block-madeit-block-content-column.col-lg-#{$i} {
 				max-width: calc(
@@ -395,11 +612,18 @@ $grid-size-large: 16px;
 			}
 		}
 	}
-
+ 
 	// Width calculations for columns, based on the number of rows and the column width class.
 	@for $i from 1 through 11 {
 		.wp-block-madeit-block-content-column.col-lg-#{$i} {
 			width: calc(percentage($i / 12) - var(--madeit-row-gap-desktop, 20px));
 		}
 	}
+}
+
+
+@media (max-width: 575px) {
+    .flex-grow > div > .wp-block-madeit-block-content {
+        padding: 0 20px !important;
+    }
 }

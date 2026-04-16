@@ -1,12 +1,8 @@
-const { SelectControl, ToolbarButton, ToolbarGroup, Modal, Button, Spinner, Notice } = wp.components;
-const { addFilter } = wp.hooks;
-const { createHigherOrderComponent } = wp.compose;
-const { Fragment, useEffect, useState, createElement } = wp.element;
+const { ToolbarButton, ToolbarGroup, Modal } = wp.components;
 
-const blockEditor = wp.blockEditor || wp.editor;
-const { BlockControls } = blockEditor;
+//const blockEditor = wp.blockEditor || wp.editor;
+const { BlockControls } = wp.blockEditor; //= blockEditor;
 
-const apiFetch = wp.apiFetch;
 const TARGET_BLOCK = 'core/button';
 
 /**

@@ -1,0 +1,35 @@
+/*
+ * Shared styles for editor + frontend.
+ * Keep this minimal; the theme can override as needed.
+ */
+
+.wp-block-madeit-reviews {
+	--madeit-review-arrow-size: 24px;
+	--madeit-review-pagination-size: 8px;
+}
+
+.wp-block-madeit-reviews .swiper {
+	overflow: hidden;
+}
+
+.wp-block-madeit-reviews .swiper-button-next,
+.wp-block-madeit-reviews .swiper-button-prev {
+	color: var(--madeit-review-arrow-color, currentColor);
+}
+
+.wp-block-madeit-reviews .swiper-button-next:after,
+.wp-block-madeit-reviews .swiper-button-prev:after {
+	font-size: var(--madeit-review-arrow-size);
+}
+
+.wp-block-madeit-reviews .swiper-pagination-bullet {
+	width: var(--madeit-review-pagination-size);
+	height: var(--madeit-review-pagination-size);
+	background: var(--madeit-review-pagination-color, currentColor);
+	opacity: 0.35;
+}
+
+.wp-block-madeit-reviews .swiper-pagination-bullet-active {
+	opacity: 1;
+}
+

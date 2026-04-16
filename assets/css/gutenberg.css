@@ -132,3 +132,24 @@
   display: block;
   padding-bottom: 100%;
 }*/
+
+
+.wp-block-post .madeit-builder-bar {
+    display: none !important;
+}
+
+.wp-block-post-title[aria-label="Voeg titel toe"] {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+
+/* default hidden */
+.block-editor-block-popover__inbetween {
+    display: none !important;
+}
+
+/* alleen tonen binnen container context */
+body.madeit-inside-container .block-editor-block-popover__inbetween {
+    display: flex !important;
+}

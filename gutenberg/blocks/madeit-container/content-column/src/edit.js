@@ -55,6 +55,7 @@ function ColumnEdit( props ) {
     
     const {
         verticalAlignment,
+        hasCustomVerticalAlignment,
         width,
         margin,
         padding,
@@ -78,7 +79,7 @@ function ColumnEdit( props ) {
 
 
     const classes = classnames( outerClassName, classnames( 'block-core-columns', {
-        [ `is-vertically-aligned-${ verticalAlignment }` ]: verticalAlignment,
+        [ `is-vertically-aligned-${ verticalAlignment }` ]: !! hasCustomVerticalAlignment && !! verticalAlignment,
         [ `col-12` ]: true,
         [ `col-lg-${ widthRounded }` ]: Number.isFinite( widthRounded ),
         [ `is-width-${ widthRounded }` ]: Number.isFinite( widthRounded ),
@@ -88,32 +89,37 @@ function ColumnEdit( props ) {
     const fallbackTextColor = '#FFFFFF';
     const fallbackBackgroundColor = '#000000';
     
-    var style = {
-        color: textColor.color,
+    const outerStyle = {
+        color: textColor?.color,
     };
 
-    if(margin !== undefined && margin.top !== undefined) {
-        style.marginTop = margin.top;
+    const innerStyle = {
+        backgroundColor: backgroundColor?.color,
+        height: '100%',
+    };
+
+    if ( margin !== undefined && margin.top !== undefined ) {
+        outerStyle.marginTop = margin.top;
     }
-    if(margin !== undefined && margin.bottom !== undefined) {
-        style.marginBottom = margin.bottom;
+    if ( margin !== undefined && margin.bottom !== undefined ) {
+        outerStyle.marginBottom = margin.bottom;
     }
-    if(padding !== undefined && padding.top !== undefined) {
-        style.paddingTop = padding.top;
+    if ( padding !== undefined && padding.top !== undefined ) {
+        innerStyle.paddingTop = padding.top;
     }
-    if(padding !== undefined && padding.bottom !== undefined) {
-        style.paddingBottom = padding.bottom;
+    if ( padding !== undefined && padding.bottom !== undefined ) {
+        innerStyle.paddingBottom = padding.bottom;
     }
-    if(padding !== undefined && padding.left !== undefined) {
-        style.paddingLeft = padding.left;
+    if ( padding !== undefined && padding.left !== undefined ) {
+        innerStyle.paddingLeft = padding.left;
     }
-    if(padding !== undefined && padding.right !== undefined) {
-        style.paddingRight = padding.right;
+    if ( padding !== undefined && padding.right !== undefined ) {
+        innerStyle.paddingRight = padding.right;
     }
 
     const blockProps = useBlockProps({
         className: classes,
-        style: style,
+        style: outerStyle,
     });
 
     const sanitizedBlockProps = {
@@ -123,10 +129,7 @@ function ColumnEdit( props ) {
 
     const innerBlocksProps = useInnerBlocksProps(
         {
-            style: {
-                backgroundColor: backgroundColor.color,
-                height: '100%',
-            },
+            style: innerStyle,
         },
         {
             templateLock: false,
@@ -186,6 +189,7 @@ function ColumnEdit( props ) {
                         onDeselect={ () => setPadding( undefined ) }
                     >
                         <BoxControl
+                            __next40pxDefaultSize
                             label={ __( 'Padding' ) }
                             onChange={ setPadding }
                             values={ padding }
@@ -198,6 +202,7 @@ function ColumnEdit( props ) {
                         onDeselect={ () => setMargin( undefined ) }
                     >
                         <BoxControl
+                            __next40pxDefaultSize
                             label={ __( 'Margin' ) }
                             onChange={ setMargin }
                             values={ margin }
@@ -230,7 +235,17 @@ export default compose(
                 const { getBlockRootClientId } = registry.select( 'core/block-editor' );
 
                 // Update own alignment.
-                setAttributes( { verticalAlignment } );
+                if ( verticalAlignment ) {
+                    setAttributes( {
+                        verticalAlignment,
+                        hasCustomVerticalAlignment: true,
+                    } );
+                } else {
+                    setAttributes( {
+                        verticalAlignment,
+                        hasCustomVerticalAlignment: false,
+                    } );
+                }
 
                 // Reset Parent Columns Block
                 const rootClientId = getBlockRootClientId( clientId );

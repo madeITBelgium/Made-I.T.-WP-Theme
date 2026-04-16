@@ -81,7 +81,7 @@ $skip_url = admin_url('themes.php?page=madeit-setup-wizard&step=basic-settings')
             </div>
         <?php else : ?>
             <p class="small" style="margin-top: 10px; color: #b42318;">
-                Er werden geen child themes gevonden voor Made I.T. Je kan doorgaan met de setup en later een child theme toevoegen.
+                Er werden geen child themes gevonden voor <?php echo MADEIT_NAME; ?>. Je kan doorgaan met de setup en later een child theme toevoegen.
             </p>
         <?php endif; ?>
     </div>
@@ -90,7 +90,7 @@ $skip_url = admin_url('themes.php?page=madeit-setup-wizard&step=basic-settings')
     <div class="buttons">
         <a href="<?php echo esc_url($skip_url); ?>">Overslaan</a>
         <a
-            id="madeit-child-theme-next"
+            id="madeit-child-theme-next" class="button button-primary" data-save="1"
             href="<?php echo esc_url($next_step_base_url . (!empty($default_child) ? '&child_theme=' . rawurlencode($default_child) : '')); ?>"
         >Verder</a>
     </div>

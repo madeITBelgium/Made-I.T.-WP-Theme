@@ -44,7 +44,12 @@ export default function save( props ) {
         customRowBackgroundColor,
         customRowTextColor,
         containerMargin,
+        containerMarginTablet,
+        containerMarginMobile,
         containerPadding,
+        containerPaddingTablet,
+        containerPaddingMobile,
+        containerPaddingOnRow,
         rowMargin,
         rowPadding,
         overflow,
@@ -120,6 +125,14 @@ export default function save( props ) {
         hasWrapperClassNameFromMarkup &&
         wrapperClassName.split( /\s+/ ).includes( FRONTEND_WRAPPER_CLASS );
 
+    // General legacy compatibility:
+    // Older saved content may not include the frontend wrapper class at all
+    // (regardless of `size`). When we can detect that from parsed markup,
+    // we must not inject the class in `save()`, otherwise block validation
+    // fails and the editor shows recovery prompts.
+    const shouldUseLegacyWrapperClasses =
+        hasWrapperClassNameFromMarkup && ! wrapperHasFrontendClass;
+
     // Legacy boxed markup (the one throwing validation errors):
     // - Wrapper did NOT include `madeit-block-content--frontend`
     // - `.row` was a direct child of the wrapper (no inner `.container`)
@@ -137,7 +150,9 @@ export default function save( props ) {
         typeof directRowClassName === 'string' && directRowClassName.trim().length > 0;
 
     const applyContainerBackgroundToInner =
-        defaultSize === 'container' && ! shouldUseLegacyBoxedMarkup;
+        defaultSize === 'container' &&
+        ! shouldUseLegacyBoxedMarkup &&
+        ! hasDirectRowWrapper;
     const hasContentWidth = typeof contentWidth === 'string' && contentWidth.length > 0;
     const contentWidthResolvedRaw = hasContentWidth
         ? contentWidth
@@ -159,7 +174,7 @@ export default function save( props ) {
          [ `is-hidden-desktop` ]: !! hideOnDesktop,
         [ `is-hidden-tablet` ]: !! hideOnTablet,
         [ `is-hidden-mobile` ]: !! hideOnMobile,
-        [ 'madeit-block-content--frontend' ]: ! shouldUseLegacyBoxedMarkup,
+		[ 'madeit-block-content--frontend' ]: ! shouldUseLegacyWrapperClasses,
     } );
     
     if(defaultSize !== 'container-content-boxed') {
@@ -318,33 +333,54 @@ export default function save( props ) {
         // when a desktop rowGap is explicitly set.
         const hasRowGapDesktop = typeof rowGap === 'number';
         if ( hasRowGapDesktop ) {
-            style['--madeit-row-gap-desktop'] = `${ rowGap }${ rowGapUnit || 'px' }`;
+            const rowGapDesktopCss = `${ rowGap }${ rowGapUnit || 'px' }`;
+            if ( rowGapDesktopCss !== '20px' ) {
+                style['--madeit-row-gap-desktop'] = rowGapDesktopCss;
+            }
 
             if ( typeof rowGapTablet === 'number' ) {
-                style['--madeit-row-gap-tablet'] = `${ rowGapTablet }${
-                    rowGapUnitTablet || 'px'
-                }`;
+                const rowGapTabletCss = `${ rowGapTablet }${ rowGapUnitTablet || 'px' }`;
+                if ( rowGapTabletCss !== '20px' ) {
+                    style['--madeit-row-gap-tablet'] = rowGapTabletCss;
+                }
             }
             if ( typeof rowGapMobile === 'number' ) {
-                style['--madeit-row-gap-mobile'] = `${ rowGapMobile }${
-                    rowGapUnitMobile || 'px'
-                }`;
+                const rowGapMobileCss = `${ rowGapMobile }${ rowGapUnitMobile || 'px' }`;
+                if ( rowGapMobileCss !== '20px' ) {
+                    style['--madeit-row-gap-mobile'] = rowGapMobileCss;
+                }
             }
     }
 
     // Responsive flex-direction via CSS variables (only if explicitly set).
-    if ( typeof flexDirection === 'string' && flexDirection.length > 0 ) {
+    if (
+        typeof flexDirection === 'string' &&
+        flexDirection.length > 0 &&
+        flexDirection !== 'row'
+    ) {
         style['--madeit-flex-direction-desktop'] = flexDirection;
     }
-    if ( typeof flexDirectionTablet === 'string' && flexDirectionTablet.length > 0 ) {
+    if (
+        typeof flexDirectionTablet === 'string' &&
+        flexDirectionTablet.length > 0 &&
+        flexDirectionTablet !== 'column'
+    ) {
         style['--madeit-flex-direction-tablet'] = flexDirectionTablet;
     }
-    if ( typeof flexDirectionMobile === 'string' && flexDirectionMobile.length > 0 ) {
+    if (
+        typeof flexDirectionMobile === 'string' &&
+        flexDirectionMobile.length > 0 &&
+        flexDirectionMobile !== 'column'
+    ) {
         style['--madeit-flex-direction-mobile'] = flexDirectionMobile;
     }
 
     // Responsive align-items / justify-content via CSS variables (only if explicitly set).
-    if ( typeof alignItems === 'string' && alignItems.length > 0 ) {
+    if (
+        typeof alignItems === 'string' &&
+        alignItems.length > 0 &&
+        alignItems !== 'stretch'
+    ) {
         style['--madeit-align-items-desktop'] = alignItems;
     }
     if ( typeof alignItemsTablet === 'string' && alignItemsTablet.length > 0 ) {
@@ -354,7 +390,11 @@ export default function save( props ) {
         style['--madeit-align-items-mobile'] = alignItemsMobile;
     }
 
-    if ( typeof justifyContent === 'string' && justifyContent.length > 0 ) {
+    if (
+        typeof justifyContent === 'string' &&
+        justifyContent.length > 0 &&
+        justifyContent !== 'flex-start'
+    ) {
         style['--madeit-justify-content-desktop'] = justifyContent;
     }
     if ( typeof justifyContentTablet === 'string' && justifyContentTablet.length > 0 ) {
@@ -365,7 +405,11 @@ export default function save( props ) {
     }
 
     // Responsive flex-wrap via CSS variables (only if explicitly set).
-    if ( typeof flexWrap === 'string' && flexWrap.length > 0 ) {
+    if (
+        typeof flexWrap === 'string' &&
+        flexWrap.length > 0 &&
+        flexWrap !== 'nowrap'
+    ) {
         style['--madeit-flex-wrap-desktop'] = flexWrap;
     }
     if ( typeof flexWrapTablet === 'string' && flexWrapTablet.length > 0 ) {
@@ -374,32 +418,85 @@ export default function save( props ) {
     if ( typeof flexWrapMobile === 'string' && flexWrapMobile.length > 0 ) {
         style['--madeit-flex-wrap-mobile'] = flexWrapMobile;
     }
-    
-    if(containerMargin !== undefined && containerMargin.top !== undefined) {
-        style.marginTop = containerMargin.top;
+
+    const setCssVarIfDefined = ( targetStyle, key, value ) => {
+        if ( value === undefined || value === null ) return;
+        if ( typeof value !== 'string' ) return;
+        const trimmed = value.trim();
+        if ( trimmed === '' ) return;
+        targetStyle[ key ] = trimmed;
+    };
+
+    const setSpacingVars = ( targetStyle, prefix, spacing, breakpoint ) => {
+        if ( ! spacing || typeof spacing !== 'object' ) return;
+
+        setCssVarIfDefined(
+            targetStyle,
+            `--${ prefix }-top-${ breakpoint }`,
+            spacing.top
+        );
+        setCssVarIfDefined(
+            targetStyle,
+            `--${ prefix }-right-${ breakpoint }`,
+            spacing.right
+        );
+        setCssVarIfDefined(
+            targetStyle,
+            `--${ prefix }-bottom-${ breakpoint }`,
+            spacing.bottom
+        );
+        setCssVarIfDefined(
+            targetStyle,
+            `--${ prefix }-left-${ breakpoint }`,
+            spacing.left
+        );
+    };
+
+    // Desktop margin stays as inline style for backward compatibility.
+    // Tablet/mobile overrides are stored as CSS variables (overriding inline via
+    // `!important` rules in the stylesheet when set).
+    if ( containerMargin && typeof containerMargin === 'object' ) {
+        if ( containerMargin.top !== undefined ) {
+            style.marginTop = containerMargin.top;
+        }
+        if ( containerMargin.bottom !== undefined ) {
+            style.marginBottom = containerMargin.bottom;
+        }
     }
-    if(containerMargin !== undefined && containerMargin.bottom !== undefined) {
-        style.marginBottom = containerMargin.bottom;
+    if ( containerMarginTablet && typeof containerMarginTablet === 'object' ) {
+        setCssVarIfDefined( style, '--madeit-container-margin-top-tablet', containerMarginTablet.top );
+        setCssVarIfDefined( style, '--madeit-container-margin-bottom-tablet', containerMarginTablet.bottom );
     }
-    if(containerMargin !== undefined && containerMargin.left !== undefined) {
-        style.marginLeft = containerMargin.left;
-        style['--margin-left-desktop'] = containerMargin.left;
+    if ( containerMarginMobile && typeof containerMarginMobile === 'object' ) {
+        setCssVarIfDefined( style, '--madeit-container-margin-top-mobile', containerMarginMobile.top );
+        setCssVarIfDefined( style, '--madeit-container-margin-bottom-mobile', containerMarginMobile.bottom );
     }
-    if(containerMargin !== undefined && containerMargin.right !== undefined) {
-        style.marginRight = containerMargin.right;
-        style['--margin-right-desktop'] = containerMargin.right;
-    }
-    if(containerPadding !== undefined && containerPadding.top !== undefined ) {
-        style.paddingTop = containerPadding.top;
-    }
-    if(containerPadding !== undefined && containerPadding.bottom !== undefined) {
-        style.paddingBottom = containerPadding.bottom;
-    }
-    if(containerPadding !== undefined && containerPadding.left !== undefined) {
-        style.paddingLeft = containerPadding.left;
-    }
-    if(containerPadding !== undefined && containerPadding.right !== undefined) {
-        style.paddingRight = containerPadding.right;
+
+    const shouldApplyContainerPaddingOnRow = containerPaddingOnRow === true;
+
+    // Desktop padding stays as inline style for backward compatibility.
+    // Tablet/mobile overrides are stored as CSS variables.
+    const rowStyle = {};
+    if ( shouldApplyContainerPaddingOnRow ) {
+        if ( containerPadding && typeof containerPadding === 'object' ) {
+            if ( containerPadding.top !== undefined ) rowStyle.paddingTop = containerPadding.top;
+            if ( containerPadding.right !== undefined ) rowStyle.paddingRight = containerPadding.right;
+            if ( containerPadding.bottom !== undefined ) rowStyle.paddingBottom = containerPadding.bottom;
+            if ( containerPadding.left !== undefined ) rowStyle.paddingLeft = containerPadding.left;
+        }
+
+        setSpacingVars( rowStyle, 'madeit-container-row-padding', containerPaddingTablet, 'tablet' );
+        setSpacingVars( rowStyle, 'madeit-container-row-padding', containerPaddingMobile, 'mobile' );
+    } else {
+        if ( containerPadding && typeof containerPadding === 'object' ) {
+            if ( containerPadding.top !== undefined ) style.paddingTop = containerPadding.top;
+            if ( containerPadding.right !== undefined ) style.paddingRight = containerPadding.right;
+            if ( containerPadding.bottom !== undefined ) style.paddingBottom = containerPadding.bottom;
+            if ( containerPadding.left !== undefined ) style.paddingLeft = containerPadding.left;
+        }
+
+        setSpacingVars( style, 'madeit-container-padding', containerPaddingTablet, 'tablet' );
+        setSpacingVars( style, 'madeit-container-padding', containerPaddingMobile, 'mobile' );
     }
     
     var styleChild = {};
@@ -480,7 +577,7 @@ export default function save( props ) {
     const rowClassName = hasEnhancedRowWrapper
         ? `row madeit-container-row rows-${ rowsCount }`
         : 'row';
-    const rowProps = hasEnhancedRowWrapper
+    const baseRowProps = hasEnhancedRowWrapper
         ? {
                 className: rowClassName,
                 'data-madeit-dir': dirDesktop,
@@ -490,15 +587,19 @@ export default function save( props ) {
         : {
                 className: rowClassName,
             };
+
+    const hasRowStyle = Object.keys( rowStyle ).length > 0;
+    const outerRowProps = hasRowStyle ? { ...baseRowProps, style: rowStyle } : baseRowProps;
+    const innerRowProps = baseRowProps;
     
     if(size === 'container-content-boxed') {
         return (
             <HtmlTag { ...blockProps }>
-                <div { ...rowProps }>
+                <div { ...outerRowProps }>
                     <div className="col">
                         <div className={ classesChild }
                             style = {styleChild}>
-                            <div { ...rowProps }>
+                            <div { ...innerRowProps }>
                                 { '\n\n' }
                                 <InnerBlocks.Content />
                                 { '\n\n' }
@@ -510,6 +611,22 @@ export default function save( props ) {
         );
     }
     else {
+        // Legacy markup: some older saved content had `.row` directly under the
+        // wrapper (no inner `.container`). When detected via `directRowClassName`
+        // (derived from stored HTML), serialize the same structure to avoid
+        // block validation errors.
+        if ( hasDirectRowWrapper ) {
+            return (
+                <HtmlTag { ...blockProps }>
+                    <div { ...outerRowProps }>
+                        { '\n\n' }
+                        <InnerBlocks.Content />
+                        { '\n\n' }
+                    </div>
+                </HtmlTag>
+            );
+        }
+
         const shouldWrapContent =
             outerSizeNormalized !== 'container' &&
             hasContentWidth &&
@@ -519,7 +636,7 @@ export default function save( props ) {
             return (
                 <HtmlTag { ...blockProps }>
                     <div className={ classesChild } style={ styleChild }>
-                        <div { ...rowProps }>
+                        <div { ...outerRowProps }>
                             { '\n\n' }
                             <InnerBlocks.Content />
                             { '\n\n' }
@@ -538,7 +655,7 @@ export default function save( props ) {
                             'container-fluid': contentWidthNormalized === 'container-fluid',
                         } ) }
                     >
-                        <div { ...rowProps }>
+                        <div { ...outerRowProps }>
                             { '\n\n' }
                             <InnerBlocks.Content />
                             { '\n\n' }
@@ -550,7 +667,7 @@ export default function save( props ) {
 
         return (
             <HtmlTag { ...blockProps }>
-                <div { ...rowProps }>
+                <div { ...outerRowProps }>
                     { '\n\n' }
                     <InnerBlocks.Content />
                     { '\n\n' }

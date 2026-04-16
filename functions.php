@@ -200,11 +200,15 @@ if (!defined('MADEIT_TRACKING_IDS')) {
 
 // Added in 3.0.0
 if(!defined('MADEIT_SETUP_WIZARD')) {
-    define('MADEIT_SETUP_WIZARD', false);
+    define('MADEIT_SETUP_WIZARD', true);
 }
 
 if(!defined('MADEIT_NAME')) {
     define('MADEIT_NAME', 'Made I.T.');
+}
+
+if(!defined('MADEIT_RESTRICT_EDITOR')) {
+    define('MADEIT_RESTRICT_EDITOR', true);
 }
 
 if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
@@ -1803,6 +1807,144 @@ if (!function_exists('madeit_extend_gutenberg')) {
     add_action('enqueue_block_editor_assets', 'madeit_extend_gutenberg');
 }
 
+// Font Library uploader in the block inspector (core Font Library API).
+add_action('enqueue_block_editor_assets', static function (): void {
+    $madeitFontUploaderPath = get_parent_theme_file_path('/inc/core/fontStyles/edit.js');
+    $madeitFontUploaderVer = null;
+    if ($madeitFontUploaderPath && file_exists($madeitFontUploaderPath)) {
+        $madeitFontUploaderVer = (string) filemtime($madeitFontUploaderPath);
+    } elseif (defined('MADEIT_VERSION')) {
+        $madeitFontUploaderVer = MADEIT_VERSION;
+    }
+
+    wp_enqueue_script(
+        'madeit-fontstyles-uploader',
+        get_parent_theme_file_uri('/inc/core/fontStyles/edit.js'),
+        [
+            'wp-hooks',
+            'wp-compose',
+            'wp-element',
+            'wp-components',
+            'wp-block-editor',
+            'wp-api-fetch',
+            'wp-i18n',
+        ],
+        $madeitFontUploaderVer,
+        true
+    );
+});
+
+require_once get_parent_theme_file_path('/inc/core/fontStyles/local-fonts.php');
+
+// responsive.js for responsive block editor preview (editor-only; uses wp.* globals).
+add_action('enqueue_block_editor_assets', static function (): void {
+    $madeitResponsivePath = get_theme_file_path('/inc/core/fontStyles/responsive.js');
+    $madeitResponsiveVer = null;
+    if ($madeitResponsivePath && file_exists($madeitResponsivePath)) {
+        $madeitResponsiveVer = (string) filemtime($madeitResponsivePath);
+    } elseif (defined('MADEIT_VERSION')) {
+        $madeitResponsiveVer = MADEIT_VERSION;
+    }
+
+    wp_enqueue_script(
+        'madeit-responsive',
+        get_theme_file_uri('/inc/core/fontStyles/responsive.js'),
+        [
+            'wp-plugins',
+            'wp-hooks',
+            'wp-compose',
+            'wp-element',
+            'wp-components',
+            'wp-block-editor',
+            'wp-editor',
+            'wp-data',
+        ],
+        $madeitResponsiveVer,
+        true
+    );
+});
+
+// Frontend output for responsive typography (without altering saved post content).
+add_filter('render_block', static function (string $block_content, array $block): string {
+    if (is_admin()) {
+        return $block_content;
+    }
+
+    $blockName = $block['blockName'] ?? '';
+    if (!in_array($blockName, ['core/paragraph', 'core/heading'], true)) {
+        return $block_content;
+    }
+
+    $attrs = $block['attrs'] ?? [];
+    if (!is_array($attrs) || empty($attrs['madeitTypoClass'])) {
+        return $block_content;
+    }
+
+    $uniqueClass = sanitize_html_class((string) $attrs['madeitTypoClass']);
+    if ($uniqueClass === '') {
+        return $block_content;
+    }
+
+    $allowedUnits = ['rem', 'px', 'em'];
+    $build = static function (string $key, ?int $maxWidth) use ($attrs, $uniqueClass, $allowedUnits): string {
+        $t = $attrs[$key] ?? null;
+        if (!is_array($t) || empty($t['value'])) {
+            return '';
+        }
+
+        $value = (float) $t['value'];
+        if ($value <= 0) {
+            return '';
+        }
+
+        $unit = isset($t['unit']) && in_array((string) $t['unit'], $allowedUnits, true) ? (string) $t['unit'] : 'rem';
+        $num = rtrim(rtrim(sprintf('%.4F', $value), '0'), '.');
+        $size = $num . $unit;
+
+        $rule = '.' . $uniqueClass . '{font-size:' . $size . ';}';
+        if ($maxWidth) {
+            return '@media (max-width:' . (int) $maxWidth . 'px){' . $rule . '}';
+        }
+
+        return $rule;
+    };
+
+    $css = $build('typoTablet', 1024) . $build('typoMobile', 767);
+    if ($css === '') {
+        return $block_content;
+    }
+
+    // Inject class into the first tag (p or h1-h6) and prepend a style tag.
+    $withClass = preg_replace_callback(
+        '/^\s*<(p|h[1-6])\b([^>]*)>/i',
+        static function (array $m) use ($uniqueClass): string {
+            $tag = $m[1];
+            $attrText = $m[2] ?? '';
+
+            if (preg_match('/\bclass\s*=\s*(["\'])(.*?)\1/i', $attrText, $cm)) {
+                $existing = $cm[2] ?? '';
+                $classes = preg_split('/\s+/', trim($existing)) ?: [];
+                if (!in_array($uniqueClass, $classes, true)) {
+                    $classes[] = $uniqueClass;
+                }
+                $newClassAttr = 'class="' . esc_attr(trim(implode(' ', array_filter($classes)))) . '"';
+                $attrText = preg_replace('/\bclass\s*=\s*(["\'])(.*?)\1/i', ' ' . $newClassAttr, $attrText, 1);
+                return '<' . $tag . $attrText . '>';
+            }
+
+            return '<' . $tag . $attrText . ' class="' . esc_attr($uniqueClass) . '">';
+        },
+        $block_content,
+        1
+    );
+
+    if (!is_string($withClass) || $withClass === '') {
+        $withClass = $block_content;
+    }
+
+    return '<style>' . $css . '</style>' . $withClass;
+}, 10, 2);
+
 if (false && !function_exists('madeit_extend_gutenberg_css')) {
     function madeit_extend_gutenberg_css()
     {
@@ -2271,7 +2413,6 @@ require get_parent_theme_file_path('/inc/wp-members.php');
  * Gutenberg blocks.
  */
 require get_parent_theme_file_path('/gutenberg/gutenberg.php');
-// require get_parent_theme_file_path('/gutenberg-v2/gutenberg.php');
 
 // Gutenberg admin & blokken setup
 require_once get_parent_theme_file_path('/gutenberg/loader.php');
@@ -2300,9 +2441,11 @@ if (in_array('woocommerce/woocommerce.php', $activePlugins) && in_array('sfwd-lm
 /**
  * Admin Menu Editor.
  */
+/*
 if (file_exists(get_parent_theme_file_path('/inc/admin-menu-editor.php'))) {
     require get_parent_theme_file_path('/inc/admin-menu-editor.php');
 }
+*/
 if (file_exists(get_parent_theme_file_path('/inc/admin/admin-menu/admin-menu.php'))) {
     require get_parent_theme_file_path('/inc/admin/admin-menu/admin-menu.php');
 }
@@ -2310,9 +2453,9 @@ if (file_exists(get_parent_theme_file_path('/inc/admin/admin-menu/admin-menu.php
 /**
  * Customizer
  */
-if(file_exists(get_parent_theme_file_path('/inc/admin/admin-menu/customizer.php'))) {
-    require get_parent_theme_file_path('/inc/admin/admin-menu/customizer.php');
-}
+// if(file_exists(get_parent_theme_file_path('/inc/admin/admin-menu/customizer.php'))) {
+//     require get_parent_theme_file_path('/inc/admin/admin-menu/customizer.php');
+// }
 
 
 /**
@@ -2363,6 +2506,22 @@ if (defined('MADEIT_POPUPS') && MADEIT_POPUPS) {
             true
         );
     });
+}
+
+if(!function_exists('madeit_default_blocks')) {
+    function madeit_default_blocks($content, $post) {
+        if ($post->post_type === 'page') {
+            return '<!-- wp:madeit/block-content {"containerPaddingOnRow":true,"overflow":"visible","flexDirection":"row","flexDirectionTablet":"column","flexDirectionMobile":"column","alignItems":"stretch","justifyContent":"flex-start","rowGap":20,"rowGapTablet":20,"rowGapMobile":20,"columnsCount":0,"flexWrap":"nowrap"} -->
+<div class="wp-block-madeit-block-content container madeit-block-content--frontend"><div class="container"><div class="row madeit-container-row rows-0" data-madeit-dir="row" data-madeit-dir-tablet="column" data-madeit-dir-mobile="column">
+
+
+
+</div></div></div>
+<!-- /wp:madeit/block-content -->';
+        }
+        return $content;
+    }
+    add_filter('default_content', 'madeit_default_blocks', 10, 2);
 }
 
 if (defined('MADEIT_RECEIVE_REVIEWS') && MADEIT_RECEIVE_REVIEWS && defined('MADEIT_REVIEWS') && MADEIT_REVIEWS && class_exists('ACF')) {
@@ -2431,14 +2590,75 @@ add_filter('rest_endpoints', function ($endpoints) {
     return $endpoints;
 });
 
+if(defined('MADEIT_RESTRICT_EDITOR') && MADEIT_RESTRICT_EDITOR) {
+    add_action('enqueue_block_editor_assets', function() {
+        $allowedPostTypes = ['page'];
 
+        if (defined('MADEIT_RESTRICT_EDITOR_POST_TYPES')) {
+            if (is_array(MADEIT_RESTRICT_EDITOR_POST_TYPES)) {
+                $allowedPostTypes = MADEIT_RESTRICT_EDITOR_POST_TYPES;
+            } elseif (is_string(MADEIT_RESTRICT_EDITOR_POST_TYPES)) {
+                $allowedPostTypes = array_map('trim', explode(',', MADEIT_RESTRICT_EDITOR_POST_TYPES));
+            }
+        }
+
+        $allowedPostTypes = apply_filters('madeit_restrict_editor_post_types', $allowedPostTypes);
+        $allowedPostTypes = array_values(array_filter(array_map('sanitize_key', (array) $allowedPostTypes)));
+
+        if (empty($allowedPostTypes)) {
+            return;
+        }
+
+        $screen = function_exists('get_current_screen') ? get_current_screen() : null;
+        $currentPostType = ($screen && !empty($screen->post_type)) ? (string) $screen->post_type : '';
+
+        if ($currentPostType === '' && isset($_GET['post_type'])) {
+            $currentPostType = sanitize_key((string) $_GET['post_type']);
+        }
+
+        if ($currentPostType === '' && isset($_GET['post'])) {
+            $currentPost = get_post((int) $_GET['post']);
+            if ($currentPost instanceof WP_Post) {
+                $currentPostType = (string) $currentPost->post_type;
+            }
+        }
+
+        if (!in_array($currentPostType, $allowedPostTypes, true)) {
+            return;
+        }
+
+        wp_enqueue_script(
+            'madeit-editor-restrict',
+            get_template_directory_uri() . '/assets/js/editor-restrict-blocks.js',
+            ['wp-data','wp-hooks','wp-dom-ready','wp-edit-post']
+        );
+    });
+}
 
 if(MADEIT_FEEDBACK) {
     require get_parent_theme_file_path('/inc/feedback.php');
 }
 
+require get_parent_theme_file_path('/inc/ai.php');
+
 if (MADEIT_ADMIN_CHAT) {
-    require get_parent_theme_file_path('/inc/admin-chat.php');
+    //Temp disabled, first improve before release.
+    //require get_parent_theme_file_path('/inc/admin-chat.php');
+    add_action('enqueue_block_editor_assets', function() {
+        wp_enqueue_script(
+            'madeit-editor-ai-sidebar',
+            get_template_directory_uri() . '/assets/js/ai-sidebar.js',
+            ['wp-data','wp-hooks','wp-dom-ready','wp-edit-post']
+        );
+    });
+
+    //enqueue style css/ai-sidebar.css
+    add_action('enqueue_block_editor_assets', function() {
+        wp_enqueue_style(
+            'madeit-editor-ai-sidebar',
+            get_template_directory_uri() . '/assets/css/ai-sidebar.css'
+        );
+    });
 }
 
 if (MADEIT_TRACKING_IDS) {

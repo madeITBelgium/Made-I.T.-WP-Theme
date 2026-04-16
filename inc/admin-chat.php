@@ -7,6 +7,142 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+
+if (!function_exists('madeit_admin_chat_extract_response_text')) {
+    function madeit_admin_chat_extract_response_text($payload) {
+        if (!is_array($payload)) {
+            return '';
+        }
+
+        if (!empty($payload['output_text']) && is_string($payload['output_text'])) {
+            return $payload['output_text'];
+        }
+
+        if (!empty($payload['output']) && is_array($payload['output'])) {
+            foreach ($payload['output'] as $output_item) {
+                if (empty($output_item['content']) || !is_array($output_item['content'])) {
+                    continue;
+                }
+                foreach ($output_item['content'] as $content_item) {
+                    if (!empty($content_item['text']) && is_string($content_item['text'])) {
+                        return $content_item['text'];
+                    }
+                }
+            }
+        }
+
+        return '';
+    }
+}
+
+if (!function_exists('madeit_admin_chat_decode_json_from_text')) {
+    function madeit_admin_chat_decode_json_from_text($text) {
+        if (!is_string($text) || trim($text) === '') {
+            return null;
+        }
+
+        $text = trim($text);
+        $text = preg_replace('/^```(?:json)?/i', '', $text);
+        $text = preg_replace('/```$/', '', $text);
+        $text = trim($text);
+
+        $decoded = json_decode($text, true);
+        if (is_array($decoded)) {
+            return $decoded;
+        }
+
+        $start = strpos($text, '{');
+        $end = strrpos($text, '}');
+        if ($start === false || $end === false || $end <= $start) {
+            return null;
+        }
+
+        $snippet = substr($text, $start, ($end - $start) + 1);
+        $decoded = json_decode($snippet, true);
+        if (is_array($decoded)) {
+            return $decoded;
+        }
+
+        return null;
+    }
+}
+
+if (!function_exists('madeit_admin_chat_convert_minimal_block_to_wp_block')) {
+    function madeit_admin_chat_convert_minimal_block_to_wp_block($block) {
+        if (!is_array($block)) {
+            return null;
+        }
+
+        $block_name = isset($block['blockName']) ? sanitize_text_field($block['blockName']) : '';
+        if ($block_name === '') {
+            return null;
+        }
+
+        $attrs = [];
+        if (isset($block['attrsJson']) && is_string($block['attrsJson']) && trim($block['attrsJson']) !== '') {
+            $decoded_attrs = json_decode($block['attrsJson'], true);
+            if (is_array($decoded_attrs)) {
+                $attrs = $decoded_attrs;
+            }
+        } elseif (isset($block['attrs']) && is_array($block['attrs'])) {
+            $attrs = $block['attrs'];
+        }
+
+        $content_html = isset($block['contentHtml']) && is_string($block['contentHtml']) ? $block['contentHtml'] : '';
+
+        $children = [];
+        if (!empty($block['children']) && is_array($block['children'])) {
+            foreach ($block['children'] as $child_block) {
+                $converted_child = madeit_admin_chat_convert_minimal_block_to_wp_block($child_block);
+                if (is_array($converted_child)) {
+                    $children[] = $converted_child;
+                }
+            }
+        }
+
+        $inner_content = [$content_html];
+        if (!empty($children)) {
+            $inner_content = [''];
+            foreach ($children as $unused_child) {
+                $inner_content[] = null;
+            }
+            $inner_content[] = '';
+        }
+
+        return [
+            'blockName' => $block_name,
+            'attrs' => $attrs,
+            'innerBlocks' => $children,
+            'innerHTML' => $content_html,
+            'innerContent' => $inner_content,
+        ];
+    }
+}
+
+if (!function_exists('madeit_admin_chat_convert_minimal_blocks_to_wp_blocks')) {
+    function madeit_admin_chat_convert_minimal_blocks_to_wp_blocks($blocks) {
+        if (!is_array($blocks)) {
+            return [];
+        }
+
+        $result = [];
+        foreach ($blocks as $block) {
+            $converted = madeit_admin_chat_convert_minimal_block_to_wp_block($block);
+            if (is_array($converted)) {
+                $result[] = $converted;
+            }
+        }
+
+        // Let WordPress normalize structure before use in post_content.
+        return parse_blocks(serialize_blocks($result));
+    }
+}
+
+
+if (!defined('ABSPATH')) {
+    exit;
+}
+
 if (!function_exists('madeit_admin_chat_footer_unhide_link')) {
     function madeit_admin_chat_footer_unhide_link($text)
     {
@@ -843,6 +979,18 @@ if (!function_exists('madeit_admin_chat_get_tools')) {
             [
                 'type' => 'function',
                 'function' => [
+                    'name' => 'get_available_blocks',
+                    'description' => 'Geef de lijst met toegelaten AI-blokken en hun parameters/attributen.',
+                    'parameters' => [
+                        'type' => 'object',
+                        'properties' => [],
+                        'additionalProperties' => false,
+                    ],
+                ],
+            ],
+            [
+                'type' => 'function',
+                'function' => [
                     'name' => 'add_block_to_page',
                     'description' => 'Voeg een Gutenberg blok toe aan een pagina. Vereist page_id en block_name. Optioneel attributes, inner_html en position (append/prepend).',
                     'parameters' => [
@@ -925,6 +1073,8 @@ if (!function_exists('madeit_admin_chat_run_tool')) {
                 return madeit_admin_chat_tool_create_page($args);
             case 'get_page_blocks':
                 return madeit_admin_chat_tool_get_page_blocks($args);
+            case 'get_available_blocks':
+                return madeit_admin_chat_tool_get_available_blocks();
             case 'add_block_to_page':
                 return madeit_admin_chat_tool_add_block_to_page($args);
             case 'set_page_meta':
@@ -1132,6 +1282,115 @@ if (!function_exists('madeit_admin_chat_tool_get_page_blocks')) {
             'title' => get_the_title($page_id),
             'edit_link' => admin_url('post.php?post='.$page_id.'&action=edit'),
             'blocks' => $result,
+        ];
+    }
+}
+
+if (!function_exists('madeit_admin_chat_tool_get_available_blocks')) {
+    function madeit_admin_chat_tool_get_available_blocks() {
+        return [
+            'blocks' => [
+                [
+                    'name' => 'madeit/block-content',
+                    'description' => 'Content container voor rijen/kolommen. Gebruik dit als wrapper rond madeit/block-content-column.',
+                    'attributes' => [
+                        'backgroundType' => ['type' => 'string', 'example' => 'classic'],
+                        'containerBackgroundColor' => ['type' => 'string', 'example' => 'primary', 'values' => 'primary, secondary, success, warning, danger, text, background'],
+                        'size' => ['type' => 'string', 'example' => 'container-fluid', 'values' => 'container, container-fluid'],
+                        'contentWidth' => ['type' => 'string', 'example' => 'container', 'values' => 'container, full-width'],
+                        'containerPadding' => ['type' => 'object', 'example' => ['top' => '100px', 'bottom' => '100px']],
+                        'containerPaddingOnRow' => ['type' => 'integer', 'example' => 1, 'description' => '1 of 0, bepaalt of de padding van de container ook op de rijen wordt toegepast'],
+                        'overflow' => ['type' => 'string', 'example' => 'visible', 'values' => 'visible, hidden'],
+                        'flexDirection' => ['type' => 'string', 'example' => 'row'],
+                        'flexDirectionTablet' => ['type' => 'string', 'example' => 'column'],
+                        'flexDirectionMobile' => ['type' => 'string', 'example' => 'column'],
+                        'alignItems' => ['type' => 'string', 'example' => 'stretch'],
+                        'justifyContent' => ['type' => 'string', 'example' => 'flex-start'],
+                        'rowGap' => ['type' => 'integer', 'example' => 20],
+                        'rowGapTablet' => ['type' => 'integer', 'example' => 20],
+                        'rowGapMobile' => ['type' => 'integer', 'example' => 20],
+                        'columnsCount' => ['type' => 'integer', 'example' => 2],
+                        'flexWrap' => ['type' => 'string', 'example' => 'nowrap'],
+                    ],
+                    'inner_blocks' => [
+                        'allowed' => true,
+                        'blocks' => ['madeit/block-content-column'],
+                    ]
+                ],
+                [
+                    'name' => 'madeit/block-content-column',
+                    'description' => 'Kolom binnen madeit/block-content. Plaats hier inhoudsblokken zoals heading, paragraph of image in.',
+                    'attributes' => [
+                        'width' => ['type' => 'integer', 'description' => 'Kolombreedte op 12-grid', 'example' => 6],
+                    ],
+                    'inner_blocks' => [
+                        'allowed' => true,
+                        'blocks' => 'all',
+                    ]
+                ],
+                [
+                    'name' => 'core/heading',
+                    'description' => 'Koptekstblok voor titels.',
+                    'attributes' => [
+                        'level' => ['type' => 'integer', 'description' => 'Heading niveau 1 t.e.m. 6', 'example' => 2],
+                        'madeitTypoClass' => ['type' => 'string', 'example' => 'madeit-typo-a0dc091'],
+                    ],
+                    'inner_html_example' => '<h2 class="wp-block-heading">Hier de titel</h2>',
+                    'inner_blocks' => [
+                        'allowed' => false,
+                    ],
+                ],
+                [
+                    'name' => 'core/image',
+                    'description' => 'Afbeeldingsblok met media-id en grootte.',
+                    'attributes' => [
+                        'id' => ['type' => 'integer', 'example' => 1430],
+                        'sizeSlug' => ['type' => 'string', 'example' => 'full'],
+                        'linkDestination' => ['type' => 'string', 'example' => 'none'],
+                    ],
+                    'inner_blocks' => [
+                        'allowed' => false,
+                    ],
+                ],
+                [
+                    'name' => 'core/paragraph',
+                    'description' => 'Tekstblok voor paragrafen.',
+                    'attributes' => [
+                        'madeitTypoClass' => ['type' => 'string', 'example' => 'madeit-typo-a0dc091'],
+                    ],
+                    'inner_html_example' => '<p class="wp-block-paragraph">Hier de tekst</p>',
+                    'inner_blocks' => [
+                        'allowed' => false,
+                    ]
+                ],
+                [
+                    'name' => 'core/list',
+                    'description' => 'Lijstblok voor opsommingen.',
+                    'attributes' => [
+                        'ordered' => ['type' => 'boolean', 'example' => false],
+                    ],
+                    'inner_html_example' => '<ul class="wp-block-list"><li>Item 1</li><li>Item 2</li></ul>',
+                    'inner_blocks' => [
+                        'allowed' => false,
+                    ]
+                ],
+                [
+                    'name' => 'core/button',
+                    'description' => 'Knopblok met link en stijl.',
+                    'attributes' => [
+                        "backgroundColor" => ['type' => 'string', 'example' => 'primary', 'values' => 'primary, secondary, success, warning, danger, text, background'],
+                    ],
+                    'inner_html_example' => '<div class="wp-block-button"><a class="wp-block-button__link has-primary-background-color has-background wp-element-button" href="https://www.example.com">Klik hier</a></div>',
+                    'inner_blocks' => [
+                        'allowed' => false,
+                    ]
+                ]
+            ],
+            'notes' => [
+                'Voor nested structuur: maak madeit/block-content met innerBlocks van madeit/block-content-column.',
+                'Plaats contentblokken (bv. core/heading, core/image) in innerBlocks van de kolom.',
+                'Bij add_block_to_page kan je momenteel enkel 1 blok per call toevoegen; voor complexe layouts meerdere calls doen.',
+            ],
         ];
     }
 }
@@ -1372,4 +1631,127 @@ if (!function_exists('madeit_admin_chat_generate_meta_with_ai')) {
             'description' => $description,
         ];
     }
+}
+
+
+function madeit_test_ai_content_generator($postId, $inputPrompt)
+{
+    $post = get_post($postId);
+
+    $content = $post->post_content;
+    $blocks = parse_blocks($content);
+    
+
+    $prompt = "Genereer een gutenberg pagina. Geef enkel geldig JSON terug in dit minimale formaat: {\"blocks\":[{\"blockName\":\"...\",\"attrsJson\":\"{}\",\"contentHtml\":\"\",\"children\":[...]}]} zonder extra tekst of uitleg. attrsJson moet altijd een geldige JSON-string zijn van een object (bv {\\\"width\\\":6}). Gebruik contentHtml voor inline HTML, en children voor nested blokken.\n\n";
+    
+    $prompt .= "De pagina moet een creatieve en visueel aantrekkelijke layout hebben, met een duidelijke structuur en variatie in blokken. Gebruik de beschikbare blokken en hun attributen op een slimme manier om een boeiende pagina te maken die past bij de inhoud. Volg strikt de richtlijnen voor het gebruik van de blokken en zorg dat de output volledig parseerbaar is volgens het opgegeven JSON-formaat.\n\n";
+
+    $prompt .= "INHOUD van de pagina:\n";
+    $prompt .= "Titel: ".$post->post_title."\n";
+    $prompt .= "Uitleg: " . $inputPrompt . "\n";
+    
+    $prompt .="\n\nJe bent verplicht om gebruik te maken van madeit/block-content en madeit/block-content-column als container blokken voor de layout. Plaats de content in deze blokken en gebruik innerBlocks voor nested structuur. Gebruik core/heading, core/paragraph, ... voor de inhoudelijke blokken. Geef alleen de JSON terug zonder enige uitleg of extra tekst.\n";
+    $prompt .= "\nCreatieve layout-richtlijnen (verplicht):";
+    $prompt .= "\n- Gebruik minstens 3 aparte madeit/block-content containers met elk een duidelijk doel (hero, inhoud, contact/cta).";
+    $prompt .= "\n- Varieer visueel per container met verschillende containerBackgroundColor waarden.";
+    $prompt .= "\n- Gebruik betekenisvolle spacing: zet containerPadding (top/bottom) en gebruik duidelijke marges tussen secties via contentHtml waar nodig.";
+    $prompt .= "\n- Gebruik afwisselende kolomopbouw (bijv. 6/6 en 4/8 of 8/4) met madeit/block-content-column width attributen.";
+    $prompt .= "\n- Voeg minstens 1 CTA knop toe met core/button in een opvallende sectie.";
+    $prompt .= "\n- Maak de content niet monotoon: combineer heading, paragraph, list en button op meerdere plaatsen.";
+    $prompt .= "\n- Gebruik geen style in headings, paragraphs of andere content blokken.";
+    $prompt .= "\n- Zorg dat de output volledig parseerbaar blijft volgens het opgegeven minimale JSON-formaat.";
+    $prompt .= "\nGebruik enkel blokken uit de volgende lijst van beschikbare blokken, met hun parameters/attributen:\n";
+    $prompt .= "\n\nGutenberg block data:\n";
+    $prompt .= json_encode(madeit_admin_chat_tool_get_available_blocks(), JSON_PRETTY_PRINT);
+    $aiInput = [
+        'model' => 'gpt-5.2-chat',
+        'input' => $prompt,
+        'tool_choice' => 'none',
+        'timeout' => 600,
+        'text' => [
+            'format' => [
+                'type' => 'json_schema',
+                'name' => 'gutenberg_response',
+                'strict' => true,
+                'schema' => [
+                    'type' => 'object',
+                    'properties' => [
+                        'blocks' => [
+                            'type' => 'array',
+                            'items' => [
+                                '$ref' => '#/$defs/block',
+                            ],
+                        ],
+                    ],
+                    'required' => ['blocks'],
+                    'additionalProperties' => false,
+                    '$defs' => [
+                        'block' => [
+                            'type' => 'object',
+                            'properties' => [
+                                'blockName' => ['type' => 'string'],
+                                'attrsJson' => ['type' => 'string'],
+                                'contentHtml' => ['type' => 'string'],
+                                'children' => [
+                                    'type' => 'array',
+                                    'items' => [
+                                        '$ref' => '#/$defs/block',
+                                    ],
+                                ],
+                            ],
+                            'required' => [
+                                'blockName',
+                                'attrsJson',
+                                'contentHtml',
+                                'children',
+                            ],
+                            'additionalProperties' => false,
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ];
+
+    $response = wp_remote_post('https://app.jono.be/api/v1/responses', [
+        'headers' => [
+            'Authorization' => 'Bearer '.MADEIT_ADMIN_CHAT_OPENAI_API_KEY,
+            'Content-Type'  => 'application/json',
+        ],
+        'timeout' => 20,
+        'body' => wp_json_encode($aiInput),
+    ]);
+
+    $responsestatus = wp_remote_retrieve_response_code($response);
+    $responsebody = wp_remote_retrieve_body($response);
+    $responsepayload = json_decode($responsebody, true);
+    $responseText = madeit_admin_chat_extract_response_text($responsepayload);
+    $minimalDecoded = madeit_admin_chat_decode_json_from_text($responseText);
+    $convertedBlocks = [];
+    if (is_array($minimalDecoded) && isset($minimalDecoded['blocks']) && is_array($minimalDecoded['blocks'])) {
+        $convertedBlocks = madeit_admin_chat_convert_minimal_blocks_to_wp_blocks($minimalDecoded['blocks']);
+    }
+
+    /*
+    print_r('Response status: '.$responsestatus);
+    print_r("\n\nResponse body: ".$responsebody);
+    print_r("\n\nExtracted text: ".$responseText);
+    print_r("\n\nMinimal decoded JSON:\n");
+    print_r($minimalDecoded);
+    print_r("\n\nConverted parseable blocks:\n");
+    print_r($convertedBlocks);
+    */
+    
+    //$blocks = parse_blocks(serialize_blocks($blocks));
+    $updated = serialize_blocks($convertedBlocks);
+
+    //update post content
+    $updated_id = wp_update_post([
+        'ID' => $postId,
+        'post_content' => $updated,
+    ]);
+}
+// add wp cli command for testing
+if (defined('WP_CLI') && WP_CLI) {
+    WP_CLI::add_command('madeit-test-ai', 'madeit_test_ai_content_generator');
 }

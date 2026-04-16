@@ -8,7 +8,7 @@ import {
 } from '@wordpress/block-editor';
 import { createBlock, parse } from '@wordpress/blocks';
 import { useDispatch, useSelect, select } from '@wordpress/data';
-import { useState, useEffect, useMemo } from '@wordpress/element';
+import { useState, useEffect, useMemo, useCallback } from '@wordpress/element';
 import { RawHTML } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import {
@@ -476,9 +476,27 @@ export default function Edit({ clientId, attributes, setAttributes }) {
         // Intentionally depend on `tabs` so it runs when the editor updates child blocks.
     }, [tabs, updateBlockAttributes]);
 
-    const addTab = () => {
-        insertBlocks(createBlock('madeit/block-tab', {}), tabs.length, clientId);
-    };
+    const addTab = useCallback(() => {
+        const blockEditor = select('core/block-editor');
+        const currentBlockName = blockEditor?.getBlockName?.(clientId);
+
+        if (currentBlockName && currentBlockName !== 'madeit/block-tabs') {
+            console.warn('[madeit-tabs] addTab aborted: unexpected block name', {
+                clientId,
+                currentBlockName,
+            });
+            return;
+        }
+
+        const currentTabs = blockEditor?.getBlocks?.(clientId);
+        const safeTabs = Array.isArray(currentTabs) ? currentTabs : [];
+
+        const newTab = createBlock('madeit/block-tab', {});
+
+        // `insertBlocks` can be blocked by editor constraints; `replaceInnerBlocks`
+        // gives a reliable append behavior for this controlled InnerBlocks area.
+        replaceInnerBlocks(clientId, [...safeTabs, newTab], false);
+    }, [clientId, replaceInnerBlocks]);
 
     const moveTab = (tabClientId, newIndex) => {
         if (newIndex < 0 || newIndex >= tabs.length) return;

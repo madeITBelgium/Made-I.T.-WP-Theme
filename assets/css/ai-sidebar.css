@@ -1,0 +1,732 @@
+fade-in {
+    animation: fadeIn 1s;
+    animation-fill-mode: forwards;
+    opacity: 0
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0
+    }
+
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes backgroundFade {
+
+    0%,
+    to {
+        background-color: transparent
+    }
+
+    25% {
+        background-color: #a855f7
+    }
+
+    50% {
+        background-color: transparent
+    }
+}
+
+.loading-dots {
+    align-items: center;
+    display: flex;
+    font-size: 1em;
+    justify-content: center
+}
+
+.loading-dots span {
+    animation: backgroundFade 2s ease-in-out infinite;
+    background-color: transparent;
+    border-radius: 50%;
+    height: .6em;
+    margin: 0 .2em;
+    width: .6em
+}
+
+.loading-dots span:first-child {
+    animation-delay: 0s
+}
+
+.loading-dots span:nth-child(2) {
+    animation-delay: .5s
+}
+
+.loading-dots span:nth-child(3) {
+    animation-delay: 1s
+}
+
+#madeit-chatbot-sidebar\:ai-editor {
+    height: 100%
+}
+
+#madeit-chatbot-sidebar\:ai-editor>.components-panel {
+    height: calc(100% - 47px)
+}
+
+#madeit-chatbot-sidebar\:madeit .components-panel {
+    overflow: hidden;
+}
+
+.madeit-sidebar {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding-bottom: 0 !important;
+    padding-top: 0 !important
+}
+
+.madeit-sidebar .madeit-module-selector {
+    border-bottom: 1px solid #d9d9e3;
+    display: grid;
+    gap: 8px;
+    grid-template-columns: minmax(0, 1fr);
+    margin: 0 -16px;
+    padding: 12px 16px;
+}
+
+.madeit-sidebar .madeit-module-button {
+    align-items: flex-start;
+    background: #f6f7f7;
+    border: 1px solid #dcdcde;
+    border-radius: 8px;
+    color: #1e1e1e;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px;
+    text-align: left;
+}
+
+.madeit-sidebar .madeit-module-button:hover,
+.madeit-sidebar .madeit-module-button:focus {
+    border-color: #3858e9;
+    box-shadow: 0 0 0 1px #3858e9;
+    outline: none;
+}
+
+.madeit-sidebar .madeit-module-button.madeit-module-button-active {
+    background: #edf2ff;
+    border-color: #3858e9;
+}
+
+.madeit-sidebar .madeit-module-title {
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.madeit-sidebar .madeit-module-description {
+    color: #50575e;
+    font-size: 12px;
+    line-height: 1.3;
+}
+
+.madeit-sidebar .madeit-language-check {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px 0;
+}
+
+.madeit-sidebar .madeit-language-intro {
+    color: #1e1e1e;
+    font-size: 13px;
+    margin: 0;
+}
+
+.madeit-sidebar .madeit-language-meta {
+    color: #50575e;
+    font-size: 12px;
+    margin: 0;
+}
+
+.madeit-sidebar .madeit-language-textarea {
+    border: 1px solid #dcdcde;
+    border-radius: 6px;
+    box-shadow: none;
+    font-size: 13px;
+    min-height: 150px;
+    padding: 10px;
+    resize: vertical;
+    width: 100%;
+}
+
+.madeit-sidebar .madeit-language-textarea:focus {
+    border-color: #3858e9;
+    box-shadow: 0 0 0 1px #3858e9;
+    outline: none;
+}
+
+.madeit-sidebar .madeit-language-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.madeit-sidebar .madeit-language-result {
+    background: #f6f7f7;
+    border: 1px solid #dcdcde;
+    border-radius: 8px;
+    color: #1e1e1e;
+    font-size: 13px;
+    line-height: 1.5;
+    padding: 12px;
+    white-space: pre-wrap;
+}
+
+.madeit-sidebar .madeit-language-result h3 {
+    font-size: 13px;
+    margin: 0 0 8px;
+}
+
+.madeit-sidebar .madeit-language-issues {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.madeit-sidebar .madeit-language-issue {
+    background: #fff;
+    border: 1px solid #dcdcde;
+    border-radius: 6px;
+    padding: 10px;
+}
+
+.madeit-sidebar .madeit-language-issue-label {
+    color: #50575e;
+    font-size: 11px;
+    font-weight: 600;
+    margin: 0 0 4px;
+    text-transform: uppercase;
+}
+
+.madeit-sidebar .madeit-language-issue-source,
+.madeit-sidebar .madeit-language-issue-fix,
+.madeit-sidebar .madeit-language-issue-position {
+    font-size: 12px;
+    margin: 0 0 8px;
+    word-break: break-word;
+}
+
+.madeit-sidebar .madeit-language-issue-source {
+    cursor: pointer;
+}
+
+.madeit-sidebar .madeit-language-issue-source:focus {
+    box-shadow: 0 0 0 1px #3858e9;
+    outline: none;
+}
+
+.madeit-sidebar .madeit-language-issue-highlight {
+    background: #fff1c2;
+    border-radius: 2px;
+    font-weight: 700;
+    padding: 0 2px;
+}
+
+.madeit-sidebar .madeit-language-issue-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.madeit-sidebar .madeit-alt-module {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px 0;
+}
+
+.madeit-sidebar .madeit-alt-intro {
+    color: #1e1e1e;
+    font-size: 13px;
+    margin: 0;
+}
+
+.madeit-sidebar .madeit-alt-meta {
+    color: #50575e;
+    font-size: 12px;
+    margin: 0;
+}
+
+.madeit-sidebar .madeit-alt-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.madeit-sidebar .madeit-alt-progress {
+    background: #f6f7f7;
+    border: 1px solid #dcdcde;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.madeit-sidebar .madeit-alt-progress-head {
+    display: flex;
+    font-size: 12px;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.madeit-sidebar .madeit-alt-progress-track {
+    background: #dcdcde;
+    border-radius: 999px;
+    height: 8px;
+    overflow: hidden;
+}
+
+.madeit-sidebar .madeit-alt-progress-bar {
+    background: #3858e9;
+    height: 100%;
+    transition: width .2s ease;
+}
+
+.madeit-sidebar .madeit-alt-progress-current {
+    color: #50575e;
+    font-size: 12px;
+    margin: 8px 0 0;
+}
+
+.madeit-sidebar .madeit-alt-summary {
+    color: #1e1e1e;
+    font-size: 12px;
+    margin: 0;
+}
+
+.madeit-sidebar .madeit-yoast-module {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px 0;
+}
+
+.madeit-sidebar .madeit-yoast-intro {
+    color: #1e1e1e;
+    font-size: 13px;
+    margin: 0;
+}
+
+.madeit-sidebar .madeit-yoast-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.madeit-sidebar .madeit-yoast-result {
+    background: #f6f7f7;
+    border: 1px solid #dcdcde;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.madeit-sidebar .madeit-yoast-label {
+    color: #50575e;
+    font-size: 11px;
+    font-weight: 600;
+    margin: 0 0 4px;
+    text-transform: uppercase;
+}
+
+.madeit-sidebar .madeit-yoast-keyword {
+    color: #1e1e1e;
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.madeit-sidebar .madeit-yoast-status {
+    color: #50575e;
+    font-size: 12px;
+    margin: 8px 0 0;
+}
+
+.madeit-sidebar .madeit-chat-container {
+    overflow-y: scroll;
+    padding-right: 16px;
+    position: relative;
+    width: calc(100% + 16px)
+}
+
+.madeit-sidebar .madeit-chat-container.madeit-chat-empty {
+    height: 100%
+}
+
+.madeit-sidebar .madeit-chat-message {
+    margin-bottom: 16px;
+    margin-top: 16px;
+    width: 100%
+}
+
+.madeit-sidebar .madeit-chat-message:first-child {
+    margin-top: 16px
+}
+
+.madeit-sidebar .madeit-message-box {
+    border-radius: 9px;
+    padding: 12px
+}
+
+.madeit-sidebar .madeit-chat-text {
+    font-size: 14px;
+    word-wrap: break-word;
+    min-width: 0
+}
+
+.madeit-sidebar .madeit-chat-text p {
+    font-size: 14px
+}
+
+.madeit-sidebar .madeit-chat-text p:last-child {
+    margin-bottom: 0
+}
+
+.madeit-sidebar .madeit-chat-text h3 {
+    margin-bottom: .5em
+}
+
+.madeit-sidebar .madeit-chat-text ol,
+.madeit-sidebar .madeit-chat-text ul {
+    font-size: 14px;
+    margin-left: 0;
+    padding-left: 16px
+}
+
+.madeit-sidebar .madeit-chat-text ol li,
+.madeit-sidebar .madeit-chat-text ul li {
+    font-size: 14px
+}
+
+.madeit-sidebar .madeit-chat-text ul {
+    list-style-type: disc;
+    padding-left: 20px
+}
+
+.madeit-sidebar .madeit-chat-text ul li {
+    margin-bottom: 5px
+}
+
+.madeit-sidebar .madeit-chat-text ul li:last-child {
+    margin-bottom: 0
+}
+
+.madeit-sidebar .madeit-chat-text ul li ul {
+    list-style-type: circle;
+    margin-top: 5px;
+    padding-left: 15px
+}
+
+.madeit-sidebar .madeit-chat-text ul li ul li ul {
+    list-style-type: square;
+    padding-left: 10px
+}
+
+.madeit-sidebar .madeit-label {
+    align-items: center;
+    color: #1e1e1e;
+    display: flex;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+    margin-bottom: 6px;
+    width: 100%
+}
+
+.madeit-sidebar .madeit-label svg {
+    height: 16px;
+    margin-right: 5px;
+    width: 16px
+}
+
+.madeit-sidebar .madeit-chat-user .madeit-message-box {
+    align-items: center;
+    background-color: #32373c;
+    color: #f0f0f0;
+    display: flex
+}
+
+.madeit-sidebar .madeit-chat-user .madeit-label-user {
+    color: #f0f0f0;
+    display: inline;
+    flex-shrink: 0;
+    height: 16px;
+    margin-right: 8px;
+    width: 16px;
+    fill: currentColor
+}
+
+.madeit-sidebar .madeit-chat-user .madeit-chat-text {
+    white-space: pre-wrap
+}
+
+.madeit-sidebar .madeit-chat-assistant .madeit-message-box {
+    background-color: #f0f0f0;
+    color: #1e1e1e
+}
+
+.madeit-sidebar .madeit-chat-assistant .madeit-message-box.madeit-status {
+    font-weight: 500
+}
+
+.madeit-sidebar .madeit-chat-assistant .madeit-message-box.madeit-status p {
+    margin-bottom: 0
+}
+
+.madeit-sidebar .madeit-chat-assistant .madeit-message-box.madeit-status .madeit-chat-text {
+    display: flex
+}
+
+.madeit-sidebar .madeit-chat-assistant .madeit-message-box.madeit-status .madeit-chat-svg {
+    display: inline;
+    flex-shrink: 0;
+    height: 16px;
+    margin-right: 8px;
+    width: 16px;
+    fill: currentColor
+}
+
+.madeit-sidebar .madeit-chat-assistant .madeit-message-box.madeit-status .madeit-chat-svg svg {
+    height: auto;
+    width: 100%
+}
+
+.madeit-sidebar .madeit-chat-assistant .madeit-message-box.madeit-status.madeit-status-success {
+    background-color: #f3e8ff;
+    color: #6b21a8
+}
+
+.madeit-sidebar .madeit-chat-assistant .madeit-message-box.madeit-status.madeit-status-success .madeit-chat-text {
+    align-items: center
+}
+
+.madeit-sidebar .madeit-chat-assistant .madeit-message-box.madeit-status.madeit-status-success svg {
+    color: #a855f7
+}
+
+.madeit-sidebar .madeit-chat-assistant .madeit-message-box.madeit-status.madeit-status-warning {
+    background-color: #fef3c7;
+    color: #d97706
+}
+
+.madeit-sidebar .madeit-chat-assistant .madeit-message-box.madeit-status.madeit-status-warning .madeit-chat-text {
+    align-items: flex-start
+}
+
+.madeit-sidebar .madeit-chat-assistant .madeit-message-box.madeit-status.madeit-status-warning .madeit-chat-svg {
+    margin-top: 5px
+}
+
+.madeit-sidebar .madeit-chat-assistant .madeit-message-box.madeit-status.madeit-status-warning svg {
+    color: #d97706
+}
+
+.madeit-sidebar .madeit-chat-assistant .madeit-message-box.madeit-status.madeit-status-warning.madeit-action .madeit-chat-text {
+    align-items: center;
+    justify-content: space-between
+}
+
+.madeit-sidebar .madeit-chat-assistant .madeit-label-assistant {
+    color: #1e1e1e
+}
+
+.madeit-sidebar .madeit-chat-assistant .madeit-label-assistant svg {
+    color: #a855f7
+}
+
+.madeit-sidebar .madeit-input-container {
+    bottom: 0;
+    margin-top: auto;
+    padding-bottom: 10px;
+    padding-top: 12px;
+    position: sticky;
+    position: relative
+}
+
+.madeit-sidebar .madeit-input-container:before {
+    border-top: 1px solid #d9d9e3;
+    content: "";
+    height: 0;
+    left: -50%;
+    position: absolute;
+    top: 0;
+    width: 200vw;
+    z-index: 1
+}
+
+.madeit-sidebar .madeit-input-container .madeit-textarea-wrap {
+    align-items: flex-end;
+    display: flex
+}
+
+.madeit-sidebar .madeit-input-container .madeit-textarea {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background: none;
+    border: none;
+    box-shadow: none;
+    color: inherit;
+    margin: 0 0 5px;
+    outline: none;
+    padding: 0 10px 0 0;
+    resize: none;
+    width: 100%
+}
+
+.madeit-sidebar .madeit-input-container .madeit-textarea::-moz-placeholder {
+    color: #8e8ea0;
+    opacity: 1
+}
+
+.madeit-sidebar .madeit-input-container .madeit-textarea::placeholder {
+    color: #8e8ea0;
+    opacity: 1
+}
+
+.madeit-sidebar .madeit-input-container .madeit-textarea:focus,
+.madeit-sidebar .madeit-input-container .madeit-textarea:hover {
+    background: none;
+    border: none;
+    box-shadow: none;
+    outline: none
+}
+
+.madeit-sidebar .madeit-button-group {
+    flex-grow: 0;
+    margin-left: 5px
+}
+
+.madeit-sidebar .madeit-button-group .madeit-button {
+    all: unset;
+    align-items: center;
+    background: var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9));
+    border: none;
+    border-radius: 2px;
+    box-shadow: none;
+    color: #fff;
+    cursor: pointer;
+    display: inline-flex;
+    font: inherit;
+    height: 32px;
+    justify-content: center;
+    margin: 0;
+    outline: none;
+    padding: 0;
+    text-align: inherit;
+    width: 32px
+}
+
+.madeit-sidebar .madeit-button-group .madeit-button:active,
+.madeit-sidebar .madeit-button-group .madeit-button:focus,
+.madeit-sidebar .madeit-button-group .madeit-button:hover {
+    background: #006ba1;
+    border: none;
+    box-shadow: none;
+    color: #fff;
+    font: inherit;
+    outline: none;
+    text-align: inherit
+}
+
+.madeit-sidebar .madeit-button-group .madeit-button svg {
+    height: 20px;
+    width: 20px
+}
+
+.madeit-sidebar .madeit-send-button {
+    align-items: center;
+    border-radius: 2px;
+    color: #fff;
+    display: inline-flex;
+    height: 32px;
+    justify-content: center;
+    padding: 0 !important;
+    width: 32px
+}
+
+.madeit-sidebar .madeit-send-button svg {
+    fill: currentColor
+}
+
+.madeit-sidebar .madeit-retry-button {
+    flex-shrink: 0;
+    margin-left: 8px
+}
+
+.madeit-sidebar pre {
+    background-color: #32373c;
+    border-radius: 3px;
+    color: #56de62;
+    font-family: monospace;
+    font-size: .875rem;
+    margin-bottom: 8px;
+    margin-top: 8px;
+    max-width: 100%;
+    overflow-x: scroll;
+    padding: 16px;
+    white-space: pre
+}
+
+.madeit-sidebar code {
+    background-color: transparent;
+    font-weight: 700
+}
+
+.madeit-sidebar pre code {
+    background-color: transparent;
+    display: block;
+    font-weight: 400;
+    padding: 0
+}
+
+.madeit-sidebar .components-notice {
+    display: block;
+    word-wrap: break-word;
+    margin-left: 0;
+    margin-top: 10px;
+    width: 100%
+}
+
+.madeit-svg,
+[aria-controls="madeit-chatbot-sidebar:ai-editor"] svg {
+    padding: 4px !important
+}
+
+.madeit-chat-placeholder {
+    background: #fff;
+    color: #1e1e1e;
+    display: block;
+    font-size: 13px;
+    padding: 32px 16px;
+    text-align: center
+}
+
+.madeit-text-center {
+    color: #1e1e1e;
+    font-size: 16px;
+    margin-bottom: 16px;
+    text-align: center
+}
+
+.madeit-prompt-examples ul {
+    list-style-type: none !important;
+    margin: 0 !important;
+    padding: 0 !important
+}
+
+.madeit-prompt-examples li {
+    background-color: #32373c;
+    border-radius: 9px;
+    color: #f0f0f0;
+    font-size: 13px;
+    margin: 8px auto;
+    padding: 12px;
+    width: 95%
+}
+
+.madeit-prompt-examples li:last-child {
+    margin-bottom: 0
+}

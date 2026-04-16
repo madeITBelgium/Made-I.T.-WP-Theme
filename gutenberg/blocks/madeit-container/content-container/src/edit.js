@@ -36,7 +36,7 @@ import {
     getRedistributedColumnWidths,
     toWidthPrecision,
 } from './utils';
-import { ControlHeader } from '../../../../shared';
+import { ControlHeader, ResponsiveBoxControl } from '../../../../shared';
 import containerVariations from './variations';
 import './editor.scss';
 
@@ -68,7 +68,12 @@ export function ColumnsEditContainer( props ) {
         size,
         contentWidth,
         containerMargin,
+        containerMarginTablet,
+        containerMarginMobile,
         containerPadding,
+        containerPaddingTablet,
+        containerPaddingMobile,
+        containerPaddingOnRow,
         rowMargin,
         rowPadding,
         containerBackgroundImage,
@@ -425,30 +430,82 @@ export function ColumnsEditContainer( props ) {
     if ( typeof rowGapMobile === 'number' ) {
         style['--madeit-row-gap-mobile'] = `${ rowGapMobile }${ rowGapUnitMobile || 'px' }`;
     }
-    
-    if(containerMargin !== undefined && containerMargin.top !== undefined) {
-        style.marginTop = containerMargin.top;
+
+    const setCssVarIfDefined = ( targetStyle, key, value ) => {
+        if ( value === undefined || value === null ) return;
+        if ( typeof value !== 'string' ) return;
+        const trimmed = value.trim();
+        if ( trimmed === '' ) return;
+        targetStyle[ key ] = trimmed;
+    };
+
+    const setSpacingVars = ( targetStyle, prefix, spacing, breakpoint ) => {
+        if ( ! spacing || typeof spacing !== 'object' ) return;
+
+        setCssVarIfDefined(
+            targetStyle,
+            `--${ prefix }-top-${ breakpoint }`,
+            spacing.top
+        );
+        setCssVarIfDefined(
+            targetStyle,
+            `--${ prefix }-right-${ breakpoint }`,
+            spacing.right
+        );
+        setCssVarIfDefined(
+            targetStyle,
+            `--${ prefix }-bottom-${ breakpoint }`,
+            spacing.bottom
+        );
+        setCssVarIfDefined(
+            targetStyle,
+            `--${ prefix }-left-${ breakpoint }`,
+            spacing.left
+        );
+    };
+
+    // Desktop margin stays inline; tablet/mobile overrides via CSS variables.
+    if ( containerMargin && typeof containerMargin === 'object' ) {
+        if ( containerMargin.top !== undefined ) {
+            style.marginTop = containerMargin.top;
+        }
+        if ( containerMargin.bottom !== undefined ) {
+            style.marginBottom = containerMargin.bottom;
+        }
     }
-    if(containerMargin !== undefined && containerMargin.bottom !== undefined) {
-        style.marginBottom = containerMargin.bottom;
+    if ( containerMarginTablet && typeof containerMarginTablet === 'object' ) {
+        setCssVarIfDefined( style, '--madeit-container-margin-top-tablet', containerMarginTablet.top );
+        setCssVarIfDefined( style, '--madeit-container-margin-bottom-tablet', containerMarginTablet.bottom );
     }
-    if(containerMargin !== undefined && containerMargin.left !== undefined) {
-        style.marginLeft = containerMargin.left;
+    if ( containerMarginMobile && typeof containerMarginMobile === 'object' ) {
+        setCssVarIfDefined( style, '--madeit-container-margin-top-mobile', containerMarginMobile.top );
+        setCssVarIfDefined( style, '--madeit-container-margin-bottom-mobile', containerMarginMobile.bottom );
     }
-    if(containerMargin !== undefined && containerMargin.right !== undefined) {
-        style.marginRight = containerMargin.right;
-    }
-    if(containerPadding !== undefined && containerPadding.top !== undefined) {
-        style.paddingTop = containerPadding.top;
-    }
-    if(containerPadding !== undefined && containerPadding.bottom !== undefined) {
-        style.paddingBottom = containerPadding.bottom;
-    }
-    if(containerPadding !== undefined && containerPadding.left !== undefined) {
-        style.paddingLeft = containerPadding.left;
-    }
-    if(containerPadding !== undefined && containerPadding.right !== undefined) {
-        style.paddingRight = containerPadding.right;
+
+    const shouldApplyContainerPaddingOnRow = containerPaddingOnRow === true;
+
+    // Desktop padding stays inline; tablet/mobile overrides via CSS variables.
+    var rowStyle = {};
+    if ( shouldApplyContainerPaddingOnRow ) {
+        if ( containerPadding && typeof containerPadding === 'object' ) {
+            if ( containerPadding.top !== undefined ) rowStyle.paddingTop = containerPadding.top;
+            if ( containerPadding.right !== undefined ) rowStyle.paddingRight = containerPadding.right;
+            if ( containerPadding.bottom !== undefined ) rowStyle.paddingBottom = containerPadding.bottom;
+            if ( containerPadding.left !== undefined ) rowStyle.paddingLeft = containerPadding.left;
+        }
+
+        setSpacingVars( rowStyle, 'madeit-container-row-padding', containerPaddingTablet, 'tablet' );
+        setSpacingVars( rowStyle, 'madeit-container-row-padding', containerPaddingMobile, 'mobile' );
+    } else {
+        if ( containerPadding && typeof containerPadding === 'object' ) {
+            if ( containerPadding.top !== undefined ) style.paddingTop = containerPadding.top;
+            if ( containerPadding.right !== undefined ) style.paddingRight = containerPadding.right;
+            if ( containerPadding.bottom !== undefined ) style.paddingBottom = containerPadding.bottom;
+            if ( containerPadding.left !== undefined ) style.paddingLeft = containerPadding.left;
+        }
+
+        setSpacingVars( style, 'madeit-container-padding', containerPaddingTablet, 'tablet' );
+        setSpacingVars( style, 'madeit-container-padding', containerPaddingMobile, 'mobile' );
     }
     
     var styleChild = {};
@@ -498,6 +555,21 @@ export function ColumnsEditContainer( props ) {
         'data-madeit-dir-tablet': flexDirectionTablet || undefined,
         'data-madeit-dir-mobile': flexDirectionMobile || undefined,
     });
+
+    // Auto-migrate legacy blocks: if containerPadding exists but the new
+    // containerPaddingOnRow flag was never set, switch it on so the next save
+    // serializes padding on `.madeit-container-row`.
+    useEffect( () => {
+        if ( containerPaddingOnRow === true ) return;
+        if ( ! containerPadding ) return;
+        const hasAnyPadding =
+            containerPadding.top !== undefined ||
+            containerPadding.bottom !== undefined ||
+            containerPadding.left !== undefined ||
+            containerPadding.right !== undefined;
+        if ( ! hasAnyPadding ) return;
+        setAttributes( { containerPaddingOnRow: true } );
+    }, [ containerPaddingOnRow, containerPadding, setAttributes ] );
     
     const [activeTab, setActiveTab] = useState('layout');
     const [ activeMaxWidthBreakpoint, setActiveMaxWidthBreakpoint ] = useState( 'desktop' );
@@ -1633,28 +1705,36 @@ export function ColumnsEditContainer( props ) {
 
 
                             {/* Padding */}
-                            <div className="madeit-control">
-                                <BoxControl
-                                    __next40pxDefaultSize
-                                    label={ __( 'Padding' ) }
-                                    onChange={ setContainerPadding }
-                                    values={ containerPadding }
-                                    allowReset={ false }
-                                />
-                            </div>
+                            <ResponsiveBoxControl
+                                __next40pxDefaultSize
+                                title={ __( 'Padding' ) }
+                                breakpoint={ activePaddingBreakpoint }
+                                onBreakpointChange={ setActivePaddingBreakpoint }
+                                values={ attributes?.[ paddingValueKey ] }
+                                onChange={ ( next ) =>
+                                    setAttributes( { [ paddingValueKey ]: next } )
+                                }
+                                onReset={ () => setAttributes( { [ paddingValueKey ]: undefined } ) }
+                                resetLabel={ __( 'Reset padding' ) }
+                                // allowReset={ true }
+                            />
 
                             {/* Margin */}
-                            <div className="madeit-control">
-                                <BoxControl
-                                    __next40pxDefaultSize
-                                    label={ __( 'Margin' ) }
-                                    onChange={ setContainerMargin }
-                                    values={ containerMargin }
-                                    allowReset={ false }
-                                    inputProps={ { min: -1000, max: 1000 } }
-                                    sides={ [ 'top', 'bottom', 'left', 'right' ] }
-                                />
-                            </div>
+                            <ResponsiveBoxControl
+                                __next40pxDefaultSize
+                                title={ __( 'Margin' ) }
+                                breakpoint={ activeMarginBreakpoint }
+                                onBreakpointChange={ setActiveMarginBreakpoint }
+                                values={ attributes?.[ marginValueKey ] }
+                                onChange={ ( next ) =>
+                                    setAttributes( { [ marginValueKey ]: next } )
+                                }
+                                onReset={ () => setAttributes( { [ marginValueKey ]: undefined } ) }
+                                resetLabel={ __( 'Reset margin' ) }
+                                // allowReset={ true }
+                                inputProps={ { min: -1000, max: 1000 } }
+                                sides={ [ 'top', 'bottom' ] }
+                            />
                         </PanelBody>
                     </>
                 )}
@@ -1866,9 +1946,14 @@ export function ColumnsEditContainer( props ) {
         <HtmlTag { ...blockProps }>
             <div className={ classesChild }
             style = { styleChild }>
-                <InnerBlocks
-                    orientation="horizontal"
-                    allowedBlocks={ ALLOWED_BLOCKS } />
+                <div
+                    className={ `row madeit-container-row rows-${ columnsCount || 0 }` }
+                    style={ rowStyle }
+                >
+                    <InnerBlocks
+                        orientation="horizontal"
+                        allowedBlocks={ ALLOWED_BLOCKS } />
+                </div>
             </div>
         </HtmlTag>
     ];

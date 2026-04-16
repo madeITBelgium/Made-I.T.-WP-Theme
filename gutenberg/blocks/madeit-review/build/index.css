@@ -1,0 +1,67 @@
+/**
+ * Editor-only styles.
+ *
+ * This file is normally generated from src/editor.scss by the build.
+ * Since the build isn't available right now, this is a hand-synced CSS version.
+ */
+
+.layout-selector {
+	display: flex;
+	flex-wrap: nowrap;
+	gap: 10px;
+	overflow: scroll;
+	padding-top: 13px;
+}
+
+.layout-selector .screen-reader-text {
+	all: unset;
+	position: absolute !important;
+	top: -15px !important;
+	background: black;
+	color: white;
+	padding: 5px 10px;
+	left: 5px;
+	right: 5px;
+	text-align: center;
+	font-size: x-small;
+}
+
+.layout-box {
+	position: relative;
+	border: 1px solid rgba(0, 0, 0, 0.12);
+	padding: 10px;
+	cursor: pointer;
+	user-select: none;
+	min-width: 40%;
+}
+
+.layout-box .card {
+	background: #fff none repeat scroll 0 0;
+	border: none !important;
+	box-shadow: none;
+	margin-top: 0;
+	max-width: 100%;
+	border-radius: 0;
+	padding: 0;
+	position: relative;
+	min-width: auto;
+}
+
+.layout-box.active {
+	border: 2px solid currentColor;
+}
+
+.layout-box.is-disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+.layout-overlay {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	text-align: center;
+	justify-content: center;
+	background: rgba(255, 255, 255, 0.75);
+}

@@ -69,37 +69,6 @@ export default function Edit({ attributes, setAttributes }) {
                         />
                     </MediaUploadCheck>
                 )}
-                {/* Slider settings preview */}
-                <div style={{
-                    marginTop: '20px',
-                    background: '#f8f9fa',
-                    padding: '10px',
-                    borderRadius: '6px',
-                    fontSize: '14px',
-                    color: '#333',
-                    textAlign: 'left',
-                    display: 'inline-block',
-                    minWidth: '220px'
-                }}>
-                    <strong>{__('Slider instellingen', 'slider')}</strong>
-                    <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                        <li>
-                            <strong>{__('Slider:', 'slider')}</strong> {attributes.slider ? __('Aan', 'slider') : __('Uit', 'slider')}
-                        </li>
-                        <li>
-                            <strong>{__('Paginering:', 'slider')}</strong> {attributes.pagination ? __('Aan', 'slider') : __('Uit', 'slider')}
-                        </li>
-                        <li>
-                            <strong>{__('Ruimte tussen:', 'slider')}</strong> {attributes.spaceBetween ?? 0}
-                        </li>
-                        <li>
-                            <strong>{__('Autoplay:', 'slider')}</strong> {attributes.autoplay ? __('Aan', 'slider') : __('Uit', 'slider')}
-                        </li>
-                        <li>
-                            <strong>{__('Autoplay vertraging:', 'slider')}</strong> {attributes.autoplayDelay ?? 0} ms
-                        </li>
-                    </ul>
-                </div>
             </div>
 
             {/* Focalpoint instellen voor de afbeelding */}

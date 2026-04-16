@@ -25,7 +25,7 @@ export default function Save({ attributes }) {
         navigationBorderStyle = 'solid',
         navigationBorderColor = '#ccc',
 
-        touchSlides = false,
+        touchSlides = true,
         // Pagination
         pagination = false,
         paginationType = 'bullets',
@@ -34,8 +34,8 @@ export default function Save({ attributes }) {
         paginationMaxBullets = 5,
         paginationActiveColor = '#000',
         // Autoplay
-        autoplay = false,
-        speed = 3000,
+        autoplay = true,
+        speed = 5000,
         loop = false,        
        
     } = attributes;
@@ -63,14 +63,16 @@ export default function Save({ attributes }) {
             data-slides-desktop={slidesDesktop}
             data-slides-tablet={slidesTablet}
             data-slides-mobile={slidesMobile}
+            data-space-between={spaceBetween}
             data-speed={speed}
             data-autoplay={autoplay}
             data-loop={loop}
             data-navigation={navigation}
             data-pagination={pagination}
+            data-touch-slides={touchSlides}
             data-effect={effect}
             data-cross-fade={effect === 'fade'}
-            data-pagination-type={pagination === true ? 'bullets' : pagination}
+            data-pagination-type={pagination ? paginationType : 'false'}
             {...blockProps}
         >
             <div className="swiper" style={{ overflow: 'hidden', height: height, minHeight: effectiveMinHeight }}>

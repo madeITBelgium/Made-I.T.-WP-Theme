@@ -1,5 +1,7 @@
 // #pregressbar
 jQuery(document).ready(function($) {
+    $('html.wp-toolbar').css('padding-top', '0');
+
     $('#progressbar li').click(function() {
         var index = $(this).index();
         $('#progressbar li').removeClass('active');
@@ -36,11 +38,40 @@ jQuery(document).ready(function($) {
             return result;
         }
 
+        const parseFieldName = function(name) {
+            const path = [];
+            const regex = /([^\[\]]+)|\[([^\[\]]*)\]/g;
+            let match;
+
+            while ((match = regex.exec(name)) !== null) {
+                const segment = match[1] || match[2];
+                if (segment !== '') {
+                    path.push(segment);
+                }
+            }
+
+            return path.length ? path : [name];
+        };
+
+        const assignByPath = function(target, path, value) {
+            let cursor = target;
+
+            for (let i = 0; i < path.length - 1; i++) {
+                const key = path[i];
+                if (typeof cursor[key] !== 'object' || cursor[key] === null || Array.isArray(cursor[key])) {
+                    cursor[key] = {};
+                }
+                cursor = cursor[key];
+            }
+
+            cursor[path[path.length - 1]] = value;
+        };
+
         $container.find('input, select, textarea').each(function() {
             const field = this;
-            const name = field.name || field.id;
+            const name = field.name;
 
-            if (!name || field.disabled) {
+            if (!name || field.disabled || field.dataset.setupIgnore === '1') {
                 return;
             }
 
@@ -48,20 +79,42 @@ jQuery(document).ready(function($) {
                 return;
             }
 
+            const path = parseFieldName(name);
+
             if (field.type === 'checkbox') {
-                result[name] = field.checked ? '1' : '0';
+                assignByPath(result, path, field.checked ? '1' : '0');
                 return;
             }
 
             if (field.type === 'radio') {
                 if (field.checked) {
-                    result[name] = field.value;
+                    assignByPath(result, path, field.value);
                 }
                 return;
             }
 
-            result[name] = field.value;
+            assignByPath(result, path, field.value);
         });
+
+        if (config.currentStep === 'pages') {
+            const enabledPages = [];
+            const pages = result.pages && typeof result.pages === 'object' ? result.pages : {};
+
+            Object.keys(pages).forEach(function(slug) {
+                const pageConfig = pages[slug];
+                if (pageConfig && pageConfig.enabled === '1') {
+                    enabledPages.push({
+                        slug: slug,
+                        title: typeof pageConfig.title === 'string' ? pageConfig.title : '',
+                        description: typeof pageConfig.description === 'string' ? pageConfig.description : '',
+                    });
+                }
+            });
+
+            return {
+                enabled_pages: enabledPages,
+            };
+        }
 
         return result;
     };
@@ -86,6 +139,39 @@ jQuery(document).ready(function($) {
                 window.location.href = href;
             });
     });
+
+    if (config.currentStep === 'finish') {
+        const $loading = $('#madeit-setup-finalize-loading');
+        const $error = $('#madeit-setup-finalize-error');
+        const $content = $('#madeit-setup-finalize-content');
+
+        if (!$loading.length || !$content.length || !config.finalizeNonce) {
+            return;
+        }
+
+        $loading.show();
+        $error.hide();
+        $content.hide();
+
+        $.post(config.ajaxUrl, {
+            action: 'madeit_setup_wizard_finalize',
+            nonce: config.finalizeNonce,
+        })
+            .done(function(response) {
+                if (response && response.success) {
+                    $loading.hide();
+                    $content.show();
+                    return;
+                }
+
+                $loading.hide();
+                $error.text('Er liep iets mis tijdens het afronden van de setup.').show();
+            })
+            .fail(function() {
+                $loading.hide();
+                $error.text('Er liep iets mis tijdens het afronden van de setup.').show();
+            });
+    }
 });
 
 

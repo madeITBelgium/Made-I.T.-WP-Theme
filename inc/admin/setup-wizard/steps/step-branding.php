@@ -26,10 +26,12 @@ if (!defined('ABSPATH')) {
     <div class="settingsForm">
         <label for="logo">Logo</label>
         <input type="file" id="logo" name="logo">
+        <input type="hidden" id="logo_filename" name="logo_filename" value="">
         <span id="logo-preview"></span>
 
         <label for="favicon">Favicon</label>
         <input type="file" id="favicon" name="favicon">
+        <input type="hidden" id="favicon_filename" name="favicon_filename" value="">
         <span id="favicon-preview">
             <svg id="fav_icon_preview" data-name="fav_icon_preview" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 361.86 47.95">
                 <path class="cls-1" d="M140.64,120V80.55a7.51,7.51,0,0,1,7.5-7.5H494a7.51,7.51,0,0,1,7.5,7.5V120H140.64Z" transform="translate(-140.14 -72.55)"/>
@@ -166,7 +168,7 @@ if (!defined('ABSPATH')) {
     </div>
     <div class="buttons">
         <a href="<?php echo esc_url(admin_url('themes.php?page=madeit-setup-wizard&step=plugins')); ?>">Overslaan</a>
-        <a href="<?php echo esc_url(admin_url('themes.php?page=madeit-setup-wizard&step=plugins&save_settings=true')); ?>">Instellingen Opslaan</a>
+        <a class="button button-primary" data-save="1" href="<?php echo esc_url(admin_url('themes.php?page=madeit-setup-wizard&step=plugins&save_settings=true')); ?>">Instellingen Opslaan</a>
     </div>
 
 </div>
@@ -175,6 +177,12 @@ if (!defined('ABSPATH')) {
 <script>
     document.getElementById('logo').addEventListener('change', function(event) {
         const file = event.target.files[0];
+        const logoFilename = document.getElementById('logo_filename');
+
+        if (logoFilename) {
+            logoFilename.value = file ? file.name : '';
+        }
+
         if (file) {
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -190,6 +198,12 @@ if (!defined('ABSPATH')) {
 
     document.getElementById('favicon').addEventListener('change', function(event) {
         const file = event.target.files[0];
+        const faviconFilename = document.getElementById('favicon_filename');
+
+        if (faviconFilename) {
+            faviconFilename.value = file ? file.name : '';
+        }
+
         if (file) {
             const reader = new FileReader();
             reader.onload = function(e) {

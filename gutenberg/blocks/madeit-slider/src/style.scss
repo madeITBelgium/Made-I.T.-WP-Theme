@@ -38,6 +38,31 @@
     }
 }
 
+// Logo ticker / carousel (continu, infinite)
+.wp-block-madeit-slider[data-effect="logo"] {
+    .swiper-wrapper {
+        transition-timing-function: linear !important;
+        will-change: transform;
+        gap: var(--logo-space-between, 40px);
+    }
+
+    .swiper-slide {
+        width: calc(
+            (100% - ((var(--logo-slides-per-view, 5) - 1) * var(--logo-space-between, 40px))) /
+            var(--logo-slides-per-view, 5)
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .swiper-slide img {
+        width: 100% !important;
+        height: 100% !important;
+        max-width: 100%;
+    }
+}
+
 
 // Swiper backend
 .wp-block-madeit-slider {
@@ -624,6 +649,40 @@
                     100%, 50% {
                         opacity: .33;
                         transform: translateX(-16px) translateZ(-164px) rotateY(-45deg);
+                    }
+                }
+            }
+
+            &.motion-logo {
+                overflow: hidden;
+
+                .swiper {
+                    display: flex;
+                    overflow: hidden;
+                    gap: 5px;
+                }
+
+                .wrapper {
+                    display: flex;
+                    gap: 10px;
+                    width: max-content;
+
+                    animation: logoLoop 3s linear infinite;
+                }
+
+                .swiper-slide {
+                    flex: 0 0 40%;
+                    background: #555;
+                    height: 25px;
+                    width: 20px;
+                }
+
+                @keyframes logoLoop {
+                    0% {
+                        transform: translateX(0);
+                    }
+                    100% {
+                        transform: translateX(-50%);
                     }
                 }
             }

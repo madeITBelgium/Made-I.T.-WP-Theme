@@ -28,7 +28,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
         navigationBorderStyle = 'solid',
         navigationBorderColor = '#ccc',
 
-        touchSlides = false,
+        touchSlides = true,
         // Pagination
         pagination = false,
         paginationType = 'bullets',
@@ -37,8 +37,8 @@ export default function Edit({ attributes, setAttributes, clientId }) {
         paginationMaxBullets = 5,
         paginationActiveColor = '#000',
         // Autoplay
-        autoplay = false,
-        speed = 3000,
+        autoplay = true,
+        speed = 5000,
         loop = false,        
        
     } = attributes;
@@ -85,7 +85,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 
     const DISABLED_EFFECTS = ['cube', 'coverflow', 'flip', 'creative'];
     const SwiperEffectSelector = ({ selectedEffect, onChange }) => {
-    const effects = ['slide', 'fade', 'cube', 'coverflow', 'flip', 'creative'];
+    const effects = ['slide', 'fade', 'logo', 'cube', 'coverflow', 'flip', 'creative'];
 
     return (
         <div className="effect-selector">
@@ -280,8 +280,54 @@ export default function Edit({ attributes, setAttributes, clientId }) {
                         onChange={(val) => setAttributes({ effect: val })}
                     />
 
+                    {/* Common settings (also for logo ticker) */}
+                    <div className="m_slider_height_value" style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+                        <UnitControl
+                            __next40pxDefaultSize
+                            label={__('Hoogte', 'slider')}
+                            value={height}
+                            onChange={(val) => setAttributes({ height: val })}
+                            units={DIMENSION_UNITS}
+                        />
+                        <UnitControl
+                            __next40pxDefaultSize
+                            label={__('Min hoogte', 'slider')}
+                            value={effectiveMinHeight}
+                            onChange={(val) => setAttributes({ minHeight: val })}
+                            units={DIMENSION_UNITS}
+                        />
+                    </div>
+
+                    <div className="m_slider_setting" style={{ display: 'flex', gap: '10px' }}>
+                        <div style={{ width: '30%' }}>
+                            <UnitControl
+                                __next40pxDefaultSize
+                                label={__('Ruimte', 'slider')}
+                                value={attributes.spaceBetween || '10px'}
+                                onChange={(val) => setAttributes({ spaceBetween: val })}
+                                min={0}
+                                max={100}
+                                step={1}
+                                units={DIMENSION_UNITS}
+                            />
+                        </div>
+
+                        <div style={{ width: '70%' }}>
+                            <SelectControl
+                                label={__('Afbeelding weergave', 'slider')}
+                                value={objectFit || 'cover'}
+                                onChange={(val) => setAttributes({ objectFit: val })}
+                                options={[
+                                    { label: __('Cover', 'slider'), value: 'cover' },
+                                    { label: __('Contain', 'slider'), value: 'contain' },
+                                    { label: __('Fill', 'slider'), value: 'fill' }
+                                ]}
+                            />
+                        </div>
+                    </div>
+
                     {/* 2. Slider settings / effect */}
-                    {attributes.effect === 'slide' && (
+                    {(attributes.effect === 'slide' || attributes.effect === 'logo') && (
                         <>
                             {/* Aantal slides */}
                             <div className="madeit-control" style={{ marginTop: '30px' }}>
@@ -300,7 +346,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
                                             else if (activeSlidesPerViewBreakpoint === 'mobile') setAttributes({ slidesMobile: val });
                                         }}
                                         min={1}
-                                        max={5}
+                                        max={10}
                                         step={0.5}
                                     />
     
@@ -315,265 +361,251 @@ export default function Edit({ attributes, setAttributes, clientId }) {
                                 </div>
                             </div>
 
-                            {/* Hoogte instellingen */}
-                            <div className="m_slider_height_value" style={{ display: 'flex', gap: '10px' }}>
-                                <UnitControl
-                                    label={__('Hoogte', 'slider')}
-                                    value={height}
-                                    onChange={(val) => setAttributes({ height: val })}
-                                    units={DIMENSION_UNITS}
-                                />
-                                <UnitControl
-                                    label={__('Min hoogte', 'slider')}
-                                    value={effectiveMinHeight}
-                                    onChange={(val) => setAttributes({ minHeight: val })}
-                                    units={DIMENSION_UNITS}
-                                />
-                            </div>
-
-                            {/* Space beetween items */}
-                            <div className="m_slider_setting" style={{ display: 'flex', gap: '10px' }}>
-                                <div style={{ width: '30%' }}>
-                                    <UnitControl
-                                        label={__('Ruimte', 'slider')}
-                                        value={attributes.spaceBetween || '10px' }
-                                        onChange={(val) => setAttributes({ spaceBetween: val })}
-                                        min={0}
-                                        max={100}
-                                        step={1}
-                                        units={DIMENSION_UNITS}
-                                    />
-                                </div>
-
-                                {/* Afbeelding weergave */}
-                                <div style={{ width: '70%' }}>
-                                    <SelectControl
-                                        label={__('Afbeelding weergave', 'slider')}
-                                        value={objectFit || 'cover'}
-                                        onChange={(val) => setAttributes({ objectFit: val })}
-                                        options={[
-                                            { label: __('Cover', 'slider'), value: 'cover' },
-                                            { label: __('Contain', 'slider'), value: 'contain' },
-                                            { label: __('Fill', 'slider'), value: 'fill' }
-                                        ]}
-                                    />
-                                </div>
-                            </div>
-
+                            { attributes.effect !== 'logo' && (
+                                <>
                             <hr></hr>
 
                             {/* Navigatie */}
-                            <ToggleControl
-                                label={__('Navigatie', 'slider')}
-                                checked={navigation}
-                                onChange={(val) => setAttributes({ navigation: val })}
-                            />
-                            {navigation && (
-                                <>
-                                 {/* Pictogramstijl kiezen */}
-                                    <SelectControl
-                                        label={__('Navigatiepositie', 'slider')}
-                                        value={attributes.navigationPosition || 'outside'}
-                                        onChange={(val) => setAttributes({ navigationPosition: val })}
-                                        options={[
-                                            { label: __('Buiten de afbeelding', 'slider'), value: 'outside' },
-                                            { label: __('Binnen de afbeelding', 'slider'), value: 'inside' },
-                                            { label: __('Links onderaan', 'slider'), value: 'left_bottom' },
-                                            { label: __('Rechts onderaan', 'slider'), value: 'right_bottom' },
-                                            { label: __('Links bovenaan', 'slider'), value: 'left_top' },
-                                            { label: __('Rechts bovenaan', 'slider'), value: 'right_top' }
-                                        ]}
-                                    />
-
-                                    {/* Kleur en grootte */}
-                                    <div className="madeit-control" style={{ marginTop: '30px' }}>
-                                        
-                                        {/* Add the iconColorPopover */}
-                                        <PanelColorSettings
-                                            title={ __( 'Navigatie kleur', 'slider' ) }
-                                            initialOpen={ true }
-                                            colorSettings={ [
-                                                {
-                                                    value: navigationIconColor,
-                                                    label: __( 'Icon kleur', 'slider' ),
-                                                    onChange: ( value ) => setAttributes( { navigationIconColor: value } ),
-                                                },
-                                                {
-                                                    value: navigationBackgroundColor,
-                                                    label: __( 'Achtergrondkleur', 'slider' ),
-                                                    onChange: ( value ) => setAttributes( { navigationBackgroundColor: value } ),
-                                                },
-                                            ] }
-                                        />
-                                    </div>
-                                    
-                                    <RangeControl
-                                        label={__('Grootte (px)', 'slider')}
-                                        value={attributes.navigationIconSize || 24}
-                                        onChange={(val) => setAttributes({ navigationIconSize: val })}
-                                        min={12}
-                                        max={60}
-                                    />
-                                    {/*  navigationBorderRadius = 50,
-                                        navigationBorder = '1px solid #ccc', */}
-
-                                    <RangeControl
-                                        label={__('Border radius (px)', 'slider')}
-                                        value={navigationBorderRadius || 50}
-                                        onChange={(val) => setAttributes({ navigationBorderRadius: val })}
-                                        min={0}
-                                        max={100}
-                                        step={1}
-                                    />
-                                    <div className="m-slider-border-preview" style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                                        <UnitControl
-                                            label={__('Border', 'slider')}
-                                            value={navigationBorderWidth || '1px'}
-                                            onChange={(val) => setAttributes({ navigationBorderWidth: val })}
-                                            units={['px']}
-                                        />
-                                        <SelectControl
-                                            label={__('Border stijl', 'slider')}
-                                            value={navigationBorderStyle || 'solid'}
-                                            onChange={(val) => setAttributes({ navigationBorderStyle: val })}
-                                            options={[
-                                                { label: __('Solid', 'slider'), value: 'solid' },
-                                                { label: __('Dotted', 'slider'), value: 'dotted' },
-                                                { label: __('Dashed', 'slider'), value: 'dashed' },
-                                                { label: __('Double', 'slider'), value: 'double' },
-                                                { label: __('Groove', 'slider'), value: 'groove' },
-                                                { label: __('Ridge', 'slider'), value: 'ridge' },
-                                                { label: __('Inset', 'slider'), value: 'inset' },
-                                                { label: __('Outset', 'slider'), value: 'outset' }
-                                            ]}
-                                        />
-                                        
-
-                                    </div>
-                                    {/* Add the navigationBorderColorPopover */}
-                                    <div className="m-slider-colorpicker" style={{ display: 'flex', flexDirection: 'row', gap: '10px', alignItems: 'center' }}>
-                                        <p style={{margin: '0'}}><strong>{__('Border kleur', 'slider')}</strong></p>
-                                        <NavigationBorderColorPopover
-                                            value={navigationBorderColor}
-                                            onChange={(color) => setAttributes({ navigationBorderColor: color })}
-                                            themeColors={themeColors}
-                                        />
-                                    </div>
-
                                     <ToggleControl
-                                        label={__('Touch slide activeren', 'slider')}
-                                        checked={touchSlides || false}
-                                        onChange={(val) => setAttributes({ touchSlides: val })}
+                                        label={__('Navigatie', 'slider')}
+                                        checked={navigation}
+                                        onChange={(val) => setAttributes({ navigation: val })}
                                     />
-                                    <em> {/* Add a note about touch slides */}
-                                        {__('Activeer deze optie om slides te kunnen slepen op mobiele apparaten.', 'slider')}
-                                    </em>          
+                                    {navigation && (
+                                        <>
+                                        {/* Pictogramstijl kiezen */}
+                                            <SelectControl
+                                                label={__('Navigatiepositie', 'slider')}
+                                                value={attributes.navigationPosition || 'outside'}
+                                                onChange={(val) => setAttributes({ navigationPosition: val })}
+                                                options={[
+                                                    { label: __('Buiten de afbeelding', 'slider'), value: 'outside' },
+                                                    { label: __('Binnen de afbeelding', 'slider'), value: 'inside' },
+                                                    { label: __('Links onderaan', 'slider'), value: 'left_bottom' },
+                                                    { label: __('Rechts onderaan', 'slider'), value: 'right_bottom' },
+                                                    { label: __('Links bovenaan', 'slider'), value: 'left_top' },
+                                                    { label: __('Rechts bovenaan', 'slider'), value: 'right_top' }
+                                                ]}
+                                            />
+
+                                            {/* Kleur en grootte */}
+                                            <div className="madeit-control" style={{ marginTop: '30px' }}>
+                                                
+                                                {/* Add the iconColorPopover */}
+                                                <PanelColorSettings
+                                                    title={ __( 'Navigatie kleur', 'slider' ) }
+                                                    initialOpen={ true }
+                                                    colorSettings={ [
+                                                        {
+                                                            value: navigationIconColor,
+                                                            label: __( 'Icon kleur', 'slider' ),
+                                                            onChange: ( value ) => setAttributes( { navigationIconColor: value } ),
+                                                        },
+                                                        {
+                                                            value: navigationBackgroundColor,
+                                                            label: __( 'Achtergrondkleur', 'slider' ),
+                                                            onChange: ( value ) => setAttributes( { navigationBackgroundColor: value } ),
+                                                        },
+                                                    ] }
+                                                />
+                                            </div>
+                                            
+                                            <RangeControl
+                                                label={__('Grootte (px)', 'slider')}
+                                                value={attributes.navigationIconSize || 24}
+                                                onChange={(val) => setAttributes({ navigationIconSize: val })}
+                                                min={12}
+                                                max={60}
+                                            />
+                                            {/*  navigationBorderRadius = 50,
+                                                navigationBorder = '1px solid #ccc', */}
+
+                                            <RangeControl
+                                                label={__('Border radius (px)', 'slider')}
+                                                value={navigationBorderRadius || 50}
+                                                onChange={(val) => setAttributes({ navigationBorderRadius: val })}
+                                                min={0}
+                                                max={100}
+                                                step={1}
+                                            />
+                                            <div className="m-slider-border-preview" style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                                                <UnitControl
+                                                    __next40pxDefaultSize
+                                                    label={__('Border', 'slider')}
+                                                    value={navigationBorderWidth || '1px'}
+                                                    onChange={(val) => setAttributes({ navigationBorderWidth: val })}
+                                                    units={['px']}
+                                                />
+                                                <SelectControl
+                                                    label={__('Border stijl', 'slider')}
+                                                    value={navigationBorderStyle || 'solid'}
+                                                    onChange={(val) => setAttributes({ navigationBorderStyle: val })}
+                                                    options={[
+                                                        { label: __('Solid', 'slider'), value: 'solid' },
+                                                        { label: __('Dotted', 'slider'), value: 'dotted' },
+                                                        { label: __('Dashed', 'slider'), value: 'dashed' },
+                                                        { label: __('Double', 'slider'), value: 'double' },
+                                                        { label: __('Groove', 'slider'), value: 'groove' },
+                                                        { label: __('Ridge', 'slider'), value: 'ridge' },
+                                                        { label: __('Inset', 'slider'), value: 'inset' },
+                                                        { label: __('Outset', 'slider'), value: 'outset' }
+                                                    ]}
+                                                />
+                                                
+
+                                            </div>
+                                            {/* Add the navigationBorderColorPopover */}
+                                            <div className="m-slider-colorpicker" style={{ display: 'flex', flexDirection: 'row', gap: '10px', alignItems: 'center' }}>
+                                                <p style={{margin: '0'}}><strong>{__('Border kleur', 'slider')}</strong></p>
+                                                <NavigationBorderColorPopover
+                                                    value={navigationBorderColor}
+                                                    onChange={(color) => setAttributes({ navigationBorderColor: color })}
+                                                    themeColors={themeColors}
+                                                />
+                                            </div>
+
+                                            <ToggleControl
+                                                label={__('Touch slide activeren', 'slider')}
+                                                checked={touchSlides || false}
+                                                onChange={(val) => setAttributes({ touchSlides: val })}
+                                            />
+                                            <em>
+                                                {__('Activeer deze optie om slides te kunnen slepen op mobiele apparaten.', 'slider')}
+                                            </em>
+                                        </>
+                                    )}
                                 </>
                             )}
 
 
+                            { attributes.effect !== 'logo' && (
+                                <>
                             <hr></hr>
                             {/* Paginatie */}
-                            <ToggleControl
-                                label={__('Paginatie', 'slider')}
-                                checked={pagination}
-                                onChange={(val) => setAttributes({ pagination: val })}
-                            />
-                            {pagination && (
-                                <>
-                                <SelectControl
-                                    label={__('Paginatie type', 'slider')}
-                                    value={paginationType}
-                                    onChange={(val) => setAttributes({ paginationType: val })}
-                                    options={[
-                                        { label: __('Bullets', 'slider'), value: 'bullets' },
-                                        { label: __('Fraction', 'slider'), value: 'fraction' },
-                                        { label: __('Progressbar', 'slider'), value: 'progressbar' },
-                                    ]}
-                                />
-                                {/* Dynamische bullets */}
-                                { attributes.paginationType === 'bullets' && (
-                                    <>
-                                        <ToggleControl
-                                            label={__('dynamic bullets', 'slider')}
-                                            checked={attributes.paginationDynamic}
-                                            onChange={(val) => setAttributes({ paginationDynamic: val })}
+                            {/* Niet bij logo */}
+                                    <ToggleControl
+                                        label={__('Paginatie', 'slider')}
+                                        checked={pagination}
+                                        onChange={(val) => setAttributes({ pagination: val })}
+                                    />
+
+                                    {pagination && (
+                                        <>
+                                        <SelectControl
+                                            label={__('Paginatie type', 'slider')}
+                                            value={paginationType}
+                                            onChange={(val) => setAttributes({ paginationType: val })}
+                                            options={[
+                                                { label: __('Bullets', 'slider'), value: 'bullets' },
+                                                { label: __('Fraction', 'slider'), value: 'fraction' },
+                                                { label: __('Progressbar', 'slider'), value: 'progressbar' },
+                                            ]}
                                         />
-                                        {attributes.paginationDynamic && (
-                                            <TextControl
-                                                label={__('Max aantal bullets', 'slider')}
-                                                value={attributes.paginationMaxBullets || ''}
-                                                onChange={(val) => setAttributes({ paginationMaxBullets: val })}
-                                                placeholder={__('Max aantal bullets', 'slider')}
-                                                type="number"
-                                                min={1}
-                                                max={10}
-                                                step={1}
-                                            />
+                                        {/* Dynamische bullets */}
+                                        { attributes.paginationType === 'bullets' && (
+                                            <>
+                                                <ToggleControl
+                                                    label={__('dynamic bullets', 'slider')}
+                                                    checked={attributes.paginationDynamic}
+                                                    onChange={(val) => setAttributes({ paginationDynamic: val })}
+                                                />
+                                                {attributes.paginationDynamic && (
+                                                    <TextControl
+                                                        label={__('Max aantal bullets', 'slider')}
+                                                        value={attributes.paginationMaxBullets || ''}
+                                                        onChange={(val) => setAttributes({ paginationMaxBullets: val })}
+                                                        placeholder={__('Max aantal bullets', 'slider')}
+                                                        type="number"
+                                                        min={1}
+                                                        max={10}
+                                                        step={1}
+                                                    />
+                                                )}
+
+                                                {/* Paginatie kleur */}
+                                        
+                                                <div className="m-slider-colorpicker" style={{ display: 'flex', flexDirection: 'row', gap: '10px', alignItems: 'center' }}>
+                                                    <p style={{margin: '0'}}><strong>{__('Actieve bullet kleur', 'slider')}</strong></p>
+                                                    {/* Add the paginationActiveColorPopover */}
+                                                    <PaginationActiveColorPopover
+                                                        value={paginationActiveColor}
+                                                        onChange={(color) => setAttributes({ paginationActiveColor: color })}
+                                                        themeColors={themeColors}
+                                                    />
+                                                </div>
+                                            </>
                                         )}
 
-                                        {/* Paginatie kleur */}
-                                
-                                        <div className="m-slider-colorpicker" style={{ display: 'flex', flexDirection: 'row', gap: '10px', alignItems: 'center' }}>
-                                            <p style={{margin: '0'}}><strong>{__('Actieve bullet kleur', 'slider')}</strong></p>
-                                            {/* Add the paginationActiveColorPopover */}
-                                            <PaginationActiveColorPopover
-                                                value={paginationActiveColor}
-                                                onChange={(color) => setAttributes({ paginationActiveColor: color })}
-                                                themeColors={themeColors}
-                                            />
+                                        {/* Onder de afbeelding of in de afbeelding pagination tonen */}
+                                        <div className="button-group-wrapper">
+                                            <Button
+                                                variant={!paginationInside ? 'primary' : 'secondary'}
+                                                onClick={() => setAttributes({ paginationInside: false })}
+                                            >
+                                                {__('Buiten', 'slider')}
+                                            </Button>
+                                            <Button
+                                                variant={paginationInside ? 'primary' : 'secondary'}
+                                                onClick={() => setAttributes({ paginationInside: true })}
+                                            >
+                                                {__('Binnen', 'slider')}
+                                            </Button>
                                         </div>
-                                    </>
-                                )}
-
-                                {/* Onder de afbeelding of in de afbeelding pagination tonen */}
-                                <div className="button-group-wrapper">
-                                    <Button
-                                        variant={!paginationInside ? 'primary' : 'secondary'}
-                                        onClick={() => setAttributes({ paginationInside: false })}
-                                    >
-                                        {__('Buiten', 'slider')}
-                                    </Button>
-                                    <Button
-                                        variant={paginationInside ? 'primary' : 'secondary'}
-                                        onClick={() => setAttributes({ paginationInside: true })}
-                                    >
-                                        {__('Binnen', 'slider')}
-                                    </Button>
-                                </div>
-                            
+                                    
+                                        </>
+                                    )}
                                 </>
                             )}
                         </>
                     )}
 
-                    
 
-                    
-                    {/* Every type */}
+                    {/* Autoplay / ticker */}
                     <hr></hr>
 
-                    <ToggleControl
-                        label={__('Autoplay', 'slider')}
-                        checked={autoplay}
-                        onChange={(val) => setAttributes({ autoplay: val })}
-                    />
-
-                    {autoplay && (
+                    {effect === 'logo' ? (
                         <>
                             <RangeControl
-                                label={__('Autoplay snelheid (ms)', 'slider')}
+                                label={__('Ticker snelheid (ms)', 'slider')}
+                                help={__('Hogere waarde = trager doorschuiven. In logo-mode staat autoplay/loop altijd aan.', 'slider')}
                                 value={speed}
                                 onChange={(val) => setAttributes({ speed: val })}
-                                min={1000}
-                                max={10000}
+                                min={2000}
+                                max={30000}
                                 step={500}
                             />
+
                             <ToggleControl
-                                label={__('Loop', 'slider')}
-                                checked={loop}
-                                onChange={(val) => setAttributes({ loop: val })}
+                                label={__('Touch slide activeren', 'slider')}
+                                checked={touchSlides || false}
+                                onChange={(val) => setAttributes({ touchSlides: val })}
                             />
+                        </>
+                    ) : (
+                        <>
+                            <ToggleControl
+                                label={__('Autoplay', 'slider')}
+                                checked={autoplay}
+                                onChange={(val) => setAttributes({ autoplay: val })}
+                            />
+
+                            {autoplay && (
+                                <>
+                                    <RangeControl
+                                        label={__('Autoplay snelheid (ms)', 'slider')}
+                                        value={speed}
+                                        onChange={(val) => setAttributes({ speed: val })}
+                                        min={1000}
+                                        max={30000}
+                                        step={500}
+                                    />
+                                    <ToggleControl
+                                        label={__('Loop', 'slider')}
+                                        checked={loop}
+                                        onChange={(val) => setAttributes({ loop: val })}
+                                    />
+                                </>
+                            )}
                         </>
                     )}
                 </PanelBody>

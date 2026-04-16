@@ -38,7 +38,7 @@ if (!defined('ABSPATH')) {
         <input type="email" id="business_email" name="business_email" value="">
 
         <label for="business_description">Korte beschrijving</label>
-        <textarea id="business_description" name="business_description" rows="3" placeholder="Bijv. Made I.T., jouw digitale partner"></textarea>
+        <textarea id="business_description" name="business_description" rows="3" placeholder="Bijv. <?php echo MADEIT_NAME; ?>, jouw digitale partner"></textarea>
 
         <label for="business_topic">Wat doet je bedrijf? Of wat is het onderwerp van je website?</label>
         <textarea id="business_topic" name="business_topic" rows="3" placeholder="Bijv. Webdesign, online marketing en websites voor kmo's"></textarea>
@@ -74,6 +74,6 @@ if (!defined('ABSPATH')) {
 
     <div class="buttons">
         <a href="<?php echo esc_url(admin_url('themes.php?page=madeit-setup-wizard&step=branding')); ?>">Overslaan</a>
-        <a data-save="1" href="<?php echo esc_url(admin_url('themes.php?page=madeit-setup-wizard&step=branding&save_settings=true')); ?>">Instellingen Opslaan</a>
+        <a data-save="1" class="button button-primary" href="<?php echo esc_url(admin_url('themes.php?page=madeit-setup-wizard&step=branding&save_settings=true')); ?>">Instellingen Opslaan</a>
     </div>
 </div>
