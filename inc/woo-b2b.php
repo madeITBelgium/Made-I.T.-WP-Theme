@@ -59,10 +59,17 @@ if(defined('MADEIT_WOO_B2B_ONLY') && MADEIT_WOO_B2B_ONLY) {
             return $price;
         }
 
+        if( ! $product->is_on_sale() ) {
+            return $price;
+        }
+
+        /*
+
         //Check if sales date is current
         $sale_from = $product->get_date_on_sale_from();
         $sale_to = $product->get_date_on_sale_to();
         if ($sale_from && $sale_from->getTimestamp() > time()) {
+            error_log('Sale not started yet for product ' . $product->get_id());
             return $price; // Sale not started yet
         }
 
@@ -71,9 +78,11 @@ if(defined('MADEIT_WOO_B2B_ONLY') && MADEIT_WOO_B2B_ONLY) {
             $sale_to_end_of_day = clone $sale_to;
             $sale_to_end_of_day->setTime(23, 59, 59);
             if ($sale_to_end_of_day->getTimestamp() < time()) {
+                error_log('Sale ended for product ' . $product->get_id() . ' - ' . $price);
                 return $price; // Sale ended
             }
         }
+        */
 
         return wc_format_sale_price(
                 wc_get_price_to_display( $product, array( 'price' => $product->get_regular_price() ) ),
@@ -121,13 +130,21 @@ if(defined('MADEIT_WOO_B2B_ONLY') && MADEIT_WOO_B2B_ONLY) {
 
     function ran_woocommerce_cart_product_price( $price_html, $product ) {
         if ( ! $product->get_sale_price() || ! $product->get_regular_price() || $product->get_sale_price() >= $product->get_regular_price() ) {
+            error_log('No sale price for product in cart ' . $product->get_id() . ' - ' . $price_html);
+            return $price_html;
+        }
+
+        if ( ! $product->is_on_sale() ) {
+            error_log('H2 Product not on sale ' . $product->get_id() . ' - ' . $price_html);
             return $price_html;
         }
 
         //Check if sales date is current
+        /*
         $sale_from = $product->get_date_on_sale_from();
         $sale_to = $product->get_date_on_sale_to();
         if ($sale_from && $sale_from->getTimestamp() > time()) {
+            error_log('H2 Sale not started yet for product ' . $product->get_id() . ' - ' . $price_html);
             return $price_html; // Sale not started yet
         }
         
@@ -136,10 +153,13 @@ if(defined('MADEIT_WOO_B2B_ONLY') && MADEIT_WOO_B2B_ONLY) {
             $sale_to_end_of_day = clone $sale_to;
             $sale_to_end_of_day->setTime(23, 59, 59);
             if ($sale_to_end_of_day->getTimestamp() < time()) {
+                error_log('H2 Sale ended for product ' . $product->get_id() . ' - ' . $price_html);
                 return $price_html; // Sale ended
             }
         }
 
+        error_log('H2 Sale price applied for product ' . $product->get_id() . ' - ' . $price_html);
+        */
         return wc_format_sale_price(
                 wc_get_price_to_display( $product, array( 'price' => $product->get_regular_price() ) ),
                 wc_get_price_to_display( $product, array( 'price' => $product->get_sale_price() ) )
