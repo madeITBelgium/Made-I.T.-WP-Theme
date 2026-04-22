@@ -1,4 +1,17 @@
 (function () {
+  function mutationAddedReviewBlock(mutation) {
+    if (!mutation || !mutation.addedNodes || !mutation.addedNodes.length) return false;
+    for (var i = 0; i < mutation.addedNodes.length; i++) {
+      var node = mutation.addedNodes[i];
+      if (!node || node.nodeType !== 1) continue;
+      try {
+        if (typeof node.matches === 'function' && node.matches('.wp-block-madeit-reviews')) return true;
+        if (typeof node.querySelector === 'function' && node.querySelector('.wp-block-madeit-reviews')) return true;
+      } catch (e) {}
+    }
+    return false;
+  }
+
   function getSwiperCtorForDocument(doc) {
     try {
       if (doc && doc.defaultView && typeof doc.defaultView.Swiper === 'function') return doc.defaultView.Swiper;
@@ -125,6 +138,73 @@
       var wrapper = block.querySelector('.swiper');
       if (!wrapper) return;
 
+      function removeSwiperDuplicateSlides() {
+        // If Swiper previously ran with loop enabled, it may have injected duplicate slides.
+        // We remove them to keep counts predictable before we do our own cloning.
+        var swiperWrapper = wrapper.querySelector('.swiper-wrapper');
+        if (!swiperWrapper) return;
+        var duplicates = swiperWrapper.querySelectorAll('.swiper-slide-duplicate');
+        if (!duplicates || !duplicates.length) return;
+        for (var i = duplicates.length - 1; i >= 0; i--) {
+          var node = duplicates[i];
+          if (node && node.parentNode) node.parentNode.removeChild(node);
+        }
+      }
+
+      function ensureEnoughSlidesForLoop(minSlides) {
+        // Swiper loop can break or behave oddly with too few slides.
+        // We clone the original set of slides until we reach a safe minimum.
+        if (!loop) return;
+        var swiperWrapper = wrapper.querySelector('.swiper-wrapper');
+        if (!swiperWrapper) return;
+
+        removeSwiperDuplicateSlides();
+
+        var children = swiperWrapper.children;
+        if (!children || !children.length) return;
+
+        // Collect only real slides.
+        var slides = [];
+        for (var i = 0; i < children.length; i++) {
+          var el = children[i];
+          if (el && el.classList && el.classList.contains('swiper-slide')) slides.push(el);
+        }
+        if (!slides.length) return;
+
+        // Remember the original slide count for this DOM instance.
+        // This prevents runaway cloning if init runs multiple times.
+        if (!swiperWrapper.dataset.madeitOriginalSlides) {
+          swiperWrapper.dataset.madeitOriginalSlides = String(slides.length);
+        }
+        var originalCount = parseInt(swiperWrapper.dataset.madeitOriginalSlides, 10);
+        if (!isFinite(originalCount) || originalCount <= 0) originalCount = slides.length;
+
+        var baseSlides = slides.slice(0, originalCount);
+        if (!baseSlides.length) return;
+
+        var target = minSlides;
+        if (!isFinite(target) || target <= 0) return;
+
+        var safety = 0;
+        // Clone whole sets of originals until we have enough.
+        while (slides.length < target && safety < 10) {
+          for (var j = 0; j < baseSlides.length; j++) {
+            var clone = baseSlides[j].cloneNode(true);
+            // Marker for debugging; doesn't affect Swiper.
+            clone.setAttribute('data-madeit-cloned', '1');
+            swiperWrapper.appendChild(clone);
+          }
+          // Recount slides.
+          slides = [];
+          children = swiperWrapper.children;
+          for (var k = 0; k < children.length; k++) {
+            var el2 = children[k];
+            if (el2 && el2.classList && el2.classList.contains('swiper-slide')) slides.push(el2);
+          }
+          safety++;
+        }
+      }
+
       function clampSlidesPerView(value) {
         var parsed = typeof value === 'number' ? value : parseFloat(value);
         if (!isFinite(parsed) || parsed <= 0) return 1;
@@ -144,11 +224,31 @@
       var transitionDuration = parseInt(block.dataset.transitionDuration, 10) || 500;
 
       var paginationEnabled = block.dataset.pagination === 'true';
-      var paginationType = block.dataset.paginationType || 'bullets';
+      function normalizePaginationType(value) {
+        if (value === null || typeof value === 'undefined') return 'bullets';
+        var v;
+        try {
+          v = String(value).toLowerCase();
+        } catch (e) {
+          v = 'bullets';
+        }
+        if (v === 'bullets' || v === 'fraction' || v === 'progressbar' || v === 'custom' || v === 'numbers') return v;
+        return 'bullets';
+      }
+
+      var paginationType = normalizePaginationType(block.dataset.paginationType || 'bullets');
 
       var pauseOnInteraction = block.dataset.pauseOnInteraction !== 'false';
 
       var inEditorCanvas = isEditorCanvasDocument(doc);
+
+      // If loop is enabled, ensure there are enough slides for the largest slidesPerView.
+      // Use a conservative minimum to avoid edge cases with fractional slidesPerView.
+      var maxSlidesPerView = inEditorCanvas
+        ? slidesDesktop
+        : Math.max(slidesDesktop, slidesTablet, slidesMobile);
+      var minSlidesForLoop = Math.max(3, Math.ceil(maxSlidesPerView * 2 + 1));
+      ensureEnoughSlidesForLoop(minSlidesForLoop);
 
       // Prevent double initialization.
       // In the editor canvas we may need to re-init because another init ran with wrong params.
@@ -182,6 +282,57 @@
       var prev = block.querySelector('.swiper-button-prev');
       var paginationEl = block.querySelector('.swiper-pagination');
 
+      // When rendering numbered pagination we still use Swiper's "bullets" type
+      // under the hood. Add a modifier class so CSS can disable the dot styling.
+      if (paginationEl && paginationEl.classList) {
+        try {
+          if (paginationType === 'numbers') {
+            paginationEl.classList.add('madeit-swiper-pagination--numbers');
+          } else {
+            paginationEl.classList.remove('madeit-swiper-pagination--numbers');
+          }
+        } catch (e) {}
+      }
+
+      function getActiveSlidesPerViewForViewport() {
+        if (inEditorCanvas) return slidesDesktop;
+        var w = 0;
+        try {
+          w = doc && doc.defaultView ? doc.defaultView.innerWidth : 0;
+        } catch (e) {
+          w = 0;
+        }
+        if (!w) {
+          try {
+            w = window.innerWidth;
+          } catch (e2) {
+            w = 0;
+          }
+        }
+        if (w >= 1024) return slidesDesktop;
+        if (w >= 768) return slidesTablet;
+        return slidesMobile;
+      }
+
+      function computeDynamicMainBullets() {
+        // We want the UI to show only as many bullets as slides currently visible.
+        var spv = getActiveSlidesPerViewForViewport();
+        var parsed = typeof spv === 'number' ? spv : parseFloat(spv);
+        if (!isFinite(parsed) || parsed <= 0) return 1;
+        return Math.max(1, Math.ceil(parsed));
+      }
+
+      function updateDynamicBullets(swiper) {
+        if (!swiper || !swiper.params || !swiper.params.pagination) return;
+        if (!paginationEnabled || paginationType !== 'bullets') return;
+        try {
+          swiper.params.pagination.dynamicBullets = true;
+          swiper.params.pagination.dynamicMainBullets = computeDynamicMainBullets();
+          if (swiper.pagination && typeof swiper.pagination.render === 'function') swiper.pagination.render();
+          if (swiper.pagination && typeof swiper.pagination.update === 'function') swiper.pagination.update();
+        } catch (e) {}
+      }
+
       var options = {
         loop: loop,
         speed: transitionDuration,
@@ -201,9 +352,34 @@
         navigation: navigation ? { nextEl: next, prevEl: prev } : false,
         pagination:
           paginationEnabled && paginationEl
-            ? { el: paginationEl, clickable: true, type: paginationType }
+            ? {
+                el: paginationEl,
+                clickable: true,
+                type: paginationType === 'numbers' ? 'bullets' : paginationType,
+                // Show only the bullets that are relevant for the current layout.
+                // (e.g. 3 slidesPerView => 3 visible bullets)
+                dynamicBullets: paginationType === 'bullets',
+                dynamicMainBullets: paginationType === 'bullets' ? computeDynamicMainBullets() : undefined,
+                renderBullet:
+                  paginationType === 'numbers'
+                    ? function (index, className) {
+                        return '<span class="' + className + '">' + (index + 1) + '</span>';
+                      }
+                    : undefined,
+              }
             : false,
         autoplay: autoplayEnabled ? { delay: autoplaySpeed, disableOnInteraction: pauseOnInteraction } : false,
+        on: {
+          init: function (swiper) {
+            updateDynamicBullets(swiper);
+          },
+          breakpoint: function (swiper) {
+            updateDynamicBullets(swiper);
+          },
+          resize: function (swiper) {
+            updateDynamicBullets(swiper);
+          },
+        },
       };
 
       // In the block editor we want the block to remain selectable.
@@ -262,11 +438,34 @@
             navigation: navigation ? { nextEl: next, prevEl: prev } : false,
             pagination:
               paginationEnabled && paginationEl
-                ? { el: paginationEl, clickable: true, type: paginationType }
+                ? {
+                    el: paginationEl,
+                    clickable: true,
+                    type: paginationType === 'numbers' ? 'bullets' : paginationType,
+                    dynamicBullets: paginationType === 'bullets',
+                    dynamicMainBullets: paginationType === 'bullets' ? computeDynamicMainBullets() : undefined,
+                    renderBullet:
+                      paginationType === 'numbers'
+                        ? function (index, className) {
+                            return '<span class="' + className + '">' + (index + 1) + '</span>';
+                          }
+                        : undefined,
+                  }
                 : false,
             autoplay: autoplayEnabled ? { delay: autoplaySpeed, disableOnInteraction: pauseOnInteraction } : false,
             observer: false,
             observeParents: false,
+            on: {
+              init: function (swiper) {
+                updateDynamicBullets(swiper);
+              },
+              breakpoint: function (swiper) {
+                updateDynamicBullets(swiper);
+              },
+              resize: function (swiper) {
+                updateDynamicBullets(swiper);
+              },
+            },
           };
           try {
             new SwiperCtor(wrapper, safeOptions);
@@ -325,7 +524,7 @@
               var observer = new iframe.contentWindow.MutationObserver(function (mutations) {
                 for (var i = 0; i < mutations.length; i++) {
                   var m = mutations[i];
-                  if (m.addedNodes && m.addedNodes.length) {
+                  if (mutationAddedReviewBlock(m)) {
                     ensureSwiperCssInDocument(doc, function () {
                       // Try init immediately (parent Swiper), then fallback to iframe assets.
                       initReviewSwipersInDocument(doc);
@@ -379,7 +578,7 @@
     var observer = new MutationObserver(function (mutations) {
       for (var i = 0; i < mutations.length; i++) {
         var m = mutations[i];
-        if (m.addedNodes && m.addedNodes.length) {
+        if (mutationAddedReviewBlock(m)) {
           scheduleInit();
           break;
         }

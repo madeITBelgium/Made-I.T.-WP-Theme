@@ -211,3 +211,215 @@ wp.blocks.registerBlockStyle('core/image', {
         }
     );
 } )( window.wp );
+
+/**
+ * Editor preview device sync + Elementor-like hidden-state visualization.
+ *
+ * - Adds `madeit-preview--desktop|tablet|mobile` on <body> based on Gutenberg preview.
+ * - Adds `hide-desktop|hide-tablet|hide-mobile` classes to block wrappers in the editor
+ *   when blocks have `hideOnDesktop|hideOnTablet|hideOnMobile` attributes.
+ */
+( function ( wp ) {
+    if ( ! wp || ! wp.data || ! wp.element || ! wp.hooks ) return;
+
+    var addFilter = wp.hooks.addFilter;
+    var createElement = wp.element.createElement;
+
+    var BODY_CLASSES = [
+        'madeit-preview--desktop',
+        'madeit-preview--tablet',
+        'madeit-preview--mobile',
+    ];
+
+    var BOUND_CANVAS_IFRAMES = typeof WeakSet !== 'undefined' ? new WeakSet() : null;
+
+    function normalizePreviewDeviceType( type ) {
+        if ( ! type ) return 'desktop';
+
+        // Gutenberg returns 'Desktop' | 'Tablet' | 'Mobile' (strings).
+        var t = String( type ).toLowerCase();
+        if ( t.indexOf( 'tablet' ) !== -1 ) return 'tablet';
+        if ( t.indexOf( 'mobile' ) !== -1 ) return 'mobile';
+        return 'desktop';
+    }
+
+    function getPreviewDeviceType() {
+        try {
+            // Post editor.
+            var editPost = wp.data.select( 'core/edit-post' );
+            if ( editPost && typeof editPost.__experimentalGetPreviewDeviceType === 'function' ) {
+                return normalizePreviewDeviceType( editPost.__experimentalGetPreviewDeviceType() );
+            }
+        } catch ( e ) {}
+
+        try {
+            // Site editor.
+            var editSite = wp.data.select( 'core/edit-site' );
+            if ( editSite && typeof editSite.__experimentalGetPreviewDeviceType === 'function' ) {
+                return normalizePreviewDeviceType( editSite.__experimentalGetPreviewDeviceType() );
+            }
+        } catch ( e2 ) {}
+
+        return 'desktop';
+    }
+
+    function setBodyPreviewClass( device ) {
+        if ( ! document ) return;
+
+        function applyToDoc( doc ) {
+            if ( ! doc ) return;
+            var bodyEl = doc.body;
+            if ( ! bodyEl || ! bodyEl.classList ) return;
+            for ( var i = 0; i < BODY_CLASSES.length; i++ ) {
+                bodyEl.classList.remove( BODY_CLASSES[ i ] );
+            }
+            bodyEl.classList.add( 'madeit-preview--' + device );
+        }
+
+        function getCanvasIframes() {
+            var selectors = [
+                'iframe.editor-canvas__iframe',
+                'iframe[name="editor-canvas"]',
+                // WP block editor canvas iframe (common in WP 6+).
+                '.block-editor-iframe__container iframe',
+                'iframe.block-editor-iframe__iframe',
+                'iframe[class*="block-editor-iframe"]',
+                // Fallbacks.
+                'iframe[title*="Editor canvas"]',
+                'iframe[title*="editor canvas"]',
+                'iframe[title*="Block editor"]',
+                'iframe[title*="block editor"]',
+            ];
+
+            var out = [];
+            for ( var s = 0; s < selectors.length; s++ ) {
+                try {
+                    var found = document.querySelectorAll( selectors[ s ] );
+                    if ( found && found.length ) {
+                        for ( var f = 0; f < found.length; f++ ) {
+                            out.push( found[ f ] );
+                        }
+                    }
+                } catch ( e ) {}
+            }
+
+            // De-dupe.
+            var unique = [];
+            for ( var i = 0; i < out.length; i++ ) {
+                if ( unique.indexOf( out[ i ] ) === -1 ) unique.push( out[ i ] );
+            }
+            return unique;
+        }
+
+        function ensureIframeBound( frame ) {
+            if ( ! frame || typeof frame.addEventListener !== 'function' ) return;
+            if ( BOUND_CANVAS_IFRAMES ) {
+                if ( BOUND_CANVAS_IFRAMES.has( frame ) ) return;
+                BOUND_CANVAS_IFRAMES.add( frame );
+            } else {
+                if ( frame.__madeitPreviewBound ) return;
+                frame.__madeitPreviewBound = true;
+            }
+
+            frame.addEventListener( 'load', function () {
+                try {
+                    var doc = frame.contentDocument;
+                    if ( doc && doc.body ) {
+                        applyToDoc( doc );
+                    }
+                } catch ( e ) {}
+            } );
+        }
+
+        // Outer editor UI document.
+        applyToDoc( document );
+
+        // Block editor canvas often runs in an iframe; mirror the class there too.
+        var iframes = getCanvasIframes();
+        for ( var j = 0; j < iframes.length; j++ ) {
+            var frame = iframes[ j ];
+            ensureIframeBound( frame );
+            try {
+                var frameDoc = frame && frame.contentDocument ? frame.contentDocument : null;
+                if ( frameDoc && frameDoc.body ) {
+                    applyToDoc( frameDoc );
+                }
+            } catch ( e2 ) {
+                // Cross-origin shouldn't happen here, but ignore if it does.
+            }
+        }
+    }
+
+    function bootPreviewDeviceSync() {
+        var last = null;
+
+        function update() {
+            var next = getPreviewDeviceType();
+            if ( next === last ) return;
+            last = next;
+            setBodyPreviewClass( next );
+        }
+
+        update();
+
+        // If the iframe is injected later (common), keep re-applying on DOM changes.
+        try {
+            if ( window.MutationObserver && document.body ) {
+                var obs = new MutationObserver( function () {
+                    setBodyPreviewClass( last || getPreviewDeviceType() );
+                } );
+                obs.observe( document.body, { childList: true, subtree: true } );
+            }
+        } catch ( e3 ) {}
+
+        // Update on any store change (preview toolbar toggles).
+        if ( typeof wp.data.subscribe === 'function' ) {
+            wp.data.subscribe( update );
+        }
+    }
+
+    // Add hide-* classes on the Gutenberg block wrapper in the editor for any block
+    // that exposes hideOnDesktop/hideOnTablet/hideOnMobile attributes.
+    // This makes global editor-only styling possible (greyed out blocks per preview device).
+    addFilter(
+        'editor.BlockListBlock',
+        'madeit/responsive-visibility/wrapper-classes',
+        function ( BlockListBlock ) {
+            return function ( props ) {
+                var attrs = ( props && props.attributes ) || {};
+
+                var hideDesktop = !! attrs.hideOnDesktop;
+                var hideTablet = !! attrs.hideOnTablet;
+                var hideMobile = !! attrs.hideOnMobile;
+
+                if ( ! hideDesktop && ! hideTablet && ! hideMobile ) {
+                    return createElement( BlockListBlock, props );
+                }
+
+                var nextWrapperProps = Object.assign( {}, props.wrapperProps || {} );
+                var base = ( nextWrapperProps.className || '' ).trim();
+                var tokens = base.length ? base.split( /\s+/ ) : [];
+
+                if ( hideDesktop && tokens.indexOf( 'hide-desktop' ) === -1 ) tokens.push( 'hide-desktop' );
+                if ( hideTablet && tokens.indexOf( 'hide-tablet' ) === -1 ) tokens.push( 'hide-tablet' );
+                if ( hideMobile && tokens.indexOf( 'hide-mobile' ) === -1 ) tokens.push( 'hide-mobile' );
+
+                nextWrapperProps.className = tokens.join( ' ' );
+
+                return createElement(
+                    BlockListBlock,
+                    Object.assign( {}, props, { wrapperProps: nextWrapperProps } )
+                );
+            };
+        },
+        50
+    );
+
+    if ( wp.domReady ) {
+        wp.domReady( bootPreviewDeviceSync );
+    } else if ( document.readyState === 'loading' ) {
+        document.addEventListener( 'DOMContentLoaded', bootPreviewDeviceSync );
+    } else {
+        bootPreviewDeviceSync();
+    }
+} )( window.wp );

@@ -228,6 +228,10 @@ $breakpoints: (
         --container-offset: 0px;
         --sidebar: 100px;
 
+        @media (max-width: 575px) {
+            --container-offset: calc( 100% - 16px * 2 );
+        }
+
         @media (min-width: 576px) {
             --container-offset: calc((540px - var(--sidebar)));
         }
@@ -602,12 +606,12 @@ $breakpoints: (
 @for $i from 1 through 11 {
     [data-madeit-dir="row"] [data-type="madeit/block-content-column"].is-width-#{$i},
     [data-madeit-dir="row-reverse"] [data-type="madeit/block-content-column"].is-width-#{$i} {
-        max-width: calc(var(--madeit-max-width-desktop) * #{$i} / 12) !important;
+        max-width: calc(var(--madeit-max-width-desktop, 100%) * #{$i} / 12) !important;
     }
 
     [data-madeit-dir="column"] [data-type="madeit/block-content-column"].is-width-#{$i},
     [data-madeit-dir="column-reverse"] [data-type="madeit/block-content-column"].is-width-#{$i} {
-        max-width: var(--madeit-max-width-desktop) !important;
+        max-width: var(--madeit-max-width-desktop, 100%) !important;
     }
 }
 

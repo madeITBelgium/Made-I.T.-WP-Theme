@@ -153,3 +153,8 @@
 body.madeit-inside-container .block-editor-block-popover__inbetween {
     display: flex !important;
 }
+
+
+figure:not(.size-full) {
+    width: 100%;
+}

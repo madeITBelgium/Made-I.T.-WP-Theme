@@ -1,7 +1,6 @@
 
 const { addFilter } = wp.hooks;
 const { createHigherOrderComponent } = wp.compose;
-const { Fragment, useState, useEffect, createElement } = wp.element;
 const apiFetch = wp.apiFetch;
 
 //const blockEditor = wp.blockEditor || wp.editor;

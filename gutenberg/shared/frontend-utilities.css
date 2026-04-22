@@ -1,0 +1,22 @@
+/*
+  Shared frontend utility classes.
+  Loaded globally on the frontend via gutenberg/loader.php.
+*/
+
+@media (max-width: 991px) {
+	.hide-mobile {
+		display: none !important;
+	}
+}
+
+@media (min-width: 992px) and (max-width: 1399px) {
+	.hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (min-width: 1400px) {
+	.hide-desktop {
+		display: none !important;
+	}
+}

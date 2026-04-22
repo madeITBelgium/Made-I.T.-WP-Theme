@@ -6,6 +6,7 @@ Deze map bevat herbruikbare editor-components voor meerdere Gutenberg blocks in 
 
 - `ControlHeader` (incl. reset-knop + breakpoint switcher)
 - `BreakpointSwitcher` (desktop/tablet/mobile knoppen)
+- `ResponsiveVisibilityPanel` (Hide on Desktop/Tablet/Mobile toggles)
 
 > Let op: deze components zijn bewust geschreven zonder JSX (met `createElement`).
 > Daardoor kun je ze veilig importeren vanuit elke block zonder dat je `wp-scripts` config hoeft aan te passen.
@@ -15,6 +16,10 @@ Deze map bevat herbruikbare editor-components voor meerdere Gutenberg blocks in 
 De editor-styling voor deze controls wordt **1x globaal** geladen via [gutenberg/loader.php](../loader.php) en staat in [gutenberg/shared/editor-controls.css](editor-controls.css).
 
 Je hoeft die styling dus niet meer per block te kopiëren of apart te importeren.
+
+Daarnaast is er een kleine set frontend utility classes die **globaal op de frontend** wordt geladen via [gutenberg/loader.php](../loader.php):
+
+- [gutenberg/shared/frontend-utilities.css](frontend-utilities.css)
 
 ## Import paths
 

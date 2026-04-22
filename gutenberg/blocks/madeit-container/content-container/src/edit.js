@@ -36,7 +36,7 @@ import {
     getRedistributedColumnWidths,
     toWidthPrecision,
 } from './utils.js';
-import { ControlHeader, ResponsiveBoxControl } from '../../../../shared';
+import { ControlHeader, ResponsiveBoxControl, ResponsiveVisibilityPanel } from '../../../../shared';
 import containerVariations from './variations';
 import './editor.scss';
 
@@ -1741,29 +1741,14 @@ export function ColumnsEditContainer( props ) {
 
                 {activeTab === 'advanced' && (
                     <>
-                        <PanelBody title="Responsive" initialOpen={true}>
-                            {/* Hide on Desktop */}
-                            <ToggleControl
-                                label={ __( 'Hide on Desktop' ) }
-                                checked={ !! hideOnDesktop }
-                                onChange={ () => setAttributes( { hideOnDesktop: ! hideOnDesktop } ) }
-                            />
-
-                            {/* Hide on Tablet */}
-                            <ToggleControl
-                                label={ __( 'Hide on Tablet' )}
-                                checked={ !! hideOnTablet }
-                                onChange={ () => setAttributes( { hideOnTablet: ! hideOnTablet } ) }
-                            />
-
-                            {/* Hide on Mobile */}
-                            <ToggleControl
-                                label={ __( 'Hide on Mobile' )}
-                                checked={ !! hideOnMobile }
-                                onChange={ () => setAttributes( { hideOnMobile: ! hideOnMobile } ) }
-                            />
-
-                        </PanelBody>
+                        <ResponsiveVisibilityPanel
+                            title="Responsive"
+                            initialOpen={ true }
+                            hideOnDesktop={ hideOnDesktop }
+                            hideOnTablet={ hideOnTablet }
+                            hideOnMobile={ hideOnMobile }
+                            setAttributes={ setAttributes }
+                        />
 
                         <PanelBody className="disabledPanel" title="Binnenkomende animatie" initialOpen={false}>
                             {/* Animatie type */}

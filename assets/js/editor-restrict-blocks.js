@@ -132,15 +132,33 @@ wp.domReady(function () {
     });
 
 
-    //? Laat de block sidebar altijd open
+    //? Laat de block inserter standaard open (maar forceer het niet daarna)
+    let hasAutoOpenedInserter = false;
+
     wp.data.subscribe(() => {
 
-        const isOpen = wp.data.select('core/edit-post').isInserterOpened();
+        if (hasAutoOpenedInserter) return;
+
+        const editPostSelect = wp.data.select('core/edit-post');
+        const editPostDispatch = wp.data.dispatch('core/edit-post');
+
+        if (!editPostSelect || !editPostDispatch || typeof editPostSelect.isInserterOpened !== 'function') {
+            return;
+        }
+
+        const isOpen = editPostSelect.isInserterOpened();
 
         if (!isOpen) {
-            wp.data.dispatch('core/edit-post').setIsInserterOpened(true);
+            hasAutoOpenedInserter = true;
+            editPostDispatch.setIsInserterOpened(true);
+        } else {
+            hasAutoOpenedInserter = true;
         }
     });
+   
+
+
+
 
     //? Voeg een container block toe als de editor leeg is
     let hasRestored = false;

@@ -1788,9 +1788,16 @@ if (!function_exists('madeit_cookie_notice')) {
 if (!function_exists('madeit_extend_gutenberg')) {
     function madeit_extend_gutenberg()
     {
+        $script_rel = '/assets/js/gutenberg.js';
+        $script_path = get_theme_file_path($script_rel);
+        $script_ver = defined('MADEIT_VERSION') ? MADEIT_VERSION : false;
+        if (is_string($script_path) && $script_path !== '' && file_exists($script_path)) {
+            $script_ver = (string) filemtime($script_path);
+        }
+
         wp_enqueue_script(
             'madeit-guten-script',
-            get_theme_file_uri('/assets/js/gutenberg.js'),
+            get_theme_file_uri($script_rel),
             [
                 'wp-blocks',
                 'wp-i18n',
@@ -1800,7 +1807,7 @@ if (!function_exists('madeit_extend_gutenberg')) {
                 'wp-hooks',
                 'wp-block-editor',
             ],
-            defined('MADEIT_VERSION') ? MADEIT_VERSION : false,
+            $script_ver,
             true
         );
     }

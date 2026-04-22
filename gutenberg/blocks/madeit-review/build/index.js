@@ -149,6 +149,79 @@ function ResponsiveBoxControl(props) {
 
 /***/ },
 
+/***/ "../../shared/ResponsiveVisibilityPanel.js"
+/*!*************************************************!*\
+  !*** ../../shared/ResponsiveVisibilityPanel.js ***!
+  \*************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ ResponsiveVisibilityPanel)
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
+
+
+
+function ResponsiveVisibilityPanel(props) {
+  var title = props && typeof props.title !== 'undefined' ? props.title : (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Responsive');
+  var initialOpen = props && typeof props.initialOpen === 'boolean' ? props.initialOpen : true;
+  var hideOnDesktop = props && typeof props.hideOnDesktop !== 'undefined' ? !!props.hideOnDesktop : false;
+  var hideOnTablet = props && typeof props.hideOnTablet !== 'undefined' ? !!props.hideOnTablet : false;
+  var hideOnMobile = props && typeof props.hideOnMobile !== 'undefined' ? !!props.hideOnMobile : false;
+  var setAttributes = props && props.setAttributes ? props.setAttributes : null;
+  var onChangeDesktop = props && props.onChangeDesktop ? props.onChangeDesktop : null;
+  var onChangeTablet = props && props.onChangeTablet ? props.onChangeTablet : null;
+  var onChangeMobile = props && props.onChangeMobile ? props.onChangeMobile : null;
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.PanelBody, {
+    title: title,
+    initialOpen: initialOpen
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Hide on Desktop'),
+    checked: hideOnDesktop,
+    onChange: function (val) {
+      if (onChangeDesktop) {
+        onChangeDesktop(val);
+      } else if (setAttributes) {
+        setAttributes({
+          hideOnDesktop: !!val
+        });
+      }
+    }
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Hide on Tablet'),
+    checked: hideOnTablet,
+    onChange: function (val) {
+      if (onChangeTablet) {
+        onChangeTablet(val);
+      } else if (setAttributes) {
+        setAttributes({
+          hideOnTablet: !!val
+        });
+      }
+    }
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Hide on Mobile'),
+    checked: hideOnMobile,
+    onChange: function (val) {
+      if (onChangeMobile) {
+        onChangeMobile(val);
+      } else if (setAttributes) {
+        setAttributes({
+          hideOnMobile: !!val
+        });
+      }
+    }
+  }));
+}
+
+/***/ },
+
 /***/ "../../shared/index.js"
 /*!*****************************!*\
   !*** ../../shared/index.js ***!
@@ -159,11 +232,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   BreakpointSwitcher: () => (/* reexport safe */ _BreakpointSwitcher__WEBPACK_IMPORTED_MODULE_0__["default"]),
 /* harmony export */   ControlHeader: () => (/* reexport safe */ _ControlHeader__WEBPACK_IMPORTED_MODULE_1__["default"]),
-/* harmony export */   ResponsiveBoxControl: () => (/* reexport safe */ _ResponsiveBoxControl__WEBPACK_IMPORTED_MODULE_2__["default"])
+/* harmony export */   ResponsiveBoxControl: () => (/* reexport safe */ _ResponsiveBoxControl__WEBPACK_IMPORTED_MODULE_2__["default"]),
+/* harmony export */   ResponsiveVisibilityPanel: () => (/* reexport safe */ _ResponsiveVisibilityPanel__WEBPACK_IMPORTED_MODULE_3__["default"])
 /* harmony export */ });
 /* harmony import */ var _BreakpointSwitcher__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BreakpointSwitcher */ "../../shared/BreakpointSwitcher.js");
 /* harmony import */ var _ControlHeader__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ControlHeader */ "../../shared/ControlHeader.js");
 /* harmony import */ var _ResponsiveBoxControl__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ResponsiveBoxControl */ "../../shared/ResponsiveBoxControl.js");
+/* harmony import */ var _ResponsiveVisibilityPanel__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ResponsiveVisibilityPanel */ "../../shared/ResponsiveVisibilityPanel.js");
+
 
 
 
@@ -230,10 +306,16 @@ const DIMENSION_UNITS = [{
 const LAYOUT_IMAGES = {
   standaard: 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="240" height="140" viewBox="0 0 240 140"><rect width="240" height="140" rx="12" fill="#F3F4F6"/><rect x="18" y="22" width="64" height="64" rx="32" fill="#E5E7EB"/><rect x="96" y="28" width="126" height="10" rx="5" fill="#D1D5DB"/><rect x="96" y="48" width="98" height="10" rx="5" fill="#D1D5DB"/><rect x="18" y="100" width="204" height="10" rx="5" fill="#D1D5DB"/></svg>'),
   klassiek: 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="240" height="140" viewBox="0 0 240 140"><rect width="240" height="140" rx="12" fill="#F3F4F6"/><rect x="18" y="18" width="204" height="14" rx="7" fill="#D1D5DB"/><rect x="18" y="44" width="204" height="10" rx="5" fill="#E5E7EB"/><rect x="18" y="62" width="170" height="10" rx="5" fill="#E5E7EB"/><rect x="18" y="80" width="190" height="10" rx="5" fill="#E5E7EB"/><rect x="18" y="104" width="120" height="10" rx="5" fill="#D1D5DB"/></svg>'),
-  'inhoud | afbeelding | bio': 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="240" height="140" viewBox="0 0 240 140"><rect width="240" height="140" rx="12" fill="#F3F4F6"/><rect x="18" y="22" width="140" height="12" rx="6" fill="#D1D5DB"/><rect x="18" y="44" width="140" height="10" rx="5" fill="#E5E7EB"/><rect x="18" y="62" width="120" height="10" rx="5" fill="#E5E7EB"/><rect x="172" y="22" width="50" height="50" rx="10" fill="#E5E7EB"/><rect x="172" y="84" width="50" height="10" rx="5" fill="#D1D5DB"/></svg>'),
-  'afbeelding | inhoud': 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="240" height="140" viewBox="0 0 240 140"><rect width="240" height="140" rx="12" fill="#F3F4F6"/><rect x="18" y="22" width="70" height="96" rx="12" fill="#E5E7EB"/><rect x="104" y="26" width="118" height="12" rx="6" fill="#D1D5DB"/><rect x="104" y="48" width="102" height="10" rx="5" fill="#E5E7EB"/><rect x="104" y="66" width="110" height="10" rx="5" fill="#E5E7EB"/><rect x="104" y="84" width="86" height="10" rx="5" fill="#E5E7EB"/><rect x="104" y="108" width="74" height="10" rx="5" fill="#D1D5DB"/></svg>'),
-  'inhoud | afbeelding': 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="240" height="140" viewBox="0 0 240 140"><rect width="240" height="140" rx="12" fill="#F3F4F6"/><rect x="18" y="26" width="140" height="12" rx="6" fill="#D1D5DB"/><rect x="18" y="48" width="122" height="10" rx="5" fill="#E5E7EB"/><rect x="18" y="66" width="134" height="10" rx="5" fill="#E5E7EB"/><rect x="18" y="84" width="98" height="10" rx="5" fill="#E5E7EB"/><rect x="172" y="26" width="50" height="50" rx="10" fill="#E5E7EB"/></svg>'),
-  'icoon titel inline': 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="240" height="140" viewBox="0 0 240 140"><rect width="240" height="140" rx="12" fill="#F3F4F6"/><rect x="18" y="22" width="18" height="18" rx="9" fill="#D1D5DB"/><rect x="44" y="24" width="178" height="14" rx="7" fill="#D1D5DB"/><rect x="18" y="52" width="204" height="10" rx="5" fill="#E5E7EB"/><rect x="18" y="70" width="190" height="10" rx="5" fill="#E5E7EB"/><rect x="18" y="100" width="120" height="10" rx="5" fill="#D1D5DB"/></svg>')
+  minimal: 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="240" height="140" viewBox="0 0 240 140"><rect width="240" height="140" rx="12" fill="#F3F4F6"/><rect x="18" y="22" width="140" height="12" rx="6" fill="#D1D5DB"/><rect x="18" y="44" width="140" height="10" rx="5" fill="#E5E7EB"/><rect x="18" y="62" width="120" height="10" rx="5" fill="#E5E7EB"/><rect x="172" y="22" width="50" height="50" rx="10" fill="#E5E7EB"/><rect x="172" y="84" width="50" height="10" rx="5" fill="#D1D5DB"/></svg>'),
+  spotlight: 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="240" height="140" viewBox="0 0 240 140"><rect width="240" height="140" rx="12" fill="#F3F4F6"/><rect x="18" y="22" width="70" height="96" rx="12" fill="#E5E7EB"/><rect x="104" y="26" width="118" height="12" rx="6" fill="#D1D5DB"/><rect x="104" y="48" width="102" height="10" rx="5" fill="#E5E7EB"/><rect x="104" y="66" width="110" height="10" rx="5" fill="#E5E7EB"/><rect x="104" y="84" width="86" height="10" rx="5" fill="#E5E7EB"/><rect x="104" y="108" width="74" height="10" rx="5" fill="#D1D5DB"/></svg>'),
+  compact: 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="240" height="140" viewBox="0 0 240 140"><rect width="240" height="140" rx="12" fill="#F3F4F6"/><rect x="18" y="26" width="140" height="12" rx="6" fill="#D1D5DB"/><rect x="18" y="48" width="122" height="10" rx="5" fill="#E5E7EB"/><rect x="18" y="66" width="134" height="10" rx="5" fill="#E5E7EB"/><rect x="18" y="84" width="98" height="10" rx="5" fill="#E5E7EB"/><rect x="172" y="26" width="50" height="50" rx="10" fill="#E5E7EB"/></svg>'),
+  modern: 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="240" height="140" viewBox="0 0 240 140"><rect width="240" height="140" rx="12" fill="#F3F4F6"/><rect x="18" y="18" width="204" height="12" rx="6" fill="#D1D5DB"/><rect x="18" y="38" width="186" height="10" rx="5" fill="#E5E7EB"/><rect x="18" y="54" width="204" height="10" rx="5" fill="#E5E7EB"/><rect x="18" y="72" width="204" height="2" rx="1" fill="#D1D5DB"/><rect x="18" y="86" width="28" height="28" rx="14" fill="#E5E7EB"/><rect x="54" y="88" width="106" height="10" rx="5" fill="#D1D5DB"/><rect x="54" y="102" width="78" height="8" rx="4" fill="#E5E7EB"/><rect x="54" y="116" width="64" height="8" rx="4" fill="#D1D5DB"/></svg>')
+};
+const BORDER_RADIUS_KEYS = ['borderRadius_leftTop', 'borderRadius_rightTop', 'borderRadius_rightBottom', 'borderRadius_leftBottom'];
+const getCssUnit = value => {
+  if (typeof value !== 'string') return '';
+  const match = value.trim().match(/(px|%|vh|vw|em|rem)$/);
+  return match ? match[1] : '';
 };
 function Edit({
   attributes,
@@ -249,7 +331,7 @@ function Edit({
     transitionDuration = 500,
     autoplay = true,
     autoplaySpeed = 5000,
-    infiniteLoop = false,
+    infiniteLoop = true,
     pauseOnInteraction = true,
     textColor = '',
     containerBackgroundColor = '',
@@ -257,6 +339,7 @@ function Edit({
     width = '48px',
     height = '48px',
     objectFit = 'cover',
+    borderRadiusUnit = '%',
     borderRadius_leftTop = '50%',
     borderRadius_rightTop = '50%',
     borderRadius_rightBottom = '50%',
@@ -265,10 +348,15 @@ function Edit({
     arrowColor = '',
     paginationSize = '8px',
     paginationColor = '',
-    categoryIds = []
+    categoryIds = [],
+    hideOnDesktop = false,
+    hideOnTablet = false,
+    hideOnMobile = false
   } = attributes;
   const [activeTab, setActiveTab] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useState)('layout');
   const [activeSlidesPerViewBreakpoint, setActiveSlidesPerViewBreakpoint] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useState)('desktop');
+  const isSpotlightLayout = layout === 'spotlight';
+  const wasSpotlightLayoutRef = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useRef)(false);
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps)({
     style: {
       '--madeit-review-text-color': textColor || undefined,
@@ -290,18 +378,26 @@ function Edit({
     mobile: slidesMobile
   };
   const resetSlidesPerView = () => {
+    if (isSpotlightLayout) {
+      setAttributes({
+        slidesDesktop: 1,
+        slidesTablet: 1,
+        slidesMobile: 1
+      });
+      return;
+    }
     setAttributes({
       slidesDesktop: 3,
       slidesTablet: 2,
       slidesMobile: 1
     });
   };
-  const DISABLED_LAYOUTS = ['inhoud | afbeelding | bio', 'afbeelding | inhoud', 'inhoud | afbeelding', 'icoon titel inline'];
+  const DISABLED_LAYOUTS = [];
   const reviewLayoutSelector = ({
     selectedLayout,
     onChange
   }) => {
-    const layouts = ['standaard', 'klassiek', 'inhoud | afbeelding | bio', 'afbeelding | inhoud', 'inhoud | afbeelding', 'icoon titel inline'];
+    const layouts = ['standaard', 'klassiek', 'minimal', 'modern', 'compact', 'spotlight'];
     return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "layout-selector"
     }, layouts.map(layoutOption => {
@@ -337,6 +433,44 @@ function Edit({
       }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Binnenkort beschikbaar', 'madeit-review'))) : null);
     }));
   };
+  const detectedBorderRadiusUnit = getCssUnit(borderRadius_leftTop) || getCssUnit(borderRadius_rightTop) || getCssUnit(borderRadius_rightBottom) || getCssUnit(borderRadius_leftBottom) || borderRadiusUnit || '%';
+
+  // Keep the stored attribute in sync for older content where borderRadiusUnit didn't exist yet.
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useEffect)(() => {
+    if (borderRadiusUnit !== detectedBorderRadiusUnit) {
+      setAttributes({
+        borderRadiusUnit: detectedBorderRadiusUnit
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [borderRadius_leftTop, borderRadius_rightTop, borderRadius_rightBottom, borderRadius_leftBottom]);
+
+  // Spotlight layout: fixed layout-specific constraints.
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_5__.useEffect)(() => {
+    const wasSpotlightLayout = wasSpotlightLayoutRef.current;
+    wasSpotlightLayoutRef.current = isSpotlightLayout;
+    if (!isSpotlightLayout) return;
+    const enteringSpotlight = !wasSpotlightLayout;
+    const nextAttributes = {};
+    if (slidesDesktop !== 1) nextAttributes.slidesDesktop = 1;
+    if (slidesTablet !== 1) nextAttributes.slidesTablet = 1;
+    if (slidesMobile !== 1) nextAttributes.slidesMobile = 1;
+    if (width !== '100%') nextAttributes.width = '100%';
+    if (height !== '100%') nextAttributes.height = '100%';
+
+    // Border radius: default to 20px when switching to spotlight, but keep it editable afterwards.
+    const allCornersEmpty = !borderRadius_leftTop && !borderRadius_rightTop && !borderRadius_rightBottom && !borderRadius_leftBottom;
+    if (enteringSpotlight || allCornersEmpty) {
+      if (borderRadiusUnit !== 'px') nextAttributes.borderRadiusUnit = 'px';
+      if (borderRadius_leftTop !== '20px') nextAttributes.borderRadius_leftTop = '20px';
+      if (borderRadius_rightTop !== '20px') nextAttributes.borderRadius_rightTop = '20px';
+      if (borderRadius_rightBottom !== '20px') nextAttributes.borderRadius_rightBottom = '20px';
+      if (borderRadius_leftBottom !== '20px') nextAttributes.borderRadius_leftBottom = '20px';
+    }
+    if (Object.keys(nextAttributes).length > 0) {
+      setAttributes(nextAttributes);
+    }
+  }, [isSpotlightLayout, slidesDesktop, slidesTablet, slidesMobile, width, height, borderRadiusUnit, borderRadius_leftTop, borderRadius_rightTop, borderRadius_rightBottom, borderRadius_leftBottom, setAttributes]);
   return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InspectorControls, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     style: {
       display: 'flex',
@@ -377,8 +511,9 @@ function Edit({
   }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "madeit-control-rangeRow"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.RangeControl, {
-    value: valueMap[activeSlidesPerViewBreakpoint],
+    value: isSpotlightLayout ? 1 : valueMap[activeSlidesPerViewBreakpoint],
     onChange: val => {
+      if (isSpotlightLayout) return;
       if (activeSlidesPerViewBreakpoint === 'desktop') setAttributes({
         slidesDesktop: val
       });else if (activeSlidesPerViewBreakpoint === 'tablet') setAttributes({
@@ -389,12 +524,14 @@ function Edit({
     },
     min: 1,
     max: 10,
-    step: 0.5
+    step: 0.5,
+    disabled: isSpotlightLayout
   }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.Button, {
     className: "madeit-control-rangeRow__reset",
     icon: "undo",
     variant: "tertiary",
     onClick: resetSlidesPerView,
+    disabled: isSpotlightLayout,
     showTooltip: true,
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Reset slides per view')
   }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
@@ -416,7 +553,10 @@ function Edit({
       label: 'Stippen',
       value: 'bullets'
     }, {
-      label: 'Nummers',
+      label: 'Nummers (1,2,3)',
+      value: 'numbers'
+    }, {
+      label: 'Fractie (1/5)',
       value: 'fraction'
     }, {
       label: 'Progress bar',
@@ -473,7 +613,7 @@ function Edit({
       margin: '20px 0'
     }
   }), Array.isArray(reviewCategories) ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "madeit-control"
+    className: "madeit-control review_categories"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
     style: {
       margin: '0 0 8px'
@@ -484,11 +624,11 @@ function Edit({
       opacity: 0.8
     }
   }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Laat alles uitgevinkt om alle categorieën te tonen.', 'madeit-review')), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "categories",
     style: {
-      display: 'grid',
-      gap: '8px',
-      maxHeight: '220px',
-      overflow: 'auto'
+      display: 'flex',
+      gap: '20px',
+      flexWrap: 'wrap'
     }
   }, (reviewCategories || []).map(term => {
     var _term$name;
@@ -496,6 +636,7 @@ function Edit({
     if (!termId) return null;
     const checked = Array.isArray(categoryIds) ? categoryIds.includes(termId) : false;
     return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.CheckboxControl, {
+      className: "categorie",
       key: termId,
       label: (_term$name = term?.name) !== null && _term$name !== void 0 ? _term$name : String(termId),
       checked: checked,
@@ -512,27 +653,25 @@ function Edit({
     initialOpen: true
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "madeit-control"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.PanelColorSettings, {
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.PanelColorSettings, {
     initialOpen: true,
     colorSettings: [{
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Tekst kleur'),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Tekst kleur', 'madeit-review'),
       value: textColor,
       onChange: value => setAttributes({
         textColor: value
       })
     }]
-  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "madeit-control"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.PanelColorSettings, {
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.PanelColorSettings, {
     initialOpen: true,
     colorSettings: [{
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Achtergrond kleur'),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Achtergrond kleur', 'madeit-review'),
       value: containerBackgroundColor,
       onChange: value => setAttributes({
         containerBackgroundColor: value
       })
     }]
-  }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
+  })))), (layout === 'standaard' || layout === 'modern' || layout === 'minimal' || layout === 'spotlight') && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Afbeelding', 'madeit-review'),
     initialOpen: false
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ToggleControl, {
@@ -555,7 +694,8 @@ function Edit({
     onChange: val => setAttributes({
       width: val
     }),
-    units: DIMENSION_UNITS
+    units: DIMENSION_UNITS,
+    disabled: isSpotlightLayout
   }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.__experimentalUnitControl, {
     __next40pxDefaultSize: true,
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Hoogte', 'madeit-review'),
@@ -563,10 +703,11 @@ function Edit({
     onChange: val => setAttributes({
       height: val
     }),
-    units: DIMENSION_UNITS
+    units: DIMENSION_UNITS,
+    disabled: isSpotlightLayout
   })), height && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     style: {
-      marginTop: '20px'
+      marginTop: '0px'
     }
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.SelectControl, {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Object-fit', 'madeit-review'),
@@ -595,46 +736,126 @@ function Edit({
       marginTop: '20px'
     }
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_shared__WEBPACK_IMPORTED_MODULE_7__.ControlHeader, {
-    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Border radius')
+    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Border radius', 'madeit-review'),
+    afterBreakpoint: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ButtonGroup, {
+      className: "madeit-control-units"
+    }, ['px', '%', 'vh'].map(unit => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.Button, {
+      key: unit,
+      isPressed: detectedBorderRadiusUnit === unit,
+      onClick: () => {
+        const nextAttributes = {
+          borderRadiusUnit: unit
+        };
+        BORDER_RADIUS_KEYS.forEach(key => {
+          const raw = attributes[key];
+          if (!raw) return;
+          const numeric = parseFloat(raw);
+          if (!Number.isFinite(numeric)) return;
+          nextAttributes[key] = `${numeric}${unit}`;
+        });
+        setAttributes(nextAttributes);
+      }
+    }, unit)))
   }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     style: {
       display: 'flex',
-      gap: '10px',
-      flexWrap: 'wrap'
+      alignItems: 'flex-start'
     }
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.__experimentalUnitControl, {
-    __next40pxDefaultSize: true,
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Links boven', 'madeit-review'),
-    value: borderRadius_leftTop,
-    onChange: val => setAttributes({
-      borderRadius_leftTop: val
-    }),
-    units: DIMENSION_UNITS
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.__experimentalUnitControl, {
-    __next40pxDefaultSize: true,
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Rechts boven', 'madeit-review'),
-    value: borderRadius_rightTop,
-    onChange: val => setAttributes({
-      borderRadius_rightTop: val
-    }),
-    units: DIMENSION_UNITS
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.__experimentalUnitControl, {
-    __next40pxDefaultSize: true,
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Rechts onder', 'madeit-review'),
-    value: borderRadius_rightBottom,
-    onChange: val => setAttributes({
-      borderRadius_rightBottom: val
-    }),
-    units: DIMENSION_UNITS
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.__experimentalUnitControl, {
-    __next40pxDefaultSize: true,
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Links onder', 'madeit-review'),
-    value: borderRadius_leftBottom,
-    onChange: val => setAttributes({
-      borderRadius_leftBottom: val
-    }),
-    units: DIMENSION_UNITS
-  })))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
+  }, [{
+    label: 'Bovenaan',
+    key: 'borderRadius_leftTop'
+  }, {
+    label: 'Rechts',
+    key: 'borderRadius_rightTop'
+  }, {
+    label: 'Onderaan',
+    key: 'borderRadius_rightBottom'
+  }, {
+    label: 'Links',
+    key: 'borderRadius_leftBottom'
+  }].map(item => {
+    const rawValue = attributes[item.key] || '';
+    const numericValue = parseFloat(rawValue);
+    const displayValue = Number.isFinite(numericValue) ? numericValue : '';
+    return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      key: item.key,
+      style: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        flex: 1
+      }
+    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+      type: "number",
+      value: displayValue,
+      min: 0,
+      onChange: e => {
+        const val = e.target.value;
+        setAttributes({
+          [item.key]: val !== '' ? `${val}${detectedBorderRadiusUnit}` : ''
+        });
+      },
+      style: {
+        width: '100%',
+        height: '35px',
+        // Only round the outer corners of the input group.
+        borderRadius: item.key === 'borderRadius_leftTop' ? '4px 0 0 4px' : item.key === 'borderRadius_rightTop' ? '0 0 0 0' : item.key === 'borderRadius_rightBottom' ? '0 0 0 0' : item.key === 'borderRadius_leftBottom' ? '0 4px 4px 0' : '4px',
+        textAlign: 'center'
+      }
+    }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      style: {
+        fontSize: '9px',
+        marginTop: '4px'
+      }
+    }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)(item.label, 'madeit-review')));
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.Button, {
+    title: "Waarden koppelen",
+    variant: "tertiary",
+    onClick: () => {
+      const values = BORDER_RADIUS_KEYS.map(key => attributes[key] || '');
+      const allEqual = values.every(val => val === values[0]);
+      if (allEqual) {
+        setAttributes({
+          borderRadius_leftTop: '',
+          borderRadius_rightTop: '',
+          borderRadius_rightBottom: '',
+          borderRadius_leftBottom: ''
+        });
+      } else {
+        const firstValue = values.find(val => val) || '';
+        setAttributes({
+          borderRadius_leftTop: firstValue,
+          borderRadius_rightTop: firstValue,
+          borderRadius_rightBottom: firstValue,
+          borderRadius_leftBottom: firstValue
+        });
+      }
+    },
+    style: {
+      height: '35px',
+      marginLeft: '10px',
+      marginTop: '4px',
+      padding: '0'
+    },
+    showTooltip: true,
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Koppel waarden', 'madeit-review')
+  }, (() => {
+    const values = BORDER_RADIUS_KEYS.map(key => attributes[key] || '');
+    const allEqual = values.every(val => val === values[0]);
+    return allEqual ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: "dashicons dashicons-editor-unlink",
+      style: {
+        fontSize: '15px',
+        width: 'min-content'
+      }
+    }) : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: "dashicons dashicons-admin-links",
+      style: {
+        fontSize: '15px',
+        width: 'min-content'
+      }
+    });
+  })()))))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Navigation', 'madeit-review'),
     initialOpen: false
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -652,7 +873,7 @@ function Edit({
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.PanelColorSettings, {
     initialOpen: true,
     colorSettings: [{
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Pijl kleur'),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Pijl kleur', 'madeit-review'),
       value: arrowColor,
       onChange: value => setAttributes({
         arrowColor: value
@@ -673,16 +894,24 @@ function Edit({
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.PanelColorSettings, {
     initialOpen: true,
     colorSettings: [{
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Pagination kleur'),
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Pagination kleur', 'madeit-review'),
       value: paginationColor,
       onChange: value => setAttributes({
         paginationColor: value
       })
     }]
-  })))), activeTab === 'advanced' && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
-    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Geavanceerd', 'madeit-review'),
-    initialOpen: true
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Binnenkort beschikbaar', 'madeit-review'))))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  })))), activeTab === 'advanced' && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_shared__WEBPACK_IMPORTED_MODULE_7__.ResponsiveVisibilityPanel, {
+    title: "Responsive",
+    initialOpen: true,
+    hideOnDesktop: hideOnDesktop,
+    hideOnTablet: hideOnTablet,
+    hideOnMobile: hideOnMobile,
+    setAttributes: setAttributes
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
+    className: "disabledPanel",
+    title: "Binnenkomende animatie",
+    initialOpen: false
+  }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     ...blockProps
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)((_wordpress_server_side_render__WEBPACK_IMPORTED_MODULE_3___default()), {
     block: "madeit/reviews",
@@ -887,7 +1116,7 @@ module.exports = window["wp"]["serverSideRender"];
   \************************/
 (module) {
 
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"madeit/reviews","title":"Madeit reviews","category":"madeit","keywords":["review","reviews","recensie","recensies","testimonial","klantreview"],"icon":"star-filled","description":"Haal reviews op van een externe bron en toon deze in een mooie layout.","status":"nieuw","version":"1.0.0","madeit":{"changelog":{"1.0.0":["Eerste versie van de reviews block"]}},"example":{},"attributes":{"layout":{"type":"string","default":"standaard"},"slidesDesktop":{"type":"number","default":3},"slidesTablet":{"type":"number","default":2},"slidesMobile":{"type":"number","default":1},"showArrows":{"type":"boolean","default":true},"paginationType":{"type":"string","default":"bullets"},"transitionDuration":{"type":"number","default":500},"autoplay":{"type":"boolean","default":true},"autoplaySpeed":{"type":"number","default":5000},"infiniteLoop":{"type":"boolean","default":false},"pauseOnInteraction":{"type":"boolean","default":true},"textColor":{"type":"string","default":""},"containerBackgroundColor":{"type":"string","default":""},"showImage":{"type":"boolean","default":true},"width":{"type":"string","default":"48px"},"height":{"type":"string","default":"48px"},"objectFit":{"type":"string","default":"cover"},"borderRadius_leftTop":{"type":"string","default":"50%"},"borderRadius_rightTop":{"type":"string","default":"50%"},"borderRadius_rightBottom":{"type":"string","default":"50%"},"borderRadius_leftBottom":{"type":"string","default":"50%"},"arrowSize":{"type":"string","default":"24px"},"arrowColor":{"type":"string","default":""},"paginationSize":{"type":"string","default":"8px"},"paginationColor":{"type":"string","default":""},"categoryIds":{"type":"array","items":{"type":"number"},"default":[]}},"supports":{"html":false},"textdomain":"madeit-review","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php"}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"madeit/reviews","title":"Madeit reviews","category":"madeit","keywords":["review","reviews","recensie","recensies","testimonial","klantreview"],"icon":"star-filled","description":"Haal reviews op van een externe bron en toon deze in een mooie layout.","status":"nieuw","version":"1.0.0","madeit":{"changelog":{"1.0.0":["Eerste versie van de reviews block"]}},"example":{},"attributes":{"layout":{"type":"string","default":"standaard"},"slidesDesktop":{"type":"number","default":3},"slidesTablet":{"type":"number","default":2},"slidesMobile":{"type":"number","default":1},"showArrows":{"type":"boolean","default":true},"paginationType":{"type":"string","default":"bullets"},"transitionDuration":{"type":"number","default":500},"autoplay":{"type":"boolean","default":true},"autoplaySpeed":{"type":"number","default":5000},"infiniteLoop":{"type":"boolean","default":true},"pauseOnInteraction":{"type":"boolean","default":true},"textColor":{"type":"string","default":""},"containerBackgroundColor":{"type":"string","default":""},"showImage":{"type":"boolean","default":true},"width":{"type":"string","default":"48px"},"height":{"type":"string","default":"48px"},"objectFit":{"type":"string","default":"cover"},"borderRadiusUnit":{"type":"string","default":"%"},"borderRadius_leftTop":{"type":"string","default":"50%"},"borderRadius_rightTop":{"type":"string","default":"50%"},"borderRadius_rightBottom":{"type":"string","default":"50%"},"borderRadius_leftBottom":{"type":"string","default":"50%"},"arrowSize":{"type":"string","default":"24px"},"arrowColor":{"type":"string","default":""},"paginationSize":{"type":"string","default":"8px"},"paginationColor":{"type":"string","default":""},"categoryIds":{"type":"array","items":{"type":"number"},"default":[]},"hideOnDesktop":{"type":"boolean","default":false},"hideOnTablet":{"type":"boolean","default":false},"hideOnMobile":{"type":"boolean","default":false}},"supports":{"html":false},"textdomain":"madeit-review","editorScript":"file:./index.js","editorStyle":"file:./index.css","style":"file:./style-index.css","render":"file:./render.php"}');
 
 /***/ }
 

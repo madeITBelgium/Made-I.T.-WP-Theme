@@ -1,6 +1,11 @@
 /* Editor-only shared styling for Made I.T. inspector controls.
    This is loaded globally in the block editor via gutenberg/loader.php. */
 
+:root {
+    /* Debug flag: if you can read this in DevTools, the stylesheet is loaded. */
+    --madeit-shared-editor-controls-loaded: 1;
+}
+
 .madeit-control-header__reset.components-button {
     min-width: 32px;
     margin-left: auto;
@@ -46,7 +51,7 @@
     width: 100%;
     display: inline-flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
     gap: 8px;
 }
 
@@ -166,4 +171,23 @@
 
 .madeit-control-buttonGroup button svg {
     max-width: 15px !important;
+}
+
+/*
+    Responsive preview visibility (Elementor-like):
+    When a block is configured to be hidden on the active preview device,
+    keep it visible but render it "greyed out" in the editor.
+
+    The active preview device class is managed by assets/js/gutenberg.js.
+*/
+
+/* Grey out the block edit wrapper (keeps selection UI readable). */
+body.madeit-preview--desktop .hide-desktop,
+body.madeit-preview--desktop .is-hidden-desktop,
+body.madeit-preview--tablet .hide-tablet,
+body.madeit-preview--tablet .is-hidden-tablet,
+body.madeit-preview--mobile .hide-mobile,
+body.madeit-preview--mobile .is-hidden-mobile {
+	opacity: 0.35;
+	filter: grayscale(1);
 }
