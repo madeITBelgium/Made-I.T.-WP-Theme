@@ -1,7 +1,8 @@
-
+var React = window.React || (window.wp && window.wp.element);
 const { addFilter } = wp.hooks;
 const { createHigherOrderComponent } = wp.compose;
 const apiFetch = wp.apiFetch;
+const { Fragment } = wp.element;
 
 //const blockEditor = wp.blockEditor || wp.editor;
 const { InspectorControls } = wp.blockEditor; //= blockEditor;
@@ -207,7 +208,7 @@ function UploadFontFamily() {
         }
     };
 
-    const el = createElement;
+    const el = React.createElement;
 
     // In the Typography panel (ToolsPanel), PanelBody nesting is awkward.
     // We render a compact control block instead.
@@ -265,7 +266,7 @@ function UploadFontFamily() {
 }
 
 function UploadFontFamilyTypographyItem() {
-    const el = createElement;
+    const el = React.createElement;
 
     const [hasFontFamilyControl, setHasFontFamilyControl] = useState(false);
 
@@ -313,17 +314,17 @@ function UploadFontFamilyTypographyItem() {
 const withFontUploadInspector = createHigherOrderComponent((BlockEdit) => {
     return (props) => {
         if (!TARGET_BLOCKS.includes(props.name)) {
-            return createElement(BlockEdit, props);
+            return React.createElement(BlockEdit, props);
         }
 
-        return createElement(
+        return React.createElement(
             Fragment,
             null,
-            createElement(BlockEdit, props),
-            createElement(
+            React.createElement(BlockEdit, props),
+            React.createElement(
                 InspectorControls,
                 { group: 'typography' },
-                createElement(UploadFontFamilyTypographyItem, null)
+                React.createElement(UploadFontFamilyTypographyItem, null)
             )
         );
     };

@@ -3,6 +3,7 @@ var React = window.React || (window.wp && window.wp.element);
 const { ToolbarButton, ToolbarGroup, Modal } = wp.components;
 
 const { BlockControls } = wp.blockEditor;
+const { Fragment } = wp.element;
 
 const TARGET_BLOCK = 'core/button';
 
@@ -33,7 +34,7 @@ const withPopupToolbarButton = wp.compose.createHigherOrderComponent((BlockEdit)
     return (props) => {
 
         if (props.name !== TARGET_BLOCK) {
-            returnReact.createElement(BlockEdit, props);
+            return React.createElement(BlockEdit, props);
         }
 
         const { attributes, setAttributes } = props;
@@ -107,7 +108,7 @@ const withPopupToolbarButton = wp.compose.createHigherOrderComponent((BlockEdit)
             setView('select');
         };
 
-        returnReact.createElement(
+        return React.createElement(
             Fragment,
             null,
 

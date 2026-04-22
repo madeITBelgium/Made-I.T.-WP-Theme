@@ -28,7 +28,7 @@ registerBlockType(metadata.name, {
             paddingBottom: { type: 'string', default: '1.25rem' },
             paddingLeft: { type: 'string', default: '1.25rem' },
         },
-        save: ( { attributes } ) => {
+        save: ( props ) => {
             // oude save functie die alleen de basisstructuur van de card rendert zonder de nieuwe attributen
             const { 
                 verticalAlignment,
