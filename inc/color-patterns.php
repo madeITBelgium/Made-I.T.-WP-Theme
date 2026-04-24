@@ -41,6 +41,12 @@ function madeit_custom_colors_css()
  body {
   color: '.$text_color.';
   background-color: '.$background_color.';
+  --wp--preset--color--primary-contrast: '.madeit_contrast_color($primary_color).';
+  --wp--preset--color--secondary-contrast: '.madeit_contrast_color($secondary_color).';
+  --wp--preset--color--success-contrast: '.madeit_contrast_color($success_color).';
+  --wp--preset--color--info-contrast: '.madeit_contrast_color($info_color).';
+  --wp--preset--color--warning-contrast: '.madeit_contrast_color($warning_color).';
+  --wp--preset--color--danger-contrast: '.madeit_contrast_color($danger_color).';
 }
 a {
   color: '.$primary_color.';
@@ -54,25 +60,29 @@ a:hover {
     color: '.$primary_color.';
 }
 .page-item.active .page-link {
-    color: '.madeit_contrast_color(madeit_color_luminance($primary_color, 0, 0, 0)).';
+    color: '.madeit_contrast_color($primary_color).';
     background-color: '.$primary_color.';
     border-color: '.$primary_color.';
 }
 
 a.list-group-item-primary:focus, a.list-group-item-primary:hover, button.list-group-item-primary:focus, button.list-group-item-primary:hover {
     background-color: '.madeit_color_luminance($primary_color, 0, 0, 0.31).';
+    color: '.madeit_contrast_color(madeit_color_luminance($primary_color, 0, 0, 0.31)).';
 }
 
 .list-group-item-secondary {
     background-color: '.madeit_change_color($secondary_color, '#dddfe2').';
+    color: '.madeit_contrast_color($secondary_color).';
 }
 
 a.list-group-item-secondary:focus, a.list-group-item-secondary:hover, button.list-group-item-secondary:focus, button.list-group-item-secondary:hover {
     background-color: '.madeit_color_luminance($secondary_color, 0, 0, 0.31).';
+    color: '.madeit_contrast_color(madeit_color_luminance($secondary_color, 0, 0, 0.31)).';
 }
 
 .list-group-item-success {
-    background-color: '.madeit_change_color($secondary_color, '#c3e6cb').';
+    background-color: '.madeit_change_color($success_color, '#c3e6cb').';
+    color: '.madeit_contrast_color($success_color).';
 }
 
 a.list-group-item-success:focus, a.list-group-item-success:hover, button.list-group-item-success:focus, button.list-group-item-success:hover {
@@ -80,7 +90,8 @@ a.list-group-item-success:focus, a.list-group-item-success:hover, button.list-gr
 }
 
 .list-group-item-info {
-    background-color: '.madeit_change_color($secondary_color, '#bee5eb').';
+    background-color: '.madeit_change_color($info_color, '#bee5eb').';
+    color: '.madeit_contrast_color($info_color).';
 }
 
 a.list-group-item-info:focus, a.list-group-item-info:hover, button.list-group-item-info:focus, button.list-group-item-info:hover {
@@ -88,7 +99,8 @@ a.list-group-item-info:focus, a.list-group-item-info:hover, button.list-group-it
 }
 
 .list-group-item-warning {
-    background-color: '.madeit_change_color($secondary_color, '#ffeeba').';
+    background-color: '.madeit_change_color($warning_color, '#ffeeba').';
+    color: '.madeit_contrast_color($warning_color).';
 }
 
 a.list-group-item-warning:focus, a.list-group-item-warning:hover, button.list-group-item-warning:focus, button.list-group-item-warning:hover {
@@ -96,7 +108,8 @@ a.list-group-item-warning:focus, a.list-group-item-warning:hover, button.list-gr
 }
 
 .list-group-item-danger {
-    background-color: '.madeit_change_color($secondary_color, '#f5c6cb').';
+    background-color: '.madeit_change_color($danger_color, '#f5c6cb').';
+    color: '.madeit_contrast_color($danger_color).';
 }
 
 a.list-group-item-danger:focus, a.list-group-item-danger:hover, button.list-group-item-danger:focus, button.list-group-item-danger:hover {
@@ -105,22 +118,27 @@ a.list-group-item-danger:focus, a.list-group-item-danger:hover, button.list-grou
 
 .badge-primary {
     background-color: '.$primary_color.';
+    color: '.madeit_contrast_color($primary_color).';
 }
 
 .btn-outline-primary:not([disabled]):not(.disabled):active, .btn-outline-primary:not([disabled]):not(.disabled).active, .show > .btn-outline-primary.dropdown-toggle {
     border-color: '.$primary_color.';
+    color: '.madeit_contrast_color($primary_color).';
 }
 
 .btn-primary:hover {
     background-color: '.madeit_color_luminance($primary_color, 0, 0, -0.07).';
+    color: '.madeit_contrast_color(madeit_color_luminance($primary_color, 0, 0, -0.07)).';
 }
 
 .btn-primary:hover {
     border-color: '.madeit_color_luminance($primary_color, 0, 0, -0.1).';
+    color: '.madeit_contrast_color(madeit_color_luminance($primary_color, 0, 0, -0.1)).';
 }
 
 .badge-primary[href]:focus, .badge-primary[href]:hover {
     background-color: '.madeit_color_luminance($primary_color, 0, 0, -0.1).';
+    color: '.madeit_contrast_color(madeit_color_luminance($primary_color, 0, 0, -0.1)).';
 }
 
 .btn-primary:not([disabled]):not(.disabled):active, .btn-primary:not([disabled]):not(.disabled).active, .show > .btn-primary.dropdown-toggle {
@@ -129,22 +147,27 @@ a.list-group-item-danger:focus, a.list-group-item-danger:hover, button.list-grou
 
 .badge-secondary {
     background-color: '.$secondary_color.';
+    color: '.madeit_contrast_color($secondary_color).';
 }
 
 .btn-outline-secondary:not([disabled]):not(.disabled):active, .btn-outline-secondary:not([disabled]):not(.disabled).active, .show > .btn-outline-secondary.dropdown-toggle {
     border-color: '.$secondary_color.';
+    color: '.madeit_contrast_color($secondary_color).';
 }
 
 .btn-secondary:hover {
     background-color: '.madeit_color_luminance($secondary_color, 0, 0, -0.07).';
+    color: '.madeit_contrast_color(madeit_color_luminance($secondary_color, 0, 0, -0.07)).';
 }
 
 .btn-secondary:hover {
     border-color: '.madeit_color_luminance($secondary_color, 0, 0, -0.1).';
+    color: '.madeit_contrast_color(madeit_color_luminance($secondary_color, 0, 0, -0.1)).';
 }
 
 .badge-secondary[href]:focus, .badge-secondary[href]:hover {
     background-color: '.madeit_color_luminance($secondary_color, 0, 0, -0.1).';
+    color: '.madeit_contrast_color(madeit_color_luminance($secondary_color, 0, 0, -0.1)).';
 }
 
 .btn-secondary:not([disabled]):not(.disabled):active, .btn-secondary:not([disabled]):not(.disabled).active, .show > .btn-secondary.dropdown-toggle {
@@ -153,6 +176,7 @@ a.list-group-item-danger:focus, a.list-group-item-danger:hover, button.list-grou
 
 .badge-success {
     background-color: '.$success_color.';
+    color: '.madeit_contrast_color($success_color).';
 }
 
 .btn-outline-success:not([disabled]):not(.disabled):active, .btn-outline-success:not([disabled]):not(.disabled).active, .show > .btn-outline-success.dropdown-toggle {
@@ -161,6 +185,7 @@ a.list-group-item-danger:focus, a.list-group-item-danger:hover, button.list-grou
 
 .btn-success:hover, .woocommerce button.button.alt:hover {
     background-color: '.madeit_color_luminance($success_color, 0, 0, -0.07).';
+    color: '.madeit_contrast_color(madeit_color_luminance($success_color, 0, 0, -0.07)).';
 }
 
 .btn-success:hover, .woocommerce button.button.alt:hover {
@@ -169,6 +194,7 @@ a.list-group-item-danger:focus, a.list-group-item-danger:hover, button.list-grou
 
 .badge-success[href]:focus, .badge-success[href]:hover {
     background-color: '.madeit_color_luminance($success_color, 0, 0, -0.1).';
+    color: '.madeit_contrast_color(madeit_color_luminance($success_color, 0, 0, -0.1)).';
 }
 
 .btn-success:not([disabled]):not(.disabled):active, .btn-success:not([disabled]):not(.disabled).active, .show > .btn-success.dropdown-toggle {
@@ -177,6 +203,7 @@ a.list-group-item-danger:focus, a.list-group-item-danger:hover, button.list-grou
 
 .badge-info {
     background-color: '.$info_color.';
+    color: '.madeit_contrast_color($info_color).';
 }
 
 .btn-outline-info:not([disabled]):not(.disabled):active, .btn-outline-info:not([disabled]):not(.disabled).active, .show > .btn-outline-info.dropdown-toggle {
@@ -185,6 +212,7 @@ a.list-group-item-danger:focus, a.list-group-item-danger:hover, button.list-grou
 
 .btn-info:hover {
     background-color: '.madeit_color_luminance($info_color, 0, 0, -0.07).';
+    color: '.madeit_contrast_color(madeit_color_luminance($info_color, 0, 0, -0.07)).';
 }
 
 .btn-info:hover {
@@ -193,6 +221,7 @@ a.list-group-item-danger:focus, a.list-group-item-danger:hover, button.list-grou
 
 .badge-info[href]:focus, .badge-info[href]:hover {
     background-color: '.madeit_color_luminance($info_color, 0, 0, -0.1).';
+    color: '.madeit_contrast_color(madeit_color_luminance($info_color, 0, 0, -0.1)).';
 }
 
 .btn-info:not([disabled]):not(.disabled):active, .btn-info:not([disabled]):not(.disabled).active, .show > .btn-info.dropdown-toggle {
@@ -201,6 +230,7 @@ a.list-group-item-danger:focus, a.list-group-item-danger:hover, button.list-grou
 
 .badge-warning {
     background-color: '.$warning_color.';
+    color: '.madeit_contrast_color($warning_color).';
 }
 
 .btn-outline-warning:not([disabled]):not(.disabled):active, .btn-outline-warning:not([disabled]):not(.disabled).active, .show > .btn-outline-warning.dropdown-toggle {
@@ -209,6 +239,7 @@ a.list-group-item-danger:focus, a.list-group-item-danger:hover, button.list-grou
 
 .btn-warning:hover {
     background-color: '.madeit_color_luminance($warning_color, 0, 0, -0.07).';
+    color: '.madeit_contrast_color(madeit_color_luminance($warning_color, 0, 0, -0.07)).';
 }
 
 .btn-warning:hover {
@@ -217,6 +248,7 @@ a.list-group-item-danger:focus, a.list-group-item-danger:hover, button.list-grou
 
 .badge-warning[href]:focus, .badge-warning[href]:hover {
     background-color: '.madeit_color_luminance($warning_color, 0, 0, -0.1).';
+    color: '.madeit_contrast_color(madeit_color_luminance($warning_color, 0, 0, -0.1)).';
 }
 
 .btn-warning:not([disabled]):not(.disabled):active, .btn-warning:not([disabled]):not(.disabled).active, .show > .btn-warning.dropdown-toggle {
@@ -225,6 +257,7 @@ a.list-group-item-danger:focus, a.list-group-item-danger:hover, button.list-grou
 
 .badge-danger {
     background-color: '.$danger_color.';
+    color: '.madeit_contrast_color($danger_color).';
 }
 
 .btn-outline-danger:not([disabled]):not(.disabled):active, .btn-outline-danger:not([disabled]):not(.disabled).active, .show > .btn-outline-danger.dropdown-toggle {
@@ -233,6 +266,7 @@ a.list-group-item-danger:focus, a.list-group-item-danger:hover, button.list-grou
 
 .btn-danger:hover {
     background-color: '.madeit_color_luminance($danger_color, 0, 0, -0.07).';
+    color: '.madeit_contrast_color(madeit_color_luminance($danger_color, 0, 0, -0.07)).';
 }
 
 .btn-danger:hover {
@@ -280,11 +314,12 @@ a.list-group-item-primary:focus, a.list-group-item-primary:hover, button.list-gr
 }
 
 .alert-primary {
-    background-color: '.madeit_change_color($secondary_color, '#cce5ff').';
+    background-color: '.madeit_change_color($primary_color, '#cce5ff').';
+    color: '.madeit_color_luminance($primary_color, 0, 0, -0.35).';
 }
 
 .alert-primary {
-    border-color: '.madeit_change_color($secondary_color, '#b8daff').';
+    border-color: '.madeit_change_color($primary_color, '#b8daff').';
 }
 
 .alert-primary hr {
@@ -301,6 +336,7 @@ a.list-group-item-secondary:focus, a.list-group-item-secondary:hover, button.lis
 
 .alert-secondary {
     background-color: '.madeit_change_color($secondary_color, '#e7e8ea').';
+    color: '.madeit_color_luminance($secondary_color, 0, 0, -0.35).';
 }
 
 .alert-secondary {
@@ -312,7 +348,7 @@ a.list-group-item-secondary:focus, a.list-group-item-secondary:hover, button.lis
 }
 
 .alert-secondary .alert-link {
-    color: '.madeit_change_color($secondary_color, '#2e3133').';
+    color: '.madeit_color_luminance($secondary_color, 0, 0, -0.35).';
 }
 
 a.list-group-item-success:focus, a.list-group-item-success:hover, button.list-group-item-success:focus, button.list-group-item-success:hover {
@@ -321,6 +357,7 @@ a.list-group-item-success:focus, a.list-group-item-success:hover, button.list-gr
 
 .alert-success {
     background-color: '.madeit_change_color($success_color, '#d4edda').';
+    color: '.madeit_color_luminance($success_color, 0, 0, -0.35).';
 }
 
 .alert-success {
@@ -332,7 +369,7 @@ a.list-group-item-success:focus, a.list-group-item-success:hover, button.list-gr
 }
 
 .alert-success .alert-link {
-    color: '.madeit_change_color($success_color, '#0b2e13').';
+    color: '.madeit_color_luminance($success_color, 0, 0, -0.35).';
 }
 
 a.list-group-item-info:focus, a.list-group-item-info:hover, button.list-group-item-info:focus, button.list-group-item-info:hover {
@@ -341,6 +378,7 @@ a.list-group-item-info:focus, a.list-group-item-info:hover, button.list-group-it
 
 .alert-info {
     background-color: '.madeit_change_color($info_color, '#d1ecf1').';
+    color: '.madeit_color_luminance($info_color, 0, 0, -0.35).';
 }
 
 .alert-info {
@@ -352,7 +390,7 @@ a.list-group-item-info:focus, a.list-group-item-info:hover, button.list-group-it
 }
 
 .alert-info .alert-link {
-    color: '.madeit_change_color($info_color, '#062c33').';
+    color: '.madeit_color_luminance($info_color, 0, 0, -0.35).';
 }
 
 a.list-group-item-warning:focus, a.list-group-item-warning:hover, button.list-group-item-warning:focus, button.list-group-item-warning:hover {
@@ -372,7 +410,7 @@ a.list-group-item-warning:focus, a.list-group-item-warning:hover, button.list-gr
 }
 
 .alert-warning .alert-link {
-    color: '.madeit_change_color($warning_color, '#533f03').';
+    color: '.madeit_color_luminance($warning_color, 0, 0, -0.35).';
 }
 
 a.list-group-item-danger:focus, a.list-group-item-danger:hover, button.list-group-item-danger:focus, button.list-group-item-danger:hover {
@@ -381,6 +419,7 @@ a.list-group-item-danger:focus, a.list-group-item-danger:hover, button.list-grou
 
 .alert-danger {
     background-color: '.madeit_change_color($danger_color, '#f8d7da').';
+    color: '.madeit_color_luminance($danger_color, 0, 0, -0.35).';
 }
 
 .alert-danger {
@@ -392,23 +431,27 @@ a.list-group-item-danger:focus, a.list-group-item-danger:hover, button.list-grou
 }
 
 .alert-danger .alert-link {
-    color: '.madeit_change_color($warning_color, '#491217').';
+    color: '.madeit_color_luminance($danger_color, 0, 0, -0.35).';
 }
 
 .list-group-item-primary {
     background-color: '.madeit_color_luminance($primary_color, 0, 0, 0.36).';
+    color: '.madeit_contrast_color($primary_color).';
 }
 
 a.list-group-item-primary.active, button.list-group-item-primary.active {
     background-color: '.madeit_change_color($primary_color, '#004085').';
+    color: '.madeit_contrast_color(madeit_change_color($primary_color, '#004085')).';
 }
 
 a.list-group-item-primary.active, button.list-group-item-primary.active {
     border-color: '.madeit_change_color($primary_color, '#004085').';
+    color: '.madeit_contrast_color(madeit_change_color($primary_color, '#004085')).';
 }
 
 a.list-group-item-secondary.active, button.list-group-item-secondary.active {
     background-color: '.madeit_change_color($secondary_color, '#464a4e').';
+    color: '.madeit_contrast_color(madeit_change_color($secondary_color, '#464a4e')).';
 }
 
 a.list-group-item-secondary.active, button.list-group-item-secondary.active {
@@ -417,6 +460,7 @@ a.list-group-item-secondary.active, button.list-group-item-secondary.active {
 
 a.list-group-item-success.active, button.list-group-item-success.active {
     background-color: '.madeit_change_color($success_color, '#155724').';
+    color: '.madeit_contrast_color(madeit_change_color($success_color, '#155724')).';
 }
 
 a.list-group-item-success.active, button.list-group-item-success.active {
@@ -425,6 +469,7 @@ a.list-group-item-success.active, button.list-group-item-success.active {
 
 a.list-group-item-info.active, button.list-group-item-info.active {
     background-color: '.madeit_change_color($info_color, '#0c5460').';
+    color: '.madeit_contrast_color(madeit_change_color($info_color, '#0c5460')).';
 }
 
 a.list-group-item-info.active, button.list-group-item-info.active {
@@ -433,6 +478,7 @@ a.list-group-item-info.active, button.list-group-item-info.active {
 
 a.list-group-item-warning.active, button.list-group-item-warning.active {
     background-color: '.madeit_change_color($warning_color, '#856404').';
+    color: '.madeit_contrast_color(madeit_change_color($warning_color, '#856404')).';
 }
 
 a.list-group-item-warning.active, button.list-group-item-warning.active {
@@ -441,6 +487,7 @@ a.list-group-item-warning.active, button.list-group-item-warning.active {
 
 a.list-group-item-danger.active, button.list-group-item-danger.active {
     background-color: '.madeit_change_color($danger_color, '#721c24').';
+    color: '.madeit_contrast_color(madeit_change_color($danger_color, '#721c24')).';
 }
 
 a.list-group-item-danger.active, button.list-group-item-danger.active {
@@ -449,6 +496,7 @@ a.list-group-item-danger.active, button.list-group-item-danger.active {
 
 .bg-primary {
     background-color: '.$primary_color.' !important;
+    color: '.madeit_contrast_color($primary_color).';
 }
 
 a.bg-primary:focus, a.bg-primary:hover {
@@ -457,6 +505,7 @@ a.bg-primary:focus, a.bg-primary:hover {
 
 .bg-secondary {
     background-color: '.$secondary_color.' !important;
+    color: '.madeit_contrast_color($secondary_color).';
 }
 
 a.bg-secondary:focus, a.bg-secondary:hover {
@@ -465,6 +514,7 @@ a.bg-secondary:focus, a.bg-secondary:hover {
 
 .bg-success {
     background-color: '.$success_color.' !important;
+    color: '.madeit_contrast_color($success_color).';
 }
 
 a.bg-success:focus, a.bg-success:hover {
@@ -473,6 +523,7 @@ a.bg-success:focus, a.bg-success:hover {
 
 .bg-info {
     background-color: '.$info_color.' !important;
+    color: '.madeit_contrast_color($info_color).';
 }
 
 a.bg-info:focus, a.bg-info:hover {
@@ -481,6 +532,7 @@ a.bg-info:focus, a.bg-info:hover {
 
 .bg-warning {
     background-color: '.$warning_color.' !important;
+    color: '.madeit_contrast_color($warning_color).';
 }
 
 a.bg-warning:focus, a.bg-warning:hover {
@@ -489,6 +541,7 @@ a.bg-warning:focus, a.bg-warning:hover {
 
 .bg-danger {
     background-color: '.$danger_color.' !important;
+    color: '.madeit_contrast_color($danger_color).';
 }
 
 a.bg-danger:focus, a.bg-danger:hover {
@@ -896,6 +949,7 @@ a.text-dark:focus, a.text-dark:hover {
         $css .= '
 .has-'.$class.'-background-color {
 	background-color: '.$color.' !important;
+    color: '.madeit_contrast_color($color).';
 }
 
 .has-'.$class.'-color {
@@ -1140,5 +1194,5 @@ function madeit_contrast_color($hex)
 
     $a = 1 - (0.299 * $r + 0.587 * $g * 0.114 * $b) / 255;
 
-    return $a < 0.3 ? '#000' : '#FFF';
+    return $a < 0.3 ? MADEIT_BLACK_COLOR : MADEIT_WHITE_COLOR;
 }

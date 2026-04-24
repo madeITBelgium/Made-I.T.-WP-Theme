@@ -27,6 +27,8 @@ import icon from './icon';
 
 // Oude save versies importeren
 import save_20260407 from './save-versions/save_20260407';
+import save_20260422 from './save-versions/save_20260422';
+import save_20260422_color_legacy_duplicates from './save-versions/save_20260422_color_legacy_duplicates';
 
 const stripBackgroundClasses = ( className = '' ) =>
     className
@@ -93,6 +95,17 @@ registerBlockType( metadata.name, {
     save,
     
     deprecated: [
+            {
+                // Deprecated (2026-04-22): early color support could serialize
+                // duplicated/conflicting background classes on the inner wrapper.
+                // Keep as-is so existing posts validate.
+                save: save_20260422_color_legacy_duplicates,
+            },
+            {
+                // Deprecated (2026-04-22): previous save did not output
+                // background/text colors to the frontend.
+                save: save_20260422,
+            },
             {
                 // Deprecated (width default compatibility): before `width`
                 // defaulted to 12, legacy content could be saved without
@@ -172,7 +185,34 @@ registerBlockType( metadata.name, {
                     if ( padding?.left !== undefined ) innerStyle.paddingLeft = padding.left;
                     if ( padding?.right !== undefined ) innerStyle.paddingRight = padding.right;
 
-                    if ( legacyInnerStyle && Object.keys( innerStyle ).length === 0 ) {
+                    if ( legacyInnerStyle ) {
+                        const readCssValue = ( key ) => {
+                            const re = new RegExp( `(?:^|;)\\s*${ key }\\s*:\\s*([^;]+)`, 'i' );
+                            const m = String( legacyInnerStyle ).match( re );
+                            return m ? String( m[ 1 ] ).trim() : undefined;
+                        };
+
+                        const legacyColor = readCssValue( 'color' );
+                        const legacyBackgroundColor = readCssValue( 'background-color' );
+
+                        if ( legacyColor !== undefined && innerStyle.color === undefined ) {
+                            innerStyle.color = legacyColor;
+                        }
+                        if (
+                            legacyBackgroundColor !== undefined &&
+                            innerStyle.backgroundColor === undefined
+                        ) {
+                            innerStyle.backgroundColor = legacyBackgroundColor;
+                        }
+                    }
+
+                    const hasPaddingFromAttributes =
+                        innerStyle.paddingTop !== undefined ||
+                        innerStyle.paddingBottom !== undefined ||
+                        innerStyle.paddingLeft !== undefined ||
+                        innerStyle.paddingRight !== undefined;
+
+                    if ( legacyInnerStyle && ! hasPaddingFromAttributes ) {
                         const readPx = ( key ) => {
                             const re = new RegExp( `${ key }\\s*:\\s*([0-9.]+)px`, 'i' );
                             const m = String( legacyInnerStyle ).match( re );
@@ -279,7 +319,34 @@ registerBlockType( metadata.name, {
                     if ( padding?.left !== undefined ) innerStyle.paddingLeft = padding.left;
                     if ( padding?.right !== undefined ) innerStyle.paddingRight = padding.right;
 
-                    if ( legacyInnerStyle && Object.keys( innerStyle ).length === 0 ) {
+                    if ( legacyInnerStyle ) {
+                        const readCssValue = ( key ) => {
+                            const re = new RegExp( `(?:^|;)\\s*${ key }\\s*:\\s*([^;]+)`, 'i' );
+                            const m = String( legacyInnerStyle ).match( re );
+                            return m ? String( m[ 1 ] ).trim() : undefined;
+                        };
+
+                        const legacyColor = readCssValue( 'color' );
+                        const legacyBackgroundColor = readCssValue( 'background-color' );
+
+                        if ( legacyColor !== undefined && innerStyle.color === undefined ) {
+                            innerStyle.color = legacyColor;
+                        }
+                        if (
+                            legacyBackgroundColor !== undefined &&
+                            innerStyle.backgroundColor === undefined
+                        ) {
+                            innerStyle.backgroundColor = legacyBackgroundColor;
+                        }
+                    }
+
+                    const hasPaddingFromAttributes =
+                        innerStyle.paddingTop !== undefined ||
+                        innerStyle.paddingBottom !== undefined ||
+                        innerStyle.paddingLeft !== undefined ||
+                        innerStyle.paddingRight !== undefined;
+
+                    if ( legacyInnerStyle && ! hasPaddingFromAttributes ) {
                         const readPx = ( key ) => {
                             const re = new RegExp( `${ key }\\s*:\\s*([0-9.]+)px`, 'i' );
                             const m = String( legacyInnerStyle ).match( re );

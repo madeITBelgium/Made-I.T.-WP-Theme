@@ -26,10 +26,28 @@
             "selector": ".wp-block-madeit-block-content",
             "attribute": "class"
         },
+        "wrapperStyle": {
+            "type": "string",
+            "source": "attribute",
+            "selector": ".wp-block-madeit-block-content",
+            "attribute": "style"
+        },
         "directRowClassName": {
             "type": "string",
             "source": "attribute",
             "selector": ".wp-block-madeit-block-content > .row",
+            "attribute": "class"
+        },
+        "boxedInnerContainerClassName": {
+            "type": "string",
+            "source": "attribute",
+            "selector": ".wp-block-madeit-block-content > .row > .col > .container",
+            "attribute": "class"
+        },
+        "boxedInnerRowClassName": {
+            "type": "string",
+            "source": "attribute",
+            "selector": ".wp-block-madeit-block-content > .row > .col > .container > .row",
             "attribute": "class"
         },
         "verticalAlignment": {
@@ -222,6 +240,10 @@
         },
         "hideOnMobile": {
             "type": "boolean"
+        },
+        "madeitHasUserEdits": {
+            "type": "boolean",
+            "default": false
         }
     }
 }

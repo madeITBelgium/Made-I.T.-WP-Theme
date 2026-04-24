@@ -609,6 +609,7 @@ export function ColumnsEditContainer( props ) {
         setAttributes( {
             [ maxWidthValueKey ]: undefined,
             [ maxWidthUnitKey ]: 'px',
+            madeitHasUserEdits: true,
         } );
     const minHeightValueKey =
         activeMinHeightBreakpoint === 'tablet'
@@ -624,10 +625,52 @@ export function ColumnsEditContainer( props ) {
                 : 'minHeightUnit';
     const currentMinHeightValue = attributes?.[ minHeightValueKey ];
     const currentMinHeightUnit = attributes?.[ minHeightUnitKey ] || 'px';
+
+    const parseWrapperLengthVar = ( varName ) => {
+        const wrapperStyle = attributes?.wrapperStyle;
+        if ( typeof wrapperStyle !== 'string' || wrapperStyle.trim() === '' ) {
+            return undefined;
+        }
+
+        const match = wrapperStyle.match(
+            new RegExp( `${ varName }\\s*:\\s*([^;]+)` )
+        );
+        const raw = match?.[ 1 ]?.trim();
+        if ( ! raw ) return undefined;
+
+        const lengthMatch = raw.match( /^(-?\d+(?:\.\d+)?)([a-z%]+)$/i );
+        if ( ! lengthMatch ) return undefined;
+        const value = Number.parseFloat( lengthMatch[ 1 ] );
+        const unit = String( lengthMatch[ 2 ] ).toLowerCase();
+        if ( ! Number.isFinite( value ) ) return undefined;
+
+        return { value, unit };
+    };
+
+    const madeitHasUserEdits = attributes?.madeitHasUserEdits === true;
+    const legacyMinHeightVarName =
+        activeMinHeightBreakpoint === 'tablet'
+            ? '--madeit-min-height-tablet'
+            : activeMinHeightBreakpoint === 'mobile'
+                ? '--madeit-min-height-mobile'
+                : '--madeit-min-height-desktop';
+    const legacyMinHeight = ! madeitHasUserEdits
+        ? parseWrapperLengthVar( legacyMinHeightVarName )
+        : undefined;
+
+    const minHeightValueForUi =
+        typeof currentMinHeightValue === 'number'
+            ? currentMinHeightValue
+            : legacyMinHeight?.value ?? 0;
+    const minHeightUnitForUi =
+        typeof currentMinHeightValue === 'number'
+            ? currentMinHeightUnit
+            : legacyMinHeight?.unit ?? currentMinHeightUnit;
     const resetMinHeight = () =>
         setAttributes( {
             [ minHeightValueKey ]: undefined,
             [ minHeightUnitKey ]: 'px',
+            madeitHasUserEdits: true,
         } );
 
 
@@ -667,6 +710,7 @@ export function ColumnsEditContainer( props ) {
         setAttributes( {
             [ rowGapValueKey ]: activeRowGapBreakpoint === 'desktop' ? 20 : undefined,
             [ rowGapUnitKey ]: 'px',
+            madeitHasUserEdits: true,
         } );
 
 
@@ -969,6 +1013,7 @@ export function ColumnsEditContainer( props ) {
                                             onClick={ () =>
                                                 setAttributes( {
                                                     [ maxWidthUnitKey ]: 'px',
+                                                    madeitHasUserEdits: true,
                                                 } )
                                             }
                                         >
@@ -980,6 +1025,7 @@ export function ColumnsEditContainer( props ) {
                                             onClick={ () =>
                                                 setAttributes( {
                                                     [ maxWidthUnitKey ]: '%',
+                                                    madeitHasUserEdits: true,
                                                 } )
                                             }
                                         >
@@ -991,6 +1037,7 @@ export function ColumnsEditContainer( props ) {
                                             onClick={ () =>
                                                 setAttributes( {
                                                     [ maxWidthUnitKey ]: 'vh',
+                                                    madeitHasUserEdits: true,
                                                 } )
                                             }
                                         >
@@ -1012,6 +1059,7 @@ export function ColumnsEditContainer( props ) {
                                     onChange={ ( value ) =>
                                         setAttributes( {
                                             [ maxWidthValueKey ]: value,
+                                            madeitHasUserEdits: true,
                                         } )
                                     }
                                     min={ 0 }
@@ -1038,10 +1086,11 @@ export function ColumnsEditContainer( props ) {
                                 afterBreakpoint={
                                     <ButtonGroup className="madeit-control-units">
                                         <Button
-                                            isPressed={ currentMinHeightUnit === 'px' }
+                                            isPressed={ minHeightUnitForUi === 'px' }
                                             onClick={ () =>
                                                 setAttributes( {
                                                     [ minHeightUnitKey ]: 'px',
+                                                    madeitHasUserEdits: true,
                                                 } )
                                             }
                                         >
@@ -1049,10 +1098,11 @@ export function ColumnsEditContainer( props ) {
                                         </Button>
 
                                         <Button
-                                            isPressed={ currentMinHeightUnit === 'vh' }
+                                            isPressed={ minHeightUnitForUi === 'vh' }
                                             onClick={ () =>
                                                 setAttributes( {
                                                     [ minHeightUnitKey ]: 'vh',
+                                                    madeitHasUserEdits: true,
                                                 } )
                                             }
                                         >
@@ -1066,18 +1116,15 @@ export function ColumnsEditContainer( props ) {
                             <div className="madeit-control-rangeRow">
                                 <RangeControl
                                     label=""
-                                    value={
-                                        typeof currentMinHeightValue === 'number'
-                                            ? currentMinHeightValue
-                                            : 0
-                                    }
+                                    value={ minHeightValueForUi }
                                     onChange={ ( value ) =>
                                         setAttributes( {
                                             [ minHeightValueKey ]: value,
+                                            madeitHasUserEdits: true,
                                         } )
                                     }
                                     min={ 0 }
-                                    max={ currentMinHeightUnit === 'vh' ? 100 : 1000 }
+                                    max={ minHeightUnitForUi === 'vh' ? 100 : 1000 }
                                 />
 
                                 <Button
@@ -1643,6 +1690,7 @@ export function ColumnsEditContainer( props ) {
                                                 onClick={ () =>
                                                     setAttributes( {
                                                         [ rowGapUnitKey ]: 'px',
+                                                        madeitHasUserEdits: true,
                                                     } )
                                                 }
                                             >
@@ -1654,6 +1702,7 @@ export function ColumnsEditContainer( props ) {
                                                 onClick={ () =>
                                                     setAttributes( {
                                                         [ rowGapUnitKey ]: 'em',
+                                                        madeitHasUserEdits: true,
                                                     } )
                                                 }
                                             >
@@ -1665,6 +1714,7 @@ export function ColumnsEditContainer( props ) {
                                                 onClick={ () =>
                                                     setAttributes( {
                                                         [ rowGapUnitKey ]: 'rem',
+                                                        madeitHasUserEdits: true,
                                                     } )
                                                 }
                                             >
@@ -1686,6 +1736,7 @@ export function ColumnsEditContainer( props ) {
                                         onChange={ ( value ) =>
                                             setAttributes( {
                                                 [ rowGapValueKey ]: value,
+                                                madeitHasUserEdits: true,
                                             } )
                                         }
                                         min={ 0 }

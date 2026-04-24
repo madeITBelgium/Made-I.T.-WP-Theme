@@ -28,7 +28,10 @@ import { useBlockProps, InnerBlocks, getColorClassName } from '@wordpress/block-
 export default function save( props ) {
     const {
         wrapperClassName,
+        wrapperStyle,
         directRowClassName,
+        boxedInnerContainerClassName,
+        boxedInnerRowClassName,
         verticalAlignment,
         backgroundType,
         containerBackgroundColor,
@@ -88,6 +91,7 @@ export default function save( props ) {
         hideOnDesktop,
         hideOnTablet,
         hideOnMobile,
+        madeitHasUserEdits,
     } = props.attributes;
     
     const {
@@ -107,18 +111,74 @@ export default function save( props ) {
         !! ( containerBackgroundImage?.url || containerBackgroundColor || customContainerBackgroundColor );
     const computedBackgroundType = backgroundType || ( hasClassicBackground ? 'classic' : undefined );
     
-    var classes = className;
+    const FRONTEND_WRAPPER_CLASS = 'madeit-block-content--frontend';
+    const classNameRaw = typeof className === 'string' ? className.trim() : '';
+    const extraClassName = classNameRaw
+        ? classNameRaw
+                .split( /\s+/ )
+                .filter( Boolean )
+                // Strip classes that are controlled by this block's save() so
+                // legacy parsing doesn't accidentally re-inject them and cause
+                // validation mismatches (e.g. `container` + `container-fluid`).
+                .filter( ( token ) => {
+                    if ( token === 'wp-block-madeit-block-content' ) return false;
+                    if ( token === 'container' || token === 'container-fluid' ) return false;
+                    if ( token === FRONTEND_WRAPPER_CLASS ) return false;
+                    if ( token === 'has-text-color' || token === 'has-background' ) return false;
+                    if ( token.startsWith( 'are-vertically-aligned-' ) ) return false;
+                    if ( token.startsWith( 'is-hidden-' ) ) return false;
+                    return true;
+                } )
+                .join( ' ' )
+        : '';
+
+    var classes = classnames( 'wp-block-madeit-block-content', extraClassName );
     var classesChild = '';
     
     
-    var defaultSize = size;
-    if(defaultSize !== 'container' && defaultSize !== 'container-fluid' && defaultSize !== 'container-content-boxed') {
+    const hasExplicitSize = typeof size === 'string' && size.trim().length > 0;
+
+    var defaultSize = hasExplicitSize ? size.trim() : undefined;
+    if (
+        defaultSize !== 'container' &&
+        defaultSize !== 'container-fluid' &&
+        defaultSize !== 'container-content-boxed'
+    ) {
+        defaultSize = undefined;
+    }
+
+    const wrapperClassNameRaw =
+        typeof wrapperClassName === 'string' ? wrapperClassName.trim() : '';
+    const wrapperTokens = wrapperClassNameRaw.length
+        ? wrapperClassNameRaw.split( /\s+/ )
+        : [];
+    const wrapperHasContainer = wrapperTokens.includes( 'container' );
+    const wrapperHasContainerFluid = wrapperTokens.includes( 'container-fluid' );
+
+    // Legacy compatibility (default drift / missing serialized attributes):
+    // Only override based on wrapper classes when it helps match stored markup
+    // for content that parses with defaults.
+    if ( defaultSize === 'container-content-boxed' ) {
+        // Old content saved as `.container` should not be forced into boxed.
+        if ( wrapperHasContainer && ! wrapperHasContainerFluid ) {
+            defaultSize = 'container';
+        }
+    } else {
+        // If our inferred size differs from the wrapper markup, correct it.
+        if ( wrapperHasContainerFluid && ! wrapperHasContainer ) {
+            defaultSize = 'container-fluid';
+        } else if ( wrapperHasContainer && ! wrapperHasContainerFluid ) {
+            defaultSize = 'container';
+        }
+    }
+
+    // Fallback default when neither attributes nor markup specify a size.
+    if ( ! defaultSize ) {
         defaultSize = 'container';
     }
 
     const outerSizeNormalized = defaultSize === 'container' ? 'container' : 'container-fluid';
 
-    const FRONTEND_WRAPPER_CLASS = 'madeit-block-content--frontend';
     const hasWrapperClassNameFromMarkup =
         typeof wrapperClassName === 'string' && wrapperClassName.trim().length > 0;
     const wrapperHasFrontendClass =
@@ -131,7 +191,54 @@ export default function save( props ) {
     // we must not inject the class in `save()`, otherwise block validation
     // fails and the editor shows recovery prompts.
     const shouldUseLegacyWrapperClasses =
-        hasWrapperClassNameFromMarkup && ! wrapperHasFrontendClass;
+        hasWrapperClassNameFromMarkup && ! wrapperHasFrontendClass && ! madeitHasUserEdits;
+
+    // Very old saved content (no frontend wrapper class) also did not include
+    // the enhanced layout-related CSS variables. To keep block validation
+    // stable, do not serialize these vars for that legacy markup.
+    const shouldSerializeEnhancedLayoutVars = ! shouldUseLegacyWrapperClasses;
+
+    // Compatibility: some historical versions stored only a subset of the
+    // `--madeit-*` CSS vars even when the attributes existed. When we can read
+    // the stored `style` attribute (via derived `wrapperStyle`), only serialize
+    // vars that were present in the original markup to avoid validation errors.
+    const wrapperStyleRaw = typeof wrapperStyle === 'string' ? wrapperStyle : '';
+    const wrapperStyleNormalized = wrapperStyleRaw.replace( /\s+/g, '' );
+    const shouldMatchWrapperStyleVars = wrapperStyleNormalized.length > 0 && ! madeitHasUserEdits;
+
+    // Defaults from the block's default variation (`madeit-default-responsive`).
+    // These are provided via CSS on `.madeit-block-content--frontend`, so we
+    // should NOT serialize them inline (doing so causes validation drift for
+    // older posts that had no `style` attribute).
+    const DEFAULT_ROW_GAP = 20;
+    const DEFAULT_FLEX_DIRECTION_DESKTOP = 'row';
+    const DEFAULT_FLEX_DIRECTION_TABLET = 'column';
+    const DEFAULT_FLEX_DIRECTION_MOBILE = 'column';
+    const DEFAULT_ALIGN_ITEMS_DESKTOP = 'stretch';
+    const DEFAULT_JUSTIFY_CONTENT_DESKTOP = 'flex-start';
+    const DEFAULT_FLEX_WRAP_DESKTOP = 'nowrap';
+
+    const escapeRegExp = ( value ) =>
+        String( value ).replace( /[.*+?^${}()|[\]\\]/g, '\\$&' );
+
+    const wrapperHadVar = ( varName ) =>
+        shouldMatchWrapperStyleVars &&
+        wrapperStyleNormalized.includes( `${ varName }:` );
+
+    const getWrapperVarValue = ( varName ) => {
+        if ( ! shouldMatchWrapperStyleVars ) return undefined;
+        const pattern = new RegExp(
+            `${ escapeRegExp( varName ) }:([^;]+)`
+        );
+        const match = wrapperStyleNormalized.match( pattern );
+        return match?.[ 1 ];
+    };
+
+    const maybeSetVar = ( targetStyle, varName, value ) => {
+        if ( shouldMatchWrapperStyleVars && ! wrapperHadVar( varName ) ) return;
+        if ( value === undefined || value === null ) return;
+        targetStyle[ varName ] = value;
+    };
 
     // Legacy boxed markup (the one throwing validation errors):
     // - Wrapper did NOT include `madeit-block-content--frontend`
@@ -141,13 +248,18 @@ export default function save( props ) {
     const shouldUseLegacyBoxedMarkup =
         defaultSize === 'container' &&
         hasWrapperClassNameFromMarkup &&
-        ! wrapperHasFrontendClass;
+        ! wrapperHasFrontendClass &&
+        ! madeitHasUserEdits;
 
     // Keep the old direct-row detector as a secondary hint (some HTML parsers
     // won't support :scope selectors), but do not rely on it as the primary
     // switch.
     const hasDirectRowWrapper =
         typeof directRowClassName === 'string' && directRowClassName.trim().length > 0;
+
+    const hasLegacyBoxedInnerRowWrapper =
+        typeof boxedInnerRowClassName === 'string' &&
+        boxedInnerRowClassName.trim().length > 0;
 
     const applyContainerBackgroundToInner =
         defaultSize === 'container' &&
@@ -298,125 +410,239 @@ export default function save( props ) {
 
     // Responsive min-height via CSS variables.
     const minHeightDesktopCss = toCssLength( minHeight, minHeightUnit || 'px' );
-    if ( minHeightDesktopCss !== undefined ) {
-        style['--madeit-min-height-desktop'] = minHeightDesktopCss;
-    }
+    maybeSetVar(
+        style,
+        '--madeit-min-height-desktop',
+        minHeightDesktopCss !== undefined
+            ? minHeightDesktopCss
+            : getWrapperVarValue( '--madeit-min-height-desktop' )
+    );
     const minHeightTabletCss = toCssLength(
         minHeightTablet,
         minHeightUnitTablet || minHeightUnit || 'px'
     );
-    if ( minHeightTabletCss !== undefined ) {
-        style['--madeit-min-height-tablet'] = minHeightTabletCss;
-    }
+    maybeSetVar(
+        style,
+        '--madeit-min-height-tablet',
+        minHeightTabletCss !== undefined
+            ? minHeightTabletCss
+            : getWrapperVarValue( '--madeit-min-height-tablet' )
+    );
     const minHeightMobileCss = toCssLength(
         minHeightMobile,
         minHeightUnitMobile || minHeightUnitTablet || minHeightUnit || 'px'
     );
-    if ( minHeightMobileCss !== undefined ) {
-        style['--madeit-min-height-mobile'] = minHeightMobileCss;
-    }
+    maybeSetVar(
+        style,
+        '--madeit-min-height-mobile',
+        minHeightMobileCss !== undefined
+            ? minHeightMobileCss
+            : getWrapperVarValue( '--madeit-min-height-mobile' )
+    );
 
     // Responsive max-width via CSS variables.
-    if ( typeof maxWidth === 'number' ) {
-        style['--madeit-max-width-desktop'] = `${ maxWidth }${ maxWidthUnit || 'px' }`;
-    }
-    if ( typeof maxWidthTablet === 'number' ) {
-        style['--madeit-max-width-tablet'] = `${ maxWidthTablet }${ maxWidthUnitTablet || 'px' }`;
-    }
-    if ( typeof maxWidthMobile === 'number' ) {
-        style['--madeit-max-width-mobile'] = `${ maxWidthMobile }${ maxWidthUnitMobile || 'px' }`;
-    }
+    maybeSetVar(
+        style,
+        '--madeit-max-width-desktop',
+        typeof maxWidth === 'number'
+            ? `${ maxWidth }${ maxWidthUnit || 'px' }`
+            : getWrapperVarValue( '--madeit-max-width-desktop' )
+    );
+    maybeSetVar(
+        style,
+        '--madeit-max-width-tablet',
+        typeof maxWidthTablet === 'number'
+            ? `${ maxWidthTablet }${ maxWidthUnitTablet || 'px' }`
+            : getWrapperVarValue( '--madeit-max-width-tablet' )
+    );
+    maybeSetVar(
+        style,
+        '--madeit-max-width-mobile',
+        typeof maxWidthMobile === 'number'
+            ? `${ maxWidthMobile }${ maxWidthUnitMobile || 'px' }`
+            : getWrapperVarValue( '--madeit-max-width-mobile' )
+    );
 
      // Responsive row-gap via CSS variables.
         // Row gap via CSS variables.
         // Important for block validation stability: only serialize tablet/mobile overrides
         // when a desktop rowGap is explicitly set.
-        const hasRowGapDesktop = typeof rowGap === 'number';
-        if ( hasRowGapDesktop ) {
-            const rowGapDesktopCss = `${ rowGap }${ rowGapUnit || 'px' }`;
-            if ( rowGapDesktopCss !== '20px' ) {
-                style['--madeit-row-gap-desktop'] = rowGapDesktopCss;
-            }
+        if ( shouldSerializeEnhancedLayoutVars ) {
+            const hasRowGapDesktop = typeof rowGap === 'number';
+            if ( hasRowGapDesktop ) {
+                const rowGapDesktopCss = `${ rowGap }${ rowGapUnit || 'px' }`;
+                const shouldEmitRowGapDesktop = shouldMatchWrapperStyleVars
+                    ? wrapperHadVar( '--madeit-row-gap-desktop' )
+                    : rowGap !== DEFAULT_ROW_GAP;
 
-            if ( typeof rowGapTablet === 'number' ) {
-                const rowGapTabletCss = `${ rowGapTablet }${ rowGapUnitTablet || 'px' }`;
-                if ( rowGapTabletCss !== '20px' ) {
-                    style['--madeit-row-gap-tablet'] = rowGapTabletCss;
+                if ( shouldEmitRowGapDesktop ) {
+                    maybeSetVar( style, '--madeit-row-gap-desktop', rowGapDesktopCss );
+                }
+
+                const shouldEmitRowGapTablet = shouldMatchWrapperStyleVars
+                    ? wrapperHadVar( '--madeit-row-gap-tablet' )
+                    : typeof rowGapTablet === 'number' &&
+                      rowGapTablet !== DEFAULT_ROW_GAP;
+                if ( shouldEmitRowGapTablet ) {
+                    const rowGapTabletCss = `${ rowGapTablet }${ rowGapUnitTablet || 'px' }`;
+                    maybeSetVar( style, '--madeit-row-gap-tablet', rowGapTabletCss );
+                }
+
+                const shouldEmitRowGapMobile = shouldMatchWrapperStyleVars
+                    ? wrapperHadVar( '--madeit-row-gap-mobile' )
+                    : typeof rowGapMobile === 'number' &&
+                      rowGapMobile !== DEFAULT_ROW_GAP;
+                if ( shouldEmitRowGapMobile ) {
+                    const rowGapMobileCss = `${ rowGapMobile }${ rowGapUnitMobile || 'px' }`;
+                    maybeSetVar( style, '--madeit-row-gap-mobile', rowGapMobileCss );
+                }
+            } else {
+                // Only restore vars from stored markup when present.
+                if ( shouldMatchWrapperStyleVars ) {
+                    maybeSetVar(
+                        style,
+                        '--madeit-row-gap-desktop',
+                        getWrapperVarValue( '--madeit-row-gap-desktop' )
+                    );
+                    maybeSetVar(
+                        style,
+                        '--madeit-row-gap-tablet',
+                        getWrapperVarValue( '--madeit-row-gap-tablet' )
+                    );
+                    maybeSetVar(
+                        style,
+                        '--madeit-row-gap-mobile',
+                        getWrapperVarValue( '--madeit-row-gap-mobile' )
+                    );
                 }
             }
-            if ( typeof rowGapMobile === 'number' ) {
-                const rowGapMobileCss = `${ rowGapMobile }${ rowGapUnitMobile || 'px' }`;
-                if ( rowGapMobileCss !== '20px' ) {
-                    style['--madeit-row-gap-mobile'] = rowGapMobileCss;
-                }
-            }
+        }
+
+    // Responsive flex-direction via CSS variables.
+    if ( shouldSerializeEnhancedLayoutVars ) {
+        const shouldEmitFlexDirDesktop = shouldMatchWrapperStyleVars
+            ? wrapperHadVar( '--madeit-flex-direction-desktop' )
+            : typeof flexDirection === 'string' &&
+              flexDirection.length > 0 &&
+              flexDirection !== DEFAULT_FLEX_DIRECTION_DESKTOP;
+        if ( shouldEmitFlexDirDesktop ) {
+            maybeSetVar( style, '--madeit-flex-direction-desktop', flexDirection );
+        }
+
+        const shouldEmitFlexDirTablet = shouldMatchWrapperStyleVars
+            ? wrapperHadVar( '--madeit-flex-direction-tablet' )
+            : typeof flexDirectionTablet === 'string' &&
+              flexDirectionTablet.length > 0 &&
+              flexDirectionTablet !== DEFAULT_FLEX_DIRECTION_TABLET;
+        if ( shouldEmitFlexDirTablet ) {
+            maybeSetVar(
+                style,
+                '--madeit-flex-direction-tablet',
+                flexDirectionTablet
+            );
+        }
+
+        const shouldEmitFlexDirMobile = shouldMatchWrapperStyleVars
+            ? wrapperHadVar( '--madeit-flex-direction-mobile' )
+            : typeof flexDirectionMobile === 'string' &&
+              flexDirectionMobile.length > 0 &&
+              flexDirectionMobile !== DEFAULT_FLEX_DIRECTION_MOBILE;
+        if ( shouldEmitFlexDirMobile ) {
+            maybeSetVar(
+                style,
+                '--madeit-flex-direction-mobile',
+                flexDirectionMobile
+            );
+        }
     }
 
-    // Responsive flex-direction via CSS variables (only if explicitly set).
-    if (
-        typeof flexDirection === 'string' &&
-        flexDirection.length > 0 &&
-        flexDirection !== 'row'
-    ) {
-        style['--madeit-flex-direction-desktop'] = flexDirection;
-    }
-    if (
-        typeof flexDirectionTablet === 'string' &&
-        flexDirectionTablet.length > 0 &&
-        flexDirectionTablet !== 'column'
-    ) {
-        style['--madeit-flex-direction-tablet'] = flexDirectionTablet;
-    }
-    if (
-        typeof flexDirectionMobile === 'string' &&
-        flexDirectionMobile.length > 0 &&
-        flexDirectionMobile !== 'column'
-    ) {
-        style['--madeit-flex-direction-mobile'] = flexDirectionMobile;
+    // Responsive align-items / justify-content via CSS variables.
+    if ( shouldSerializeEnhancedLayoutVars ) {
+        const shouldEmitAlignDesktop = shouldMatchWrapperStyleVars
+            ? wrapperHadVar( '--madeit-align-items-desktop' )
+            : typeof alignItems === 'string' &&
+              alignItems.length > 0 &&
+              alignItems !== DEFAULT_ALIGN_ITEMS_DESKTOP;
+        if ( shouldEmitAlignDesktop ) {
+            maybeSetVar( style, '--madeit-align-items-desktop', alignItems );
+        }
+
+        const shouldEmitAlignTablet = shouldMatchWrapperStyleVars
+            ? wrapperHadVar( '--madeit-align-items-tablet' )
+            : typeof alignItemsTablet === 'string' && alignItemsTablet.length > 0;
+        if ( shouldEmitAlignTablet ) {
+            maybeSetVar( style, '--madeit-align-items-tablet', alignItemsTablet );
+        }
+
+        const shouldEmitAlignMobile = shouldMatchWrapperStyleVars
+            ? wrapperHadVar( '--madeit-align-items-mobile' )
+            : typeof alignItemsMobile === 'string' && alignItemsMobile.length > 0;
+        if ( shouldEmitAlignMobile ) {
+            maybeSetVar( style, '--madeit-align-items-mobile', alignItemsMobile );
+        }
+
+        const shouldEmitJustifyDesktop = shouldMatchWrapperStyleVars
+            ? wrapperHadVar( '--madeit-justify-content-desktop' )
+            : typeof justifyContent === 'string' &&
+              justifyContent.length > 0 &&
+              justifyContent !== DEFAULT_JUSTIFY_CONTENT_DESKTOP;
+        if ( shouldEmitJustifyDesktop ) {
+            maybeSetVar(
+                style,
+                '--madeit-justify-content-desktop',
+                justifyContent
+            );
+        }
+
+        const shouldEmitJustifyTablet = shouldMatchWrapperStyleVars
+            ? wrapperHadVar( '--madeit-justify-content-tablet' )
+            : typeof justifyContentTablet === 'string' &&
+              justifyContentTablet.length > 0;
+        if ( shouldEmitJustifyTablet ) {
+            maybeSetVar(
+                style,
+                '--madeit-justify-content-tablet',
+                justifyContentTablet
+            );
+        }
+
+        const shouldEmitJustifyMobile = shouldMatchWrapperStyleVars
+            ? wrapperHadVar( '--madeit-justify-content-mobile' )
+            : typeof justifyContentMobile === 'string' &&
+              justifyContentMobile.length > 0;
+        if ( shouldEmitJustifyMobile ) {
+            maybeSetVar(
+                style,
+                '--madeit-justify-content-mobile',
+                justifyContentMobile
+            );
+        }
     }
 
-    // Responsive align-items / justify-content via CSS variables (only if explicitly set).
-    if (
-        typeof alignItems === 'string' &&
-        alignItems.length > 0 &&
-        alignItems !== 'stretch'
-    ) {
-        style['--madeit-align-items-desktop'] = alignItems;
-    }
-    if ( typeof alignItemsTablet === 'string' && alignItemsTablet.length > 0 ) {
-        style['--madeit-align-items-tablet'] = alignItemsTablet;
-    }
-    if ( typeof alignItemsMobile === 'string' && alignItemsMobile.length > 0 ) {
-        style['--madeit-align-items-mobile'] = alignItemsMobile;
-    }
+    // Responsive flex-wrap via CSS variables.
+    if ( shouldSerializeEnhancedLayoutVars ) {
+        const shouldEmitWrapDesktop = shouldMatchWrapperStyleVars
+            ? wrapperHadVar( '--madeit-flex-wrap-desktop' )
+            : typeof flexWrap === 'string' &&
+              flexWrap.length > 0 &&
+              flexWrap !== DEFAULT_FLEX_WRAP_DESKTOP;
+        if ( shouldEmitWrapDesktop ) {
+            maybeSetVar( style, '--madeit-flex-wrap-desktop', flexWrap );
+        }
 
-    if (
-        typeof justifyContent === 'string' &&
-        justifyContent.length > 0 &&
-        justifyContent !== 'flex-start'
-    ) {
-        style['--madeit-justify-content-desktop'] = justifyContent;
-    }
-    if ( typeof justifyContentTablet === 'string' && justifyContentTablet.length > 0 ) {
-        style['--madeit-justify-content-tablet'] = justifyContentTablet;
-    }
-    if ( typeof justifyContentMobile === 'string' && justifyContentMobile.length > 0 ) {
-        style['--madeit-justify-content-mobile'] = justifyContentMobile;
-    }
+        const shouldEmitWrapTablet = shouldMatchWrapperStyleVars
+            ? wrapperHadVar( '--madeit-flex-wrap-tablet' )
+            : typeof flexWrapTablet === 'string' && flexWrapTablet.length > 0;
+        if ( shouldEmitWrapTablet ) {
+            maybeSetVar( style, '--madeit-flex-wrap-tablet', flexWrapTablet );
+        }
 
-    // Responsive flex-wrap via CSS variables (only if explicitly set).
-    if (
-        typeof flexWrap === 'string' &&
-        flexWrap.length > 0 &&
-        flexWrap !== 'nowrap'
-    ) {
-        style['--madeit-flex-wrap-desktop'] = flexWrap;
-    }
-    if ( typeof flexWrapTablet === 'string' && flexWrapTablet.length > 0 ) {
-        style['--madeit-flex-wrap-tablet'] = flexWrapTablet;
-    }
-    if ( typeof flexWrapMobile === 'string' && flexWrapMobile.length > 0 ) {
-        style['--madeit-flex-wrap-mobile'] = flexWrapMobile;
+        const shouldEmitWrapMobile = shouldMatchWrapperStyleVars
+            ? wrapperHadVar( '--madeit-flex-wrap-mobile' )
+            : typeof flexWrapMobile === 'string' && flexWrapMobile.length > 0;
+        if ( shouldEmitWrapMobile ) {
+            maybeSetVar( style, '--madeit-flex-wrap-mobile', flexWrapMobile );
+        }
     }
 
     const setCssVarIfDefined = ( targetStyle, key, value ) => {
@@ -546,9 +772,10 @@ export default function save( props ) {
         }
     }
     
+    const hasStyleProps = Object.keys( style ).length > 0;
     const blockProps = useBlockProps.save( {
         className: classes,
-        style: style,
+        style: hasStyleProps ? style : undefined,
     } );
 
     const allowedHtmlTags = [ 'div', 'section', 'article', 'main', 'header', 'footer' ];
@@ -592,7 +819,7 @@ export default function save( props ) {
     const outerRowProps = hasRowStyle ? { ...baseRowProps, style: rowStyle } : baseRowProps;
     const innerRowProps = baseRowProps;
     
-    if(size === 'container-content-boxed') {
+    if ( defaultSize === 'container-content-boxed' ) {
         return (
             <HtmlTag { ...blockProps }>
                 <div { ...outerRowProps }>
@@ -611,6 +838,44 @@ export default function save( props ) {
         );
     }
     else {
+        // Legacy boxed inner structure (row > col > container > row).
+        // If detected from stored markup, serialize the exact same wrapper
+        // structure so Gutenberg validation can succeed.
+        if ( hasLegacyBoxedInnerRowWrapper && defaultSize !== 'container-content-boxed' ) {
+            const innerContainerClassFromMarkup =
+                typeof boxedInnerContainerClassName === 'string' &&
+                boxedInnerContainerClassName.trim().length > 0
+                    ? boxedInnerContainerClassName.trim()
+                    : 'container';
+
+            const innerRowClassFromMarkup =
+                typeof boxedInnerRowClassName === 'string' &&
+                boxedInnerRowClassName.trim().length > 0
+                    ? boxedInnerRowClassName.trim()
+                    : innerRowProps.className;
+
+            const innerRowPropsFromMarkup = {
+                ...innerRowProps,
+                className: innerRowClassFromMarkup,
+            };
+
+            return (
+                <HtmlTag { ...blockProps }>
+                    <div { ...outerRowProps }>
+                        <div className="col">
+                            <div className={ innerContainerClassFromMarkup }>
+                                <div { ...innerRowPropsFromMarkup }>
+                                    { '\n\n' }
+                                    <InnerBlocks.Content />
+                                    { '\n\n' }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </HtmlTag>
+            );
+        }
+
         // Legacy markup: some older saved content had `.row` directly under the
         // wrapper (no inner `.container`). When detected via `directRowClassName`
         // (derived from stored HTML), serialize the same structure to avoid

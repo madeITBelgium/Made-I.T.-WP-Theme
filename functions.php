@@ -67,6 +67,13 @@ if (!defined('MADEIT_CUSTOM_COLOR')) {
 if (!defined('MADEIT_ADVANCED_BLOCKS')) {
     define('MADEIT_ADVANCED_BLOCKS', false);
 }
+
+if (!defined('MADEIT_BLACK_COLOR')) {
+    define('MADEIT_BLACK_COLOR', '#212529');
+}
+if (!defined('MADEIT_WHITE_COLOR')) {
+    define('MADEIT_WHITE_COLOR', '#ffffff');
+}
 if (!defined('MADEIT_TEXT_COLOR')) {
     define('MADEIT_TEXT_COLOR', '#212529');
 }
@@ -482,12 +489,12 @@ if (!function_exists('madeit_gutenberg_support')) {
                 [
                     'name'  => __('White Color', 'madeit'),
                     'slug'  => 'white',
-                    'color' => '#FFFFFF',
+                    'color' => madeit_get_theme_color('white_color_rgb', MADEIT_WHITE_COLOR),
                 ],
                 [
                     'name'  => __('Black Color', 'madeit'),
                     'slug'  => 'black',
-                    'color' => '#000000',
+                    'color' => madeit_get_theme_color('black_color_rgb', MADEIT_BLACK_COLOR),
                 ],
                 [
                     'name'  => __('Text Color', 'madeit'),
@@ -2688,3 +2695,5 @@ if(file_exists(__DIR__.'/inc/odoo.php')) {
 if(file_exists(__DIR__.'/inc/image-optimizer.php')) {
     require __DIR__.'/inc/image-optimizer.php';
 }
+
+add_filter( 'should_load_separate_core_block_assets', '__return_false' );
