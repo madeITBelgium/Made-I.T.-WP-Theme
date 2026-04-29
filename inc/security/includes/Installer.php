@@ -1,22 +1,24 @@
 <?php
+
 namespace MadeIT\Security;
 
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 /**
  * Handles plugin installation, upgrades, and uninstall.
  */
-class Installer {
-
+class Installer
+{
     // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- security data must not be served from cache
-    public static function install(): void {
+    public static function install(): void
+    {
         global $wpdb;
         $charset = $wpdb->get_charset_collate();
 
-        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+        require_once ABSPATH.'wp-admin/includes/upgrade.php';
 
         // ── 1. Visitor / Request Log ──────────────────────────────────────────
-        dbDelta( "CREATE TABLE {$wpdb->prefix}madeit_security_visitor_log (
+        dbDelta("CREATE TABLE {$wpdb->prefix}madeit_security_visitor_log (
             id          BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
             ip          VARCHAR(45)     NOT NULL,
             ip_long     BIGINT          NOT NULL DEFAULT 0,
@@ -47,10 +49,10 @@ class Installer {
             KEY is_bot   (is_bot),
             KEY is_blocked (is_blocked),
             KEY user_id  (user_id)
-        ) $charset;" );
+        ) $charset;");
 
         // ── 2. Blocked IPs ────────────────────────────────────────────────────
-        dbDelta( "CREATE TABLE {$wpdb->prefix}madeit_security_blocked_ips (
+        dbDelta("CREATE TABLE {$wpdb->prefix}madeit_security_blocked_ips (
             id          BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
             ip          VARCHAR(45)     NOT NULL,
             ip_range    VARCHAR(50)     NOT NULL DEFAULT '',
@@ -66,10 +68,10 @@ class Installer {
             UNIQUE KEY ip (ip),
             KEY permanent (permanent),
             KEY blocked_until (blocked_until)
-        ) $charset;" );
+        ) $charset;");
 
         // ── 3. Whitelist ──────────────────────────────────────────────────────
-        dbDelta( "CREATE TABLE {$wpdb->prefix}madeit_security_whitelist (
+        dbDelta("CREATE TABLE {$wpdb->prefix}madeit_security_whitelist (
             id          BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
             type        VARCHAR(20)     NOT NULL DEFAULT 'ip',
             value       VARCHAR(255)    NOT NULL,
@@ -78,10 +80,10 @@ class Installer {
             created_at  DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
             KEY type_value (type, value(50))
-        ) $charset;" );
+        ) $charset;");
 
         // ── 4. Login Attempts ─────────────────────────────────────────────────
-        dbDelta( "CREATE TABLE {$wpdb->prefix}madeit_security_login_attempts (
+        dbDelta("CREATE TABLE {$wpdb->prefix}madeit_security_login_attempts (
             id            BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
             ip            VARCHAR(45)     NOT NULL,
             username_hash VARCHAR(64)     NOT NULL DEFAULT '',
@@ -91,10 +93,10 @@ class Installer {
             PRIMARY KEY (id),
             UNIQUE KEY ip (ip),
             KEY locked_until (locked_until)
-        ) $charset;" );
+        ) $charset;");
 
         // ── 5. Security Events ────────────────────────────────────────────────
-        dbDelta( "CREATE TABLE {$wpdb->prefix}madeit_security_events (
+        dbDelta("CREATE TABLE {$wpdb->prefix}madeit_security_events (
             id           BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
             event_type   VARCHAR(50)     NOT NULL,
             severity     VARCHAR(10)     NOT NULL DEFAULT 'medium',
@@ -111,10 +113,10 @@ class Installer {
             KEY severity   (severity),
             KEY ip         (ip),
             KEY created_at (created_at)
-        ) $charset;" );
+        ) $charset;");
 
         // ── 6. Audit Log ──────────────────────────────────────────────────────
-        dbDelta( "CREATE TABLE {$wpdb->prefix}madeit_security_audit_log (
+        dbDelta("CREATE TABLE {$wpdb->prefix}madeit_security_audit_log (
             id          BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
             user_id     BIGINT UNSIGNED NOT NULL DEFAULT 0,
             username    VARCHAR(60)     NOT NULL DEFAULT '',
@@ -128,10 +130,10 @@ class Installer {
             KEY user_id    (user_id),
             KEY action     (action),
             KEY created_at (created_at)
-        ) $charset;" );
+        ) $charset;");
 
         // ── 7. Outbound Request Log ─────────────────────────────────────────
-        dbDelta( "CREATE TABLE {$wpdb->prefix}madeit_security_outbound_log (
+        dbDelta("CREATE TABLE {$wpdb->prefix}madeit_security_outbound_log (
             id            BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
             url           TEXT            NOT NULL,
             domain        VARCHAR(255)    NOT NULL DEFAULT '',
@@ -145,96 +147,98 @@ class Installer {
             KEY domain     (domain(50)),
             KEY status     (status),
             KEY created_at (created_at)
-        ) $charset;" );
+        ) $charset;");
 
         // Migrate old wp_options outbound log to table (one-time).
-        $old_log = get_option( 'madeit_security_outbound_log' );
-        if ( is_array( $old_log ) && ! empty( $old_log ) ) {
-            foreach ( array_slice( $old_log, -100 ) as $entry ) {
+        $old_log = get_option('madeit_security_outbound_log');
+        if (is_array($old_log) && !empty($old_log)) {
+            foreach (array_slice($old_log, -100) as $entry) {
                 // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
                 $wpdb->insert(
-                    $wpdb->prefix . 'madeit_security_outbound_log',
+                    $wpdb->prefix.'madeit_security_outbound_log',
                     [
                         'url'           => $entry['url'] ?? '',
                         'domain'        => $entry['domain'] ?? '',
                         'method'        => $entry['method'] ?? 'GET',
                         'caller'        => $entry['caller'] ?? '',
                         'status'        => $entry['status'] ?? 'allowed',
-                        'blocked'       => ! empty( $entry['blocked'] ) ? 1 : 0,
-                        'response_code' => (int) ( $entry['response_code'] ?? 0 ),
-                        'created_at'    => $entry['timestamp'] ?? current_time( 'mysql' ),
+                        'blocked'       => !empty($entry['blocked']) ? 1 : 0,
+                        'response_code' => (int) ($entry['response_code'] ?? 0),
+                        'created_at'    => $entry['timestamp'] ?? current_time('mysql'),
                     ],
-                    [ '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s' ]
+                    ['%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s']
                 );
             }
-            delete_option( 'madeit_security_outbound_log' );
+            delete_option('madeit_security_outbound_log');
         }
 
         // Detect: is this a genuine first install or a reactivation/upgrade?
-        $is_fresh = ( get_option( 'madeit_security_installed_at' ) === false );
+        $is_fresh = (get_option('madeit_security_installed_at') === false);
 
-        update_option( 'madeit_security_db_version', MADEIT_SECURITY_DB_VERSION );
-        if ( $is_fresh ) {
-            update_option( 'madeit_security_installed_at', current_time( 'mysql' ) );
+        update_option('madeit_security_db_version', MADEIT_SECURITY_DB_VERSION);
+        if ($is_fresh) {
+            update_option('madeit_security_installed_at', current_time('mysql'));
         }
 
         // ── Safety: prevent admin lockout ────────────────────────────────
         // On fresh install: clear auto-blocks and set WAF to log mode.
         // On reactivation: only unblock the activating admin's own IP.
-        if ( $is_fresh ) {
+        if ($is_fresh) {
             $wpdb->query(
                 "DELETE FROM {$wpdb->prefix}madeit_security_blocked_ips WHERE rule_id != 'manual'"
             );
-            update_option( 'madeit_security_waf_mode', 'log' );
+            update_option('madeit_security_waf_mode', 'log');
         }
         // Always unblock the activating admin's own IP (safety net).
         $activating_ip = \MadeIT\Security\RequestLogger::get_real_ip();
-        if ( $activating_ip ) {
+        if ($activating_ip) {
             $wpdb->delete(
-                $wpdb->prefix . 'madeit_security_blocked_ips',
-                [ 'ip' => $activating_ip ],
-                [ '%s' ]
+                $wpdb->prefix.'madeit_security_blocked_ips',
+                ['ip' => $activating_ip],
+                ['%s']
             );
         }
 
         // Schedule cron jobs
-        if ( ! wp_next_scheduled( 'madeit_security_cleanup_logs' ) ) {
-            wp_schedule_event( time(), 'hourly', 'madeit_security_cleanup_logs' );
+        if (!wp_next_scheduled('madeit_security_cleanup_logs')) {
+            wp_schedule_event(time(), 'hourly', 'madeit_security_cleanup_logs');
         }
-        if ( ! wp_next_scheduled( 'madeit_security_update_blocked_counts' ) ) {
-            wp_schedule_event( time(), 'madeit_security_5min', 'madeit_security_update_blocked_counts' );
+        if (!wp_next_scheduled('madeit_security_update_blocked_counts')) {
+            wp_schedule_event(time(), 'madeit_security_5min', 'madeit_security_update_blocked_counts');
         }
-        if ( ! wp_next_scheduled( 'madeit_security_refresh_cloudflare_ips' ) ) {
-            wp_schedule_event( time(), 'weekly', 'madeit_security_refresh_cloudflare_ips' );
+        if (!wp_next_scheduled('madeit_security_refresh_cloudflare_ips')) {
+            wp_schedule_event(time(), 'weekly', 'madeit_security_refresh_cloudflare_ips');
         }
-        if ( ! wp_next_scheduled( 'madeit_security_refresh_google_ips' ) ) {
-            wp_schedule_event( time(), 'weekly', 'madeit_security_refresh_google_ips' );
+        if (!wp_next_scheduled('madeit_security_refresh_google_ips')) {
+            wp_schedule_event(time(), 'weekly', 'madeit_security_refresh_google_ips');
         }
-        if ( ! wp_next_scheduled( 'madeit_security_refresh_microsoft_ips' ) ) {
-            wp_schedule_event( time(), 'weekly', 'madeit_security_refresh_microsoft_ips' );
+        if (!wp_next_scheduled('madeit_security_refresh_microsoft_ips')) {
+            wp_schedule_event(time(), 'weekly', 'madeit_security_refresh_microsoft_ips');
         }
-        if ( ! wp_next_scheduled( 'madeit_security_update_geoip_db' ) ) {
-            wp_schedule_event( time(), 'weekly', 'madeit_security_update_geoip_db' );
+        if (!wp_next_scheduled('madeit_security_update_geoip_db')) {
+            wp_schedule_event(time(), 'weekly', 'madeit_security_update_geoip_db');
         }
-        if ( ! wp_next_scheduled( 'madeit_security_weekly_scan' ) ) {
-            wp_schedule_event( time(), 'weekly', 'madeit_security_weekly_scan' );
+        if (!wp_next_scheduled('madeit_security_weekly_scan')) {
+            wp_schedule_event(time(), 'weekly', 'madeit_security_weekly_scan');
         }
     }
     // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
-    public static function deactivate(): void {
-        wp_clear_scheduled_hook( 'madeit_security_cleanup_logs' );
-        wp_clear_scheduled_hook( 'madeit_security_update_blocked_counts' );
-        wp_clear_scheduled_hook( 'madeit_security_refresh_cloudflare_ips' );
-        wp_clear_scheduled_hook( 'madeit_security_refresh_google_ips' );
-        wp_clear_scheduled_hook( 'madeit_security_refresh_microsoft_ips' );
-        wp_clear_scheduled_hook( 'madeit_security_update_geoip_db' );
-        wp_clear_scheduled_hook( 'madeit_security_weekly_scan' );
-        wp_clear_scheduled_hook( 'madeit_security_run_scan_batch' );
-        wp_clear_scheduled_hook( 'madeit_security_daily_digest' );
+    public static function deactivate(): void
+    {
+        wp_clear_scheduled_hook('madeit_security_cleanup_logs');
+        wp_clear_scheduled_hook('madeit_security_update_blocked_counts');
+        wp_clear_scheduled_hook('madeit_security_refresh_cloudflare_ips');
+        wp_clear_scheduled_hook('madeit_security_refresh_google_ips');
+        wp_clear_scheduled_hook('madeit_security_refresh_microsoft_ips');
+        wp_clear_scheduled_hook('madeit_security_update_geoip_db');
+        wp_clear_scheduled_hook('madeit_security_weekly_scan');
+        wp_clear_scheduled_hook('madeit_security_run_scan_batch');
+        wp_clear_scheduled_hook('madeit_security_daily_digest');
     }
 
-    public static function default_settings(): array {
+    public static function default_settings(): array
+    {
         return Settings::defaults();
     }
 
@@ -246,7 +250,8 @@ class Installer {
      *
      * @return array<string, mixed>
      */
-    public static function recommended_settings(): array {
+    public static function recommended_settings(): array
+    {
         return [
             'madeit_security_waf_mode'                => 'tarpit',
             'madeit_security_honeypot_enabled'        => true,
@@ -265,7 +270,8 @@ class Installer {
      *
      * @return array<string, string>
      */
-    public static function recommended_crawler_rules(): array {
+    public static function recommended_crawler_rules(): array
+    {
         return [
             'gptbot'            => 'block',
             'chatgpt_user'      => 'block',
@@ -287,26 +293,27 @@ class Installer {
      *
      * @return string[] List of options/actions applied.
      */
-    public static function apply_recommended(): array {
+    public static function apply_recommended(): array
+    {
         $applied = [];
 
         // 1. Apply scalar settings.
-        foreach ( self::recommended_settings() as $key => $value ) {
-            update_option( $key, $value );
+        foreach (self::recommended_settings() as $key => $value) {
+            update_option($key, $value);
             $applied[] = $key;
         }
 
         // 2. Apply AI crawler per-crawler rules (merge with existing).
         $current_rules = \MadeIT\Security\modules\AICrawlers::get_crawler_rules();
-        $recommended   = self::recommended_crawler_rules();
-        $merged        = array_merge( $current_rules, $recommended );
-        \MadeIT\Security\modules\AICrawlers::save_crawler_rules( $merged );
+        $recommended = self::recommended_crawler_rules();
+        $merged = array_merge($current_rules, $recommended);
+        \MadeIT\Security\modules\AICrawlers::save_crawler_rules($merged);
         $applied[] = 'madeit_security_ai_crawler_rules';
 
         // 3. Whitelist current admin IP.
-        $ip    = \MadeIT\Security\RequestLogger::get_real_ip();
+        $ip = \MadeIT\Security\RequestLogger::get_real_ip();
         $label = 'Recommended settings';
-        \MadeIT\Security\Whitelist::add( $ip, $label );
+        \MadeIT\Security\Whitelist::add($ip, $label);
         $applied[] = 'whitelist_ip';
 
         return $applied;

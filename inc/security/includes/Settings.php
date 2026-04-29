@@ -1,7 +1,8 @@
 <?php
+
 namespace MadeIT\Security;
 
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 /**
  * Central settings resolver.
@@ -15,26 +16,27 @@ defined( 'ABSPATH' ) || exit;
  * - option: madeit_security_waf_enabled
  * - define: MADEIT_SECURITY_CFG_WAF_ENABLED
  */
-class Settings {
-
+class Settings
+{
     /** @var array<string,mixed> */
     private static array $cache = [];
 
     /** @var array<string,mixed>|null */
     private static ?array $defaults = null;
 
-    public static function get( string $option, $default = false ) {
-        $default = self::default_for( $option, $default );
+    public static function get(string $option, $default = false)
+    {
+        $default = self::default_for($option, $default);
 
-        $const = self::constant_name( $option );
-        if ( defined( $const ) ) {
-            return constant( $const );
+        $const = self::constant_name($option);
+        if (defined($const)) {
+            return constant($const);
         }
 
         $getFromDatabaseKeys = [
             'madeit_security_last_scan_completed',
-            'madeit_security_last_db_scan', 
-            'madeit_security_scan_state', 
+            'madeit_security_last_db_scan',
+            'madeit_security_scan_state',
             'madeit_security_ai_crawler_rules',
             'madeit_security_block_ai_crawlers',
             'madeit_security_custom_login_enabled',
@@ -45,46 +47,56 @@ class Settings {
             'madeit_security_audit_log_enabled',
         ];
 
-        if(! in_array( $option, $getFromDatabaseKeys, true )) {
+        if (!in_array($option, $getFromDatabaseKeys, true)) {
             return $default;
         }
 
-        if ( array_key_exists( $option, self::$cache ) ) {
-            return self::$cache[ $option ];
+        if (array_key_exists($option, self::$cache)) {
+            return self::$cache[$option];
         }
-        self::$cache[ $option ] = get_option( $option, $default );
-        return self::$cache[ $option ];
+        self::$cache[$option] = get_option($option, $default);
+
+        return self::$cache[$option];
     }
 
-    public static function bool( string $option, bool $default = false ): bool {
-        if ( func_num_args() < 2 ) {
-            return (bool) self::get( $option );
+    public static function bool(string $option, bool $default = false): bool
+    {
+        if (func_num_args() < 2) {
+            return (bool) self::get($option);
         }
-        return (bool) self::get( $option, $default );
+
+        return (bool) self::get($option, $default);
     }
 
-    public static function int( string $option, int $default = 0 ): int {
-        if ( func_num_args() < 2 ) {
-            return (int) self::get( $option );
+    public static function int(string $option, int $default = 0): int
+    {
+        if (func_num_args() < 2) {
+            return (int) self::get($option);
         }
-        return (int) self::get( $option, $default );
+
+        return (int) self::get($option, $default);
     }
 
-    public static function string( string $option, string $default = '' ): string {
-        if ( func_num_args() < 2 ) {
-            return (string) self::get( $option );
+    public static function string(string $option, string $default = ''): string
+    {
+        if (func_num_args() < 2) {
+            return (string) self::get($option);
         }
-        return (string) self::get( $option, $default );
+
+        return (string) self::get($option, $default);
     }
 
-    public static function array( string $option, array $default = [] ): array {
-        if ( func_num_args() < 2 ) {
-            $value = self::get( $option );
-            return is_array( $value ) ? $value : [];
+    public static function array(string $option, array $default = []): array
+    {
+        if (func_num_args() < 2) {
+            $value = self::get($option);
+
+            return is_array($value) ? $value : [];
         }
 
-        $value = self::get( $option, $default );
-        return is_array( $value ) ? $value : $default;
+        $value = self::get($option, $default);
+
+        return is_array($value) ? $value : $default;
     }
 
     /**
@@ -95,8 +107,9 @@ class Settings {
      *
      * @return array<string,mixed>
      */
-    public static function defaults(): array {
-        if ( self::$defaults === null ) {
+    public static function defaults(): array
+    {
+        if (self::$defaults === null) {
             self::$defaults = [
                 'madeit_security_log_enabled'            => false,
                 'madeit_security_log_retention_days'     => 30,
@@ -119,7 +132,7 @@ class Settings {
                 'madeit_security_disable_file_editor'    => true,
                 'madeit_security_block_php_uploads'      => true,
                 'madeit_security_force_ssl_admin'        => false,
-                'madeit_security_notify_email'           => (string) get_option( 'admin_email', '' ),
+                'madeit_security_notify_email'           => (string) get_option('admin_email', ''),
 
                 // Notifications
                 'madeit_security_notify_email_enabled'   => true,
@@ -131,13 +144,13 @@ class Settings {
                 'madeit_security_notify_digest'          => true,
 
                 // Honeypot
-                'madeit_security_honeypot_enabled'       => true,
-                'madeit_security_honeypot_link_enabled'  => false,
-                'madeit_security_honeypot_fake_login'    => false,
+                'madeit_security_honeypot_enabled'         => true,
+                'madeit_security_honeypot_link_enabled'    => false,
+                'madeit_security_honeypot_fake_login'      => false,
                 'madeit_security_honeypot_fake_login_slug' => 'wp-login-secure',
-                'madeit_security_honeypot_comments'      => true,
-                'madeit_security_honeypot_forms'         => false,
-                'madeit_security_honeypot_wp_login'      => true,
+                'madeit_security_honeypot_comments'        => true,
+                'madeit_security_honeypot_forms'           => false,
+                'madeit_security_honeypot_wp_login'        => true,
 
                 // Security Headers
                 'madeit_security_hsts_enabled'           => false,
@@ -180,21 +193,21 @@ class Settings {
 
                 // Session Security
                 'madeit_security_session_security_enabled' => false,
-                'madeit_security_session_httponly'        => true,
-                'madeit_security_session_secure'         => true,
-                'madeit_security_session_samesite'       => 'Lax',
-                'madeit_security_session_binding'        => true,
-                'madeit_security_session_bind_ip'        => true,
-                'madeit_security_session_bind_ua'        => true,
-                'madeit_security_max_sessions'           => 3,
-                'madeit_security_max_sessions_action'    => 'destroy_oldest',
-                'madeit_security_session_exempt_admins'  => false,
-                'madeit_security_session_idle_timeout'   => 1800,
+                'madeit_security_session_httponly'         => true,
+                'madeit_security_session_secure'           => true,
+                'madeit_security_session_samesite'         => 'Lax',
+                'madeit_security_session_binding'          => true,
+                'madeit_security_session_bind_ip'          => true,
+                'madeit_security_session_bind_ua'          => true,
+                'madeit_security_max_sessions'             => 3,
+                'madeit_security_max_sessions_action'      => 'destroy_oldest',
+                'madeit_security_session_exempt_admins'    => false,
+                'madeit_security_session_idle_timeout'     => 1800,
 
                 // Outbound Monitor
                 'madeit_security_outbound_monitor_enabled' => true,
-                'madeit_security_outbound_mode'          => 'log',
-                'madeit_security_outbound_block_private' => true,
+                'madeit_security_outbound_mode'            => 'log',
+                'madeit_security_outbound_block_private'   => true,
 
                 // Malware Scanner
                 'madeit_security_scan_core'              => true,
@@ -233,7 +246,7 @@ class Settings {
                 'madeit_security_setup_complete'         => false,
 
                 //Custom login
-                'madeit_security_custom_login_enabled' => false,
+                'madeit_security_custom_login_enabled'       => false,
                 'madeit_security_custom_login_block_wpadmin' => false,
 
                 // CAPTCHA on login / register / lost password
@@ -251,23 +264,26 @@ class Settings {
         return self::$defaults;
     }
 
-    private static function constant_name( string $option ): string {
+    private static function constant_name(string $option): string
+    {
         $name = $option;
-        if ( str_starts_with( $name, 'madeit_security_' ) ) {
-            $name = substr( $name, 16 );
+        if (str_starts_with($name, 'madeit_security_')) {
+            $name = substr($name, 16);
         }
 
-        $name = preg_replace( '/[^A-Za-z0-9]+/', '_', $name ) ?: $name;
-        $name = trim( $name, '_' );
+        $name = preg_replace('/[^A-Za-z0-9]+/', '_', $name) ?: $name;
+        $name = trim($name, '_');
 
-        return 'MADEIT_SECURITY_CFG_' . strtoupper( $name );
+        return 'MADEIT_SECURITY_CFG_'.strtoupper($name);
     }
 
-    private static function default_for( string $option, $fallback = false ) {
+    private static function default_for(string $option, $fallback = false)
+    {
         $defaults = self::defaults();
-        if ( array_key_exists( $option, $defaults ) ) {
-            return $defaults[ $option ];
+        if (array_key_exists($option, $defaults)) {
+            return $defaults[$option];
         }
+
         return $fallback;
     }
 }

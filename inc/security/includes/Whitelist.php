@@ -1,15 +1,16 @@
 <?php
+
 namespace MadeIT\Security;
 
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 /**
  * Central whitelist checker.
  * Cached per-request in a static array so we only hit the DB once per IP.
  * Called at the TOP of every security module before any blocking logic.
  */
-class Whitelist {
-
+class Whitelist
+{
     /** Per-request in-memory cache: ip => bool */
     private static array $cache = [];
 
@@ -20,14 +21,15 @@ class Whitelist {
     /**
      * Returns true if this IP should bypass ALL security checks.
      */
-    public static function is_allowed( string $ip ): bool {
-        if ( isset( self::$cache[ $ip ] ) ) {
-            return self::$cache[ $ip ];
+    public static function is_allowed(string $ip): bool
+    {
+        if (isset(self::$cache[$ip])) {
+            return self::$cache[$ip];
         }
 
         // 1. Explicit whitelist table
-        if ( self::in_whitelist_table( $ip ) ) {
-            return self::$cache[ $ip ] = true;
+        if (self::in_whitelist_table($ip)) {
+            return self::$cache[$ip] = true;
         }
 
         // 2. Localhost / loopback — only auto-whitelisted when the site is
@@ -36,57 +38,60 @@ class Whitelist {
         //    auto-whitelisting loopback is a lockpick: every visitor looks
         //    like the server. Skip the auto-allow when ANY proxy config is
         //    configured (Cloudflare integration on, or trusted proxies set).
-        if ( in_array( $ip, [ '127.0.0.1', '::1', 'localhost' ], true )
-            && ! self::has_proxy_configured() ) {
-            return self::$cache[ $ip ] = true;
+        if (in_array($ip, ['127.0.0.1', '::1', 'localhost'], true)
+            && !self::has_proxy_configured()) {
+            return self::$cache[$ip] = true;
         }
 
         // 3. Admin grace: if LOGGED-IN user is administrator, bypass IP blocks (not WAF)
         //    Configurable — can be disabled via madeit_security_whitelist_admin_grace option
-        if ( get_option( 'madeit_security_whitelist_admin_grace', true ) && self::is_admin_ip() ) {
-            return self::$cache[ $ip ] = true;
+        if (get_option('madeit_security_whitelist_admin_grace', true) && self::is_admin_ip()) {
+            return self::$cache[$ip] = true;
         }
 
         // 4. Trust Cloudflare IPs if integration enabled
-        if ( get_option( 'madeit_security_cloudflare_integration', false ) && self::is_cloudflare_ip( $ip ) ) {
-            return self::$cache[ $ip ] = true;
+        if (get_option('madeit_security_cloudflare_integration', false) && self::is_cloudflare_ip($ip)) {
+            return self::$cache[$ip] = true;
         }
 
         // 5. Trust Google IPs (Cloud, services, crawlers) if integration enabled
-        if ( get_option( 'madeit_security_google_integration', false ) && self::is_google_ip( $ip ) ) {
-            return self::$cache[ $ip ] = true;
+        if (get_option('madeit_security_google_integration', false) && self::is_google_ip($ip)) {
+            return self::$cache[$ip] = true;
         }
 
         // 6. Trust Microsoft IPs (Azure, Bing, Office) if integration enabled
-        if ( get_option( 'madeit_security_microsoft_integration', false ) && self::is_microsoft_ip( $ip ) ) {
-            return self::$cache[ $ip ] = true;
+        if (get_option('madeit_security_microsoft_integration', false) && self::is_microsoft_ip($ip)) {
+            return self::$cache[$ip] = true;
         }
 
-        return self::$cache[ $ip ] = false;
+        return self::$cache[$ip] = false;
     }
 
     // ── DB lookup ──────────────────────────────────────────────────────────────
-    private static function in_whitelist_table( string $ip ): bool {
+    private static function in_whitelist_table(string $ip): bool
+    {
         global $wpdb;
 
         // Safety: table might not exist if activation hook failed
         static $table_exists = null;
-        if ( $table_exists === null ) {
+        if ($table_exists === null) {
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- security data must not be served from cache
             $table_exists = (bool) $wpdb->get_var(
-                $wpdb->prepare( "SHOW TABLES LIKE %s", $wpdb->prefix . 'madeit_security_whitelist' )
+                $wpdb->prepare('SHOW TABLES LIKE %s', $wpdb->prefix.'madeit_security_whitelist')
             );
         }
-        if ( ! $table_exists ) return false;
+        if (!$table_exists) {
+            return false;
+        }
 
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- security data must not be served from cache
-        return (bool) $wpdb->get_var( $wpdb->prepare(
+        return (bool) $wpdb->get_var($wpdb->prepare(
             "SELECT id FROM {$wpdb->prefix}madeit_security_whitelist
             WHERE type = 'ip'
                 AND value = %s
             LIMIT 1",
             $ip
-        ) );
+        ));
     }
 
     /**
@@ -94,26 +99,33 @@ class Whitelist {
      * When this is true, REMOTE_ADDR frequently equals a loopback or private
      * address and must NOT be treated as trusted.
      */
-    private static function has_proxy_configured(): bool {
-        if ( get_option( 'madeit_security_cloudflare_integration', false ) ) return true;
-
-        $trusted_raw = get_option( 'madeit_security_trust_proxy_ips', '' );
-        if ( is_string( $trusted_raw ) ) {
-            return trim( $trusted_raw ) !== '';
+    private static function has_proxy_configured(): bool
+    {
+        if (get_option('madeit_security_cloudflare_integration', false)) {
+            return true;
         }
-        return is_array( $trusted_raw ) && ! empty( array_filter( $trusted_raw ) );
+
+        $trusted_raw = get_option('madeit_security_trust_proxy_ips', '');
+        if (is_string($trusted_raw)) {
+            return trim($trusted_raw) !== '';
+        }
+
+        return is_array($trusted_raw) && !empty(array_filter($trusted_raw));
     }
 
     // ── Admin grace ────────────────────────────────────────────────────────────
-    private static function is_admin_ip(): bool {
-        if ( self::$admin_grace !== null ) return self::$admin_grace;
+    private static function is_admin_ip(): bool
+    {
+        if (self::$admin_grace !== null) {
+            return self::$admin_grace;
+        }
 
         // Only meaningful after WordPress auth runs
-        if ( ! function_exists( 'is_user_logged_in' ) ) {
+        if (!function_exists('is_user_logged_in')) {
             return self::$admin_grace = false;
         }
 
-        if ( is_user_logged_in() && current_user_can( 'manage_options' ) ) {
+        if (is_user_logged_in() && current_user_can('manage_options')) {
             return self::$admin_grace = true;
         }
 
@@ -136,11 +148,15 @@ class Whitelist {
         '2c0f:f248::/32',
     ];
 
-    public static function is_cloudflare_ip( string $ip ): bool {
+    public static function is_cloudflare_ip(string $ip): bool
+    {
         $ranges = self::get_cloudflare_ranges();
-        foreach ( $ranges as $range ) {
-            if ( self::ip_in_cidr( $ip, $range ) ) return true;
+        foreach ($ranges as $range) {
+            if (self::ip_in_cidr($ip, $range)) {
+                return true;
+            }
         }
+
         return false;
     }
 
@@ -148,44 +164,47 @@ class Whitelist {
      * Returns cached Cloudflare IP ranges (IPv4 + IPv6).
      * Fetched weekly via cron; falls back to hardcoded list.
      */
-    public static function get_cloudflare_ranges(): array {
-        $cached = get_transient( 'madeit_security_cloudflare_ip_ranges' );
-        if ( is_array( $cached ) && ! empty( $cached ) ) {
+    public static function get_cloudflare_ranges(): array
+    {
+        $cached = get_transient('madeit_security_cloudflare_ip_ranges');
+        if (is_array($cached) && !empty($cached)) {
             return $cached;
         }
-        return array_merge( self::CF_IPV4_FALLBACK, self::CF_IPV6_FALLBACK );
+
+        return array_merge(self::CF_IPV4_FALLBACK, self::CF_IPV6_FALLBACK);
     }
 
     /**
      * Fetches current Cloudflare IP ranges from their official endpoints.
      * Called by weekly cron hook `madeit_security_refresh_cloudflare_ips`.
      */
-    public static function refresh_cloudflare_ranges(): void {
+    public static function refresh_cloudflare_ranges(): void
+    {
         $ranges = [];
 
-        foreach ( [
+        foreach ([
             'https://www.cloudflare.com/ips-v4',
             'https://www.cloudflare.com/ips-v6',
-        ] as $url ) {
-            $response = wp_remote_get( $url, [
+        ] as $url) {
+            $response = wp_remote_get($url, [
                 'timeout'   => 10,
                 'sslverify' => true,
-            ] );
-            if ( is_wp_error( $response ) || wp_remote_retrieve_response_code( $response ) !== 200 ) {
+            ]);
+            if (is_wp_error($response) || wp_remote_retrieve_response_code($response) !== 200) {
                 continue;
             }
-            $body  = wp_remote_retrieve_body( $response );
-            $lines = array_filter( array_map( 'trim', explode( "\n", $body ) ) );
-            foreach ( $lines as $line ) {
+            $body = wp_remote_retrieve_body($response);
+            $lines = array_filter(array_map('trim', explode("\n", $body)));
+            foreach ($lines as $line) {
                 // Validate each line looks like a CIDR
-                if ( preg_match( '#^[\da-f.:]+/\d{1,3}$#i', $line ) ) {
+                if (preg_match('#^[\da-f.:]+/\d{1,3}$#i', $line)) {
                     $ranges[] = $line;
                 }
             }
         }
 
-        if ( ! empty( $ranges ) ) {
-            set_transient( 'madeit_security_cloudflare_ip_ranges', $ranges, WEEK_IN_SECONDS );
+        if (!empty($ranges)) {
+            set_transient('madeit_security_cloudflare_ip_ranges', $ranges, WEEK_IN_SECONDS);
         }
     }
 
@@ -225,19 +244,25 @@ class Whitelist {
         '2800:3f0::/32',     '2a00:1450::/32',     '2c0f:fb50::/32',
     ];
 
-    public static function is_google_ip( string $ip ): bool {
-        foreach ( self::get_google_ranges() as $range ) {
-            if ( self::ip_in_cidr( $ip, $range ) ) return true;
+    public static function is_google_ip(string $ip): bool
+    {
+        foreach (self::get_google_ranges() as $range) {
+            if (self::ip_in_cidr($ip, $range)) {
+                return true;
+            }
         }
+
         return false;
     }
 
-    public static function get_google_ranges(): array {
-        $cached = get_transient( 'madeit_security_google_ip_ranges' );
-        if ( is_array( $cached ) && ! empty( $cached ) ) {
+    public static function get_google_ranges(): array
+    {
+        $cached = get_transient('madeit_security_google_ip_ranges');
+        if (is_array($cached) && !empty($cached)) {
             return $cached;
         }
-        return array_merge( self::GOOGLE_IPV4_FALLBACK, self::GOOGLE_IPV6_FALLBACK );
+
+        return array_merge(self::GOOGLE_IPV4_FALLBACK, self::GOOGLE_IPV6_FALLBACK);
     }
 
     /**
@@ -246,30 +271,31 @@ class Whitelist {
      *
      * @see https://www.gstatic.com/ipranges/goog.json
      */
-    public static function refresh_google_ranges(): void {
-        $response = wp_remote_get( 'https://www.gstatic.com/ipranges/goog.json', [
+    public static function refresh_google_ranges(): void
+    {
+        $response = wp_remote_get('https://www.gstatic.com/ipranges/goog.json', [
             'timeout'   => 15,
             'sslverify' => true,
-        ] );
-        if ( is_wp_error( $response ) || wp_remote_retrieve_response_code( $response ) !== 200 ) {
+        ]);
+        if (is_wp_error($response) || wp_remote_retrieve_response_code($response) !== 200) {
             return;
         }
 
-        $data = json_decode( wp_remote_retrieve_body( $response ), true );
-        if ( ! is_array( $data ) || empty( $data['prefixes'] ) ) {
+        $data = json_decode(wp_remote_retrieve_body($response), true);
+        if (!is_array($data) || empty($data['prefixes'])) {
             return;
         }
 
         $ranges = [];
-        foreach ( $data['prefixes'] as $entry ) {
+        foreach ($data['prefixes'] as $entry) {
             $cidr = $entry['ipv4Prefix'] ?? $entry['ipv6Prefix'] ?? '';
-            if ( $cidr && preg_match( '#^[\da-f.:]+/\d{1,3}$#i', $cidr ) ) {
+            if ($cidr && preg_match('#^[\da-f.:]+/\d{1,3}$#i', $cidr)) {
                 $ranges[] = $cidr;
             }
         }
 
-        if ( ! empty( $ranges ) ) {
-            set_transient( 'madeit_security_google_ip_ranges', $ranges, WEEK_IN_SECONDS );
+        if (!empty($ranges)) {
+            set_transient('madeit_security_google_ip_ranges', $ranges, WEEK_IN_SECONDS);
         }
     }
 
@@ -310,19 +336,25 @@ class Whitelist {
         '2620:1ec::/36',
     ];
 
-    public static function is_microsoft_ip( string $ip ): bool {
-        foreach ( self::get_microsoft_ranges() as $range ) {
-            if ( self::ip_in_cidr( $ip, $range ) ) return true;
+    public static function is_microsoft_ip(string $ip): bool
+    {
+        foreach (self::get_microsoft_ranges() as $range) {
+            if (self::ip_in_cidr($ip, $range)) {
+                return true;
+            }
         }
+
         return false;
     }
 
-    public static function get_microsoft_ranges(): array {
-        $cached = get_transient( 'madeit_security_microsoft_ip_ranges' );
-        if ( is_array( $cached ) && ! empty( $cached ) ) {
+    public static function get_microsoft_ranges(): array
+    {
+        $cached = get_transient('madeit_security_microsoft_ip_ranges');
+        if (is_array($cached) && !empty($cached)) {
             return $cached;
         }
-        return array_merge( self::MS_IPV4_FALLBACK, self::MS_IPV6_FALLBACK );
+
+        return array_merge(self::MS_IPV4_FALLBACK, self::MS_IPV6_FALLBACK);
     }
 
     /**
@@ -335,21 +367,22 @@ class Whitelist {
      *
      * @see https://www.bing.com/toolbox/bingbot.json
      */
-    public static function refresh_microsoft_ranges(): void {
+    public static function refresh_microsoft_ranges(): void
+    {
         // Start with hardcoded Azure ranges (always included)
-        $ranges = array_merge( self::MS_IPV4_FALLBACK, self::MS_IPV6_FALLBACK );
+        $ranges = array_merge(self::MS_IPV4_FALLBACK, self::MS_IPV6_FALLBACK);
 
         // Fetch fresh BingBot ranges and merge
-        $response = wp_remote_get( 'https://www.bing.com/toolbox/bingbot.json', [
+        $response = wp_remote_get('https://www.bing.com/toolbox/bingbot.json', [
             'timeout'   => 15,
             'sslverify' => true,
-        ] );
-        if ( ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200 ) {
-            $data = json_decode( wp_remote_retrieve_body( $response ), true );
-            if ( is_array( $data ) && ! empty( $data['prefixes'] ) ) {
-                foreach ( $data['prefixes'] as $entry ) {
+        ]);
+        if (!is_wp_error($response) && wp_remote_retrieve_response_code($response) === 200) {
+            $data = json_decode(wp_remote_retrieve_body($response), true);
+            if (is_array($data) && !empty($data['prefixes'])) {
+                foreach ($data['prefixes'] as $entry) {
                     $cidr = $entry['ipv4Prefix'] ?? $entry['ipv6Prefix'] ?? '';
-                    if ( $cidr && preg_match( '#^[\da-f.:]+/\d{1,3}$#i', $cidr ) ) {
+                    if ($cidr && preg_match('#^[\da-f.:]+/\d{1,3}$#i', $cidr)) {
                         $ranges[] = $cidr;
                     }
                 }
@@ -357,100 +390,122 @@ class Whitelist {
         }
 
         // Deduplicate and cache
-        $ranges = array_values( array_unique( $ranges ) );
-        if ( ! empty( $ranges ) ) {
-            set_transient( 'madeit_security_microsoft_ip_ranges', $ranges, WEEK_IN_SECONDS );
+        $ranges = array_values(array_unique($ranges));
+        if (!empty($ranges)) {
+            set_transient('madeit_security_microsoft_ip_ranges', $ranges, WEEK_IN_SECONDS);
         }
     }
 
     // ── CIDR helper (IPv4 + IPv6) ────────────────────────────────────────────
-    public static function ip_in_cidr( string $ip, string $cidr ): bool {
-        [ $subnet, $bits ] = array_pad( explode( '/', $cidr ), 2, null );
-        if ( $bits === null ) return false;
+    public static function ip_in_cidr(string $ip, string $cidr): bool
+    {
+        [$subnet, $bits] = array_pad(explode('/', $cidr), 2, null);
+        if ($bits === null) {
+            return false;
+        }
         $bits = (int) $bits;
 
-        $ip_bin     = @inet_pton( $ip );
-        $subnet_bin = @inet_pton( $subnet );
-        if ( $ip_bin === false || $subnet_bin === false ) return false;
+        $ip_bin = @inet_pton($ip);
+        $subnet_bin = @inet_pton($subnet);
+        if ($ip_bin === false || $subnet_bin === false) {
+            return false;
+        }
 
         // Both addresses must be the same family (same byte length)
-        if ( strlen( $ip_bin ) !== strlen( $subnet_bin ) ) return false;
+        if (strlen($ip_bin) !== strlen($subnet_bin)) {
+            return false;
+        }
 
-        $max_bits = strlen( $ip_bin ) * 8; // 32 for IPv4, 128 for IPv6
-        if ( $bits < 0 || $bits > $max_bits ) return false;
+        $max_bits = strlen($ip_bin) * 8; // 32 for IPv4, 128 for IPv6
+        if ($bits < 0 || $bits > $max_bits) {
+            return false;
+        }
 
         // Build binary mask
-        $mask = str_repeat( "\xff", (int) ( $bits / 8 ) );
-        if ( $bits % 8 ) {
-            $mask .= chr( 0xff << ( 8 - ( $bits % 8 ) ) & 0xff );
+        $mask = str_repeat("\xff", (int) ($bits / 8));
+        if ($bits % 8) {
+            $mask .= chr(0xFF << (8 - ($bits % 8)) & 0xFF);
         }
-        $mask = str_pad( $mask, strlen( $ip_bin ), "\x00" );
+        $mask = str_pad($mask, strlen($ip_bin), "\x00");
 
-        return ( $ip_bin & $mask ) === ( $subnet_bin & $mask );
+        return ($ip_bin & $mask) === ($subnet_bin & $mask);
     }
 
     // ── Management API ─────────────────────────────────────────────────────────
 
-    public static function add( string $ip, string $label = '', int $by_user = 0 ): bool {
+    public static function add(string $ip, string $label = '', int $by_user = 0): bool
+    {
         global $wpdb;
-        if ( ! filter_var( $ip, FILTER_VALIDATE_IP ) ) return false;
+        if (!filter_var($ip, FILTER_VALIDATE_IP)) {
+            return false;
+        }
 
         // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- security data must not be served from cache
 
         // Clear from block list first
-        $wpdb->delete( $wpdb->prefix . 'madeit_security_blocked_ips', [ 'ip' => $ip ], [ '%s' ] );
+        $wpdb->delete($wpdb->prefix.'madeit_security_blocked_ips', ['ip' => $ip], ['%s']);
 
-        $exists = $wpdb->get_var( $wpdb->prepare(
-            "SELECT id FROM {$wpdb->prefix}madeit_security_whitelist WHERE type='ip' AND value=%s", $ip
-        ) );
-        if ( $exists ) return true; // already whitelisted
+        $exists = $wpdb->get_var($wpdb->prepare(
+            "SELECT id FROM {$wpdb->prefix}madeit_security_whitelist WHERE type='ip' AND value=%s",
+            $ip
+        ));
+        if ($exists) {
+            return true;
+        } // already whitelisted
 
         $ok = (bool) $wpdb->insert(
-            $wpdb->prefix . 'madeit_security_whitelist',
+            $wpdb->prefix.'madeit_security_whitelist',
             [
                 'type'       => 'ip',
                 'value'      => $ip,
-                'label'      => $label ?: "Added " . current_time( 'mysql' ),
+                'label'      => $label ?: 'Added '.current_time('mysql'),
                 'created_by' => $by_user ?: get_current_user_id(),
-                'created_at' => current_time( 'mysql' ),
+                'created_at' => current_time('mysql'),
             ],
-            [ '%s', '%s', '%s', '%d', '%s' ]
+            ['%s', '%s', '%s', '%d', '%s']
         );
 
         // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
         // Bust cache
-        unset( self::$cache[ $ip ] );
+        unset(self::$cache[$ip]);
+
         return $ok;
     }
 
-    public static function remove( int $id ): bool {
+    public static function remove(int $id): bool
+    {
         global $wpdb;
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- security data must not be served from cache
-        $row = $wpdb->get_row( $wpdb->prepare(
-            "SELECT value FROM {$wpdb->prefix}madeit_security_whitelist WHERE id=%d", $id
-        ) );
+        $row = $wpdb->get_row($wpdb->prepare(
+            "SELECT value FROM {$wpdb->prefix}madeit_security_whitelist WHERE id=%d",
+            $id
+        ));
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- security data must not be served from cache
-        $ok  = (bool) $wpdb->delete( $wpdb->prefix . 'madeit_security_whitelist', [ 'id' => $id ], [ '%d' ] );
-        if ( $ok && $row ) {
-            unset( self::$cache[ $row->value ] );
+        $ok = (bool) $wpdb->delete($wpdb->prefix.'madeit_security_whitelist', ['id' => $id], ['%d']);
+        if ($ok && $row) {
+            unset(self::$cache[$row->value]);
         }
+
         return $ok;
     }
 
-    public static function get_all(): array {
+    public static function get_all(): array
+    {
         global $wpdb;
+
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- security data must not be served from cache
-        return $wpdb->get_results( $wpdb->prepare(
+        return $wpdb->get_results($wpdb->prepare(
             "SELECT id, type, value, label, created_by, created_at
             FROM {$wpdb->prefix}madeit_security_whitelist
             WHERE type = %s
             ORDER BY created_at DESC",
             'ip'
-        ) );
+        ));
     }
 
-    public static function my_ip(): string {
+    public static function my_ip(): string
+    {
         return RequestLogger::get_real_ip();
     }
 }
