@@ -433,6 +433,14 @@ export function ColumnsEditContainer( props ) {
 
     const setCssVarIfDefined = ( targetStyle, key, value ) => {
         if ( value === undefined || value === null ) return;
+
+        // BoxControl typically returns strings like "12px", but some older
+        // blocks/controls can still pass numbers.
+        if ( typeof value === 'number' && Number.isFinite( value ) ) {
+            targetStyle[ key ] = `${ value }px`;
+            return;
+        }
+
         if ( typeof value !== 'string' ) return;
         const trimmed = value.trim();
         if ( trimmed === '' ) return;
@@ -442,35 +450,56 @@ export function ColumnsEditContainer( props ) {
     const setSpacingVars = ( targetStyle, prefix, spacing, breakpoint ) => {
         if ( ! spacing || typeof spacing !== 'object' ) return;
 
+        const rawTop = spacing.top;
+        const rawRight = spacing.right;
+        const rawBottom = spacing.bottom;
+        const rawLeft = spacing.left;
+
+        const hasAnyValue =
+            rawTop !== undefined && rawTop !== null && String( rawTop ).trim() !== '' ||
+            rawRight !== undefined && rawRight !== null && String( rawRight ).trim() !== '' ||
+            rawBottom !== undefined && rawBottom !== null && String( rawBottom ).trim() !== '' ||
+            rawLeft !== undefined && rawLeft !== null && String( rawLeft ).trim() !== '';
+
+        if ( ! hasAnyValue ) return;
+
+        // Important: the build pipeline can merge longhand padding declarations
+        // into a single `padding: ...` shorthand. If any of the 4 values is an
+        // invalid var() (missing), the whole shorthand becomes invalid.
+        // To keep responsive padding working, always emit all 4 sides when
+        // spacing is used (missing sides default to 0).
         setCssVarIfDefined(
             targetStyle,
             `--${ prefix }-top-${ breakpoint }`,
-            spacing.top
+            rawTop === undefined || rawTop === null || String( rawTop ).trim() === '' ? '0px' : rawTop
         );
         setCssVarIfDefined(
             targetStyle,
             `--${ prefix }-right-${ breakpoint }`,
-            spacing.right
+            rawRight === undefined || rawRight === null || String( rawRight ).trim() === '' ? '0px' : rawRight
         );
         setCssVarIfDefined(
             targetStyle,
             `--${ prefix }-bottom-${ breakpoint }`,
-            spacing.bottom
+            rawBottom === undefined || rawBottom === null || String( rawBottom ).trim() === '' ? '0px' : rawBottom
         );
         setCssVarIfDefined(
             targetStyle,
             `--${ prefix }-left-${ breakpoint }`,
-            spacing.left
+            rawLeft === undefined || rawLeft === null || String( rawLeft ).trim() === '' ? '0px' : rawLeft
         );
     };
 
-    // Desktop margin stays inline; tablet/mobile overrides via CSS variables.
+    // Desktop margin stays inline; we also set matching desktop CSS variables
+    // so tablet/mobile fallbacks can safely reference them.
     if ( containerMargin && typeof containerMargin === 'object' ) {
         if ( containerMargin.top !== undefined ) {
             style.marginTop = containerMargin.top;
+            setCssVarIfDefined( style, '--madeit-container-margin-top-desktop', containerMargin.top );
         }
         if ( containerMargin.bottom !== undefined ) {
             style.marginBottom = containerMargin.bottom;
+            setCssVarIfDefined( style, '--madeit-container-margin-bottom-desktop', containerMargin.bottom );
         }
     }
     if ( containerMarginTablet && typeof containerMarginTablet === 'object' ) {
@@ -484,7 +513,8 @@ export function ColumnsEditContainer( props ) {
 
     const shouldApplyContainerPaddingOnRow = containerPaddingOnRow === true;
 
-    // Desktop padding stays inline; tablet/mobile overrides via CSS variables.
+    // Desktop padding stays inline; we also set matching desktop CSS variables
+    // so tablet/mobile fallbacks can safely reference them.
     var rowStyle = {};
     if ( shouldApplyContainerPaddingOnRow ) {
         if ( containerPadding && typeof containerPadding === 'object' ) {
@@ -493,6 +523,8 @@ export function ColumnsEditContainer( props ) {
             if ( containerPadding.bottom !== undefined ) rowStyle.paddingBottom = containerPadding.bottom;
             if ( containerPadding.left !== undefined ) rowStyle.paddingLeft = containerPadding.left;
         }
+
+        setSpacingVars( rowStyle, 'madeit-container-row-padding', containerPadding, 'desktop' );
 
         setSpacingVars( rowStyle, 'madeit-container-row-padding', containerPaddingTablet, 'tablet' );
         setSpacingVars( rowStyle, 'madeit-container-row-padding', containerPaddingMobile, 'mobile' );
@@ -503,6 +535,8 @@ export function ColumnsEditContainer( props ) {
             if ( containerPadding.bottom !== undefined ) style.paddingBottom = containerPadding.bottom;
             if ( containerPadding.left !== undefined ) style.paddingLeft = containerPadding.left;
         }
+
+        setSpacingVars( style, 'madeit-container-padding', containerPadding, 'desktop' );
 
         setSpacingVars( style, 'madeit-container-padding', containerPaddingTablet, 'tablet' );
         setSpacingVars( style, 'madeit-container-padding', containerPaddingMobile, 'mobile' );

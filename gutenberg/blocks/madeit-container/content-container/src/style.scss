@@ -1,629 +1,542 @@
-/**
- * #.# Styles
- *
- * CSS for both Frontend+Backend.
- */
-// Most used breakpoints
-$break-huge: 1440px;
-$break-wide: 1280px;
-$break-xlarge: 1080px;
-$break-large: 960px;	// admin sidebar auto folds
-$break-medium: 782px;	// adminbar goes big
-$break-small: 600px;
-$break-mobile: 480px;
-$break-zoomed-in: 280px;
+// =============================================================================
+// style.scss — madeit-block-content
+//
+// CSS voor zowel frontend als editor (block styles).
+//
+// STRUCTUUR
+// ─────────
+// 1.  Breakpoint variabelen & mixins
+// 2.  Wrapper: margin (responsief via CSS-vars)
+// 3.  Wrapper: padding (responsief via CSS-vars)
+// 4.  `.madeit-block-content--frontend` defaults
+// 5.  Container & container-fluid overrides (Bootstrap neutralisering)
+// 6.  `.madeit-container-row` — flex layout + responsieve padding
+// 7.  Kolom-breedte klassen (col-md-*, col-lg-*)
+// 8.  Flex-richting helpers (column-direction → volle breedte)
+// 9.  Verticale uitlijning helpers
+// 10. Kolom-stijlen (.wp-block-madeit-block-content-column)
+// 11. Zichtbaarheid (is-hidden-*)
+// 12. Max-breedte berekeningen per kolomaantal (desktop only)
+// 13. Editor-only overrides
+// =============================================================================
 
-$default-block-margin: 28px;
-$break-small: 600px;
 
-// Container max-widths
-$desktop: 992px;
-$tablet: 600px;
-$mobile: 599px;
+// ─── 1. Breakpoint variabelen & mixins ────────────────────────────────────────
 
-// Grid size
-$grid-size-small: 4px;
-$grid-size: 8px;
-$grid-size-large: 16px;
+// Schermgroottes
+$desktop:      992px;
+$tablet-max:   991px;
+$tablet-min:   600px;
+$mobile:       599px;
 
-@mixin break-huge() {
-	@media (min-width: #{ ($break-huge) }) {
-		@content;
-	}
+// Gutenberg admin breakpoints (voor editor-only regels)
+$break-medium: 782px;
+
+// Responsieve mixins
+@mixin desktop {
+    @media (min-width: #{$desktop}) { @content; }
 }
-
-@mixin break-wide() {
-	@media (min-width: #{ ($break-wide) }) {
-		@content;
-	}
+@mixin tablet {
+    @media (min-width: #{$tablet-min}) and (max-width: #{$tablet-max}) { @content; }
 }
-
-@mixin break-xlarge() {
-	@media (min-width: #{ ($break-xlarge) }) {
-		@content;
-	}
+@mixin mobile {
+    @media (max-width: #{$mobile}) { @content; }
 }
-
-@mixin break-large() {
-	@media (min-width: #{ ($break-large) }) {
-		@content;
-	}
-}
-
-@mixin break-medium() {
-	@media (min-width: #{ ($break-medium) }) {
-		@content;
-	}
-}
-
-@mixin break-small() {
-	@media (min-width: #{ ($break-small) }) {
-		@content;
-	}
-}
-
-@mixin break-mobile() {
-	@media (min-width: #{ ($break-mobile) }) {
-		@content;
-	}
-}
-
-@mixin break-zoomed-in() {
-	@media (min-width: #{ ($break-zoomed-in) }) {
-		@content;
-	}
+@mixin tablet-and-below {
+    @media (max-width: #{$tablet-max}) { @content; }
 }
 
 
+// =============================================================================
+// Hoofdblok: .wp-block-madeit-block-content
+// =============================================================================
 
-
-/**
- * All Columns Alignment
- */
 .wp-block-madeit-block-content {
-	// min-height: var(--madeit-min-height-desktop, auto);
-	// max-width: var(--madeit-max-width-desktop);
-	margin-left: auto;
-	margin-right: auto;
+    margin-left: auto;
+    margin-right: auto;
 
-	// Responsive margin (top/bottom) via CSS variables.
-	// Note: no fallback on purpose; if the var is unset, the declaration becomes
-	// invalid and existing/theme margins remain untouched.
-	margin-top: var(--madeit-container-margin-top-desktop);
-	margin-bottom: var(--madeit-container-margin-bottom-desktop);
 
-	@media (min-width: 600px) and (max-width: 991px) {
-		margin-top: var(
-			--madeit-container-margin-top-tablet,
-			var(--madeit-container-margin-top-desktop)
-		) !important;
-		margin-bottom: var(
-			--madeit-container-margin-bottom-tablet,
-			var(--madeit-container-margin-bottom-desktop)
-		) !important;
+    // ─── 2. Wrapper: margin (responsief via CSS-vars) ─────────────────────────
+    //
+    // Margin wordt geserialiseerd als CSS-variabelen door save.js.
+    // De inline `margin-top` / `margin-bottom` die ook in save.js stond,
+    // is verwijderd — CSS-vars zijn de enige bron van waarheid.
+    //
+    // Specificiteitstruc: de [style*="..."] selector wint van een class-only
+    // selector, zodat de var ook daadwerkelijk wordt toegepast als hij aanwezig is.
+    // Zonder deze truc overschrijft Bootstrap of een theme de waarde.
+	&[style*="--madeit-container-margin-top-desktop:"],
+	&[style*="--madeit-container-margin-bottom-desktop:"] {
+		margin-top: var(--madeit-container-margin-top-desktop) !important;
+		margin-bottom: var(--madeit-container-margin-bottom-desktop) !important;
 	}
 
-	@media (max-width: $mobile) {
-		margin-top: var(
-			--madeit-container-margin-top-mobile,
-			var(
-				--madeit-container-margin-top-tablet,
-				var(--madeit-container-margin-top-desktop)
-			)
-		) !important;
-		margin-bottom: var(
-			--madeit-container-margin-bottom-mobile,
-			var(
-				--madeit-container-margin-bottom-tablet,
-				var(--madeit-container-margin-bottom-desktop)
-			)
-		) !important;
-	}
+    // Specificiteitswinnaar voor tablet/mobile margin — alleen actief als de var
+    // aanwezig is in het style-attribuut (geserialiseerd door save.js).
+    &[style*="--madeit-container-margin-top-tablet:"],
+    &[style*="--madeit-container-margin-bottom-tablet:"] {
+        @include tablet {
+            margin-top: var(
+                --madeit-container-margin-top-tablet,
+                var(--madeit-container-margin-top-desktop)
+            ) !important;
+            margin-bottom: var(
+                --madeit-container-margin-bottom-tablet,
+                var(--madeit-container-margin-bottom-desktop)
+            ) !important;
+        }
+    }
 
-	// Responsive wrapper padding via CSS variables.
-	padding-top: var(--madeit-container-padding-top-desktop);
-	padding-right: var(--madeit-container-padding-right-desktop);
-	padding-bottom: var(--madeit-container-padding-bottom-desktop);
-	padding-left: var(--madeit-container-padding-left-desktop);
+    // Fallback tablet (altijd, zonder specificiteitstruc): erft van desktop.
+    @include tablet {
+        margin-top: var(
+            --madeit-container-margin-top-tablet,
+            var(--madeit-container-margin-top-desktop)
+        );
+        margin-bottom: var(
+            --madeit-container-margin-bottom-tablet,
+            var(--madeit-container-margin-bottom-desktop)
+        );
+    }
 
-	@media (min-width: 600px) and (max-width: 991px) {
-		padding-top: var(
-			--madeit-container-padding-top-tablet,
-			var(--madeit-container-padding-top-desktop)
-		) !important;
-		padding-right: var(
-			--madeit-container-padding-right-tablet,
-			var(--madeit-container-padding-right-desktop)
-		) !important;
-		padding-bottom: var(
-			--madeit-container-padding-bottom-tablet,
-			var(--madeit-container-padding-bottom-desktop)
-		) !important;
-		padding-left: var(
-			--madeit-container-padding-left-tablet,
-			var(--madeit-container-padding-left-desktop)
-		) !important;
-	}
+    &[style*="--madeit-container-margin-top-mobile:"],
+    &[style*="--madeit-container-margin-bottom-mobile:"] {
+        @include mobile {
+            margin-top: var(
+                --madeit-container-margin-top-mobile,
+                var(--madeit-container-margin-top-tablet, var(--madeit-container-margin-top-desktop))
+            ) !important;
+            margin-bottom: var(
+                --madeit-container-margin-bottom-mobile,
+                var(--madeit-container-margin-bottom-tablet, var(--madeit-container-margin-bottom-desktop))
+            ) !important;
+        }
+    }
 
-	@media (max-width: $mobile) {
-		padding-top: var(
-			--madeit-container-padding-top-mobile,
-			var(
-				--madeit-container-padding-top-tablet,
-				var(--madeit-container-padding-top-desktop)
-			)
-		) !important;
-		padding-right: var(
-			--madeit-container-padding-right-mobile,
-			var(
-				--madeit-container-padding-right-tablet,
-				var(--madeit-container-padding-right-desktop)
-			)
-		) !important;
-		padding-bottom: var(
-			--madeit-container-padding-bottom-mobile,
-			var(
-				--madeit-container-padding-bottom-tablet,
-				var(--madeit-container-padding-bottom-desktop)
-			)
-		) !important;
-		padding-left: var(
-			--madeit-container-padding-left-mobile,
-			var(
-				--madeit-container-padding-left-tablet,
-				var(--madeit-container-padding-left-desktop)
-			)
-		) !important;
-	}
+    // Fallback mobile (altijd): erft van tablet → desktop.
+    @include mobile {
+        margin-top: var(
+            --madeit-container-margin-top-mobile,
+            var(--madeit-container-margin-top-tablet, var(--madeit-container-margin-top-desktop))
+        );
+        margin-bottom: var(
+            --madeit-container-margin-bottom-mobile,
+            var(--madeit-container-margin-bottom-tablet, var(--madeit-container-margin-bottom-desktop))
+        );
+    }
 
-	&.madeit-block-content--frontend {
-		--madeit-row-gap-desktop: 20px;
-		--madeit-row-gap-tablet: 20px;
-		--madeit-row-gap-mobile: 20px;
-		--madeit-flex-direction-desktop: row;
-		--madeit-flex-direction-tablet: column;
-		--madeit-flex-direction-mobile: column;
-		--madeit-align-items-desktop: stretch;
-		--madeit-justify-content-desktop: flex-start;
-		--madeit-flex-wrap-desktop: nowrap;
 
-		width: calc(100% - var(--margin-left-desktop, 0) - var(--margin-right-desktop, 0));	
-	}
+    // ─── 3. Wrapper: padding (responsief via CSS-vars) ────────────────────────
+    //
+    // Padding staat standaard op de wrapper wanneer `containerPaddingOnRow` niet
+    // actief is. Als die flag wél actief is, staat padding op `.madeit-container-row`.
+    // Beide gevallen worden hieronder afgehandeld.
 
-	@media (max-width: 781px) {
-		// min-height: var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto));
-		// max-width: var(--madeit-max-width-tablet, var(--madeit-max-width-desktop, auto));
-	}
+    padding-top:    var(--madeit-container-padding-top-desktop);
+    padding-right:  var(--madeit-container-padding-right-desktop);
+    padding-bottom: var(--madeit-container-padding-bottom-desktop);
+    padding-left:   var(--madeit-container-padding-left-desktop);
 
-	@media (max-width: $mobile) {
-		.container {
-			// min-height: var(--madeit-min-height-mobile, var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto)));
-			max-width: var(--madeit-max-width-mobile, var(--madeit-max-width-tablet, var(--madeit-max-width-desktop, 100%)));
-			// align-content: var(--madeit-align-items-mobile, var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch)));
-		}
-	}
+    &[style*="--madeit-container-padding-top-tablet:"],
+    &[style*="--madeit-container-padding-right-tablet:"],
+    &[style*="--madeit-container-padding-bottom-tablet:"],
+    &[style*="--madeit-container-padding-left-tablet:"] {
+        @include tablet {
+            padding-top:    var(--madeit-container-padding-top-tablet,    var(--madeit-container-padding-top-desktop)) !important;
+            padding-right:  var(--madeit-container-padding-right-tablet,  var(--madeit-container-padding-right-desktop)) !important;
+            padding-bottom: var(--madeit-container-padding-bottom-tablet, var(--madeit-container-padding-bottom-desktop)) !important;
+            padding-left:   var(--madeit-container-padding-left-tablet,   var(--madeit-container-padding-left-desktop)) !important;
+        }
+    }
 
-	.wp-block-madeit-block-content-column {
-		// min-height: var(--madeit-min-height-desktop, auto);
-		align-content: var(--madeit-align-items-desktop, stretch);
+    @include tablet {
+        padding-top:    var(--madeit-container-padding-top-tablet,    var(--madeit-container-padding-top-desktop));
+        padding-right:  var(--madeit-container-padding-right-tablet,  var(--madeit-container-padding-right-desktop));
+        padding-bottom: var(--madeit-container-padding-bottom-tablet, var(--madeit-container-padding-bottom-desktop));
+        padding-left:   var(--madeit-container-padding-left-tablet,   var(--madeit-container-padding-left-desktop));
+    }
 
-		@media (max-width: $tablet) {
-			// min-height: var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto));
-			align-content: var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch));
-		}
+    &[style*="--madeit-container-padding-top-mobile:"],
+    &[style*="--madeit-container-padding-right-mobile:"],
+    &[style*="--madeit-container-padding-bottom-mobile:"],
+    &[style*="--madeit-container-padding-left-mobile:"] {
+        @include mobile {
+            padding-top:    var(--madeit-container-padding-top-mobile,    var(--madeit-container-padding-top-tablet,    var(--madeit-container-padding-top-desktop))) !important;
+            padding-right:  var(--madeit-container-padding-right-mobile,  var(--madeit-container-padding-right-tablet,  var(--madeit-container-padding-right-desktop))) !important;
+            padding-bottom: var(--madeit-container-padding-bottom-mobile, var(--madeit-container-padding-bottom-tablet, var(--madeit-container-padding-bottom-desktop))) !important;
+            padding-left:   var(--madeit-container-padding-left-mobile,   var(--madeit-container-padding-left-tablet,   var(--madeit-container-padding-left-desktop))) !important;
+        }
+    }
 
-		@media (max-width: $mobile) {
-			// min-height: var(--madeit-min-height-mobile, var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto)));
-			align-content: var(--madeit-align-items-mobile, var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch)));
-		}
-	}
+    @include mobile {
+        padding-top:    var(--madeit-container-padding-top-mobile,    var(--madeit-container-padding-top-tablet,    var(--madeit-container-padding-top-desktop)));
+        padding-right:  var(--madeit-container-padding-right-mobile,  var(--madeit-container-padding-right-tablet,  var(--madeit-container-padding-right-desktop)));
+        padding-bottom: var(--madeit-container-padding-bottom-mobile, var(--madeit-container-padding-bottom-tablet, var(--madeit-container-padding-bottom-desktop)));
+        padding-left:   var(--madeit-container-padding-left-mobile,   var(--madeit-container-padding-left-tablet,   var(--madeit-container-padding-left-desktop)));
+    }
 
-	&.container, &.container-fluid {
-		// Baseline: neutralize Bootstrap container padding,
-		// but allow block-level responsive padding variables to override.
-		padding-right: var(--madeit-container-padding-right-desktop, 0px);
-		padding-left: var(--madeit-container-padding-left-desktop, 0px);
 
-		@media (min-width: 600px) and (max-width: 991px) {
-			padding-right: var(
-				--madeit-container-padding-right-tablet,
-				var(--madeit-container-padding-right-desktop, 0px)
-			);
-			padding-left: var(
-				--madeit-container-padding-left-tablet,
-				var(--madeit-container-padding-left-desktop, 0px)
-			);
-		}
+    // ─── 4. `.madeit-block-content--frontend` defaults ────────────────────────
+    //
+    // Standaardwaarden voor de layout-CSS-vars. Deze worden NIET inline
+    // geserialiseerd door save.js (om validatieverschillen te vermijden),
+    // maar hier via CSS ingesteld. Dat is de afspraak in de codebase.
 
-		@media (max-width: $mobile) {
-			padding-right: var(
-				--madeit-container-padding-right-mobile,
-				var(
-					--madeit-container-padding-right-tablet,
-					var(--madeit-container-padding-right-desktop, 0px)
-				)
-			);
-			padding-left: var(
-				--madeit-container-padding-left-mobile,
-				var(
-					--madeit-container-padding-left-tablet,
-					var(--madeit-container-padding-left-desktop, 0px)
-				)
-			);
-		}
+    &.madeit-block-content--frontend {
+        --madeit-row-gap-desktop:           20px;
+        --madeit-row-gap-tablet:            20px;
+        --madeit-row-gap-mobile:            20px;
+        --madeit-flex-direction-desktop:    row;
+        --madeit-flex-direction-tablet:     column;
+        --madeit-flex-direction-mobile:     column;
+        --madeit-align-items-desktop:       stretch;
+        --madeit-justify-content-desktop:   flex-start;
+        --madeit-flex-wrap-desktop:         nowrap;
 
-		> .row {
-			margin-right: auto;
-			margin-left: auto;
-		}
+        // Corrigeer breedte voor eventuele negatieve margin-left/right.
+        width: calc(100% - var(--margin-left-desktop, 0px) - var(--margin-right-desktop, 0px));
+    }
 
-		.container {
-			padding: 0;
-		}
-	}
-	// Row wrapper that contains the Column blocks.
-	// Provide a safe baseline so columns don't shrink to content-width
-	// when flex-direction is set to `row`.
-	// .madeit-container-row {
-	// 	display: flex;
-	// }
 
-	// Responsive row padding via CSS variables.
-	.madeit-container-row {
-		padding-top: var(--madeit-container-row-padding-top-desktop);
-		padding-right: var(--madeit-container-row-padding-right-desktop);
-		padding-bottom: var(--madeit-container-row-padding-bottom-desktop);
-		padding-left: var(--madeit-container-row-padding-left-desktop);
+    // ─── 5. Container & container-fluid overrides (Bootstrap neutralisering) ──
+    //
+    // Bootstrap voegt standaard padding-left/right toe aan .container.
+    // We neutraliseren dat hier en vervangen het door onze eigen CSS-vars.
 
-		@media (min-width: 600px) and (max-width: 991px) {
-			padding-top: var(
-				--madeit-container-row-padding-top-tablet,
-				var(--madeit-container-row-padding-top-desktop)
-			) !important;
-			padding-right: var(
-				--madeit-container-row-padding-right-tablet,
-				var(--madeit-container-row-padding-right-desktop)
-			) !important;
-			padding-bottom: var(
-				--madeit-container-row-padding-bottom-tablet,
-				var(--madeit-container-row-padding-bottom-desktop)
-			) !important;
-			padding-left: var(
-				--madeit-container-row-padding-left-tablet,
-				var(--madeit-container-row-padding-left-desktop)
-			) !important;
-		}
+    &.container,
+    &.container-fluid {
+        // Neutraliseer Bootstrap padding; onze vars nemen het over.
+        padding-right: var(--madeit-container-padding-right-desktop, 0px);
+        padding-left:  var(--madeit-container-padding-left-desktop,  0px);
 
-		@media (max-width: $mobile) {
-			padding-top: var(
-				--madeit-container-row-padding-top-mobile,
-				var(
-					--madeit-container-row-padding-top-tablet,
-					var(--madeit-container-row-padding-top-desktop)
-				)
-			) !important;
-			padding-right: var(
-				--madeit-container-row-padding-right-mobile,
-				var(
-					--madeit-container-row-padding-right-tablet,
-					var(--madeit-container-row-padding-right-desktop)
-				)
-			) !important;
-			padding-bottom: var(
-				--madeit-container-row-padding-bottom-mobile,
-				var(
-					--madeit-container-row-padding-bottom-tablet,
-					var(--madeit-container-row-padding-bottom-desktop)
-				)
-			) !important;
-			padding-left: var(
-				--madeit-container-row-padding-left-mobile,
-				var(
-					--madeit-container-row-padding-left-tablet,
-					var(--madeit-container-row-padding-left-desktop)
-				)
-			) !important;
-		}
-	}
-	
+        @include tablet {
+            padding-right: var(--madeit-container-padding-right-tablet, var(--madeit-container-padding-right-desktop, 0px));
+            padding-left:  var(--madeit-container-padding-left-tablet,  var(--madeit-container-padding-left-desktop,  0px));
+        }
 
-	.madeit-container-row > .col,
-	.madeit-container-row > .wp-block-madeit-block-content-column {
-		min-width: 0;
-		max-width: 100%;
-	}
+        @include mobile {
+            padding-right: var(--madeit-container-padding-right-mobile, var(--madeit-container-padding-right-tablet, var(--madeit-container-padding-right-desktop, 0px)));
+            padding-left:  var(--madeit-container-padding-left-mobile,  var(--madeit-container-padding-left-tablet,  var(--madeit-container-padding-left-desktop,  0px)));
+        }
 
-	// Bootstrap-like baseline: `.col` is equal-width.
-	// Do NOT force `width: 100%` here, because it breaks `.col-md-*` sizing.
-	.madeit-container-row > .col {
-		flex: 1 0 0%;
-	}
+        // Row binnen een container: centreer en verwijder Bootstrap gutter.
+        > .row {
+            margin-right: auto;
+            margin-left:  auto;
+        }
 
-	// If direction is column/column-reverse, force all columns to full width.
-	// This intentionally overrides any Bootstrap `col-*` sizing classes.
-	.madeit-container-row[data-madeit-dir="column"],
-	.madeit-container-row[data-madeit-dir="column-reverse"] {
-		> .wp-block-madeit-block-content-column {
-			width: 100% !important;
-			flex: 0 0 100% !important;
-		}
-	}
+        // Geneste container: geen extra padding.
+        .container {
+            padding: 0;
+        }
+    }
 
-	// Bootstrap-like fallbacks for the Column width classes.
-	// (If Bootstrap is already present, these values match and won't change layout.)
-	@media (min-width: 768px) {
-		@for $i from 1 through 12 {
-			.madeit-container-row > .col.col-md-#{$i},
-			.madeit-container-row > .wp-block-madeit-block-content-column.col-md-#{$i} {
-				flex: 0 0 auto;
-				width: percentage($i / 12);
-			}
-		}
-	}
 
-	@media (min-width: 992px) {
-		@for $i from 1 through 12 {
-			.madeit-container-row > .col.col-lg-#{$i},
-			.madeit-container-row > .wp-block-madeit-block-content-column.col-lg-#{$i} {
-				flex: 0 0 auto;
-				width: percentage($i / 12);
-			}
-		}
+    // ─── 6. `.madeit-container-row` — flex layout + responsieve padding ───────
 
-		.madeit-container-row {
-			display: flex;
-			flex-wrap: var(--madeit-flex-wrap-desktop, nowrap);
-			align-items: var(--madeit-align-items-desktop, stretch);
-			justify-content: var(--madeit-justify-content-desktop, space-between);
-			gap: var(--madeit-row-gap-desktop, 20px);
-			// min-height: var(--madeit-min-height-desktop, auto);
-			max-width: 100%;
+    .madeit-container-row {
+        // Padding via CSS-vars (geserialiseerd door save.js als containerPaddingOnRow = true).
+        padding-top:    var(--madeit-container-row-padding-top-desktop);
+        padding-right:  var(--madeit-container-row-padding-right-desktop);
+        padding-bottom: var(--madeit-container-row-padding-bottom-desktop);
+        padding-left:   var(--madeit-container-row-padding-left-desktop);
 
-			.wp-block-madeit-block-content-column {
-				min-height: var(--madeit-min-height-desktop, auto);
-				align-content: var(--madeit-align-items-desktop, stretch);
-			}
+        @include tablet {
+            padding-top:    var(--madeit-container-row-padding-top-tablet,    var(--madeit-container-row-padding-top-desktop)) !important;
+            padding-right:  var(--madeit-container-row-padding-right-tablet,  var(--madeit-container-row-padding-right-desktop)) !important;
+            padding-bottom: var(--madeit-container-row-padding-bottom-tablet, var(--madeit-container-row-padding-bottom-desktop)) !important;
+            padding-left:   var(--madeit-container-row-padding-left-tablet,   var(--madeit-container-row-padding-left-desktop)) !important;
+        }
 
-			&:not(.madeit-container-row.rows-1) {
-				flex-direction: var(--madeit-flex-direction-desktop, row);
-				max-width: var(--madeit-max-width-desktop, auto);
-			}
+        @include mobile {
+            padding-top:    var(--madeit-container-row-padding-top-mobile,    var(--madeit-container-row-padding-top-tablet,    var(--madeit-container-row-padding-top-desktop))) !important;
+            padding-right:  var(--madeit-container-row-padding-right-mobile,  var(--madeit-container-row-padding-right-tablet,  var(--madeit-container-row-padding-right-desktop))) !important;
+            padding-bottom: var(--madeit-container-row-padding-bottom-mobile, var(--madeit-container-row-padding-bottom-tablet, var(--madeit-container-row-padding-bottom-desktop))) !important;
+            padding-left:   var(--madeit-container-row-padding-left-mobile,   var(--madeit-container-row-padding-left-tablet,   var(--madeit-container-row-padding-left-desktop))) !important;
+        }
+    }
 
-			&.rows-1 .wp-block-madeit-block-content-column:not([data-type="madeit/block-content-column"]) {
-				max-width: var(--madeit-max-width-desktop, auto);
-			}
+    // Flex layout voor de row — alleen actief op specifieke breakpoints
+    // zodat mobiel standaard stapelt.
 
-			.madeit-content-column__inner {
-				min-height: var(--madeit-min-height-desktop, auto);
-				align-items: var(--madeit-align-items-desktop, stretch);
-			}
-		}
+    @include desktop {
+        .madeit-container-row {
+            display:         flex;
+            flex-wrap:       var(--madeit-flex-wrap-desktop, nowrap);
+            align-items:     var(--madeit-align-items-desktop, stretch);
+            justify-content: var(--madeit-justify-content-desktop, space-between);
+            gap:             var(--madeit-row-gap-desktop, 20px);
+            max-width:       100%;
 
-		// Ensure column-direction always stays full width, even at lg breakpoint.
-		.madeit-container-row[data-madeit-dir="column"],
-		.madeit-container-row[data-madeit-dir="column-reverse"] {
-			> .wp-block-madeit-block-content-column {
-				width: 100% !important;
-				flex: 0 0 100% !important;
-			}
-		}
-	}
+            // Flex-richting en max-breedte: niet voor single-kolom layouts.
+            &:not(.rows-1) {
+                flex-direction: var(--madeit-flex-direction-desktop, row);
+                max-width:      var(--madeit-max-width-desktop, auto);
+            }
 
-	@media (min-width: 600px) and (max-width: 991px) {
-		.madeit-container-row {
-			flex-wrap: var(--madeit-flex-wrap-tablet, var(--madeit-flex-wrap-desktop, wrap));
-			align-items: var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch));
-			justify-content: var(--madeit-justify-content-tablet, var(--madeit-justify-content-desktop, space-between));
-			gap: var(--madeit-row-gap-tablet, var(--madeit-row-gap-desktop, 20px));
-			// min-height: var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto));
-			max-width: var(--madeit-max-width-tablet, var(--madeit-max-width-desktop, 100%));
+            // Single-kolom layout: max-breedte op het kind.
+            &.rows-1 .wp-block-madeit-block-content-column:not([data-type="madeit/block-content-column"]) {
+                max-width: var(--madeit-max-width-desktop, auto);
+            }
 
-			.wp-block-madeit-block-content-column {
-				min-height: var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto));
-				align-content: var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch));
-			}
-			&:not(.madeit-container-row.rows-1) {
-				flex-direction: var(--madeit-flex-direction-tablet, var(--madeit-flex-direction-desktop, row));
-			}
-			.madeit-content-column__inner {
-				// min-height: var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto));
-				align-items: var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch));
-			}
-		}
+            // Kolomhoogte en uitlijning.
+            .wp-block-madeit-block-content-column {
+                min-height:    var(--madeit-min-height-desktop, auto);
+                align-content: var(--madeit-align-items-desktop, stretch);
+            }
 
-		.madeit-container-row[data-madeit-dir-tablet="column"],
-		.madeit-container-row[data-madeit-dir-tablet="column-reverse"] {
-			> .wp-block-madeit-block-content-column {
-				width: calc(100% - var(--bs-gutter-x, 0px)) !important;
-				flex: 0 0 100% !important;
-				// margin: auto;
-			}
-		}
-	}
+            .madeit-content-column__inner {
+                min-height:  var(--madeit-min-height-desktop, auto);
+                align-items: var(--madeit-align-items-desktop, stretch);
+            }
+        }
+    }
 
-	@media (max-width: $mobile) {
-		.madeit-container-row {
-			flex-wrap: var(--madeit-flex-wrap-mobile, var(--madeit-flex-wrap-tablet, var(--madeit-flex-wrap-desktop, wrap)));
-			align-content: var(--madeit-align-items-mobile, var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch)));
-			justify-content: var(--madeit-justify-content-mobile, var(--madeit-justify-content-tablet, var(--madeit-justify-content-desktop, space-between)));
-			gap: var(--madeit-row-gap-mobile, var(--madeit-row-gap-tablet, var(--madeit-row-gap-desktop, 20px)));
-			// min-height: var(--madeit-min-height-mobile, var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto)));
-			max-width: var(--madeit-max-width-mobile, var(--madeit-max-width-tablet, var(--madeit-max-width-desktop, 100%)));
+    @include tablet {
+        .madeit-container-row {
+            flex-wrap:       var(--madeit-flex-wrap-tablet,       var(--madeit-flex-wrap-desktop, wrap));
+            align-items:     var(--madeit-align-items-tablet,     var(--madeit-align-items-desktop, stretch));
+            justify-content: var(--madeit-justify-content-tablet, var(--madeit-justify-content-desktop, space-between));
+            gap:             var(--madeit-row-gap-tablet,         var(--madeit-row-gap-desktop, 20px));
+            max-width:       var(--madeit-max-width-tablet,       var(--madeit-max-width-desktop, 100%));
 
-			.wp-block-madeit-block-content-column {
-				min-height: var(--madeit-min-height-mobile, var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto)));
-				align-content: var(--madeit-align-items-mobile, var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch)));
-			}
-			&:not(.madeit-container-row.rows-1) {
-				flex-direction: var(--madeit-flex-direction-mobile, var(--madeit-flex-direction-tablet, var(--madeit-flex-direction-desktop, column)));
-			}
-			.madeit-content-column__inner {
-				// min-height: var(--madeit-min-height-mobile, var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto)));
-				align-items: var(--madeit-align-items-mobile, var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch)));
+            &:not(.rows-1) {
+                flex-direction: var(--madeit-flex-direction-tablet, var(--madeit-flex-direction-desktop, row));
+            }
 
-			}
-		}
+            .wp-block-madeit-block-content-column {
+                min-height:    var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto));
+                align-content: var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch));
+            }
 
-		.madeit-container-row[data-madeit-dir-mobile="column"],
-		.madeit-container-row[data-madeit-dir-mobile="column-reverse"] {
-			> .wp-block-madeit-block-content-column {
-				width: calc(100% - var(--bs-gutter-x, 0px)) !important;
-				flex: 0 0 100% !important;
-				// margin: auto;
-			}
-		}
-	}
+            .madeit-content-column__inner {
+                align-items: var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch));
+            }
+        }
+    }
 
-	// Editor-only: when the block uses column direction, also force the editor
-	// inner blocks layout to full width (it doesn't use `.madeit-container-row`).
-	&[data-madeit-dir="column"],
-	&[data-madeit-dir="column-reverse"] {
-		.block-editor-block-list__layout > [data-type="madeit/block-content-column"],
-		.block-editor-block-list__layout > .wp-block-madeit-block-content-column {
-			width: 100% !important;
-		}
-	}
+    @include mobile {
+        .madeit-container-row {
+            flex-wrap:       var(--madeit-flex-wrap-mobile,       var(--madeit-flex-wrap-tablet,       var(--madeit-flex-wrap-desktop, wrap)));
+            align-content:   var(--madeit-align-items-mobile,     var(--madeit-align-items-tablet,     var(--madeit-align-items-desktop, stretch)));
+            justify-content: var(--madeit-justify-content-mobile, var(--madeit-justify-content-tablet, var(--madeit-justify-content-desktop, space-between)));
+            gap:             var(--madeit-row-gap-mobile,         var(--madeit-row-gap-tablet,         var(--madeit-row-gap-desktop, 20px)));
+            max-width:       var(--madeit-max-width-mobile,       var(--madeit-max-width-tablet,       var(--madeit-max-width-desktop, 100%)));
+            margin:          auto;
 
-	@media (max-width: 781px) {
-		&[data-madeit-dir-tablet="column"],
-		&[data-madeit-dir-tablet="column-reverse"] {
-			.block-editor-block-list__layout > [data-type="madeit/block-content-column"],
-			.block-editor-block-list__layout > .wp-block-madeit-block-content-column {
-				width: calc(100% - var(--bs-gutter-x, 0px)) !important;
-				margin: auto;
-			}
-		}
-	}
+            &:not(.rows-1) {
+                flex-direction: var(--madeit-flex-direction-mobile, var(--madeit-flex-direction-tablet, var(--madeit-flex-direction-desktop, column)));
+            }
 
-	@media (max-width: 599px) {
-		&[data-madeit-dir-mobile="column"],
-		&[data-madeit-dir-mobile="column-reverse"] {
-			.block-editor-block-list__layout > [data-type="madeit/block-content-column"],
-			.block-editor-block-list__layout > .wp-block-madeit-block-content-column {
-				width: calc(100% - var(--bs-gutter-x, 0px)) !important;
-				margin: auto;
-			}
-		}
-	}
+            .wp-block-madeit-block-content-column {
+                min-height:    var(--madeit-min-height-mobile, var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto)));
+                align-content: var(--madeit-align-items-mobile, var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch)));
+            }
 
-	&.are-vertically-aligned-top {
-		align-items: flex-start;
-	}
+            .madeit-content-column__inner {
+                align-items: var(--madeit-align-items-mobile, var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch)));
+            }
+        }
+    }
 
-	&.are-vertically-aligned-center {
-		align-items: center;
-	}
 
-	&.are-vertically-aligned-bottom {
-		align-items: flex-end;
-	}
-}
+    // ─── 7. Kolom-breedte klassen (col-md-*, col-lg-*) ───────────────────────
 
-/**
- * Individual Column Alignment
- */
+    // Kolommen mogen niet smaller worden dan hun inhoud en niet breder dan 100%.
+    .madeit-container-row > .col,
+    .madeit-container-row > .wp-block-madeit-block-content-column {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    // Bootstrap-like `.col`: gelijke breedte.
+    .madeit-container-row > .col {
+        flex: 1 0 0%;
+    }
+
+    @media (min-width: 768px) {
+        @for $i from 1 through 12 {
+            .madeit-container-row > .col.col-md-#{$i},
+            .madeit-container-row > .wp-block-madeit-block-content-column.col-md-#{$i} {
+                flex:  0 0 auto;
+                width: percentage($i / 12);
+            }
+        }
+    }
+
+    @include desktop {
+        @for $i from 1 through 12 {
+            .madeit-container-row > .col.col-lg-#{$i},
+            .madeit-container-row > .wp-block-madeit-block-content-column.col-lg-#{$i} {
+                flex:  0 0 auto;
+                width: percentage($i / 12);
+            }
+        }
+
+        // Kolombreedtes op basis van col-lg-* (rekening houdend met row-gap).
+        @for $i from 1 through 11 {
+            .wp-block-madeit-block-content-column.col-lg-#{$i} {
+                width: calc(#{percentage($i / 12)} - var(--madeit-row-gap-desktop, 20px));
+            }
+        }
+    }
+
+
+    // ─── 8. Flex-richting helpers (column-direction → volle breedte) ──────────
+    //
+    // Als richting `column` of `column-reverse` is, dwingen we alle kolommen
+    // op volle breedte. Dit overschrijft bewust eventuele Bootstrap col-* klassen.
+
+    .madeit-container-row[data-madeit-dir="column"],
+    .madeit-container-row[data-madeit-dir="column-reverse"] {
+        > .wp-block-madeit-block-content-column {
+            width: 100% !important;
+            flex:  0 0 100% !important;
+        }
+    }
+
+    @include desktop {
+        .madeit-container-row[data-madeit-dir="column"],
+        .madeit-container-row[data-madeit-dir="column-reverse"] {
+            > .wp-block-madeit-block-content-column {
+                width: 100% !important;
+                flex:  0 0 100% !important;
+            }
+        }
+    }
+
+    @include tablet {
+        .madeit-container-row[data-madeit-dir-tablet="column"],
+        .madeit-container-row[data-madeit-dir-tablet="column-reverse"] {
+            > .wp-block-madeit-block-content-column {
+                width: calc(100% - var(--bs-gutter-x, 0px)) !important;
+                flex:  0 0 100% !important;
+            }
+        }
+    }
+
+    @include mobile {
+        .madeit-container-row[data-madeit-dir-mobile="column"],
+        .madeit-container-row[data-madeit-dir-mobile="column-reverse"] {
+            > .wp-block-madeit-block-content-column {
+                width: calc(100% - var(--bs-gutter-x, 0px)) !important;
+                flex:  0 0 100% !important;
+            }
+        }
+    }
+
+
+    // ─── 9. Verticale uitlijning helpers ──────────────────────────────────────
+
+    &.are-vertically-aligned-top    { align-items: flex-start; }
+    &.are-vertically-aligned-center { align-items: center; }
+    &.are-vertically-aligned-bottom { align-items: flex-end; }
+
+
+    // ─── 11. Zichtbaarheid (is-hidden-*) ──────────────────────────────────────
+
+    @include mobile {
+        &.is-hidden-mobile { display: none !important; }
+    }
+
+    @include tablet {
+        &.is-hidden-tablet { display: none !important; }
+    }
+
+    @include desktop {
+        &.madeit-block-content--frontend .is-hidden-desktop { display: none !important; }
+    }
+
+
+    // ─── 12. Max-breedte berekeningen per kolomaantal (desktop only) ──────────
+    //
+    // Wanneer een max-breedte is ingesteld én de layout meerdere kolommen heeft,
+    // wordt de max-breedte per kolom berekend op basis van het kolomaantal en
+    // de row-gap.
+
+    @include desktop {
+        @each $rows in 2, 3, 4 {
+            [data-madeit-dir="row"] .madeit-container-row.rows-#{$rows},
+            [data-madeit-dir="row-reverse"] .madeit-container-row.rows-#{$rows} {
+                @for $i from 1 through 12 {
+                    .wp-block-madeit-block-content-column.col-lg-#{$i} {
+                        max-width: calc(
+                            (var(--madeit-max-width-desktop) / #{12 / $i})
+                            - (var(--madeit-row-gap-desktop, 20px) * #{$rows - 1}) / #{$rows}
+                        ) !important;
+                    }
+                }
+            }
+        }
+    }
+
+
+    // ─── 13. Editor-only overrides ────────────────────────────────────────────
+    //
+    // De editor gebruikt geen `.madeit-container-row` maar een eigen inner
+    // blocks layout. We passen dezelfde flex-richting-logica toe.
+
+    &[data-madeit-dir="column"],
+    &[data-madeit-dir="column-reverse"] {
+        .block-editor-block-list__layout > [data-type="madeit/block-content-column"],
+        .block-editor-block-list__layout > .wp-block-madeit-block-content-column {
+            width: 100% !important;
+        }
+    }
+
+    @media (max-width: #{$break-medium}) {
+        &[data-madeit-dir-tablet="column"],
+        &[data-madeit-dir-tablet="column-reverse"] {
+            .block-editor-block-list__layout > [data-type="madeit/block-content-column"],
+            .block-editor-block-list__layout > .wp-block-madeit-block-content-column {
+                width: calc(100% - var(--bs-gutter-x, 0px)) !important;
+                margin: auto;
+            }
+        }
+    }
+
+    @media (max-width: #{$mobile}) {
+        &[data-madeit-dir-mobile="column"],
+        &[data-madeit-dir-mobile="column-reverse"] {
+            .block-editor-block-list__layout > [data-type="madeit/block-content-column"],
+            .block-editor-block-list__layout > .wp-block-madeit-block-content-column {
+                width: calc(100% - var(--bs-gutter-x, 0px)) !important;
+                margin: auto;
+            }
+        }
+    }
+
+} // einde .wp-block-madeit-block-content
+
+
+// =============================================================================
+// ─── 10. Kolom-stijlen ────────────────────────────────────────────────────────
+// =============================================================================
+
 .wp-block-madeit-block-content-column {
-	flex: auto !important;
-	// padding: 0 !important;
+    flex: auto !important;
 
-	&.is-vertically-aligned-top {
-		align-self: flex-start;
-	}
+    &.is-vertically-aligned-top    { align-self: flex-start; }
+    &.is-vertically-aligned-center { align-self: center; }
+    &.is-vertically-aligned-bottom { align-self: flex-end; }
 
-	&.is-vertically-aligned-center {
-		align-self: center;
-	}
-
-	&.is-vertically-aligned-bottom {
-		align-self: flex-end;
-	}
-
-	.madeit-content-column__inner {
-		padding-right: calc(var(--bs-gutter-x) * 0.5);
-    	padding-left: calc(var(--bs-gutter-x) * 0.5);
-	}
+    .madeit-content-column__inner {
+        padding-right: calc(var(--bs-gutter-x) * 0.5);
+        padding-left:  calc(var(--bs-gutter-x) * 0.5);
+    }
 }
+
+
+// =============================================================================
+// Globale Bootstrap overrides
+// =============================================================================
+
+// Bootstrap `.row > *` heeft standaard padding; wij beheren dat zelf.
 .row > * {
-	padding-right: 0;
-    padding-left: 0;
+    padding-right: 0;
+    padding-left:  0;
 }
 
 .justify-content-center > .row {
-    -ms-flex-pack: center !important;
     justify-content: center !important;
-}
-
-
-@media (max-width: $mobile) {
-	.wp-block-madeit-block-content.is-hidden-mobile {
-		display: none !important;
-	}
-}
-
-@media (min-width: $tablet) and (max-width: $desktop) {
-	.wp-block-madeit-block-content.is-hidden-tablet {
-		display: none !important;
-	}
-}
-
-@media (min-width: $desktop) {
-	// When the block is set to be hidden on desktop
-	.wp-block-madeit-block-content.madeit-block-content--frontend {
-		
-		.is-hidden-desktop {
-			display: none !important;
-		}
-	}
-
-
-	// Max-width calculations for columns, based on the number of rows and the column width class.
-	[data-madeit-dir="row"] .madeit-container-row.rows-2,
-	[data-madeit-dir="row-reverse"] .madeit-container-row.rows-2 {
-		@for $i from 1 through 12 {
-			.wp-block-madeit-block-content-column.col-lg-#{$i} {
-				max-width: calc(
-					(var(--madeit-max-width-desktop) / #{12 / $i})
-					- (var(--madeit-row-gap-desktop, 20px) * 2) / 2
-				) !important;
-			}
-		}
-	}
-
-	[data-madeit-dir="row"] .madeit-container-row.rows-3,
-	[data-madeit-dir="row-reverse"] .madeit-container-row.rows-3 {
-		@for $i from 1 through 12 {
-			.wp-block-madeit-block-content-column.col-lg-#{$i} {
-				max-width: calc(
-					(var(--madeit-max-width-desktop) / #{12 / $i})
-					- (var(--madeit-row-gap-desktop, 20px) * 2) / 3
-				) !important;
-			}
-		}
-	}
-
-	[data-madeit-dir="row"] .madeit-container-row.rows-4,
-	[data-madeit-dir="row-reverse"] .madeit-container-row.rows-4{
-		@for $i from 1 through 12 {
-			.wp-block-madeit-block-content-column.col-lg-#{$i} {
-				max-width: calc(
-					(var(--madeit-max-width-desktop) / #{12 / $i})
-					- (var(--madeit-row-gap-desktop, 20px) * 3) / 4
-				) !important;
-			}
-		}
-	}
- 
-	// Width calculations for columns, based on the number of rows and the column width class.
-	@for $i from 1 through 11 {
-		.wp-block-madeit-block-content-column.col-lg-#{$i} {
-			width: calc(percentage($i / 12) - var(--madeit-row-gap-desktop, 20px));
-		}
-	}
-}
-
-
-@media (max-width: 575px) {
-    .flex-grow > div > .wp-block-madeit-block-content {
-        padding: 0 20px !important;
-    }
 }

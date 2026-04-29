@@ -1,0 +1,7 @@
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1a252f 0%,#2c3e50 100%);font-family:system-ui,sans-serif}
+.card{background:#fff;padding:48px 56px;border-radius:16px;text-align:center;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.icon{font-size:3.5rem;margin-bottom:16px}
+h1{color:#c0392b;font-size:1.8rem;margin-bottom:8px}
+p{color:#555;font-size:.95rem;line-height:1.6;margin-bottom:8px}
+small{color:#999;font-size:.75rem}

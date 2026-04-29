@@ -93,7 +93,9 @@ wp.domReady(function () {
 
         const containerBlocks = [
             'madeit/block-content',
-            'madeit/block-content-column'
+            'madeit/block-content-column',
+            'core/cover',
+            'core/spacer'
         ];
 
         const isInside = (clientId) => {

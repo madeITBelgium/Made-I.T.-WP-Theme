@@ -31,6 +31,26 @@
     margin-bottom: 20px;
 }
 
+/*
+    BoxControl renders the "linked sides" button inside its own grid, which
+    ends up stacking under our custom header. Visually align it with the header
+    tools so the control has a single compact top row.
+*/
+.madeit-control .components-grid {
+    position: relative;
+}
+
+.madeit-control .component-box-control__linked-button {
+    position: absolute;
+    top: -32px;
+    right: 0;
+    z-index: 2;
+}
+
+.madeit-control-header .madeit-control-header__tools {
+    padding-right: 32px;
+}
+
 .madeit-control-header {
     display: flex;
     align-items: center;

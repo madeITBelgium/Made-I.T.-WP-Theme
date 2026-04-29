@@ -2,8 +2,8 @@
 
 add_action('admin_menu', function () {
     add_menu_page(
-        'Made I.T. Blocks',
-        'Made I.T. Blocks',
+        'Made I.T.',
+        'Made I.T.',
         'manage_options',
         'madeit-blocks',
         'madeit_blocks_overview_page',

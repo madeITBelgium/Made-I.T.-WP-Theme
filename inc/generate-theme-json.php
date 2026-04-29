@@ -156,6 +156,8 @@ function madeit_generate_gradients_colors()
         'danger'     => madeit_get_theme_color('danger_color_rgb', MADEIT_DANGER_COLOR),
     ];
 
+    $colors = apply_filters('madeit_gradient_colors', $colors);
+
     $combinations = apply_filters('madeit_gradients_combinations', [
         ['color', 'background'],
         ['background', 'primary'],
@@ -168,10 +170,52 @@ function madeit_generate_gradients_colors()
 
     $result = [];
     foreach ($combinations as $combination) {
+        $type = $combination['type'] ?? 'fixed';
+
+        // =========================
+        // CSS TRANSFORM GRADIENT
+        // =========================
+        if ($type === 'css' && ($combination['transform'] ?? '') === 'darken') {
+
+            $from = $combination['from'] ?? null;
+
+            if (!isset($colors[$from])) {
+                continue;
+            }
+
+            $cssVar = 'var(--wp--preset--color--' . $from . ')';
+
+            $result[] = [
+                'gradient' => 'linear-gradient(90deg,'
+                    . $cssVar . ' 0%,'
+                    . 'color-mix(in srgb, ' . $cssVar . ' 58%, black) 38%)',
+                'slug' => $from . '-darken',
+                'name' => ucfirst(str_replace('-', ' ', $from)) . ' darkened',
+            ];
+
+            continue;
+        }
+
+        // =========================
+        // NORMAL GRADIENT
+        // =========================
+        $from = $combination[0] ?? null;
+        $to   = $combination[1] ?? null;
+
+        if (!$from || !$to) {
+            continue;
+        }
+
+        if (!isset($colors[$from]) || !isset($colors[$to])) {
+            continue;
+        }
+
         $result[] = [
-            'gradient' => 'linear-gradient(135deg,'.$colors[$combination[0]].' 0%,'.$colors[$combination[1]].' 100%)',
-            'slug'     => $combination[0].'-and-'.$combination[1],
-            'name'     => ucfirst($combination[0]).' and '.ucfirst($combination[1]),
+            'gradient' => 'linear-gradient(135deg,'
+                . $colors[$from] . ' 0%,'
+                . $colors[$to] . ' 100%)',
+            'slug' => $from . '-and-' . $to,
+            'name' => ucfirst($from) . ' and ' . ucfirst($to),
         ];
     }
 

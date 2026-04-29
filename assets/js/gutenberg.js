@@ -80,6 +80,8 @@ wp.blocks.registerBlockStyle('core/image', {
             var layoutType = getLayoutType( props.attributes );
             var displayLayoutType = getDisplayLayoutType( props.context );
 
+            console.log( 'layoutType', layoutType, 'displayLayoutType', displayLayoutType );
+
             // Support both true grid layout and the flex-based grid (Query displayLayout).
             if ( layoutType !== 'grid' && displayLayoutType !== 'flex' ) {
                 return wp.element.createElement( BlockEdit, props );

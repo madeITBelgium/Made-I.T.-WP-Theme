@@ -883,6 +883,7 @@ if (!function_exists('madeit_scripts')) {
         }
 
         wp_enqueue_script('script', get_template_directory_uri().'/assets/js/script.js', ['bootstrap'], MADEIT_VERSION, true);
+        wp_enqueue_script('madeit-spacing-vars', get_theme_file_uri('/assets/js/madeit-spacing-vars.js'), [], MADEIT_VERSION, true);
         wp_enqueue_script('madeit-aos', get_template_directory_uri().'/assets/js/aos.js', [], MADEIT_VERSION, true);
 
         if (defined('MADEIT_INFINITE_SCROLL') && MADEIT_INFINITE_SCROLL) {
@@ -902,6 +903,19 @@ if (!function_exists('madeit_scripts')) {
     }
     add_action('wp_enqueue_scripts', 'madeit_scripts');
 }
+
+function madeit_navbar_css_variables() {
+    $options = get_option('madeit_navbar_options', []);
+
+    $logo_width = ! empty( $options['logo_max_width'] ) ? (int) $options['logo_max_width'] : 100;
+
+    echo '<style id="madeit-navbar-vars">';
+    echo ':root {';
+    echo '--madeit-logo-width:' . $logo_width . 'px;';
+    echo '}';
+    echo '</style>';
+}
+add_action( 'wp_head', 'madeit_navbar_css_variables', 100 );
 
 if (!function_exists('madeit_infinite_options_to_script')) {
     function madeit_infinite_options_to_script()
@@ -2467,9 +2481,9 @@ if (file_exists(get_parent_theme_file_path('/inc/admin/admin-menu/admin-menu.php
 /**
  * Customizer
  */
-// if(file_exists(get_parent_theme_file_path('/inc/admin/admin-menu/customizer.php'))) {
-//     require get_parent_theme_file_path('/inc/admin/admin-menu/customizer.php');
-// }
+if(file_exists(get_parent_theme_file_path('/inc/admin/admin-menu/customizer.php'))) {
+    require get_parent_theme_file_path('/inc/admin/admin-menu/customizer.php');
+}
 
 
 /**
@@ -2584,25 +2598,31 @@ if(MADEIT_BOOTSTRAP_VERSION === 5) {
     }
 }
 
-add_filter('rest_endpoints', function ($endpoints) {
-    // Hide user endpoints for unauthenticated visitors.
-    // Authenticated users (cookies / application passwords / etc.) can still use them.
-    if (!is_user_logged_in()) {
-        if (isset($endpoints['/wp/v2/users'])) {
-            unset($endpoints['/wp/v2/users']);
+//check if wordfence is active
+if (!in_array('wordfence/wordfence.php', apply_filters('active_plugins', get_option('active_plugins')))) {
+    //disable REST API in wordfence settings
+    include_once __DIR__.'/inc/security/security.php';
+} else {
+    add_filter('rest_endpoints', function ($endpoints) {
+        // Hide user endpoints for unauthenticated visitors.
+        // Authenticated users (cookies / application passwords / etc.) can still use them.
+        if (!is_user_logged_in()) {
+            if (isset($endpoints['/wp/v2/users'])) {
+                unset($endpoints['/wp/v2/users']);
+            }
+
+            if (isset($endpoints['/wp/v2/users/(?P<id>[\d]+)'])) {
+                unset($endpoints['/wp/v2/users/(?P<id>[\d]+)']);
+            }
+
+            if (isset($endpoints['/wp/v2/users/me'])) {
+                unset($endpoints['/wp/v2/users/me']);
+            }
         }
 
-        if (isset($endpoints['/wp/v2/users/(?P<id>[\d]+)'])) {
-            unset($endpoints['/wp/v2/users/(?P<id>[\d]+)']);
-        }
-
-        if (isset($endpoints['/wp/v2/users/me'])) {
-            unset($endpoints['/wp/v2/users/me']);
-        }
-    }
-
-    return $endpoints;
-});
+        return $endpoints;
+    });
+}
 
 if(defined('MADEIT_RESTRICT_EDITOR') && MADEIT_RESTRICT_EDITOR) {
     add_action('enqueue_block_editor_assets', function() {
