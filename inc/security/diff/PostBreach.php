@@ -1,25 +1,30 @@
 <?php
+
 namespace FortressWP\modules;
 
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 /**
  * Post-Breach Recovery
  * 12 emergency actions for responding to a compromise.
  * Every action is logged to the audit trail.
  */
-class PostBreach {
-
-    public static function init(): void {
-        add_action( 'wp_ajax_aswp_breach_action', [ __CLASS__, 'dispatch' ] );
+class PostBreach
+{
+    public static function init(): void
+    {
+        add_action('wp_ajax_aswp_breach_action', [__CLASS__, 'dispatch']);
     }
 
     // ── Dispatcher ─────────────────────────────────────────────────────────────
-    public static function dispatch(): void {
-        check_ajax_referer( 'aswp_nonce', 'nonce' );
-        if ( ! current_user_can( 'manage_options' ) ) wp_send_json_error( [ 'message' => 'Unauthorized.' ], 403 );
+    public static function dispatch(): void
+    {
+        check_ajax_referer('aswp_nonce', 'nonce');
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => 'Unauthorized.'], 403);
+        }
 
-        $action = isset( $_POST['breach_action'] ) ? sanitize_key( wp_unslash( $_POST['breach_action'] ) ) : '';
+        $action = isset($_POST['breach_action']) ? sanitize_key(wp_unslash($_POST['breach_action'])) : '';
         $map = [
             'terminate_sessions'   => 'action_terminate_sessions',
             'force_password_reset' => 'action_force_password_reset',
@@ -37,49 +42,52 @@ class PostBreach {
             'generate_report'      => 'action_generate_report',
         ];
 
-        if ( ! isset( $map[ $action ] ) ) {
-            wp_send_json_error( [ 'message' => 'Unknown action.' ] );
+        if (!isset($map[$action])) {
+            wp_send_json_error(['message' => 'Unknown action.']);
         }
 
-        $result = call_user_func( [ __CLASS__, $map[ $action ] ] );
-        self::audit( $action, $result['message'] ?? 'Completed.' );
-        $result['success'] ? wp_send_json_success( $result ) : wp_send_json_error( $result );
+        $result = call_user_func([__CLASS__, $map[$action]]);
+        self::audit($action, $result['message'] ?? 'Completed.');
+        $result['success'] ? wp_send_json_success($result) : wp_send_json_error($result);
     }
 
     // ══════════════════════════════════════════════════════════════════════════
     // ACTION 1 — Terminate All Sessions
     // ══════════════════════════════════════════════════════════════════════════
-    private static function action_terminate_sessions(): array {
-        $users = get_users( [ 'fields' => 'ID' ] );
-        foreach ( $users as $uid ) {
-            delete_user_meta( $uid, 'session_tokens' );
+    private static function action_terminate_sessions(): array
+    {
+        $users = get_users(['fields' => 'ID']);
+        foreach ($users as $uid) {
+            delete_user_meta($uid, 'session_tokens');
         }
+
         return [
             'success' => true,
-            'message' => count( $users ) . ' user session(s) destroyed immediately. Everyone has been logged out.',
-            'details' => [ 'users_affected' => count( $users ) ],
+            'message' => count($users).' user session(s) destroyed immediately. Everyone has been logged out.',
+            'details' => ['users_affected' => count($users)],
         ];
     }
 
     // ══════════════════════════════════════════════════════════════════════════
     // ACTION 2 — Force Password Reset for All Users
     // ══════════════════════════════════════════════════════════════════════════
-    private static function action_force_password_reset(): array {
-        $users = get_users( [ 'fields' => 'ID' ] );
-        foreach ( $users as $uid ) {
+    private static function action_force_password_reset(): array
+    {
+        $users = get_users(['fields' => 'ID']);
+        foreach ($users as $uid) {
             // Flag the account — WP will prompt password change on next login
-            update_user_meta( $uid, 'aswp_require_password_reset', 1 );
+            update_user_meta($uid, 'aswp_require_password_reset', 1);
             // Also destroy their sessions
-            delete_user_meta( $uid, 'session_tokens' );
+            delete_user_meta($uid, 'session_tokens');
         }
 
         // Hook to enforce the reset on wp_login
-        update_option( 'aswp_force_pw_reset_active', 1 );
+        update_option('aswp_force_pw_reset_active', 1);
 
         return [
             'success' => true,
-            'message' => count( $users ) . ' account(s) flagged. Every user must set a new password before accessing the site.',
-            'details' => [ 'users_affected' => count( $users ) ],
+            'message' => count($users).' account(s) flagged. Every user must set a new password before accessing the site.',
+            'details' => ['users_affected' => count($users)],
         ];
     }
 
@@ -92,64 +100,65 @@ class PostBreach {
     // is applied. If wp-config.php cannot be located or is not writable, the
     // action falls back to surfacing a snippet for the admin to paste in
     // manually and flags the operation as partial.
-    private static function action_rotate_secret_keys(): array {
+    private static function action_rotate_secret_keys(): array
+    {
         $key_names = [
             'AUTH_KEY', 'SECURE_AUTH_KEY', 'LOGGED_IN_KEY', 'NONCE_KEY',
             'AUTH_SALT', 'SECURE_AUTH_SALT', 'LOGGED_IN_SALT', 'NONCE_SALT',
         ];
 
         // ── 1. Fetch fresh keys (WP.org API preferred, local fallback). ──
-        $response = wp_remote_get( 'https://api.wordpress.org/secret-key/1.1/salt/', [ 'timeout' => 10 ] );
+        $response = wp_remote_get('https://api.wordpress.org/secret-key/1.1/salt/', ['timeout' => 10]);
         $new_keys = [];
-        $raw      = '';
+        $raw = '';
 
-        if ( ! is_wp_error( $response ) && 200 === wp_remote_retrieve_response_code( $response ) ) {
-            $raw = (string) wp_remote_retrieve_body( $response );
-            if ( preg_match_all( "/define\s*\(\s*'([^']+)'\s*,\s*'([^']+)'\s*\)/", $raw, $m ) ) {
-                foreach ( $m[1] as $i => $name ) {
-                    $name = strtoupper( $name );
-                    if ( in_array( $name, $key_names, true ) ) {
-                        $new_keys[ $name ] = $m[2][ $i ];
+        if (!is_wp_error($response) && 200 === wp_remote_retrieve_response_code($response)) {
+            $raw = (string) wp_remote_retrieve_body($response);
+            if (preg_match_all("/define\s*\(\s*'([^']+)'\s*,\s*'([^']+)'\s*\)/", $raw, $m)) {
+                foreach ($m[1] as $i => $name) {
+                    $name = strtoupper($name);
+                    if (in_array($name, $key_names, true)) {
+                        $new_keys[$name] = $m[2][$i];
                     }
                 }
             }
         }
         // Local fallback — also used to fill in any missing key if the API
         // response was partial.
-        foreach ( $key_names as $name ) {
-            if ( empty( $new_keys[ $name ] ) ) {
-                $new_keys[ $name ] = wp_generate_password( 64, true, true );
+        foreach ($key_names as $name) {
+            if (empty($new_keys[$name])) {
+                $new_keys[$name] = wp_generate_password(64, true, true);
             }
         }
 
         // ── 2. Locate wp-config.php and attempt the rewrite. ──
         $config_path = self::locate_wp_config();
-        $rewrite     = [ 'success' => false, 'message' => '', 'backup' => '' ];
-        if ( $config_path !== '' ) {
-            $rewrite = self::rewrite_wp_config_keys( $config_path, $new_keys );
+        $rewrite = ['success' => false, 'message' => '', 'backup' => ''];
+        if ($config_path !== '') {
+            $rewrite = self::rewrite_wp_config_keys($config_path, $new_keys);
         } else {
             $rewrite['message'] = 'wp-config.php could not be located automatically.';
         }
 
         // ── 3. Destroy every session — all cookies are now invalid. ──
-        foreach ( get_users( [ 'fields' => 'ID' ] ) as $uid ) {
-            delete_user_meta( $uid, 'session_tokens' );
+        foreach (get_users(['fields' => 'ID']) as $uid) {
+            delete_user_meta($uid, 'session_tokens');
         }
 
-        update_option( 'aswp_keys_rotated_at', current_time( 'mysql' ) );
+        update_option('aswp_keys_rotated_at', current_time('mysql'));
 
         // Build the paste-in snippet for display (always provided as a safety
         // net, regardless of whether we managed the rewrite ourselves).
         $snippet = '';
-        foreach ( $key_names as $name ) {
-            $snippet .= sprintf( "define( '%s', '%s' );\n", $name, addslashes( $new_keys[ $name ] ) );
+        foreach ($key_names as $name) {
+            $snippet .= sprintf("define( '%s', '%s' );\n", $name, addslashes($new_keys[$name]));
         }
-        set_transient( 'aswp_rotated_keys_snippet', $snippet, 600 );
+        set_transient('aswp_rotated_keys_snippet', $snippet, 600);
 
-        if ( $rewrite['success'] ) {
+        if ($rewrite['success']) {
             return [
                 'success' => true,
-                'message' => '8 secret keys and salts rotated directly in wp-config.php. A timestamped backup was saved to ' . basename( $rewrite['backup'] ) . '. Every existing cookie and session is now invalid — log back in with your password.',
+                'message' => '8 secret keys and salts rotated directly in wp-config.php. A timestamped backup was saved to '.basename($rewrite['backup']).'. Every existing cookie and session is now invalid — log back in with your password.',
                 'snippet' => $snippet,
                 'backup'  => $rewrite['backup'],
             ];
@@ -157,7 +166,7 @@ class PostBreach {
 
         return [
             'success' => true,
-            'message' => '8 new secret keys generated, but wp-config.php could not be updated automatically (' . $rewrite['message'] . '). Copy the snippet below into wp-config.php manually to complete the rotation. Existing sessions were still destroyed.',
+            'message' => '8 new secret keys generated, but wp-config.php could not be updated automatically ('.$rewrite['message'].'). Copy the snippet below into wp-config.php manually to complete the rotation. Existing sessions were still destroyed.',
             'snippet' => $snippet,
         ];
     }
@@ -169,16 +178,18 @@ class PostBreach {
      * wp-config is moved outside the web root); we mirror that search
      * and return an empty string if neither exists.
      */
-    private static function locate_wp_config(): string {
+    private static function locate_wp_config(): string
+    {
         $candidates = [
-            ABSPATH . 'wp-config.php',
-            dirname( ABSPATH ) . DIRECTORY_SEPARATOR . 'wp-config.php',
+            ABSPATH.'wp-config.php',
+            dirname(ABSPATH).DIRECTORY_SEPARATOR.'wp-config.php',
         ];
-        foreach ( $candidates as $path ) {
-            if ( is_file( $path ) ) {
+        foreach ($candidates as $path) {
+            if (is_file($path)) {
                 return $path;
             }
         }
+
         return '';
     }
 
@@ -193,73 +204,76 @@ class PostBreach {
      *
      * @param string                $path     Full path to wp-config.php.
      * @param array<string, string> $new_keys KEY_NAME => new_value map.
+     *
      * @return array{success: bool, message: string, backup: string}
      */
-    private static function rewrite_wp_config_keys( string $path, array $new_keys ): array {
-        if ( ! is_readable( $path ) ) {
-            return [ 'success' => false, 'message' => 'wp-config.php is not readable.', 'backup' => '' ];
+    private static function rewrite_wp_config_keys(string $path, array $new_keys): array
+    {
+        if (!is_readable($path)) {
+            return ['success' => false, 'message' => 'wp-config.php is not readable.', 'backup' => ''];
         }
-        if ( ! is_writable( $path ) ) {
-            return [ 'success' => false, 'message' => 'wp-config.php is not writable by the web server.', 'backup' => '' ];
+        if (!is_writable($path)) {
+            return ['success' => false, 'message' => 'wp-config.php is not writable by the web server.', 'backup' => ''];
         }
 
-        $contents = file_get_contents( $path );
-        if ( $contents === false ) {
-            return [ 'success' => false, 'message' => 'Could not read wp-config.php.', 'backup' => '' ];
+        $contents = file_get_contents($path);
+        if ($contents === false) {
+            return ['success' => false, 'message' => 'Could not read wp-config.php.', 'backup' => ''];
         }
 
         // Write a backup FIRST so a failed rewrite can be rolled back by the admin.
-        $backup_path = $path . '.aswp-backup-' . gmdate( 'Ymd-His' );
-        if ( file_put_contents( $backup_path, $contents ) === false ) {
-            return [ 'success' => false, 'message' => 'Could not write backup file.', 'backup' => '' ];
+        $backup_path = $path.'.aswp-backup-'.gmdate('Ymd-His');
+        if (file_put_contents($backup_path, $contents) === false) {
+            return ['success' => false, 'message' => 'Could not write backup file.', 'backup' => ''];
         }
-        @chmod( $backup_path, 0600 ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged -- chmod may fail on some hosts
+        @chmod($backup_path, 0600); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged -- chmod may fail on some hosts
 
         $updated = $contents;
-        foreach ( $new_keys as $name => $value ) {
+        foreach ($new_keys as $name => $value) {
             // Value must be single-quote-safe inside the define literal.
-            $quoted = "'" . addslashes( $value ) . "'";
+            $quoted = "'".addslashes($value)."'";
 
             // Match any existing define('NAME', '...') whether single/double
             // quoted, any whitespace, and any semicolon terminator.
-            $pattern     = '/define\s*\(\s*([\'"])' . preg_quote( $name, '/' ) . '\1\s*,\s*([\'"])([^\'"]*)\2\s*\)\s*;/';
-            $replacement = "define( '" . $name . "', " . $quoted . ' );';
+            $pattern = '/define\s*\(\s*([\'"])'.preg_quote($name, '/').'\1\s*,\s*([\'"])([^\'"]*)\2\s*\)\s*;/';
+            $replacement = "define( '".$name."', ".$quoted.' );';
 
-            if ( preg_match( $pattern, $updated ) ) {
-                $updated = preg_replace( $pattern, $replacement, $updated, 1 );
+            if (preg_match($pattern, $updated)) {
+                $updated = preg_replace($pattern, $replacement, $updated, 1);
             } else {
                 // No existing define found — inject immediately after the opening PHP tag.
-                $inject  = "\n" . $replacement;
-                $updated = preg_replace( '/<\?php/', "<?php" . $inject, $updated, 1 );
+                $inject = "\n".$replacement;
+                $updated = preg_replace('/<\?php/', '<?php'.$inject, $updated, 1);
             }
         }
 
-        if ( $updated === $contents ) {
-            return [ 'success' => false, 'message' => 'No changes were applied to wp-config.php.', 'backup' => $backup_path ];
+        if ($updated === $contents) {
+            return ['success' => false, 'message' => 'No changes were applied to wp-config.php.', 'backup' => $backup_path];
         }
 
-        if ( file_put_contents( $path, $updated, LOCK_EX ) === false ) {
-            return [ 'success' => false, 'message' => 'Could not write updated wp-config.php (filesystem permissions?).', 'backup' => $backup_path ];
+        if (file_put_contents($path, $updated, LOCK_EX) === false) {
+            return ['success' => false, 'message' => 'Could not write updated wp-config.php (filesystem permissions?).', 'backup' => $backup_path];
         }
 
-        return [ 'success' => true, 'message' => 'wp-config.php updated.', 'backup' => $backup_path ];
+        return ['success' => true, 'message' => 'wp-config.php updated.', 'backup' => $backup_path];
     }
 
     // ══════════════════════════════════════════════════════════════════════════
     // ACTION 4 — Reinstall WordPress Core
     // ══════════════════════════════════════════════════════════════════════════
-    private static function action_reinstall_core(): array {
+    private static function action_reinstall_core(): array
+    {
         global $wp_version;
 
-        require_once ABSPATH . 'wp-admin/includes/file.php';
-        require_once ABSPATH . 'wp-admin/includes/misc.php';
-        require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
+        require_once ABSPATH.'wp-admin/includes/file.php';
+        require_once ABSPATH.'wp-admin/includes/misc.php';
+        require_once ABSPATH.'wp-admin/includes/class-wp-upgrader.php';
 
-        $upgrader = new \Core_Upgrader( new \Automatic_Upgrader_Skin() );
-        $result   = $upgrader->upgrade( $wp_version, [ 'attempt_rollback' => false ] );
+        $upgrader = new \Core_Upgrader(new \Automatic_Upgrader_Skin());
+        $result = $upgrader->upgrade($wp_version, ['attempt_rollback' => false]);
 
-        if ( is_wp_error( $result ) ) {
-            return [ 'success' => false, 'message' => 'Reinstall failed: ' . $result->get_error_message() ];
+        if (is_wp_error($result)) {
+            return ['success' => false, 'message' => 'Reinstall failed: '.$result->get_error_message()];
         }
 
         return [
@@ -271,54 +285,62 @@ class PostBreach {
     // ══════════════════════════════════════════════════════════════════════════
     // ACTION 5 — Reinstall All Repository Plugins
     // ══════════════════════════════════════════════════════════════════════════
-    private static function action_reinstall_plugins(): array {
-        require_once ABSPATH . 'wp-admin/includes/file.php';
-        require_once ABSPATH . 'wp-admin/includes/plugin.php';
-        require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
-        require_once ABSPATH . 'wp-admin/includes/plugin-install.php';
+    private static function action_reinstall_plugins(): array
+    {
+        require_once ABSPATH.'wp-admin/includes/file.php';
+        require_once ABSPATH.'wp-admin/includes/plugin.php';
+        require_once ABSPATH.'wp-admin/includes/class-wp-upgrader.php';
+        require_once ABSPATH.'wp-admin/includes/plugin-install.php';
 
         $all_plugins = get_plugins();
         $reinstalled = $skipped = $failed = [];
 
-        foreach ( $all_plugins as $plugin_file => $data ) {
-            $slug = explode( '/', $plugin_file )[0];
-            if ( ! str_contains( $plugin_file, '/' ) ) {
-                $slug = basename( $plugin_file, '.php' );
+        foreach ($all_plugins as $plugin_file => $data) {
+            $slug = explode('/', $plugin_file)[0];
+            if (!str_contains($plugin_file, '/')) {
+                $slug = basename($plugin_file, '.php');
             }
 
-            $api = plugins_api( 'plugin_information', [ 'slug' => $slug, 'fields' => [ 'versions' => false ] ] );
-            if ( is_wp_error( $api ) ) {
+            $api = plugins_api('plugin_information', ['slug' => $slug, 'fields' => ['versions' => false]]);
+            if (is_wp_error($api)) {
                 $skipped[] = $data['Name'];
                 continue;
             }
 
-            $was_active = is_plugin_active( $plugin_file );
-            $upgrader   = new \Plugin_Upgrader( new \Automatic_Upgrader_Skin() );
-            $result     = $upgrader->install( $api->download_link, [ 'overwrite_package' => true ] );
+            $was_active = is_plugin_active($plugin_file);
+            $upgrader = new \Plugin_Upgrader(new \Automatic_Upgrader_Skin());
+            $result = $upgrader->install($api->download_link, ['overwrite_package' => true]);
 
-            if ( is_wp_error( $result ) || false === $result ) {
+            if (is_wp_error($result) || false === $result) {
                 $failed[] = $data['Name'];
             } else {
-                if ( $was_active ) activate_plugin( $plugin_file );
+                if ($was_active) {
+                    activate_plugin($plugin_file);
+                }
                 $reinstalled[] = $data['Name'];
             }
         }
 
         return [
             'success' => true,
-            'message' => sprintf( '%d plugin(s) reinstalled from WordPress.org. %d skipped (premium/not in repo). %d failed.',
-                count( $reinstalled ), count( $skipped ), count( $failed ) ),
-            'details' => compact( 'reinstalled', 'skipped', 'failed' ),
+            'message' => sprintf(
+                '%d plugin(s) reinstalled from WordPress.org. %d skipped (premium/not in repo). %d failed.',
+                count($reinstalled),
+                count($skipped),
+                count($failed)
+            ),
+            'details' => compact('reinstalled', 'skipped', 'failed'),
         ];
     }
 
     // ══════════════════════════════════════════════════════════════════════════
     // ACTION 6 — Audit Administrator Accounts
     // ══════════════════════════════════════════════════════════════════════════
-    private static function action_audit_admins(): array {
-        $admins  = get_users( [ 'role__in' => [ 'administrator' ] ] );
-        $flags   = [];
-        $cutoff  = strtotime( '-14 days' );
+    private static function action_audit_admins(): array
+    {
+        $admins = get_users(['role__in' => ['administrator']]);
+        $flags = [];
+        $cutoff = strtotime('-14 days');
 
         $sus_patterns = [
             '/^[a-f0-9]{8,32}$/i'       => 'Hex-only username — common backdoor pattern',
@@ -328,56 +350,63 @@ class PostBreach {
             '/^user_\d+$/'              => 'Generic "user_N" username',
         ];
 
-        foreach ( $admins as $u ) {
+        foreach ($admins as $u) {
             $user_flags = [];
 
-            if ( strtotime( $u->user_registered ) > $cutoff ) {
-                $user_flags[] = 'Account created ' . human_time_diff( strtotime( $u->user_registered ) ) . ' ago';
+            if (strtotime($u->user_registered) > $cutoff) {
+                $user_flags[] = 'Account created '.human_time_diff(strtotime($u->user_registered)).' ago';
             }
 
-            foreach ( $sus_patterns as $re => $label ) {
-                if ( preg_match( $re, $u->user_login ) ) { $user_flags[] = $label; break; }
+            foreach ($sus_patterns as $re => $label) {
+                if (preg_match($re, $u->user_login)) {
+                    $user_flags[] = $label;
+                    break;
+                }
             }
 
             // No last-login recorded (never logged in)
-            $last = get_user_meta( $u->ID, 'last_login', true );
-            if ( ! $last ) $user_flags[] = 'No recorded login activity';
+            $last = get_user_meta($u->ID, 'last_login', true);
+            if (!$last) {
+                $user_flags[] = 'No recorded login activity';
+            }
 
-            if ( ! empty( $user_flags ) ) {
+            if (!empty($user_flags)) {
                 $flags[] = [
                     'id'         => $u->ID,
                     'login'      => $u->user_login,
                     'email'      => $u->user_email,
                     'registered' => $u->user_registered,
                     'flags'      => $user_flags,
-                    'edit_url'   => admin_url( 'user-edit.php?user_id=' . $u->ID ),
+                    'edit_url'   => admin_url('user-edit.php?user_id='.$u->ID),
                 ];
             }
         }
 
-        update_option( 'aswp_admin_audit', [ 'results' => $flags, 'at' => current_time( 'mysql' ), 'total' => count( $admins ) ], false );
+        update_option('aswp_admin_audit', ['results' => $flags, 'at' => current_time('mysql'), 'total' => count($admins)], false);
 
-        $msg = count( $flags ) > 0
-            ? count( $flags ) . ' suspicious admin account(s) flagged — review them in the details panel.'
-            : 'All ' . count( $admins ) . ' admin account(s) checked — no suspicious patterns found.';
+        $msg = count($flags) > 0
+            ? count($flags).' suspicious admin account(s) flagged — review them in the details panel.'
+            : 'All '.count($admins).' admin account(s) checked — no suspicious patterns found.';
 
-        return [ 'success' => true, 'message' => $msg, 'details' => [ 'flagged' => $flags, 'total' => count( $admins ) ] ];
+        return ['success' => true, 'message' => $msg, 'details' => ['flagged' => $flags, 'total' => count($admins)]];
     }
 
     // ══════════════════════════════════════════════════════════════════════════
     // ACTION 7 — Revoke All Application Passwords
     // ══════════════════════════════════════════════════════════════════════════
-    private static function action_revoke_app_passwords(): array {
-        if ( ! class_exists( 'WP_Application_Passwords' ) ) {
-            return [ 'success' => true, 'message' => 'Application Passwords are not enabled on this install.' ];
+    private static function action_revoke_app_passwords(): array
+    {
+        if (!class_exists('WP_Application_Passwords')) {
+            return ['success' => true, 'message' => 'Application Passwords are not enabled on this install.'];
         }
-        $users = get_users( [ 'fields' => 'ID' ] );
+        $users = get_users(['fields' => 'ID']);
         $total = 0;
-        foreach ( $users as $uid ) {
-            $passwords = \WP_Application_Passwords::get_user_application_passwords( $uid );
-            $total += count( $passwords );
-            \WP_Application_Passwords::delete_all_application_passwords( $uid );
+        foreach ($users as $uid) {
+            $passwords = \WP_Application_Passwords::get_user_application_passwords($uid);
+            $total += count($passwords);
+            \WP_Application_Passwords::delete_all_application_passwords($uid);
         }
+
         return [
             'success' => true,
             'message' => "$total application password(s) revoked across all users. REST API and XML-RPC access via app passwords is now blocked until new passwords are created.",
@@ -387,44 +416,56 @@ class PostBreach {
     // ══════════════════════════════════════════════════════════════════════════
     // ACTION 8 — Clear All Transients & Object Cache
     // ══════════════════════════════════════════════════════════════════════════
-    private static function action_clear_transients(): array {
+    private static function action_clear_transients(): array
+    {
         global $wpdb;
         // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- security data must not be served from cache
-        $del_t  = $wpdb->query( $wpdb->prepare(
+        $del_t = $wpdb->query($wpdb->prepare(
             "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s",
-            $wpdb->esc_like( '_transient_' ) . '%',
-            $wpdb->esc_like( '_site_transient_' ) . '%'
-        ) );
-        $del_tm = $wpdb->query( $wpdb->prepare(
+            $wpdb->esc_like('_transient_').'%',
+            $wpdb->esc_like('_site_transient_').'%'
+        ));
+        $del_tm = $wpdb->query($wpdb->prepare(
             "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s",
-            $wpdb->esc_like( '_transient_timeout_' ) . '%',
-            $wpdb->esc_like( '_site_transient_timeout_' ) . '%'
-        ) );
+            $wpdb->esc_like('_transient_timeout_').'%',
+            $wpdb->esc_like('_site_transient_timeout_').'%'
+        ));
         // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
         // Flush external object cache if present
         wp_cache_flush();
 
         // Clear any known caching plugins
-        if ( function_exists( 'wp_cache_clear_cache' ) )  wp_cache_clear_cache();   // WP Super Cache
-        if ( function_exists( 'w3tc_flush_all' ) )         w3tc_flush_all();         // W3 Total Cache
-        if ( function_exists( 'rocket_clean_domain' ) )    rocket_clean_domain();    // WP Rocket
-        if ( function_exists( 'sg_cachepress_purge_cache' ) ) sg_cachepress_purge_cache(); // SiteGround Optimizer
+        if (function_exists('wp_cache_clear_cache')) {
+            wp_cache_clear_cache();
+        }   // WP Super Cache
+        if (function_exists('w3tc_flush_all')) {
+            w3tc_flush_all();
+        }         // W3 Total Cache
+        if (function_exists('rocket_clean_domain')) {
+            rocket_clean_domain();
+        }    // WP Rocket
+        if (function_exists('sg_cachepress_purge_cache')) {
+            sg_cachepress_purge_cache();
+        } // SiteGround Optimizer
 
         return [
             'success' => true,
-            'message' => ( $del_t + $del_tm ) . ' transient(s) deleted. Object cache and all compatible caching plugins flushed. Poisoned cached content is now cleared.',
+            'message' => ($del_t + $del_tm).' transient(s) deleted. Object cache and all compatible caching plugins flushed. Poisoned cached content is now cleared.',
         ];
     }
 
     // ══════════════════════════════════════════════════════════════════════════
     // ACTION 9 — Emergency Site Lockdown
     // ══════════════════════════════════════════════════════════════════════════
-    private static function action_lockdown_site(): array {
-        update_option( 'aswp_lockdown_active', 1 );
-        update_option( 'aswp_lockdown_at', current_time( 'mysql' ) );
-        update_option( 'aswp_lockdown_message', get_option( 'aswp_lockdown_custom_msg',
-            'This site is temporarily offline for emergency maintenance. Please check back soon.' ) );
+    private static function action_lockdown_site(): array
+    {
+        update_option('aswp_lockdown_active', 1);
+        update_option('aswp_lockdown_at', current_time('mysql'));
+        update_option('aswp_lockdown_message', get_option(
+            'aswp_lockdown_custom_msg',
+            'This site is temporarily offline for emergency maintenance. Please check back soon.'
+        ));
 
         return [
             'success' => true,
@@ -432,98 +473,113 @@ class PostBreach {
         ];
     }
 
-    private static function action_unlock_site(): array {
-        delete_option( 'aswp_lockdown_active' );
-        return [ 'success' => true, 'message' => 'Lockdown lifted. The site is publicly accessible again.' ];
+    private static function action_unlock_site(): array
+    {
+        delete_option('aswp_lockdown_active');
+
+        return ['success' => true, 'message' => 'Lockdown lifted. The site is publicly accessible again.'];
     }
 
     // ══════════════════════════════════════════════════════════════════════════
     // ACTION 10 — Immediate Database Malware Scan
     // ══════════════════════════════════════════════════════════════════════════
-    private static function action_scan_database(): array {
+    private static function action_scan_database(): array
+    {
         Scanner::run_db_scan();
-        $results = get_option( 'aswp_scan_db_results', [] );
-        $count   = count( $results );
+        $results = get_option('aswp_scan_db_results', []);
+        $count = count($results);
 
         return [
             'success' => true,
             'message' => $count > 0
                 ? "⚠️ $count suspicious item(s) found in the database. Go to the Scanner page for details."
                 : '✅ Database scan complete — no malware patterns detected.',
-            'details' => [ 'findings' => $count ],
+            'details' => ['findings' => $count],
         ];
     }
 
     // ══════════════════════════════════════════════════════════════════════════
     // ACTION 11 — Deactivate All Non-Essential Plugins
     // ══════════════════════════════════════════════════════════════════════════
-    public static function action_disable_plugins(): array {
-        $active = get_option( 'active_plugins', [] );
+    public static function action_disable_plugins(): array
+    {
+        $active = get_option('active_plugins', []);
 
         // Keep this plugin active, everything else off
-        $keep    = [];
-        $current = plugin_basename( ASWP_FILE );
-        foreach ( $active as $plugin ) {
-            if ( $plugin === $current ) $keep[] = $plugin;
+        $keep = [];
+        $current = plugin_basename(ASWP_FILE);
+        foreach ($active as $plugin) {
+            if ($plugin === $current) {
+                $keep[] = $plugin;
+            }
         }
 
         // Store the list so they can be re-enabled
-        update_option( 'aswp_disabled_plugins_backup', $active, false );
-        update_option( 'active_plugins', $keep );
+        update_option('aswp_disabled_plugins_backup', $active, false);
+        update_option('active_plugins', $keep);
 
-        $disabled_count = count( $active ) - count( $keep );
+        $disabled_count = count($active) - count($keep);
 
         return [
             'success' => true,
             'message' => "$disabled_count plugin(s) deactivated. Only Atlant Security remains active. A backup of the active plugin list has been saved — restore it from the button below.",
-            'details' => [ 'backup' => $active, 'kept' => $keep ],
+            'details' => ['backup' => $active, 'kept' => $keep],
         ];
     }
 
-    public static function action_restore_plugins(): array {
-        $backup = get_option( 'aswp_disabled_plugins_backup', [] );
-        if ( empty( $backup ) ) {
-            return [ 'success' => false, 'message' => 'No backup found. Plugins were not disabled by Atlant Security.' ];
+    public static function action_restore_plugins(): array
+    {
+        $backup = get_option('aswp_disabled_plugins_backup', []);
+        if (empty($backup)) {
+            return ['success' => false, 'message' => 'No backup found. Plugins were not disabled by Atlant Security.'];
         }
-        update_option( 'active_plugins', $backup );
-        delete_option( 'aswp_disabled_plugins_backup' );
-        return [ 'success' => true, 'message' => count( $backup ) . ' plugin(s) re-enabled from backup.' ];
+        update_option('active_plugins', $backup);
+        delete_option('aswp_disabled_plugins_backup');
+
+        return ['success' => true, 'message' => count($backup).' plugin(s) re-enabled from backup.'];
     }
 
     // ══════════════════════════════════════════════════════════════════════════
     // ACTION 12 — Generate Breach Incident Report
     // ══════════════════════════════════════════════════════════════════════════
-    private static function action_generate_report(): array {
+    private static function action_generate_report(): array
+    {
         global $wpdb;
 
-        $site         = get_bloginfo( 'name' );
-        $url          = home_url();
-        $generated    = current_time( 'mysql' );
-        $wp_version   = get_bloginfo( 'version' );
-        $php_version  = PHP_VERSION;
-        $admin_email  = get_option( 'admin_email' );
+        $site = get_bloginfo('name');
+        $url = home_url();
+        $generated = current_time('mysql');
+        $wp_version = get_bloginfo('version');
+        $php_version = PHP_VERSION;
+        $admin_email = get_option('admin_email');
 
         // Collect data points
         // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- security data must not be served from cache
-        $recent_events = $wpdb->get_results( $wpdb->prepare(
-            "SELECT event_type, severity, ip, url, description, created_at FROM {$wpdb->prefix}aswp_events ORDER BY created_at DESC LIMIT %d", 50
-        ) );
-        $blocked_ips   = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}aswp_blocked_ips" );
-        $cutoff_7d     = wp_date( 'Y-m-d H:i:s', time() - 7 * DAY_IN_SECONDS );
-        $waf_blocks    = $wpdb->get_var( $wpdb->prepare(
-            "SELECT COUNT(*) FROM {$wpdb->prefix}aswp_events WHERE event_type = %s AND created_at >= %s", 'waf_block', $cutoff_7d
-        ) );
-        $login_fails   = $wpdb->get_var( $wpdb->prepare(
-            "SELECT COUNT(*) FROM {$wpdb->prefix}aswp_events WHERE event_type = %s AND created_at >= %s", 'login_failed', $cutoff_7d
-        ) );
-        $scan_findings = get_option( 'aswp_scan_findings', [] );
-        $db_findings   = get_option( 'aswp_scan_db_results', [] );
-        $admin_audit   = get_option( 'aswp_admin_audit', [] );
-        $keys_rotated  = get_option( 'aswp_keys_rotated_at', 'Never' );
-        $lockdown      = get_option( 'aswp_lockdown_active' ) ? 'ACTIVE' : 'Inactive';
-        $audit_log     = $wpdb->get_results( $wpdb->prepare(
-            "SELECT user_id, username, action, description, ip, created_at FROM {$wpdb->prefix}aswp_audit_log ORDER BY created_at DESC LIMIT %d", 30
-        ) );
+        $recent_events = $wpdb->get_results($wpdb->prepare(
+            "SELECT event_type, severity, ip, url, description, created_at FROM {$wpdb->prefix}aswp_events ORDER BY created_at DESC LIMIT %d",
+            50
+        ));
+        $blocked_ips = $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}aswp_blocked_ips");
+        $cutoff_7d = wp_date('Y-m-d H:i:s', time() - 7 * DAY_IN_SECONDS);
+        $waf_blocks = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$wpdb->prefix}aswp_events WHERE event_type = %s AND created_at >= %s",
+            'waf_block',
+            $cutoff_7d
+        ));
+        $login_fails = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$wpdb->prefix}aswp_events WHERE event_type = %s AND created_at >= %s",
+            'login_failed',
+            $cutoff_7d
+        ));
+        $scan_findings = get_option('aswp_scan_findings', []);
+        $db_findings = get_option('aswp_scan_db_results', []);
+        $admin_audit = get_option('aswp_admin_audit', []);
+        $keys_rotated = get_option('aswp_keys_rotated_at', 'Never');
+        $lockdown = get_option('aswp_lockdown_active') ? 'ACTIVE' : 'Inactive';
+        $audit_log = $wpdb->get_results($wpdb->prepare(
+            "SELECT user_id, username, action, description, ip, created_at FROM {$wpdb->prefix}aswp_audit_log ORDER BY created_at DESC LIMIT %d",
+            30
+        ));
         // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
         $report = [
@@ -542,9 +598,9 @@ class PostBreach {
                 'blocked_ips_total'     => (int) $blocked_ips,
                 'waf_blocks_7d'         => (int) $waf_blocks,
                 'login_failures_7d'     => (int) $login_fails,
-                'file_scan_findings'    => count( $scan_findings ),
-                'db_scan_findings'      => count( $db_findings ),
-                'suspicious_admins'     => count( $admin_audit['results'] ?? [] ),
+                'file_scan_findings'    => count($scan_findings),
+                'db_scan_findings'      => count($db_findings),
+                'suspicious_admins'     => count($admin_audit['results'] ?? []),
                 'secret_keys_rotated'   => $keys_rotated,
             ],
             'recent_security_events' => $recent_events,
@@ -554,12 +610,12 @@ class PostBreach {
             'admin_audit_log'        => $audit_log,
         ];
 
-        $filename = 'aswp-security-incident-report-' . wp_date( 'Y-m-d-Hi' ) . '.json';
-        update_option( 'aswp_last_report', [
+        $filename = 'aswp-security-incident-report-'.wp_date('Y-m-d-Hi').'.json';
+        update_option('aswp_last_report', [
             'data'      => $report,
             'filename'  => $filename,
             'generated' => $generated,
-        ], false );
+        ], false);
 
         return [
             'success'   => true,
@@ -570,126 +626,167 @@ class PostBreach {
     }
 
     // ── Enforce password reset on login ───────────────────────────────────────
-    public static function enforce_password_reset(): void {
-        if ( ! get_option( 'aswp_force_pw_reset_active' ) ) return;
+    public static function enforce_password_reset(): void
+    {
+        if (!get_option('aswp_force_pw_reset_active')) {
+            return;
+        }
 
         // Redirect on initial login
-        add_action( 'wp_login', function ( $user_login, $user ) {
-            if ( get_user_meta( $user->ID, 'aswp_require_password_reset', true ) ) {
-                wp_safe_redirect( admin_url( 'profile.php?aswp_reset=1' ) );
+        add_action('wp_login', function ($user_login, $user) {
+            if (get_user_meta($user->ID, 'aswp_require_password_reset', true)) {
+                wp_safe_redirect(admin_url('profile.php?aswp_reset=1'));
                 exit;
             }
-        }, 10, 2 );
+        }, 10, 2);
 
         // Block ALL admin pages except profile.php until password is changed
-        add_action( 'admin_init', function () {
-            if ( wp_doing_ajax() || ! is_user_logged_in() ) return;
+        add_action('admin_init', function () {
+            if (wp_doing_ajax() || !is_user_logged_in()) {
+                return;
+            }
             $user = wp_get_current_user();
-            if ( ! get_user_meta( $user->ID, 'aswp_require_password_reset', true ) ) return;
+            if (!get_user_meta($user->ID, 'aswp_require_password_reset', true)) {
+                return;
+            }
 
             // Allow profile.php (where they change password)
             global $pagenow;
-            if ( $pagenow === 'profile.php' ) return;
+            if ($pagenow === 'profile.php') {
+                return;
+            }
 
-            wp_safe_redirect( admin_url( 'profile.php?aswp_reset=1' ) );
+            wp_safe_redirect(admin_url('profile.php?aswp_reset=1'));
             exit;
-        }, 0 );
+        }, 0);
 
         // Clear the flag once the user actually changes their password
-        add_action( 'password_reset', function ( $user ) {
-            delete_user_meta( $user->ID, 'aswp_require_password_reset' );
+        add_action('password_reset', function ($user) {
+            delete_user_meta($user->ID, 'aswp_require_password_reset');
             // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key,WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- intentional: checking if any users still need password reset (small result set, runs only on password_reset)
-            $remaining = get_users( [ 'meta_key' => 'aswp_require_password_reset', 'meta_value' => 1 ] );
-            if ( empty( $remaining ) ) delete_option( 'aswp_force_pw_reset_active' );
-        } );
+            $remaining = get_users(['meta_key' => 'aswp_require_password_reset', 'meta_value' => 1]);
+            if (empty($remaining)) {
+                delete_option('aswp_force_pw_reset_active');
+            }
+        });
 
         // Also clear via profile update (some configs use this instead of password_reset)
-        add_action( 'profile_update', function ( $user_id ) {
+        add_action('profile_update', function ($user_id) {
             // phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- password check in profile_update hook; nonce verified by WP core
-            if ( isset( $_POST['pass1'] ) && ! empty( $_POST['pass1'] ) ) {
-                delete_user_meta( $user_id, 'aswp_require_password_reset' );
+            if (isset($_POST['pass1']) && !empty($_POST['pass1'])) {
+                delete_user_meta($user_id, 'aswp_require_password_reset');
                 // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key,WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- intentional: checking if any users still need password reset (small result set, runs only on profile_update)
-                $remaining = get_users( [ 'meta_key' => 'aswp_require_password_reset', 'meta_value' => 1 ] );
-                if ( empty( $remaining ) ) delete_option( 'aswp_force_pw_reset_active' );
+                $remaining = get_users(['meta_key' => 'aswp_require_password_reset', 'meta_value' => 1]);
+                if (empty($remaining)) {
+                    delete_option('aswp_force_pw_reset_active');
+                }
             }
-        } );
+        });
 
         // Show banner on profile page
-        add_action( 'admin_notices', function () {
-            if ( ! isset( $_GET['aswp_reset'] ) ) return; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display-only admin notice
+        add_action('admin_notices', function () {
+            if (!isset($_GET['aswp_reset'])) {
+                return;
+            } // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display-only admin notice
             echo '<div class="notice notice-error"><p><strong>Security Notice:</strong> You must change your password before continuing. Update your password below.</p></div>';
-        } );
+        });
     }
 
     // ── Lockdown middleware ────────────────────────────────────────────────────
-    public static function enforce_lockdown(): void {
-        if ( ! get_option( 'aswp_lockdown_active' ) ) return;
-        if ( defined( 'ASWP_BLOCKING_DISABLED' ) && ASWP_BLOCKING_DISABLED ) return;
+    public static function enforce_lockdown(): void
+    {
+        if (!get_option('aswp_lockdown_active')) {
+            return;
+        }
+        if (defined('ASWP_BLOCKING_DISABLED') && ASWP_BLOCKING_DISABLED) {
+            return;
+        }
 
         // Frontend pages
-        add_action( 'template_redirect', [ __CLASS__, 'lockdown_gate' ], 0 );
+        add_action('template_redirect', [__CLASS__, 'lockdown_gate'], 0);
 
         // REST API
-        add_filter( 'rest_authentication_errors', function ( $result ) {
-            if ( self::is_lockdown_exempt() ) return $result;
-            return new \WP_Error( 'aswp_lockdown', 'Site is in emergency lockdown.', [ 'status' => 503 ] );
-        }, 0 );
+        add_filter('rest_authentication_errors', function ($result) {
+            if (self::is_lockdown_exempt()) {
+                return $result;
+            }
+
+            return new \WP_Error('aswp_lockdown', 'Site is in emergency lockdown.', ['status' => 503]);
+        }, 0);
 
         // XML-RPC
-        add_filter( 'xmlrpc_enabled', function ( $enabled ) {
-            if ( self::is_lockdown_exempt() ) return $enabled;
+        add_filter('xmlrpc_enabled', function ($enabled) {
+            if (self::is_lockdown_exempt()) {
+                return $enabled;
+            }
+
             return false;
-        }, 0 );
+        }, 0);
 
         // Non-authenticated AJAX
-        add_action( 'admin_init', function () {
-            if ( ! wp_doing_ajax() ) return;
-            if ( self::is_lockdown_exempt() ) return;
-            wp_send_json_error( [ 'message' => 'Site is in emergency lockdown.' ], 503 );
-        }, 0 );
+        add_action('admin_init', function () {
+            if (!wp_doing_ajax()) {
+                return;
+            }
+            if (self::is_lockdown_exempt()) {
+                return;
+            }
+            wp_send_json_error(['message' => 'Site is in emergency lockdown.'], 503);
+        }, 0);
     }
 
-    private static function is_lockdown_exempt(): bool {
-        if ( is_user_logged_in() && current_user_can( 'manage_options' ) ) return true;
-        if ( class_exists( 'FortressWP\\Whitelist' ) && \FortressWP\Whitelist::is_allowed( \FortressWP\RequestLogger::get_real_ip() ) ) return true;
+    private static function is_lockdown_exempt(): bool
+    {
+        if (is_user_logged_in() && current_user_can('manage_options')) {
+            return true;
+        }
+        if (class_exists('FortressWP\\Whitelist') && \FortressWP\Whitelist::is_allowed(\FortressWP\RequestLogger::get_real_ip())) {
+            return true;
+        }
+
         return false;
     }
 
-    public static function lockdown_gate(): void {
-        if ( self::is_lockdown_exempt() ) return;
+    public static function lockdown_gate(): void
+    {
+        if (self::is_lockdown_exempt()) {
+            return;
+        }
 
-        $msg = get_option( 'aswp_lockdown_message', 'This site is temporarily offline for emergency maintenance.' );
-        status_header( 503 );
-        header( 'Retry-After: 3600' );
-        wp_register_style( 'aswp-lockdown', ASWP_URL . 'includes/assets/css/lockdown-page.css', [], ASWP_VERSION );
-        wp_enqueue_style( 'aswp-lockdown' );
+        $msg = get_option('aswp_lockdown_message', 'This site is temporarily offline for emergency maintenance.');
+        status_header(503);
+        header('Retry-After: 3600');
+        wp_register_style('aswp-lockdown', ASWP_URL.'includes/assets/css/lockdown-page.css', [], ASWP_VERSION);
+        wp_enqueue_style('aswp-lockdown');
         echo '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Site Offline</title>';
-        wp_print_styles( 'aswp-lockdown' );
-        echo '</head><body><div class="card"><div class="icon">🔒</div><h1>Site Temporarily Offline</h1><p>' . esc_html( $msg ) . '</p></div></body></html>';
+        wp_print_styles('aswp-lockdown');
+        echo '</head><body><div class="card"><div class="icon">🔒</div><h1>Site Temporarily Offline</h1><p>'.esc_html($msg).'</p></div></body></html>';
         exit;
     }
 
     // ── Helpers ────────────────────────────────────────────────────────────────
-    private static function audit( string $action, string $message ): void {
+    private static function audit(string $action, string $message): void
+    {
         global $wpdb;
         $user = wp_get_current_user();
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- security data must not be served from cache
         $wpdb->insert(
-            $wpdb->prefix . 'aswp_audit_log',
+            $wpdb->prefix.'aswp_audit_log',
             [
                 'user_id'     => $user->ID,
                 'username'    => $user->user_login,
-                'action'      => 'breach_action:' . $action,
+                'action'      => 'breach_action:'.$action,
                 'object_type' => 'breach',
                 'description' => $message,
                 'ip'          => \FortressWP\RequestLogger::get_real_ip(),
-                'created_at'  => current_time( 'mysql' ),
+                'created_at'  => current_time('mysql'),
             ],
-            [ '%d', '%s', '%s', '%s', '%s', '%s', '%s' ]
+            ['%d', '%s', '%s', '%s', '%s', '%s', '%s']
         );
     }
 
-    public static function get_action_definitions(): array {
+    public static function get_action_definitions(): array
+    {
         return [
             [
                 'id'       => 'terminate_sessions',

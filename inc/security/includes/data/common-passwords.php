@@ -1,9 +1,10 @@
 <?php
+
 // Top commonly breached passwords.
 // Source: SecLists / Have I Been Pwned aggregated breach data.
 // All passwords are lowercase for case-insensitive comparison.
 // Loaded on-demand during password validation only.
-defined( 'ABSPATH' ) || exit;
+defined('ABSPATH') || exit;
 
 return [
     // === Number sequences ===
