@@ -73,16 +73,20 @@ final class Captcha {
 
         // ── Asset loading on the login page ──────────────────────────────
         add_action( 'login_enqueue_scripts', [ self::class, 'enqueue_assets' ] );
+        add_action( 'wp_enqueue_scripts',    [ self::class, 'enqueue_assets' ] );
 
         // ── Render the widget on the right forms ─────────────────────────
         if ( Settings::bool( self::OPT_ON_LOGIN, true ) ) {
             add_action( 'login_form',          [ self::class, 'render_widget' ] );
+            add_action( 'woocommerce_login_form', [ self::class, 'render_widget' ] );
         }
         if ( Settings::bool( self::OPT_ON_REGISTER, true ) ) {
             add_action( 'register_form',       [ self::class, 'render_widget' ] );
+            add_action( 'woocommerce_register_form', [ self::class, 'render_widget' ] );
         }
         if ( Settings::bool( self::OPT_ON_LOST_PW, true ) ) {
             add_action( 'lostpassword_form',   [ self::class, 'render_widget' ] );
+            add_action( 'woocommerce_lostpassword_form', [ self::class, 'render_widget' ] );
         }
 
         // ── Verification ─────────────────────────────────────────────────
@@ -95,6 +99,7 @@ final class Captcha {
         }
         if ( Settings::bool( self::OPT_ON_REGISTER, true ) ) {
             add_filter( 'registration_errors',   [ self::class, 'verify_on_register' ], 10, 1 );
+            add_filter( 'woocommerce_process_registration_errors', [ self::class, 'verify_on_woocommerce_register' ], 10, 3 );
         }
         if ( Settings::bool( self::OPT_ON_LOST_PW, true ) ) {
             add_action( 'lostpassword_post',     [ self::class, 'verify_on_lostpassword' ], 10, 1 );
@@ -138,6 +143,10 @@ final class Captcha {
     // ── Asset loading ────────────────────────────────────────────────────────
 
     public static function enqueue_assets(): void {
+        if ( 'wp_enqueue_scripts' === current_action() && ! self::should_enqueue_woocommerce_assets() ) {
+            return;
+        }
+
         $provider = self::provider();
         $site_key = (string) Settings::get( self::OPT_SITE_KEY, '' );
 
@@ -146,7 +155,7 @@ final class Captcha {
         }
 
         // CSS layout shim — vertical breathing room around the widget.
-        $css = '#login form .g-recaptcha,#login form .cf-turnstile{margin:14px 0;display:flex;justify-content:center}';
+        $css = '#login form .g-recaptcha,#login form .cf-turnstile,.woocommerce-form-login .g-recaptcha,.woocommerce-form-login .cf-turnstile,.woocommerce-form-register .g-recaptcha,.woocommerce-form-register .cf-turnstile,.woocommerce-ResetPassword .g-recaptcha,.woocommerce-ResetPassword .cf-turnstile{margin:14px 0;display:flex;justify-content:center}';
         wp_register_style( 'madeit-security-captcha', false, [], MADEIT_VERSION );
         wp_enqueue_style( 'madeit-security-captcha' );
         wp_add_inline_style( 'madeit-security-captcha', $css );
@@ -197,7 +206,7 @@ final class Captcha {
 (function () {
     if (typeof grecaptcha === 'undefined') { return; }
     grecaptcha.ready(function () {
-        var forms = document.querySelectorAll('#loginform, #registerform, #lostpasswordform');
+                var forms = document.querySelectorAll('#loginform, #registerform, #lostpasswordform, form.woocommerce-form-login, form.woocommerce-form-register, form.woocommerce-ResetPassword');
         forms.forEach(function (form) {
             // Inject hidden field once.
             if (! form.querySelector('input[name="g-recaptcha-response"]')) {
@@ -319,6 +328,22 @@ JS;
         return $errors;
     }
 
+    /**
+     * @param \WP_Error $errors
+     */
+    public static function verify_on_woocommerce_register( \WP_Error $errors, string $username, string $email ): \WP_Error {
+        unset( $username, $email );
+
+        if ( self::should_bypass() ) {
+            return $errors;
+        }
+        if ( ! self::verify_request() ) {
+            self::log_failure( 'register', '' );
+            $errors->add( 'madeit_security_captcha_failed', __( '<strong>Security check failed.</strong> Please complete the CAPTCHA and try again.', 'madeit' ) );
+        }
+        return $errors;
+    }
+
     public static function verify_on_lostpassword( $errors ): void {
         if ( self::should_bypass() ) {
             return;
@@ -421,6 +446,22 @@ JS;
         }
         $method = strtoupper( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) );
         return 'POST' === $method;
+    }
+
+    private static function should_enqueue_woocommerce_assets(): bool {
+        if ( ! class_exists( '\\WooCommerce' ) ) {
+            return false;
+        }
+
+        if ( function_exists( 'is_account_page' ) && is_account_page() ) {
+            return true;
+        }
+
+        if ( function_exists( 'is_wc_endpoint_url' ) && ( is_wc_endpoint_url( 'lost-password' ) || is_wc_endpoint_url( 'reset-password' ) ) ) {
+            return true;
+        }
+
+        return false;
     }
 
     private static function record_low_score( float $score ): void {

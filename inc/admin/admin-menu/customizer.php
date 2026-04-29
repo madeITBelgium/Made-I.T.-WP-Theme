@@ -23,6 +23,11 @@ function madeit_sanitize_breakpoint( $value ) {
     return in_array( $value, $allowed, true ) ? $value : 'md';
 }
 
+function madeit_sanitize_alignment( $value ) {
+    $allowed = [ 'left', 'center', 'end' ];
+    return in_array( $value, $allowed, true ) ? $value : 'left';
+}
+
 function madeit_sanitize_checkbox( $value ) {
     return ! empty( $value ) ? 1 : 0;
 }
@@ -92,6 +97,14 @@ function madeit_mobile_breakpoint_tooltip() {
             <tr><td>Brede desktop</td><td>Grote schermen</td></tr>
         </table>
     ';
+}
+
+function madeit_text_align_choices() {
+    return [
+        'left'   => 'Links',
+        'center' => 'Midden',
+        'end'  => 'Rechts',
+    ];
 }
 
 //  ===============================
@@ -664,7 +677,7 @@ function theme_navbar_customizer($wp_customize){
     )));
 
 
-    // achtergrondkleur buttom menu (als ingesteld)
+    // achtergrondkleur bottom menu (als ingesteld)
     if (HEADER_UPPER_BOTTOM) {
         $wp_customize->add_setting('madeit_navbar_options[background_color_bottom]', array(
             'default'           => '#ffffff',
@@ -672,6 +685,13 @@ function theme_navbar_customizer($wp_customize){
             'type'              => 'option',
             'sanitize_callback' => 'madeit_sanitize_color_choice',
         ));
+
+        $wp_customize->add_control( new My_Custom_Color_Control( $wp_customize, 'background_color_bottom_control', array(
+            'label'    => 'Achtergrondkleur onderste menu',
+            'section'  => 'navbar_settings_section',
+            'settings' => 'madeit_navbar_options[background_color_bottom]',
+            'priority' => 4,
+        )));
     }
 
     // achtergrondkleur top menu (als ingesteld)
@@ -682,6 +702,27 @@ function theme_navbar_customizer($wp_customize){
             'type'              => 'option',
             'sanitize_callback' => 'madeit_sanitize_color_choice',
         ));
+
+        $wp_customize->add_control( new My_Custom_Color_Control( $wp_customize, 'background_color_top_control', array(
+            'label'    => 'Achtergrondkleur bovenste menu',
+            'section'  => 'navbar_settings_section',
+            'settings' => 'madeit_navbar_options[background_color_top]',
+            'priority' => 4,
+        )));
+
+        $wp_customize->add_setting('madeit_navbar_options[text_align]', array(
+            'default'           => 'left',
+            'capability'        => 'edit_theme_options',
+            'type'              => 'option',
+            'sanitize_callback' => 'madeit_sanitize_alignment',
+        ));
+        $wp_customize->add_control( new My_Custom_Select_Control( $wp_customize, 'text_align_control', array(
+            'label'    => 'Tekst uitlijning bovenste menu',
+            'section'  => 'navbar_settings_section',
+            'settings' => 'madeit_navbar_options[text_align]',
+            'choices'  => madeit_text_align_choices(),
+            'priority' => 5,
+        )));
     }
 
 

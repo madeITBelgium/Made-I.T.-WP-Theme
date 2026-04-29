@@ -67,22 +67,19 @@ $break-medium: 782px;
     // Zonder deze truc overschrijft Bootstrap of een theme de waarde.
 	&[style*="--madeit-container-margin-top-desktop:"],
 	&[style*="--madeit-container-margin-bottom-desktop:"] {
-		margin-top: var(--madeit-container-margin-top-desktop) !important;
-		margin-bottom: var(--madeit-container-margin-bottom-desktop) !important;
+		margin-top: var(--madeit-container-margin-top-desktop, 0) !important;
+		margin-bottom: var(--madeit-container-margin-bottom-desktop, 0) !important;
 	}
-
-    // Specificiteitswinnaar voor tablet/mobile margin — alleen actief als de var
-    // aanwezig is in het style-attribuut (geserialiseerd door save.js).
     &[style*="--madeit-container-margin-top-tablet:"],
     &[style*="--madeit-container-margin-bottom-tablet:"] {
         @include tablet {
             margin-top: var(
                 --madeit-container-margin-top-tablet,
-                var(--madeit-container-margin-top-desktop)
+                var(--madeit-container-margin-top-desktop, 0)
             ) !important;
             margin-bottom: var(
                 --madeit-container-margin-bottom-tablet,
-                var(--madeit-container-margin-bottom-desktop)
+                var(--madeit-container-margin-bottom-desktop, 0)
             ) !important;
         }
     }
@@ -91,11 +88,11 @@ $break-medium: 782px;
     @include tablet {
         margin-top: var(
             --madeit-container-margin-top-tablet,
-            var(--madeit-container-margin-top-desktop)
+            var(--madeit-container-margin-top-desktop, 0)
         );
         margin-bottom: var(
             --madeit-container-margin-bottom-tablet,
-            var(--madeit-container-margin-bottom-desktop)
+            var(--madeit-container-margin-bottom-desktop, 0)
         );
     }
 
@@ -104,11 +101,11 @@ $break-medium: 782px;
         @include mobile {
             margin-top: var(
                 --madeit-container-margin-top-mobile,
-                var(--madeit-container-margin-top-tablet, var(--madeit-container-margin-top-desktop))
+                var(--madeit-container-margin-top-tablet, var(--madeit-container-margin-top-desktop, 0))
             ) !important;
             margin-bottom: var(
                 --madeit-container-margin-bottom-mobile,
-                var(--madeit-container-margin-bottom-tablet, var(--madeit-container-margin-bottom-desktop))
+                var(--madeit-container-margin-bottom-tablet, var(--madeit-container-margin-bottom-desktop, 0))
             ) !important;
         }
     }
@@ -117,11 +114,11 @@ $break-medium: 782px;
     @include mobile {
         margin-top: var(
             --madeit-container-margin-top-mobile,
-            var(--madeit-container-margin-top-tablet, var(--madeit-container-margin-top-desktop))
+            var(--madeit-container-margin-top-tablet, var(--madeit-container-margin-top-desktop, 0))
         );
         margin-bottom: var(
             --madeit-container-margin-bottom-mobile,
-            var(--madeit-container-margin-bottom-tablet, var(--madeit-container-margin-bottom-desktop))
+            var(--madeit-container-margin-bottom-tablet, var(--madeit-container-margin-bottom-desktop, 0))
         );
     }
 
@@ -132,28 +129,28 @@ $break-medium: 782px;
     // actief is. Als die flag wél actief is, staat padding op `.madeit-container-row`.
     // Beide gevallen worden hieronder afgehandeld.
 
-    padding-top:    var(--madeit-container-padding-top-desktop);
-    padding-right:  var(--madeit-container-padding-right-desktop);
-    padding-bottom: var(--madeit-container-padding-bottom-desktop);
-    padding-left:   var(--madeit-container-padding-left-desktop);
+    padding-top:    var(--madeit-container-padding-top-desktop, 0);
+    padding-right:  var(--madeit-container-padding-right-desktop, 0);
+    padding-bottom: var(--madeit-container-padding-bottom-desktop, 0);
+    padding-left:   var(--madeit-container-padding-left-desktop, 0);
 
     &[style*="--madeit-container-padding-top-tablet:"],
     &[style*="--madeit-container-padding-right-tablet:"],
     &[style*="--madeit-container-padding-bottom-tablet:"],
     &[style*="--madeit-container-padding-left-tablet:"] {
         @include tablet {
-            padding-top:    var(--madeit-container-padding-top-tablet,    var(--madeit-container-padding-top-desktop)) !important;
-            padding-right:  var(--madeit-container-padding-right-tablet,  var(--madeit-container-padding-right-desktop)) !important;
-            padding-bottom: var(--madeit-container-padding-bottom-tablet, var(--madeit-container-padding-bottom-desktop)) !important;
-            padding-left:   var(--madeit-container-padding-left-tablet,   var(--madeit-container-padding-left-desktop)) !important;
+            padding-top:    var(--madeit-container-padding-top-tablet,    var(--madeit-container-padding-top-desktop, 0)) !important;
+            padding-right:  var(--madeit-container-padding-right-tablet,  var(--madeit-container-padding-right-desktop, 0)) !important;
+            padding-bottom: var(--madeit-container-padding-bottom-tablet, var(--madeit-container-padding-bottom-desktop, 0)) !important;
+            padding-left:   var(--madeit-container-padding-left-tablet,   var(--madeit-container-padding-left-desktop, 0)) !important;
         }
     }
 
     @include tablet {
-        padding-top:    var(--madeit-container-padding-top-tablet,    var(--madeit-container-padding-top-desktop));
-        padding-right:  var(--madeit-container-padding-right-tablet,  var(--madeit-container-padding-right-desktop));
-        padding-bottom: var(--madeit-container-padding-bottom-tablet, var(--madeit-container-padding-bottom-desktop));
-        padding-left:   var(--madeit-container-padding-left-tablet,   var(--madeit-container-padding-left-desktop));
+        padding-top:    var(--madeit-container-padding-top-tablet,    var(--madeit-container-padding-top-desktop, 0));
+        padding-right:  var(--madeit-container-padding-right-tablet,  var(--madeit-container-padding-right-desktop, 0));
+        padding-bottom: var(--madeit-container-padding-bottom-tablet, var(--madeit-container-padding-bottom-desktop, 0));
+        padding-left:   var(--madeit-container-padding-left-tablet,   var(--madeit-container-padding-left-desktop, 0));
     }
 
     &[style*="--madeit-container-padding-top-mobile:"],
@@ -161,18 +158,18 @@ $break-medium: 782px;
     &[style*="--madeit-container-padding-bottom-mobile:"],
     &[style*="--madeit-container-padding-left-mobile:"] {
         @include mobile {
-            padding-top:    var(--madeit-container-padding-top-mobile,    var(--madeit-container-padding-top-tablet,    var(--madeit-container-padding-top-desktop))) !important;
-            padding-right:  var(--madeit-container-padding-right-mobile,  var(--madeit-container-padding-right-tablet,  var(--madeit-container-padding-right-desktop))) !important;
-            padding-bottom: var(--madeit-container-padding-bottom-mobile, var(--madeit-container-padding-bottom-tablet, var(--madeit-container-padding-bottom-desktop))) !important;
-            padding-left:   var(--madeit-container-padding-left-mobile,   var(--madeit-container-padding-left-tablet,   var(--madeit-container-padding-left-desktop))) !important;
+            padding-top:    var(--madeit-container-padding-top-mobile,    var(--madeit-container-padding-top-tablet,    var(--madeit-container-padding-top-desktop, 0))) !important;
+            padding-right:  var(--madeit-container-padding-right-mobile,  var(--madeit-container-padding-right-tablet,  var(--madeit-container-padding-right-desktop, 0))) !important;
+            padding-bottom: var(--madeit-container-padding-bottom-mobile, var(--madeit-container-padding-bottom-tablet, var(--madeit-container-padding-bottom-desktop, 0))) !important;
+            padding-left:   var(--madeit-container-padding-left-mobile,   var(--madeit-container-padding-left-tablet,   var(--madeit-container-padding-left-desktop, 0))) !important;
         }
     }
 
     @include mobile {
-        padding-top:    var(--madeit-container-padding-top-mobile,    var(--madeit-container-padding-top-tablet,    var(--madeit-container-padding-top-desktop)));
-        padding-right:  var(--madeit-container-padding-right-mobile,  var(--madeit-container-padding-right-tablet,  var(--madeit-container-padding-right-desktop)));
-        padding-bottom: var(--madeit-container-padding-bottom-mobile, var(--madeit-container-padding-bottom-tablet, var(--madeit-container-padding-bottom-desktop)));
-        padding-left:   var(--madeit-container-padding-left-mobile,   var(--madeit-container-padding-left-tablet,   var(--madeit-container-padding-left-desktop)));
+        padding-top:    var(--madeit-container-padding-top-mobile,    var(--madeit-container-padding-top-tablet,    var(--madeit-container-padding-top-desktop, 0)));
+        padding-right:  var(--madeit-container-padding-right-mobile,  var(--madeit-container-padding-right-tablet,  var(--madeit-container-padding-right-desktop, 0)));
+        padding-bottom: var(--madeit-container-padding-bottom-mobile, var(--madeit-container-padding-bottom-tablet, var(--madeit-container-padding-bottom-desktop, 0)));
+        padding-left:   var(--madeit-container-padding-left-mobile,   var(--madeit-container-padding-left-tablet,   var(--madeit-container-padding-left-desktop, 0)));
     }
 
 

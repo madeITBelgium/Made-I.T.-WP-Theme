@@ -45,6 +45,9 @@ class Settings
             'madeit_security_recovery_token',
             'madeit_security_flush_rewrite_pending',
             'madeit_security_audit_log_enabled',
+            'madeit_security_vulnaudit_results',
+            'madeit_security_vulnaudit_summary',
+            'madeit_security_vulnaudit_last_run',
         ];
 
         if (!in_array($option, $getFromDatabaseKeys, true)) {

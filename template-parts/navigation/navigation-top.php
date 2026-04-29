@@ -115,7 +115,7 @@ $classes = array_filter([
 ]);
 
 $navBarClass = apply_filters('madeit_navbar_class', $classes);
-$containerClass = apply_filters('madeit_navbar_container_class', ['container']);
+$containerClass = apply_filters('madeit_navbar_container_class', ['container', 'main-navbar']);
 $menuContainerClass = apply_filters('madeit_navbar_menu_container_class', ['collapse', 'navbar-collapse', 'main-navigation']);
 $menuClass = apply_filters('madeit_navbar_menu_class', ['menu', 'nav', 'navbar-nav', 'ml-auto', 'ms-auto', 'align-items-md-center']);
 
@@ -179,4 +179,5 @@ if ( ! empty( $nav_style_parts ) ) {
             <?php
         }
         ?>
+        
 </nav>

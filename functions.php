@@ -904,6 +904,87 @@ if (!function_exists('madeit_scripts')) {
     add_action('wp_enqueue_scripts', 'madeit_scripts');
 }
 
+if ( ! function_exists( 'madeit_nav_background_attributes' ) ) {
+    function madeit_nav_background_attributes( $background_choice ) {
+        $is_custom_background = false;
+
+        // Backwards compatibility: older versions stored an array with `colors`, `gradient`, `custom`.
+        if ( is_array( $background_choice ) ) {
+            if ( ! empty( $background_choice['custom'] ) ) {
+                $background_choice     = $background_choice['custom'];
+                $is_custom_background = true;
+            } elseif ( ! empty( $background_choice['gradient'] ) ) {
+                $background_choice = $background_choice['gradient'];
+            } elseif ( ! empty( $background_choice['colors'] ) ) {
+                $background_choice = $background_choice['colors'];
+            } else {
+                $background_choice = '';
+            }
+        }
+
+        $background_choice = is_string( $background_choice ) ? trim( $background_choice ) : '';
+
+        $class = '';
+        $style_parts = [];
+
+        $hex = sanitize_hex_color( $background_choice );
+        if ( $hex ) {
+            $is_custom_background = true;
+        } elseif ( '' !== $background_choice && preg_match( '/gradient\(/i', $background_choice ) ) {
+            $is_custom_background = true;
+        }
+
+        if ( $is_custom_background ) {
+            if ( $hex ) {
+                $style_parts[] = 'background-color: ' . $hex . ';';
+            } elseif ( '' !== $background_choice && preg_match( '/gradient\(/i', $background_choice ) ) {
+                $style_parts[] = 'background-image: ' . $background_choice . ';';
+            }
+        } elseif ( '' !== $background_choice ) {
+            $colors_support = get_theme_support( 'editor-color-palette' );
+            $colors         = ( is_array( $colors_support ) && isset( $colors_support[0] ) && is_array( $colors_support[0] ) )
+                ? $colors_support[0]
+                : [];
+
+            $color_slugs = [];
+            foreach ( (array) $colors as $color ) {
+                if ( ! is_array( $color ) || empty( $color['slug'] ) ) {
+                    continue;
+                }
+                $color_slugs[] = (string) $color['slug'];
+            }
+
+            $gradients_support = get_theme_support( 'editor-gradient-presets' );
+            $gradients         = ( is_array( $gradients_support ) && isset( $gradients_support[0] ) && is_array( $gradients_support[0] ) )
+                ? $gradients_support[0]
+                : [];
+
+            if ( empty( $gradients ) && function_exists( 'madeit_generate_gradients_colors' ) ) {
+                $gradients = madeit_generate_gradients_colors();
+            }
+
+            $gradient_slugs = [];
+            foreach ( (array) $gradients as $gradient ) {
+                if ( ! is_array( $gradient ) || empty( $gradient['slug'] ) ) {
+                    continue;
+                }
+                $gradient_slugs[] = (string) $gradient['slug'];
+            }
+
+            if ( in_array( $background_choice, $gradient_slugs, true ) ) {
+                $class = 'has-' . sanitize_html_class( $background_choice ) . '-gradient-background';
+            } elseif ( in_array( $background_choice, $color_slugs, true ) ) {
+                $class = 'has-' . sanitize_html_class( $background_choice ) . '-background-color';
+            }
+        }
+
+        return [
+            'class' => $class,
+            'style' => implode( ' ', $style_parts ),
+        ];
+    }
+}
+
 function madeit_navbar_css_variables() {
     $options = get_option('madeit_navbar_options', []);
 
@@ -2557,6 +2638,8 @@ if (defined('MADEIT_RECEIVE_REVIEWS') && MADEIT_RECEIVE_REVIEWS && defined('MADE
 }
 
 require get_parent_theme_file_path('/inc/call.php');
+
+require get_parent_theme_file_path('/inc/mail.php');
 
 require get_parent_theme_file_path('/inc/lock-content.php');
 
