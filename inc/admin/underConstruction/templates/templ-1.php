@@ -1,4 +1,3 @@
-
 <style>
 :root {
     --bg-color: <?php echo esc_attr(get_option('under_construction_background_color', '#006699')); ?>;
