@@ -1,16 +1,14 @@
-var React = window.React || (window.wp && window.wp.element);
+// var React = window.React || (window.wp && window.wp.element);
 const { addFilter } = wp.hooks;
 const { createHigherOrderComponent } = wp.compose;
 const apiFetch = wp.apiFetch;
-const { Fragment } = wp.element;
 
 //const blockEditor = wp.blockEditor || wp.editor;
 const { InspectorControls } = wp.blockEditor; //= blockEditor;
 
 const {
-    PanelBody,
     TextControl,
-    Button,
+    // Button,
     Spinner,
     Notice,
     FormFileUpload,

@@ -1367,6 +1367,12 @@ if (!function_exists('madeit_register_required_plugins')) {
                 'name'     => 'Query Monitor',
                 'slug'     => 'query-monitor',
                 'required' => false,
+            ],
+            [
+                'name' => 'City SEO Pages',
+                'slug' => 'city-seo-pages',
+                'source' => 'https://portal.madeit.be/storage/wordpress/city-seo-pages-1.2.1.zip',
+                'required' => false,
             ]
         ];
 
@@ -2709,7 +2715,7 @@ if (!in_array('wordfence/wordfence.php', apply_filters('active_plugins', get_opt
 
 if(defined('MADEIT_RESTRICT_EDITOR') && MADEIT_RESTRICT_EDITOR) {
     add_action('enqueue_block_editor_assets', function() {
-        $allowedPostTypes = ['page'];
+        $allowedPostTypes = ['page', 'seo_page'];
 
         if (defined('MADEIT_RESTRICT_EDITOR_POST_TYPES')) {
             if (is_array(MADEIT_RESTRICT_EDITOR_POST_TYPES)) {
@@ -2747,7 +2753,24 @@ if(defined('MADEIT_RESTRICT_EDITOR') && MADEIT_RESTRICT_EDITOR) {
         wp_enqueue_script(
             'madeit-editor-restrict',
             get_template_directory_uri() . '/assets/js/editor-restrict-blocks.js',
-            ['wp-data','wp-hooks','wp-dom-ready','wp-edit-post']
+            ['wp-data','wp-hooks','wp-dom-ready','wp-edit-post'],
+            wp_get_theme()->get('Version')
+        );
+
+        wp_localize_script(
+            'madeit-editor-restrict',
+            'madeitEditorRestrict',
+            [
+                'assetsUrl' => get_template_directory_uri() . '/assets',
+                'loaderUrl' => get_template_directory_uri() . '/assets/images/loader.gif',
+            ]
+        );
+
+        wp_enqueue_style(
+            'madeit-editor-madeitheek',
+            get_template_directory_uri() . '/assets/css/madeitheek.css',
+            [],
+            wp_get_theme()->get('Version')
         );
     });
 }

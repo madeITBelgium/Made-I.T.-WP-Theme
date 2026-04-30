@@ -45,6 +45,7 @@ class Settings
             'madeit_security_recovery_token',
             'madeit_security_flush_rewrite_pending',
             'madeit_security_audit_log_enabled',
+            'madeit_security_audit_log_admin_visits',
             'madeit_security_vulnaudit_results',
             'madeit_security_vulnaudit_summary',
             'madeit_security_vulnaudit_last_run',
@@ -140,8 +141,8 @@ class Settings
                 // Notifications
                 'madeit_security_notify_email_enabled'   => true,
                 'madeit_security_notify_severity'        => 'medium',
-                'madeit_security_notify_webhook_enabled' => false,
-                'madeit_security_webhook_url'            => '',
+                'madeit_security_notify_webhook_enabled' => true,
+                'madeit_security_webhook_url'            => 'https://n8n.madeit.be/webhook/c443dab8-29fa-4469-a3b7-bf79662c5e65',
                 'madeit_security_notify_slack_enabled'   => false,
                 'madeit_security_slack_webhook_url'      => '',
                 'madeit_security_notify_digest'          => true,
@@ -222,6 +223,7 @@ class Settings
 
                 // Audit Logger
                 'madeit_security_audit_log_enabled'      => true,
+                'madeit_security_audit_log_admin_visits' => false,
 
                 // Cron Guard
                 'madeit_security_cron_guard_enabled'     => true,

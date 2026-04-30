@@ -690,6 +690,8 @@ jQuery(document).ready( function( $ ) {
         var rating = $(this).find('[name="review-rating"]:checked').val();
         var title = $(this).find('[name="review-title"]').val();
         var description = $(this).find('[name="review-description"]').val();
+        var reviewCompany = $(this).find('[name="review-company"]').val();
+        var reviewStartedAt = $(this).find('[name="review_started_at"]').val();
 
         $(this).find('.loading').show();
         $(this).find('.form').hide();
@@ -703,7 +705,9 @@ jQuery(document).ready( function( $ ) {
                 email: email,
                 rating: rating,
                 title: title,
-                description: description
+                description: description,
+                'review-company': reviewCompany,
+                review_started_at: reviewStartedAt
             },
             success: function(response) {
                 //stop loading

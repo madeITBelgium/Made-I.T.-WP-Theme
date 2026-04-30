@@ -29,6 +29,10 @@ class LoginProtection {
     }
 
     public static function on_login_failed( string $username ): void {
+        self::register_failed_attempt( $username, 'credentials' );
+    }
+
+    public static function register_failed_attempt( string $username, string $source = 'credentials' ): int {
         global $wpdb;
         $ip = \MadeIT\Security\RequestLogger::get_real_ip();
 
@@ -61,6 +65,7 @@ class LoginProtection {
 
         // Calculate lockout
         $max = \MadeIT\Security\Settings::int( 'madeit_security_login_max_attempts', 5 );
+        $lock = 0;
         if ( $count >= $max ) {
             $durations = [
                 $max           => \MadeIT\Security\Settings::int( 'madeit_security_login_lockout_1', 300 ),
@@ -69,8 +74,11 @@ class LoginProtection {
             ];
             $lock = 300;
             foreach ( $durations as $threshold => $dur ) {
-                if ( $count >= $threshold ) $lock = $dur;
+                if ( $count >= $threshold ) {
+                    $lock = $dur;
+                }
             }
+
             $until = wp_date( 'Y-m-d H:i:s', time() + $lock );
             $wpdb->update(
                 $wpdb->prefix . 'madeit_security_login_attempts',
@@ -78,6 +86,12 @@ class LoginProtection {
                 [ 'ip' => $ip ],
                 [ '%s' ], [ '%s' ]
             );
+
+            // Proactive block list insertion once the lockout threshold is hit.
+            if ( class_exists( '\\MadeIT\\Security\\modules\\IPManager' ) ) {
+                $reason = sprintf( 'Too many failed login attempts (%d) via %s', $count, $source );
+                \MadeIT\Security\modules\IPManager::block_ip( $ip, $reason, $lock, 'login_bruteforce', 0 );
+            }
         }
 
         // Log security event
@@ -89,13 +103,15 @@ class LoginProtection {
                 'ip'          => $ip,
                 'url'         => wp_login_url(),
                 'method'      => 'POST',
-                'description' => sprintf( 'Failed login attempt #%d (user: %s)', $count, esc_html( $username ) ),
+                'description' => sprintf( 'Failed login attempt #%d (source: %s, user: %s)', $count, $source, esc_html( $username ) ),
                 'created_at'  => current_time( 'mysql' ),
             ],
             [ '%s','%s','%s','%s','%s','%s','%s' ]
         );
 
         // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
+        return $count;
     }
 
     public static function check_lockout( $user, $username, $password ) {

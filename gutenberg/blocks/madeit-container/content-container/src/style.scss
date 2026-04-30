@@ -268,12 +268,12 @@ $break-medium: 782px;
             // Flex-richting en max-breedte: niet voor single-kolom layouts.
             &:not(.rows-1) {
                 flex-direction: var(--madeit-flex-direction-desktop, row);
-                max-width:      var(--madeit-max-width-desktop, auto);
+                max-width:      var(--madeit-max-width-desktop, 100%);
             }
 
             // Single-kolom layout: max-breedte op het kind.
             &.rows-1 .wp-block-madeit-block-content-column:not([data-type="madeit/block-content-column"]) {
-                max-width: var(--madeit-max-width-desktop, auto);
+                max-width: var(--madeit-max-width-desktop, 100%);
             }
 
             // Kolomhoogte en uitlijning.

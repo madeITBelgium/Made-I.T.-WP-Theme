@@ -1,9 +1,12 @@
 // Use var so this script can be loaded multiple times without redeclare errors.
-var React = window.React || (window.wp && window.wp.element);
+// var React = window.React || (window.wp && window.wp.element);
 const { ToolbarButton, ToolbarGroup, Modal } = wp.components;
-
+// delectcontrol
+const { SelectControl, Notice, Spinner } = wp.components;
+// const { useState, useEffect, Fragment } = wp.element;
+// const { spinner }
+const apiFetch = wp.apiFetch;
 const { BlockControls } = wp.blockEditor;
-const { Fragment } = wp.element;
 
 const TARGET_BLOCK = 'core/button';
 

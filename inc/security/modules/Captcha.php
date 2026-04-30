@@ -304,6 +304,9 @@ JS;
         }
 
         if ( ! self::verify_request() ) {
+            if ( class_exists( '\\MadeIT\\Security\\modules\\LoginProtection' ) ) {
+                \MadeIT\Security\modules\LoginProtection::register_failed_attempt( $username, 'captcha' );
+            }
             self::log_failure( 'login', $username );
             return new \WP_Error(
                 'madeit_security_captcha_failed',

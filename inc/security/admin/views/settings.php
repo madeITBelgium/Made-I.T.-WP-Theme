@@ -165,6 +165,15 @@ function madeit_security_number( string $opt, string $label, string $desc, int $
 
     <!-- ── DATA MANAGEMENT ────────────────────────────────────────────────── -->
     <div class="madeit-security-panel">
+        <div class="madeit-security-panel__header"><h2 class="madeit-security-panel__title">Audit Logging</h2></div>
+        <div class="madeit-security-form-body">
+            <?php madeit_security_toggle( 'madeit_security_audit_log_enabled', 'Enable Audit Logging', 'Track admin and security-relevant actions in an immutable audit trail' ); ?>
+            <?php madeit_security_toggle( 'madeit_security_audit_log_admin_visits', 'Log Admin Page Visits', 'Optional: log wp-admin page visits by administrators (can generate many events)' ); ?>
+        </div>
+    </div>
+
+    <!-- ── DATA MANAGEMENT ────────────────────────────────────────────────── -->
+    <div class="madeit-security-panel">
         <div class="madeit-security-panel__header"><h2 class="madeit-security-panel__title">Data Management</h2></div>
         <div class="madeit-security-form-body">
             <?php madeit_security_toggle( 'madeit_security_delete_data_on_uninstall', 'Delete Data on Uninstall', 'When enabled, deleting the plugin will permanently remove all settings, visitor logs, blocked IPs, and database tables. Keep this OFF if you update by deleting and reinstalling.' ); ?>

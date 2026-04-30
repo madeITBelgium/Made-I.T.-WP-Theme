@@ -42,9 +42,15 @@
 
 .madeit-control .component-box-control__linked-button {
     position: absolute;
-    top: -32px;
+    top: -38px;
     right: 0;
     z-index: 2;
+}
+.madeit-control .component-box-control__reset-button {
+    display: none;
+}
+.madeit-control .components-grid > [data-wp-component="HStack"] {
+    margin-top: -20px;
 }
 
 .madeit-control-header .madeit-control-header__tools {

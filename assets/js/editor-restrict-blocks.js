@@ -83,53 +83,118 @@ wp.domReady(function () {
 
 
     //? Zorg dat we geen blokken kunnen toevoegen buiten de container
-   let isProcessing = false;
+    let isProcessing = false;
+    let isFixingOutsideBlocks = false;
 
     wp.data.subscribe(() => {
 
-        if (isProcessing) return;
+        if (window?.madeitIsRenderingBlockPreview) return;
+        if (isProcessing || isFixingOutsideBlocks) return;
 
-        const blocks = wp.data.select('core/block-editor').getBlocks();
+        const editorSelect = wp.data.select('core/block-editor');
+        const editorDispatch = wp.data.dispatch('core/block-editor');
 
-        const containerBlocks = [
+        // Root-level blocks die wél buiten de container mogen staan
+        const allowedOutsideRootBlocks = [
             'madeit/block-content',
             'madeit/block-content-column',
             'core/cover',
             'core/spacer'
         ];
 
-        const isInside = (clientId) => {
+        const rootBlocks = editorSelect.getBlocks();
+        const outsideRootBlocks = rootBlocks.filter((block) => !allowedOutsideRootBlocks.includes(block.name));
 
-            let current = wp.data.select('core/block-editor').getBlock(clientId);
+        // Als er root-level blocks buiten de container staan: zet ze veilig in een container.
+        if (outsideRootBlocks.length) {
+            isFixingOutsideBlocks = true;
 
-            while (current) {
-                if (containerBlocks.includes(current.name)) {
-                    return true;
-                }
-                current = current.parent
-                    ? wp.data.select('core/block-editor').getBlock(current.parent)
-                    : null;
+            if (!document.querySelector('.madeit-outside-block-warning')) {
+                const warning = document.createElement('div');
+                warning.classList.add('madeit-outside-block-warning');
+                warning.style = `
+                    position: fixed;
+                    top: 20px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background-color: #ffebe6;
+                    color: #c00;
+                    padding: 20px;
+                    border: 1px solid #c00;
+                    border-radius: 4px;
+                    z-index: 9999;
+                `;
+                warning.textContent = 'Er werden blokken gedetecteerd buiten de container. Deze werden automatisch verplaatst naar binnen de container om verlies van content te voorkomen. Als je deze melding blijft zien, neem dan contact op met support@madeit.be.';
+                document.body.appendChild(warning);
+                // close button
+                const closeBtn = document.createElement('button');
+                closeBtn.textContent = 'Sluiten';
+                closeBtn.style = `
+                    margin-left: 20px;
+                    padding: 5px 10px;
+                    background-color: transparent;
+                    border: none;
+                    color: rgb(204, 0, 0);
+                    border-radius: 4px;
+                    cursor: pointer;
+                    position: absolute;
+                    right: 5px;
+                    top: 5px;
+                `;
+                closeBtn.addEventListener('click', () => {
+                    if (warning.parentNode) {
+                        warning.parentNode.removeChild(warning);
+                    }
+                });
+                warning.appendChild(closeBtn);
             }
 
-            return false;
-        };
+            // Belangrijk: maak een NIEUWE container op de plaats waar blocks stonden.
+            // We willen niets “bijplakken” in een bestaande container.
+            const newRootBlocks = [];
+            let pendingOutsideGroup = [];
 
-        const invalidBlocks = blocks.filter(b =>
-            !isInside(b.clientId) &&
-            b.name !== 'madeit/block-content'
-        );
+            const flushPendingOutsideGroup = () => {
+                if (!pendingOutsideGroup.length) return;
 
-        if (!invalidBlocks.length) return;
+                // madeit/block-content laat enkel madeit/block-content-column toe als innerBlocks.
+                // Daarom wrappen we deze outside root blocks in één column.
+                const movedColumn = wp.blocks.createBlock(
+                    'madeit/block-content-column',
+                    { width: 12 },
+                    pendingOutsideGroup
+                );
 
-        isProcessing = true;
+                const containerBlock = wp.blocks.createBlock('madeit/block-content', {}, [movedColumn]);
+                newRootBlocks.push(containerBlock);
+                pendingOutsideGroup = [];
+            };
 
-        invalidBlocks.forEach(b => {
-            wp.data.dispatch('core/block-editor').removeBlock(b.clientId);
-        });
+            rootBlocks.forEach((block) => {
+                const isAllowedOutside = allowedOutsideRootBlocks.includes(block.name);
 
-        setTimeout(() => {
-            isProcessing = false;
-        }, 0);
+                if (isAllowedOutside) {
+                    // Sluit eerst een groep outside blocks af (als die er is)
+                    flushPendingOutsideGroup();
+                    newRootBlocks.push(block);
+                } else {
+                    // Deel van outside blocks group (root-level)
+                    pendingOutsideGroup.push(block);
+                }
+            });
+
+            // flush eventuele groep op het einde
+            flushPendingOutsideGroup();
+
+            editorDispatch.resetBlocks(newRootBlocks);
+
+            setTimeout(() => {
+                isFixingOutsideBlocks = false;
+            }, 0);
+
+            // Stop hier zodat er niks verwijderd wordt in dezelfde subscribe-run.
+            return;
+        }
 
     });
 
@@ -251,6 +316,12 @@ wp.domReady(function () {
                 color: '#fff',
             };
 
+            // Tijdens preview-cards (BlockPreview) willen we geen builder UI injecteren.
+            // Let op: dit mag NIET de builder in de echte editor uitschakelen.
+            if (window?.madeitIsRenderingBlockPreview) {
+                return original;
+            }
+
             if (!isLast || !isRootLevel || isInQuery) {
                 return original;
             }
@@ -272,11 +343,11 @@ wp.domReady(function () {
                     }, '+ Container'),
 
                     createElement('button', {
-                        className: 'madeit-template-btn d-none',
+                        className: 'madeit-template-btn',
                         style: btnStyles,
                         onClick: () => {
-                            // create a modal with the templates
                             const modal = document.createElement('div');
+                            modal.classList.add('madeitheek-modal');
                             modal.style = `
                                             position: fixed;
                                             top: 0;
@@ -291,30 +362,337 @@ wp.domReady(function () {
                                         `;
 
                             const templateContainer = document.createElement('div');
-                            templateContainer.style = `
-                                            width: 80%;
-                                            max-width: 600px;
-                                            background-color: #fff;
-                                            padding: 20px;
-                                            border-radius: 4px;
-                                            text-align: center;
-                                        `;
-                            templateContainer.innerText = 'Templates coming soon...';
+                            templateContainer.classList.add('madeitheek-container');
 
+                            const mountedPreviewNodes = [];
+
+                            const cleanup = () => {
+                                if (wp?.element?.unmountComponentAtNode) {
+                                    mountedPreviewNodes.forEach((node) => {
+                                        try {
+                                            wp.element.unmountComponentAtNode(node);
+                                        } catch (e) { }
+                                    });
+                                }
+                            };
+
+                            const removeModal = () => {
+                                cleanup();
+                                if (modal?.parentNode) {
+                                    document.body.removeChild(modal);
+                                }
+                            };
+
+                            // Header: Madeitheek + tabs + sluiten
+                            const header = document.createElement('div');
+                            header.classList.add('madeitheek-header');
+                            header.style = 'display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom: 12px;';
+
+                            const headerTitle = document.createElement('div');
+                            headerTitle.textContent = 'Madeitheek';
+                            headerTitle.style = 'font-size: 18px; font-weight: 600;';
+
+                            const tabs = document.createElement('div');
+                            tabs.classList.add('madeitheek-tabs');
+                            tabs.style = 'display:flex; align-items:center; gap:8px; flex-wrap:wrap;';
+
+                            const closeBtn = document.createElement('button');
+                            closeBtn.type = 'button';
+                            closeBtn.textContent = 'Sluiten';
+                            closeBtn.style = 'padding: 8px 12px; cursor: pointer; border: 1px solid #c3c3c3; background: #fff; border-radius: 4px;';
+                            closeBtn.addEventListener('click', () => removeModal());
+
+                            header.appendChild(headerTitle);
+                            header.appendChild(tabs);
+                            header.appendChild(closeBtn);
+                            const status = document.createElement('div');
+                            status.classList.add('madeitheek-status');
+
+                            const loaderImg = document.createElement('img');
+                            loaderImg.classList.add('madeitheek-loader');
+                            loaderImg.alt = '';
+                            loaderImg.setAttribute('aria-hidden', 'true');
+                            if (window?.madeitEditorRestrict?.loaderUrl) {
+                                loaderImg.src = window.madeitEditorRestrict.loaderUrl;
+                            }
+
+                            const statusText = document.createElement('span');
+                            statusText.classList.add('madeitheek-status-text');
+
+                            status.appendChild(loaderImg);
+                            status.appendChild(statusText);
+
+                            const setStatus = (text, isLoading) => {
+                                statusText.textContent = text || '';
+                                status.classList.toggle('is-loading', !!isLoading);
+                            };
+
+                            setStatus('Laden…', true);
+
+                            const list = document.createElement('div');
+                            list.classList.add('madeitheek-list');
+                            list.style = 'columns: 3;';
+
+                            let activeTab = 'blocks';
+                            const tabButtons = {};
+
+                            const getBlockPreviewComponent = () => {
+                                return wp?.blockEditor?.BlockPreview || wp?.blockEditor?.__experimentalBlockPreview || null;
+                            };
+
+                            const renderBlockPreview = (mountNode, blocks, viewportWidth) => {
+                                const BlockPreview = getBlockPreviewComponent();
+                                if (!BlockPreview || !wp?.element?.render) {
+                                    return;
+                                }
+
+                                try {
+                                    window.madeitIsRenderingBlockPreview = true;
+                                    wp.element.render(
+                                        wp.element.createElement(BlockPreview, {
+                                            blocks,
+                                            viewportWidth: viewportWidth || 1200,
+                                        }),
+                                        mountNode
+                                    );
+                                    mountedPreviewNodes.push(mountNode);
+                                } catch (e) { }
+                                finally {
+                                    window.madeitIsRenderingBlockPreview = false;
+                                }
+                            };
+
+                            const createItemCard = (label, content, viewportWidth) => {
+                                const btn = document.createElement('button');
+                                btn.type = 'button';
+                                btn.classList.add('madeit-template-item');
+
+                                const labelEl = document.createElement('div');
+                                labelEl.textContent = label;
+                                labelEl.classList.add('madeitheek-item-label');
+                                labelEl.style = 'font-weight: 600;';
+
+                                const previewMount = document.createElement('div');
+                                previewMount.classList.add('madeitheek-item-preview');
+                                previewMount.style = 'border: 1px solid #dcdcde; border-radius: 4px; padding: 8px; background: #f6f7f7; overflow: hidden;';
+
+                                btn.appendChild(labelEl);
+
+                                if (content && typeof content === 'string' && content.trim()) {
+                                    btn.appendChild(previewMount);
+
+                                    try {
+                                        const blocks = wp?.blocks?.parse ? wp.blocks.parse(content) : [];
+                                        if (Array.isArray(blocks) && blocks.length) {
+                                            renderBlockPreview(previewMount, blocks, viewportWidth);
+                                        } else {
+                                            previewMount.textContent = '(Geen preview beschikbaar)';
+                                            previewMount.style = previewMount.style + ' color: #50575e;';
+                                        }
+                                    } catch (e) {
+                                        previewMount.textContent = '(Geen preview beschikbaar)';
+                                        previewMount.style = previewMount.style + ' color: #50575e;';
+                                    }
+                                } else {
+                                    const noContent = document.createElement('div');
+                                    noContent.textContent = '(Geen content)';
+                                    noContent.style = 'color: #50575e;';
+                                    btn.appendChild(noContent);
+                                }
+
+                                btn.addEventListener('click', () => {
+                                    insertAndClose(content);
+                                });
+
+                                return btn;
+                            };
+
+                            const insertAndClose = (content) => {
+                                if (!content || typeof content !== 'string' || !content.trim()) {
+                                    return;
+                                }
+                                wp.data.dispatch('core/block-editor').insertBlocks(
+                                    wp.blocks.parse(content)
+                                );
+                                removeModal();
+                            };
+
+                            const getActiveThemeStylesheet = async () => {
+                                try {
+                                    const coreDispatch = wp.data?.dispatch?.('core');
+                                    if (coreDispatch?.getCurrentTheme) {
+                                        await coreDispatch.getCurrentTheme();
+                                    }
+                                    const current = wp.data?.select?.('core')?.getCurrentTheme?.();
+                                    if (current?.stylesheet) {
+                                        return current.stylesheet;
+                                    }
+                                } catch (e) { }
+
+                                try {
+                                    const themes = await wp.apiFetch({ path: '/wp/v2/themes?status=active&per_page=1' });
+                                    if (Array.isArray(themes) && themes[0]?.stylesheet) {
+                                        return themes[0].stylesheet;
+                                    }
+                                } catch (e) { }
+
+                                return null;
+                            };
+
+                            const render = async () => {
+                                setStatus('Laden…', true);
+                                cleanup();
+                                mountedPreviewNodes.length = 0;
+                                list.innerHTML = '';
+
+                                const stylesheet = await getActiveThemeStylesheet();
+
+                                const data = {
+                                    themePatterns: [],
+                                    pages: [],
+                                    templates: [],
+                                    userPatterns: [],
+                                };
+
+                                try {
+                                    const [templates, patterns, syncedPatterns] = await Promise.all([
+                                        wp.apiFetch({ path: '/wp/v2/templates?per_page=100&context=edit' }).catch(() => []),
+                                        // block-patterns endpoint ondersteunt geen per_page/context params.
+                                        wp.apiFetch({ path: '/wp/v2/block-patterns/patterns' }).catch(() => []),
+                                        wp.apiFetch({ path: '/wp/v2/blocks?per_page=100&context=edit' }).catch(() => []),
+                                    ]);
+
+                                    // Templates (wp_template)
+                                    const templatesFiltered = Array.isArray(templates)
+                                        ? templates.filter(t => {
+                                            if (!stylesheet) return true;
+                                            return t?.theme === stylesheet;
+                                        })
+                                        : [];
+
+                                    data.templates = templatesFiltered.map(t => ({
+                                        label: `[Template] ${t?.title?.rendered || t?.title?.raw || t?.slug || t?.id}`,
+                                        content: t?.content?.raw || t?.content?.rendered || t?.content,
+                                    }));
+
+                                    // Theme patterns (uit child-theme /patterns)
+                                    const themePatterns = Array.isArray(patterns)
+                                        ? patterns.filter(p => {
+                                            if (!stylesheet) {
+                                                // Als we de actieve stylesheet niet kennen: toon enkel patterns met een "theme-like" prefix (slug/...).
+                                                return typeof p?.name === 'string' && p.name.includes('/');
+                                            }
+                                            // In deze codebase komen theme patterns soms zonder `source: 'theme'` terug.
+                                            return typeof p?.name === 'string' && p.name.startsWith(stylesheet + '/');
+                                        })
+                                        : [];
+
+                                    data.themePatterns = themePatterns.map(p => ({
+                                        label: `${p?.title || p?.name}`,
+                                        content: p?.content,
+                                        viewportWidth: p?.viewport_width,
+                                        categories: p?.categories,
+                                        postTypes: p?.post_types,
+                                    }));
+
+                                    // User patterns (synced patterns / reusable blocks)
+                                    const syncedFiltered = Array.isArray(syncedPatterns)
+                                        ? syncedPatterns.filter(b => {
+                                            // endpoint levert alleen wp_block items; we tonen ze als “user patterns”
+                                            // content/raw is enkel beschikbaar in edit context
+                                            return !!(b?.content?.raw || b?.content) && (b?.status !== 'trash');
+                                        })
+                                        : [];
+
+                                    data.userPatterns = syncedFiltered.map(b => ({
+                                        label: `${b?.title?.raw || b?.slug || b?.id}`,
+                                        content: b?.content?.raw || b?.content,
+                                    }));
+
+                                    // Vooraf ingestelde pagina's: neem enkel patterns die expliciet als "page" bedoeld zijn.
+                                    // Dit voorkomt dat we alle bestaande pagina's van de website tonen.
+                                    const presetPages = data.themePatterns.filter((p) => {
+                                        const categories = Array.isArray(p.categories) ? p.categories : [];
+                                        const postTypes = Array.isArray(p.postTypes) ? p.postTypes : [];
+                                        return categories.includes('pages') || categories.includes('page') || postTypes.includes('page');
+                                    });
+                                    data.pages = presetPages.map(p => ({
+                                        label: p.label,
+                                        content: p.content,
+                                        viewportWidth: p.viewportWidth,
+                                    }));
+
+                                    const renderActiveTab = () => {
+                                        cleanup();
+                                        mountedPreviewNodes.length = 0;
+                                        list.innerHTML = '';
+
+                                        let items = [];
+                                        if (activeTab === 'blocks') {
+                                            items = data.themePatterns;
+                                        } else if (activeTab === 'pages') {
+                                            items = data.pages;
+                                        } else if (activeTab === 'templates') {
+                                            items = [...data.templates, ...data.userPatterns];
+                                        }
+
+                                        items.forEach(item => {
+                                            list.appendChild(createItemCard(item.label, item.content, item.viewportWidth));
+                                        });
+
+                                        if (!items.length) {
+                                            setStatus('Geen items gevonden.', false);
+                                        } else {
+                                            setStatus('', false);
+                                        }
+                                    };
+
+                                    const setTab = (tab) => {
+                                        activeTab = tab;
+                                        Object.keys(tabButtons).forEach((key) => {
+                                            tabButtons[key].classList.toggle('is-active', key === tab);
+                                        });
+                                        renderActiveTab();
+                                    };
+
+                                    const makeTabButton = (key, label) => {
+                                        const b = document.createElement('button');
+                                        b.type = 'button';
+                                        b.textContent = label;
+                                        b.classList.add('madeitheek-tab');
+                                        b.addEventListener('click', () => setTab(key));
+                                        tabButtons[key] = b;
+                                        return b;
+                                    };
+
+                                    tabs.appendChild(makeTabButton('blocks', 'Blokken'));
+                                    tabs.appendChild(makeTabButton('pages', "Pagina's"));
+                                    tabs.appendChild(makeTabButton('templates', 'Templates'));
+
+                                    // init
+                                    setTab(activeTab);
+
+                                    if (!data.templates.length && !data.themePatterns.length && !data.userPatterns.length && !data.pages.length) {
+                                        setStatus('Geen items gevonden (of onvoldoende rechten).', false);
+                                    }
+                                } catch (error) {
+                                    setStatus('Kon templates/patterns niet laden.', false);
+                                }
+                            };
+
+                            templateContainer.appendChild(header);
+                            templateContainer.appendChild(status);
+                            templateContainer.appendChild(list);
                             modal.appendChild(templateContainer);
                             document.body.appendChild(modal);
 
-                            // close the modal when clicking outside the container
-                            modal.addEventListener('click', (e) => {
-                                if (e.target === modal) {
-                                    document.body.removeChild(modal);
-
-                                } else {
-                                    // insert template blocks here
-                                    wp.data.dispatch('core/block-editor').insertBlocks();
-                                    document.body.removeChild(modal);
-                                }
+                            // Close when clicking outside.
+                            modal.addEventListener('click', () => {
+                                removeModal();
                             });
+                            templateContainer.addEventListener('click', (e) => e.stopPropagation());
+
+                            render();
 
                         }
                     }, '📁 Template')
