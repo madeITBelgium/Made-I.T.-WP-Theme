@@ -190,7 +190,7 @@ wp.domReady(function () {
 
             setTimeout(() => {
                 isFixingOutsideBlocks = false;
-            }, 0);
+            }, 1);
 
             // Stop hier zodat er niks verwijderd wordt in dezelfde subscribe-run.
             return;
@@ -517,7 +517,7 @@ wp.domReady(function () {
                                 removeModal();
                             };
 
-                            const getActiveThemeStylesheet = async () => {
+                            const getActiveThemeInfo = async () => {
                                 try {
                                     const coreDispatch = wp.data?.dispatch?.('core');
                                     if (coreDispatch?.getCurrentTheme) {
@@ -525,18 +525,27 @@ wp.domReady(function () {
                                     }
                                     const current = wp.data?.select?.('core')?.getCurrentTheme?.();
                                     if (current?.stylesheet) {
-                                        return current.stylesheet;
+                                        return {
+                                            stylesheet: current.stylesheet,
+                                            template: current.template || null,
+                                        };
                                     }
                                 } catch (e) { }
 
                                 try {
                                     const themes = await wp.apiFetch({ path: '/wp/v2/themes?status=active&per_page=1' });
                                     if (Array.isArray(themes) && themes[0]?.stylesheet) {
-                                        return themes[0].stylesheet;
+                                        return {
+                                            stylesheet: themes[0].stylesheet,
+                                            template: themes[0].template || null,
+                                        };
                                     }
                                 } catch (e) { }
 
-                                return null;
+                                return {
+                                    stylesheet: null,
+                                    template: null,
+                                };
                             };
 
                             const render = async () => {
@@ -545,7 +554,7 @@ wp.domReady(function () {
                                 mountedPreviewNodes.length = 0;
                                 list.innerHTML = '';
 
-                                const stylesheet = await getActiveThemeStylesheet();
+                                const { stylesheet, template } = await getActiveThemeInfo();
 
                                 const data = {
                                     themePatterns: [],
@@ -576,14 +585,25 @@ wp.domReady(function () {
                                     }));
 
                                     // Theme patterns (uit child-theme /patterns)
+                                    const activeThemeSlugs = [stylesheet, template].filter(Boolean);
+
                                     const themePatterns = Array.isArray(patterns)
                                         ? patterns.filter(p => {
-                                            if (!stylesheet) {
-                                                // Als we de actieve stylesheet niet kennen: toon enkel patterns met een "theme-like" prefix (slug/...).
-                                                return typeof p?.name === 'string' && p.name.includes('/');
+                                            if (typeof p?.name !== 'string') {
+                                                return false;
                                             }
+
+                                            if (p?.source === 'theme') {
+                                                return true;
+                                            }
+
+                                            if (!activeThemeSlugs.length) {
+                                                // Als we de actieve stylesheet niet kennen: toon enkel patterns met een "theme-like" prefix (slug/...).
+                                                return p.name.includes('/');
+                                            }
+
                                             // In deze codebase komen theme patterns soms zonder `source: 'theme'` terug.
-                                            return typeof p?.name === 'string' && p.name.startsWith(stylesheet + '/');
+                                            return activeThemeSlugs.some((slug) => p.name.startsWith(slug + '/'));
                                         })
                                         : [];
 
@@ -612,8 +632,12 @@ wp.domReady(function () {
                                     // Vooraf ingestelde pagina's: neem enkel patterns die expliciet als "page" bedoeld zijn.
                                     // Dit voorkomt dat we alle bestaande pagina's van de website tonen.
                                     const presetPages = data.themePatterns.filter((p) => {
-                                        const categories = Array.isArray(p.categories) ? p.categories : [];
-                                        const postTypes = Array.isArray(p.postTypes) ? p.postTypes : [];
+                                        const categories = Array.isArray(p.categories)
+                                            ? p.categories.map((category) => String(category).toLowerCase())
+                                            : [];
+                                        const postTypes = Array.isArray(p.postTypes)
+                                            ? p.postTypes.map((postType) => String(postType).toLowerCase())
+                                            : [];
                                         return categories.includes('pages') || categories.includes('page') || postTypes.includes('page');
                                     });
                                     data.pages = presetPages.map(p => ({

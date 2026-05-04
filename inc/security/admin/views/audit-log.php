@@ -79,7 +79,7 @@
                         <tr><td colspan="6" class="madeit-security-empty-cell">No audit events yet.</td></tr>
                     <?php else : foreach ( $events as $e ) : ?>
                         <tr>
-                            <td><?php echo esc_html( wp_date( 'M j H:i:s', strtotime( $e->created_at ) ) ); ?></td>
+                            <td><?php echo esc_html( wp_date( 'd/m/Y H:i:s', strtotime( $e->created_at ) ) ); ?></td>
                             <td><?php echo $e->username ? esc_html( $e->username ) : '<em>System</em>'; ?></td>
                             <td><code><?php echo esc_html( $e->action ); ?></code></td>
                             <td><?php echo esc_html( $e->object_type . ' ' . $e->object_id ); ?></td>

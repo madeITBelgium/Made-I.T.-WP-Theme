@@ -693,6 +693,10 @@ export default function Edit({ attributes, setAttributes, clientId }) {
                         multiple
                         accept="image/*"
                         allowedTypes={['image']}
+
+                        // add via url link
+                        mediaURLInput={true}
+
                     />
                 ) : (
                     <div className={`swiper-container m-slider-preview device-${device}`} style={{ display: 'flex', height: height, minHeight: effectiveMinHeight,  }}>

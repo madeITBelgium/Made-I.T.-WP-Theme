@@ -115,7 +115,7 @@ class Settings
     {
         if (self::$defaults === null) {
             self::$defaults = [
-                'madeit_security_log_enabled'            => false,
+                'madeit_security_log_enabled'            => true,
                 'madeit_security_log_retention_days'     => 30,
                 'madeit_security_log_exclude_assets'     => true,
                 'madeit_security_log_exclude_bots'       => false,

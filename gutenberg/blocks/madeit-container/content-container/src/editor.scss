@@ -341,7 +341,7 @@ $default-block-margin:  28px;
         .madeit-container-row[data-madeit-dir-mobile="column-reverse"] {
             > [data-type="madeit/block-content-column"] {
                 width: 100% !important;
-                flex: 0 0 100% !important;
+                flex: 0 0 auto !important;
                 max-width: 100% !important;
             }
         }
@@ -457,27 +457,31 @@ $default-block-margin:  28px;
 
         // Tablet preview: gebruik de tablet max-breedte var.
         .is-root-container.is-tablet-preview {
-            [data-madeit-dir-tablet="row"] [data-type="madeit/block-content-column"].is-width-#{$i},
-            [data-madeit-dir-tablet="row-reverse"] [data-type="madeit/block-content-column"].is-width-#{$i} {
-                max-width: calc(var(--madeit-max-width-tablet, var(--madeit-max-width-desktop, 100%)) * #{$i} / 12) !important;
+            [data-madeit-dir="row"] [data-type="madeit/block-content-column"].is-width-#{$i},
+            [data-madeit-dir="row-reverse"] [data-type="madeit/block-content-column"].is-width-#{$i} {
+                // max-width: calc(var(--madeit-max-width-tablet, var(--madeit-max-width-desktop, 100%)) * #{$i} / 12) !important;
+                max-width: 100% !important; // col-12 is still avaible
             }
 
-            [data-madeit-dir-tablet="column"] [data-type="madeit/block-content-column"].is-width-#{$i},
-            [data-madeit-dir-tablet="column-reverse"] [data-type="madeit/block-content-column"].is-width-#{$i} {
-                max-width: var(--madeit-max-width-tablet, var(--madeit-max-width-desktop, 100%)) !important;
+            [data-madeit-dir="column"] [data-type="madeit/block-content-column"].is-width-#{$i},
+            [data-madeit-dir="column-reverse"] [data-type="madeit/block-content-column"].is-width-#{$i} {
+                // max-width: var(--madeit-max-width-tablet, var(--madeit-max-width-desktop, 100%)) !important;
+                max-width: 100% !important; // col-12 is still avaible
             }
         }
 
         // Mobiel preview: gebruik de mobile max-breedte var.
         .is-root-container.is-mobile-preview {
-            [data-madeit-dir-mobile="row"] [data-type="madeit/block-content-column"].is-width-#{$i},
-            [data-madeit-dir-mobile="row-reverse"] [data-type="madeit/block-content-column"].is-width-#{$i} {
-                max-width: calc(var(--madeit-max-width-mobile, var(--madeit-max-width-tablet, var(--madeit-max-width-desktop, 100%))) * #{$i} / 12) !important;
+            [data-madeit-dir="row"] [data-type="madeit/block-content-column"].is-width-#{$i},
+            [data-madeit-dir="row-reverse"] [data-type="madeit/block-content-column"].is-width-#{$i} {
+                // max-width: calc(var(--madeit-max-width-mobile, var(--madeit-max-width-tablet, var(--madeit-max-width-desktop, 100%))) * #{$i} / 12) !important;
+                max-width: 100% !important; // col-12 is still avaible
             }
 
-            [data-madeit-dir-mobile="column"] [data-type="madeit/block-content-column"].is-width-#{$i},
-            [data-madeit-dir-mobile="column-reverse"] [data-type="madeit/block-content-column"].is-width-#{$i} {
-                max-width: var(--madeit-max-width-mobile, var(--madeit-max-width-tablet, var(--madeit-max-width-desktop, 100%))) !important;
+            [data-madeit-dir="column"] [data-type="madeit/block-content-column"].is-width-#{$i},
+            [data-madeit-dir="column-reverse"] [data-type="madeit/block-content-column"].is-width-#{$i} {
+                // max-width: var(--madeit-max-width-mobile, var(--madeit-max-width-tablet, var(--madeit-max-width-desktop, 100%))) !important;
+                max-width: 100% !important; // col-12 is still avaible
             }
         }
     }

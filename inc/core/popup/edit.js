@@ -2,10 +2,10 @@
 // var React = window.React || (window.wp && window.wp.element);
 const { ToolbarButton, ToolbarGroup, Modal } = wp.components;
 // delectcontrol
-const { SelectControl, Notice, Spinner } = wp.components;
+const { SelectControl } = wp.components;
 // const { useState, useEffect, Fragment } = wp.element;
 // const { spinner }
-const apiFetch = wp.apiFetch;
+// const apiFetch = wp.apiFetch;
 const { BlockControls } = wp.blockEditor;
 
 const TARGET_BLOCK = 'core/button';

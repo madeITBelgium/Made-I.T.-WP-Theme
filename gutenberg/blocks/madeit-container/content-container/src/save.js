@@ -198,9 +198,18 @@ function detectLegacyFlags( attributes ) {
  * Berekent de genormaliseerde `size` op basis van attributen en legacy markup.
  *
  * Mogelijke waarden: 'container' | 'container-fluid' | 'container-content-boxed'
+ *
+ * LEGACY-CORRECTIE
+ * ────────────────
+ * De `wrapperClassName` is een source-attribuut dat Gutenberg vult vanuit de
+ * opgeslagen HTML. Als de gebruiker de size heeft aangepast (madeitHasUserEdits)
+ * of als er een expliciet `size` attribuut is, vertrouwen we daarop en passen
+ * we de legacy-correctie NIET toe. Anders zou een block dat ooit als `container`
+ * was opgeslagen maar daarna gewijzigd naar `container-fluid`, toch terug worden
+ * geforceerd naar `container` door de oude markup in `wrapperClassName`.
  */
 function resolveSize( attributes, legacy ) {
-    const { size } = attributes;
+    const { size, madeitHasUserEdits } = attributes;
     const { wrapperHasContainer, wrapperHasContainerFluid } = legacy;
 
     const hasExplicitSize = typeof size === 'string' && size.trim().length > 0;
@@ -211,12 +220,16 @@ function resolveSize( attributes, legacy ) {
             ? size.trim()
             : undefined;
 
-    // Legacy-correctie: pas de grootte aan op basis van de opgeslagen markup.
-    if ( resolved === 'container-content-boxed' ) {
-        if ( wrapperHasContainer && ! wrapperHasContainerFluid ) resolved = 'container';
-    } else {
-        if ( wrapperHasContainerFluid && ! wrapperHasContainer ) resolved = 'container-fluid';
-        else if ( wrapperHasContainer && ! wrapperHasContainerFluid ) resolved = 'container';
+    // Legacy-correctie: alleen toepassen als de gebruiker de size NIET expliciet
+    // heeft aangepast. Als madeitHasUserEdits gezet is, vertrouwen we volledig
+    // op het `size` attribuut en negeren we de wrapperClassName.
+    if ( ! madeitHasUserEdits ) {
+        if ( resolved === 'container-content-boxed' ) {
+            if ( wrapperHasContainer && ! wrapperHasContainerFluid ) resolved = 'container';
+        } else {
+            if ( wrapperHasContainerFluid && ! wrapperHasContainer ) resolved = 'container-fluid';
+            else if ( wrapperHasContainer && ! wrapperHasContainerFluid ) resolved = 'container';
+        }
     }
 
     return resolved || 'container'; // fallback
@@ -861,11 +874,22 @@ export default function save( props ) {
     const childClass    = buildChildClasses( attributes, defaultSize, contentWidthNormalized, colorClasses, applyBgToInner );
 
     // ── Block props (Gutenberg wrapper) ────────────────────────────────────
+    //
+    // BELANGRIJK: useBlockProps.save() merget de meegegeven className met de
+    // opgeslagen className uit de database. Die opgeslagen className kan nog
+    // oude klassen bevatten (bv. `container` terwijl de block nu `container-fluid`
+    // is). Daarom overschrijven we blockProps.className expliciet na de call
+    // zodat we volledige controle hebben over de output.
     const hasStyleProps = Object.keys( wrapperStyle ).length > 0;
     const blockProps    = useBlockProps.save( {
         className: wrapperClass,
         style: hasStyleProps ? wrapperStyle : undefined,
     } );
+
+    // Overschrijf de className volledig — Gutenberg heeft haar eigen className
+    // al gemergd, maar wij willen uitsluitend onze zorgvuldig opgebouwde
+    // wrapperClass gebruiken.
+    blockProps.className = wrapperClass;
 
     // ── HTML-tag ───────────────────────────────────────────────────────────
     const HtmlTag = ALLOWED_HTML_TAGS.includes( attributes.htmlTag ) ? attributes.htmlTag : 'div';
@@ -899,6 +923,7 @@ export default function save( props ) {
 
     // VARIANT A: container-content-boxed
     if ( defaultSize === 'container-content-boxed' ) {
+        console.log('Applying container-content-boxed markup with child class:', childClass );
         return (
             <HtmlTag { ...blockProps }>
                 <div { ...outerRowProps }>
@@ -930,6 +955,7 @@ export default function save( props ) {
                 ? attributes.boxedInnerRowClassName.trim()
                 : innerRowProps.className;
 
+        console.log('Applying legacy boxed inner row wrapper with class:', innerRowClass );
         return (
             <HtmlTag { ...blockProps }>
                 <div { ...outerRowProps }>
@@ -949,6 +975,7 @@ export default function save( props ) {
 
     // VARIANT C: legacy direct row (geen inner container)
     if ( legacy.hasDirectRowWrapper ) {
+        console.log('Applying legacy direct row wrapper with class:', outerRowProps.className );
         return (
             <HtmlTag { ...blockProps }>
                 <div { ...outerRowProps }>
@@ -962,6 +989,7 @@ export default function save( props ) {
 
     // VARIANT D: inner background wrapper (achtergrond op inner element)
     if ( applyBgToInner ) {
+        console.log('Applying inner background wrapper with class:', childClass );
         return (
             <HtmlTag { ...blockProps }>
                 <div className={ childClass } style={ childStyle }>
@@ -982,6 +1010,7 @@ export default function save( props ) {
         contentWidthNormalized !== outerSizeNormalized;
 
     if ( shouldWrapContent ) {
+        console.log('Applying content-width wrapper with class:', contentWidthNormalized );
         return (
             <HtmlTag { ...blockProps }>
                 <div className={ classnames( {
@@ -998,6 +1027,7 @@ export default function save( props ) {
         );
     }
 
+    console.log('Applying standard markup with class:', outerRowProps.className );
     return (
         <HtmlTag { ...blockProps }>
             <div { ...outerRowProps }>

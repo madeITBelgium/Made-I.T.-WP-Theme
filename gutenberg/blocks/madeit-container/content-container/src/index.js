@@ -175,16 +175,24 @@ registerBlockType( metadata.name, {
                 const isLegacyDefaultContainer =
                     wrapperHasContainer && ! wrapperHasContainerFluid;
 
-                if (
+                // Bepaal de correcte size op basis van de opgeslagen markup.
+                // Na migratie zetten we madeitHasUserEdits zodat resolveSize()
+                // in save.js het size-attribuut vertrouwt en wrapperClassName
+                // niet meer als override gebruikt.
+                const correctedSize =
                     ( typeof attributes?.size === 'string' &&
                       attributes.size.length > 0 &&
-                      attributes.size !== 'container-content-boxed' ) ||
-                    ! isLegacyDefaultContainer
-                ) {
-                    return attributes;
-                }
+                      attributes.size !== 'container-content-boxed' )
+                        ? attributes.size
+                        : isLegacyDefaultContainer
+                            ? 'container'
+                            : attributes.size;
 
-                return { ...attributes, size: 'container' };
+                return {
+                    ...attributes,
+                    size: correctedSize,
+                    madeitHasUserEdits: true,
+                };
             },
         },
 
@@ -192,14 +200,18 @@ registerBlockType( metadata.name, {
         {
             attributes: metadata.attributes,
             save: saveV2,
-            migrate: normalizeSpacingAttributes,
+            migrate( attributes ) {
+                return { ...normalizeSpacingAttributes( attributes ), madeitHasUserEdits: true };
+            },
         },
 
         // ── V3: Spacing als directe inline stijlen (2026-04-08) ───────────────
         {
             attributes: metadata.attributes,
             save: saveV3,
-            migrate: normalizeSpacingAttributes,
+            migrate( attributes ) {
+                return { ...normalizeSpacingAttributes( attributes ), madeitHasUserEdits: true };
+            },
         },
 
         // ── V4: Zonder default CSS vars (2026-03-26) ──────────────────────────
@@ -217,8 +229,10 @@ registerBlockType( metadata.name, {
                     typeof attributes?.flexWrap            === 'string'
                 );
             },
-            save:    saveV4,
-            migrate: ( attributes ) => attributes,
+            save: saveV4,
+            migrate( attributes ) {
+                return { ...attributes, madeitHasUserEdits: true };
+            },
         },
 
         // ── V5: Wrapper padding zonder whitespace tekst nodes ─────────────────
@@ -330,6 +344,15 @@ registerBlockType( metadata.name, {
                         ? value + 'px'
                         : undefined;
 
+                // Leid de correcte size af uit de opgeslagen markup zodat
+                // resolveSize() in save.js het size-attribuut kan vertrouwen.
+                const wrapperClassName = typeof attributes?.wrapperClassName === 'string'
+                    ? attributes.wrapperClassName : '';
+                const wrapperTokens = wrapperClassName.trim().split( /\s+/ );
+                const wrapperHasContainerFluid = wrapperTokens.includes( 'container-fluid' );
+                const migratedSize = wrapperHasContainerFluid ? 'container-fluid'
+                    : ( attributes.size || 'container' );
+
                 return {
                     containerPadding: {
                         top:    toPx( attributes.containerPaddingTop ),
@@ -355,10 +378,11 @@ registerBlockType( metadata.name, {
                         left:   toPx( attributes.rowMarginLeft ),
                         right:  toPx( attributes.rowMarginRight ),
                     },
-                    size:                           attributes.size,
+                    size:                           migratedSize,
                     verticalAlignment:              attributes.verticalAlignment,
                     containerBackgroundColor:       attributes.containerBackgroundColor,
                     customContainerBackgroundColor: attributes.customContainerBackgroundColor,
+                    madeitHasUserEdits:             true,
                 };
             },
         },

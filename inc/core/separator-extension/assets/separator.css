@@ -1,0 +1,56 @@
+.wp-block-separator {
+	width: var(--separator-width, 100%);
+	border-top-width: var(--separator-thickness, 1px);
+	border-top-style: var(--separator-style, solid);
+}
+
+.wp-block-separator.is-aligned-left {
+	margin-left: 0;
+	margin-right: auto;
+}
+
+.wp-block-separator.is-aligned-center {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.wp-block-separator.is-aligned-right {
+	margin-left: auto;
+	margin-right: 0;
+}
+
+/* Icon version */
+.wp-block-separator-wrapper {
+	display: flex;
+	align-items: center;
+	width: var(--separator-width, 100%);
+}
+
+.wp-block-separator-wrapper .separator-line {
+	flex: 1;
+	border-top: var(--separator-thickness, 1px) var(--separator-style, solid) currentColor;
+}
+
+.wp-block-separator-wrapper .separator-icon {
+	padding: 0 12px;
+	line-height: 1;
+	font-size: 1.2em;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.wp-block-separator-wrapper.is-aligned-left {
+	margin-left: 0;
+	margin-right: auto;
+}
+
+.wp-block-separator-wrapper.is-aligned-center {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.wp-block-separator-wrapper.is-aligned-right {
+	margin-left: auto;
+	margin-right: 0;
+}

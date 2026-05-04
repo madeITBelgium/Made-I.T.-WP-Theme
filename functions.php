@@ -1950,6 +1950,8 @@ add_action('enqueue_block_editor_assets', static function (): void {
 });
 
 require_once get_parent_theme_file_path('/inc/core/fontStyles/local-fonts.php');
+require_once get_parent_theme_file_path('/inc/core/separator-extension/separator-extension.php');
+
 
 // responsive.js for responsive block editor preview (editor-only; uses wp.* globals).
 add_action('enqueue_block_editor_assets', static function (): void {
@@ -2773,6 +2775,83 @@ if(defined('MADEIT_RESTRICT_EDITOR') && MADEIT_RESTRICT_EDITOR) {
             wp_get_theme()->get('Version')
         );
     });
+
+    add_filter( 'theme_block_pattern_files', function ( $files, $dirpath ) {
+        $child_patterns_dir = realpath( get_stylesheet_directory() . '/patterns' );
+        if ( ! $child_patterns_dir || realpath( $dirpath ) !== $child_patterns_dir ) {
+            return $files;
+        }
+
+        $parent_patterns_dir = get_template_directory() . '/patterns';
+        if ( get_template_directory() === get_stylesheet_directory() || ! is_dir( $parent_patterns_dir ) ) {
+            return $files;
+        }
+
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator( $parent_patterns_dir, RecursiveDirectoryIterator::SKIP_DOTS ),
+            RecursiveIteratorIterator::LEAVES_ONLY
+        );
+
+        foreach ( $iterator as $fileinfo ) {
+            if ( $fileinfo->isFile() && 'php' === $fileinfo->getExtension() ) {
+                $relative_path = ltrim( str_replace( trailingslashit( $parent_patterns_dir ), '', $fileinfo->getPathname() ), '/\\' );
+                $files[ $relative_path ] = $fileinfo->getPathname();
+            }
+        }
+
+        return $files;
+    }, 10, 2 );
+
+    add_action( 'after_setup_theme', function() {
+        if ( get_stylesheet() !== get_template() && is_dir( get_template_directory() . '/patterns' ) ) {
+            delete_site_transient( 'wp_theme_files_patterns-' . md5( get_theme_root() . '/' . get_stylesheet() ) );
+        }
+    } );
+
+    add_action( 'rest_api_init', function() {
+        if ( get_stylesheet() === get_template() ) {
+            return;
+        }
+
+        $parent_theme = wp_get_theme( get_template() );
+        if ( ! $parent_theme->exists() ) {
+            return;
+        }
+
+        $registry = WP_Block_Patterns_Registry::get_instance();
+        $patterns_dir = trailingslashit( $parent_theme->get_stylesheet_directory() ) . 'patterns/';
+
+        foreach ( $parent_theme->get_block_patterns() as $file => $pattern ) {
+            if ( empty( $pattern['slug'] ) || $registry->is_registered( $pattern['slug'] ) ) {
+                continue;
+            }
+
+            $file_path = $patterns_dir . ltrim( $file, '/\\' );
+            if ( ! file_exists( $file_path ) ) {
+                continue;
+            }
+
+            $pattern['filePath'] = $file_path;
+            register_block_pattern( $pattern['slug'], $pattern );
+        }
+    }, 100 );
+
+    add_filter( 'wp_theme_get_block_patterns', function( $patterns ) {
+        if ( get_stylesheet() === get_template() ) {
+            return $patterns;
+        }
+
+        $parent_theme = wp_get_theme( get_template() );
+        $parent_patterns = $parent_theme->get_block_patterns();
+
+        foreach ( $parent_patterns as $file => $pattern ) {
+            if ( ! isset( $patterns[ $file ] ) ) {
+                $patterns[ $file ] = $pattern;
+            }
+        }
+
+        return $patterns;
+    } );
 }
 
 if(MADEIT_FEEDBACK) {

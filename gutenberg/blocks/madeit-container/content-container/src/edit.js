@@ -1014,7 +1014,7 @@ export function ColumnsEditContainer( props ) {
                                 <Button
                                     key={ value }
                                     isPrimary={ size === value }
-                                    onClick={ () => setAttributes( { size: value } ) }
+                                    onClick={ () => setAttributes( { size: value, madeitHasUserEdits: true } ) }
                                 >
                                     { label }
                                 </Button>

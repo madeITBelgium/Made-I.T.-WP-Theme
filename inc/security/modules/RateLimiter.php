@@ -13,7 +13,7 @@ class RateLimiter {
     // Endpoint category => [ requests, window_seconds ]
     private const DEFAULTS = [
         'frontend'    => [ 60,  60   ],
-        'login'       => [ 10,  300  ],
+        'login'       => [ 15,  300  ],
         'search'      => [ 15,  60   ],
         'feed'        => [ 10,  60   ],
         'sitemap'     => [ 5,   3600 ],
@@ -21,7 +21,7 @@ class RateLimiter {
         'rest'        => [ 60,  60   ],
         'rest_unauth' => [ 30,  60   ],
         'woo_checkout'=> [ 5,   60   ],
-        'xmlrpc'      => [ 3,   60   ],
+        'xmlrpc'      => [ 3,   300   ],
         'cron'        => [ 1,   60   ],
     ];
 
@@ -151,7 +151,21 @@ class RateLimiter {
         if ( $custom_max > 0 && $custom_window > 0 ) {
             return [ $custom_max, $custom_window ];
         }
-        return self::DEFAULTS[ $cat ] ?? null;
+
+        $limits = self::DEFAULTS[ $cat ] ?? null;
+        if ( ! $limits ) return null;
+
+        // Webshops (WooCommerce) often hit wp-login.php for account auth/reset flows,
+        // so allow a less aggressive login threshold by default.
+        if ( $cat === 'login' && self::is_woocommerce_active() ) {
+            $limits[0] = max( (int) $limits[0], 30 );
+        }
+
+        return $limits;
+    }
+
+    private static function is_woocommerce_active(): bool {
+        return class_exists( 'WooCommerce' );
     }
 
     public static function get_defaults(): array { return self::DEFAULTS; }
