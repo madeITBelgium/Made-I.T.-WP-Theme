@@ -8064,7 +8064,6 @@ function save(props) {
 
   // VARIANT A: container-content-boxed
   if (defaultSize === 'container-content-boxed') {
-    console.log('Applying container-content-boxed markup with child class:', childClass);
     return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(HtmlTag, {
       ...blockProps
     }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -8083,7 +8082,6 @@ function save(props) {
   if (legacy.hasLegacyBoxedInnerRowWrapper) {
     const innerContainerClass = typeof attributes.boxedInnerContainerClassName === 'string' && attributes.boxedInnerContainerClassName.trim().length > 0 ? attributes.boxedInnerContainerClassName.trim() : 'container';
     const innerRowClass = typeof attributes.boxedInnerRowClassName === 'string' && attributes.boxedInnerRowClassName.trim().length > 0 ? attributes.boxedInnerRowClassName.trim() : innerRowProps.className;
-    console.log('Applying legacy boxed inner row wrapper with class:', innerRowClass);
     return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(HtmlTag, {
       ...blockProps
     }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -8100,7 +8098,6 @@ function save(props) {
 
   // VARIANT C: legacy direct row (geen inner container)
   if (legacy.hasDirectRowWrapper) {
-    console.log('Applying legacy direct row wrapper with class:', outerRowProps.className);
     return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(HtmlTag, {
       ...blockProps
     }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -8110,7 +8107,6 @@ function save(props) {
 
   // VARIANT D: inner background wrapper (achtergrond op inner element)
   if (applyBgToInner) {
-    console.log('Applying inner background wrapper with class:', childClass);
     return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(HtmlTag, {
       ...blockProps
     }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -8124,7 +8120,6 @@ function save(props) {
   // VARIANT E: standaard — met optionele content-width wrapper
   const shouldWrapContent = outerSizeNormalized !== 'container' && hasContentWidth && contentWidthNormalized !== outerSizeNormalized;
   if (shouldWrapContent) {
-    console.log('Applying content-width wrapper with class:', contentWidthNormalized);
     return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(HtmlTag, {
       ...blockProps
     }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -8136,7 +8131,6 @@ function save(props) {
       ...outerRowProps
     }, '\n\n', (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InnerBlocks.Content, null), '\n\n')));
   }
-  console.log('Applying standard markup with class:', outerRowProps.className);
   return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(HtmlTag, {
     ...blockProps
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {

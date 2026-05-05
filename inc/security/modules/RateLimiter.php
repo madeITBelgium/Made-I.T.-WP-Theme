@@ -34,30 +34,60 @@ class RateLimiter {
     }
 
     public static function check_request(): void {
-        if ( defined( 'WP_CLI' ) && WP_CLI )       return;
-        if ( defined( 'DOING_CRON' ) && DOING_CRON ) return;
+        do_action( 'qm/start', 'madeit_security:rate_limiter_check_request' );
+
+        if ( defined( 'WP_CLI' ) && WP_CLI ) {
+            do_action( 'qm/stop', 'madeit_security:rate_limiter_check_request' );
+            return;
+        }
+        if ( defined( 'DOING_CRON' ) && DOING_CRON ) {
+            do_action( 'qm/stop', 'madeit_security:rate_limiter_check_request' );
+            return;
+        }
 
         // Never rate-limit wp-admin paths (wp-login.php is handled by 'login' category)
         $raw_uri = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '/'; // phpcs:ignore WordPress.Security.NonceVerification.Missing
         $path    = strtok( $raw_uri, '?' );
-        if ( str_starts_with( $path, '/wp-admin' ) ) return;
+        if ( str_starts_with( $path, '/wp-admin' ) ) {
+            do_action( 'qm/stop', 'madeit_security:rate_limiter_check_request' );
+            return;
+        }
 
         $ip = \MadeIT\Security\RequestLogger::get_real_ip();
 
         // Whitelisted IPs bypass rate limiting
-        if ( class_exists( 'MadeIT\Security\\Whitelist' ) && \MadeIT\Security\Whitelist::is_allowed( $ip ) ) return;
-        $category = self::categorize_request();
+        if ( class_exists( 'MadeIT\Security\\Whitelist' ) && \MadeIT\Security\Whitelist::is_allowed( $ip ) ) {
+            do_action( 'qm/stop', 'madeit_security:rate_limiter_check_request' );
+            return;
+        }
 
-        if ( ! $category ) return;
+        do_action( 'qm/start', 'madeit_security:rate_limiter_categorize_request' );
+        $category = self::categorize_request();
+        do_action( 'qm/stop', 'madeit_security:rate_limiter_categorize_request' );
+
+        if ( ! $category ) {
+            do_action( 'qm/stop', 'madeit_security:rate_limiter_check_request' );
+            return;
+        }
 
         $limits = self::get_limits( $category );
-        if ( ! $limits ) return;
+        if ( ! $limits ) {
+            do_action( 'qm/stop', 'madeit_security:rate_limiter_check_request' );
+            return;
+        }
 
         [ $max_req, $window ] = $limits;
 
-        if ( self::is_exceeded( $ip, $category, $max_req, $window ) ) {
+        do_action( 'qm/start', 'madeit_security:rate_limiter_is_exceeded' );
+        $is_exceeded = self::is_exceeded( $ip, $category, $max_req, $window );
+        do_action( 'qm/stop', 'madeit_security:rate_limiter_is_exceeded' );
+
+        if ( $is_exceeded ) {
+            do_action( 'qm/stop', 'madeit_security:rate_limiter_check_request' );
             self::throttle_response( $category, $window );
         }
+
+        do_action( 'qm/stop', 'madeit_security:rate_limiter_check_request' );
     }
 
     // ── Categorize the current request ────────────────────────────────────────

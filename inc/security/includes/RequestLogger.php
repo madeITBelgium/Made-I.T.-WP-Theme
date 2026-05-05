@@ -26,14 +26,19 @@ class RequestLogger
     // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- security data must not be served from cache
     public static function log_current_request(): void
     {
+        do_action('qm/start', 'madeit_security:request_logger_log_current_request');
+
         // ── Hard bail-outs first ──────────────────────────────────────────────
         if (defined('DOING_CRON') && DOING_CRON) {
+            do_action('qm/stop', 'madeit_security:request_logger_log_current_request');
             return;
         }
         if (defined('WP_CLI') && WP_CLI) {
+            do_action('qm/stop', 'madeit_security:request_logger_log_current_request');
             return;
         }
         if (defined('MADEIT_SECURITY_INTERNAL') && MADEIT_SECURITY_INTERNAL) {
+            do_action('qm/stop', 'madeit_security:request_logger_log_current_request');
             return;
         }
 
@@ -41,10 +46,12 @@ class RequestLogger
         // operations (post edits, settings saves, etc.), not visitor traffic.
         // Unauthenticated wp-admin access is still logged (potential probe).
         if (is_admin() && function_exists('is_user_logged_in') && is_user_logged_in()) {
+            do_action('qm/stop', 'madeit_security:request_logger_log_current_request');
             return;
         }
 
         if (!Settings::bool('madeit_security_log_enabled', true)) {
+            do_action('qm/stop', 'madeit_security:request_logger_log_current_request');
             return;
         }
 
@@ -59,6 +66,7 @@ class RequestLogger
             ));
         }
         if (!$table_ok) {
+            do_action('qm/stop', 'madeit_security:request_logger_log_current_request');
             return;
         }
 
@@ -69,6 +77,7 @@ class RequestLogger
         if (Settings::bool('madeit_security_log_exclude_assets', true)) {
             $ext = strtolower(pathinfo(strtok($uri, '?'), PATHINFO_EXTENSION));
             if (in_array($ext, self::ASSET_EXTENSIONS, true)) {
+                do_action('qm/stop', 'madeit_security:request_logger_log_current_request');
                 return;
             }
         }
@@ -82,6 +91,7 @@ class RequestLogger
                     $action = isset($_POST['action']) ? sanitize_key($_POST['action']) :
                             (isset($_GET['action']) ? sanitize_key($_GET['action']) : '');
                     if ($action === 'heartbeat' || str_starts_with($action, 'madeit_security_')) {
+                        do_action('qm/stop', 'madeit_security:request_logger_log_current_request');
                         return;
                     }
                     break; // non-heartbeat, non-plugin AJAX — continue logging
@@ -116,7 +126,9 @@ class RequestLogger
         $is_whitelisted = class_exists('MadeIT\Security\\Whitelist') && \MadeIT\Security\Whitelist::is_allowed($ip);
 
         // Check if this IP is blocked (skip if whitelisted)
+        do_action('qm/start', 'madeit_security:request_logger_check_blocked');
         $block_check = (!$is_whitelisted) ? self::check_blocked($ip) : ['blocked' => false, 'reason' => ''];
+        do_action('qm/stop', 'madeit_security:request_logger_check_blocked');
         $is_blocked = $block_check['blocked'] ? 1 : 0;
         $block_reason = $block_check['reason'];
 
@@ -224,9 +236,12 @@ class RequestLogger
                     ['%s']
                 );
             } else {
+                do_action('qm/stop', 'madeit_security:request_logger_log_current_request');
                 self::send_blocked_response($block_reason);
             }
         }
+
+        do_action('qm/stop', 'madeit_security:request_logger_log_current_request');
     }
     // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 

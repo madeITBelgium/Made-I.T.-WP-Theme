@@ -218,6 +218,9 @@ class Installer
         if (!wp_next_scheduled('madeit_security_update_geoip_db')) {
             wp_schedule_event(time(), 'weekly', 'madeit_security_update_geoip_db');
         }
+        if (!wp_next_scheduled('madeit_security_refresh_remote_blacklist')) {
+            wp_schedule_event(time(), 'twicedaily', 'madeit_security_refresh_remote_blacklist');
+        }
         if (!wp_next_scheduled('madeit_security_weekly_scan')) {
             wp_schedule_event(time(), 'weekly', 'madeit_security_weekly_scan');
         }
@@ -232,6 +235,7 @@ class Installer
         wp_clear_scheduled_hook('madeit_security_refresh_google_ips');
         wp_clear_scheduled_hook('madeit_security_refresh_microsoft_ips');
         wp_clear_scheduled_hook('madeit_security_update_geoip_db');
+        wp_clear_scheduled_hook('madeit_security_refresh_remote_blacklist');
         wp_clear_scheduled_hook('madeit_security_weekly_scan');
         wp_clear_scheduled_hook('madeit_security_run_scan_batch');
         wp_clear_scheduled_hook('madeit_security_daily_digest');

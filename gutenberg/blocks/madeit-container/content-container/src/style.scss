@@ -65,18 +65,22 @@ $break-medium: 782px;
     // Specificiteitstruc: de [style*="..."] selector wint van een class-only
     // selector, zodat de var ook daadwerkelijk wordt toegepast als hij aanwezig is.
     // Zonder deze truc overschrijft Bootstrap of een theme de waarde.
-	&[style*="--madeit-container-margin-top-desktop:"],
+	&[style*="--madeit-container-margin-top-desktop:"] {
+        margin-top: var(--madeit-container-margin-top-desktop, 0) !important;
+    }
 	&[style*="--madeit-container-margin-bottom-desktop:"] {
-		margin-top: var(--madeit-container-margin-top-desktop, 0) !important;
 		margin-bottom: var(--madeit-container-margin-bottom-desktop, 0) !important;
 	}
-    &[style*="--madeit-container-margin-top-tablet:"],
-    &[style*="--madeit-container-margin-bottom-tablet:"] {
+    &[style*="--madeit-container-margin-top-tablet:"] {
         @include tablet {
             margin-top: var(
                 --madeit-container-margin-top-tablet,
                 var(--madeit-container-margin-top-desktop, 0)
             ) !important;
+        }
+    }
+    &[style*="--madeit-container-margin-bottom-tablet:"] {
+        @include tablet {
             margin-bottom: var(
                 --madeit-container-margin-bottom-tablet,
                 var(--madeit-container-margin-bottom-desktop, 0)

@@ -77,6 +77,7 @@ class Plugin
             }
         });
         add_action('madeit_security_update_geoip_db', [GeoIP::class, 'cron_update']);
+        add_action('madeit_security_refresh_remote_blacklist', ['MadeIT\\Security\\modules\\IPManager', 'refresh_remote_blacklist']);
     }
 
     public function add_cron_intervals(array $schedules): array

@@ -2,6 +2,7 @@
 	width: var(--separator-width, 100%);
 	border-top-width: var(--separator-thickness, 1px);
 	border-top-style: var(--separator-style, solid);
+	opacity: 1;
 }
 
 .wp-block-separator.is-aligned-left {

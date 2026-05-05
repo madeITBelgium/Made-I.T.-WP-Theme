@@ -9,6 +9,7 @@ function madeit_megamenu_menuitems($items, $args)
     if (!in_array($args->theme_location, ['top', 'upper-bottom'])) {
         return $items;
     }
+    do_action('qm/start', 'madeit:megamenu_menuitems');
 
     static $product_categories_by_parent = null;
 
@@ -91,6 +92,7 @@ function madeit_megamenu_menuitems($items, $args)
         }
     }
 
+    do_action('qm/stop', 'madeit:megamenu_menuitems');
     return $items;
 }
 add_filter('wp_nav_menu_objects', 'madeit_megamenu_menuitems', 10, 2);

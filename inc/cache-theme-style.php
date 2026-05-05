@@ -53,8 +53,10 @@ function madeit_css_isCacheUpToDate()
 
 function madeit_css_generateCache()
 {
+    do_action('qm/start', 'madeit:generate_colors_css_cache');
     require_once __DIR__.'/color-patterns.php';
     $css = madeit_custom_colors_css();
 
     file_put_contents(madeit_css_cachePath(), $css);
+    do_action('qm/stop', 'madeit:generate_colors_css_cache');
 }

@@ -11,12 +11,20 @@
 
 <!-- wp:madeit/block-content-column {"width":6,"maxContainerSize":true} -->
 <div class="wp-block-madeit-block-content-column col-12 col-lg-6 keep-max-container-size"><div class="madeit-content-column__inner"><!-- wp:heading {"level":1,"madeitTypoClass":"madeit-typo-5ee52fd"} -->
-<h1 class="wp-block-heading">This Headline Grabs Visitors’ Attention</h1>
+<h1 class="wp-block-heading"><strong>This Headline Grabs Visitors’ Attention</strong></h1>
 <!-- /wp:heading -->
+
+<!-- wp:spacer {"height":"20px"} -->
+<div style="height:20px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
 
 <!-- wp:separator {"backgroundColor":"primary","separatorWidth":60,"separatorAlign":"left","separatorThickness":3} -->
 <hr class="wp-block-separator has-text-color has-primary-color has-alpha-channel-opacity has-primary-background-color has-background is-aligned-left " style="width:60%;border-top:solid 3px;margin-inline:0 auto"/>
 <!-- /wp:separator -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
 
 <!-- wp:heading {"level":5,"madeitTypoClass":"madeit-typo-a441cba"} -->
 <h5 class="wp-block-heading">A short description that introduces visitors to your business offerings</h5>
@@ -33,9 +41,9 @@
 <!-- /wp:buttons --></div></div>
 <!-- /wp:madeit/block-content-column -->
 
-<!-- wp:madeit/block-content-column {"width":6} -->
-<div class="wp-block-madeit-block-content-column col-12 col-lg-6"><div class="madeit-content-column__inner"><!-- wp:image {"sizeSlug":"large"} -->
-<figure class="wp-block-image size-large"><img src="https://placehold.net/default.png" alt=""/></figure>
+<!-- wp:madeit/block-content-column {"width":6,"padding":{"top":"0px","right":"0px","bottom":"0px","left":"0px"}} -->
+<div class="wp-block-madeit-block-content-column col-12 col-lg-6"><div class="madeit-content-column__inner" style="padding-top:0px;padding-bottom:0px;padding-left:0px;padding-right:0px"><!-- wp:image {"width":"1400px","height":"600px","scale":"cover","sizeSlug":"large","imageHeightTablet":250,"imageHeightMobile":250} -->
+<figure class="wp-block-image size-large is-resized" style="--madeit-image-height:clamp(250px, 90vw, 600px);--madeit-image-width:1400px"><img src="https://placehold.net/default.png" alt="" style="object-fit:cover;width:1400px;height:600px"/></figure>
 <!-- /wp:image --></div></div>
 <!-- /wp:madeit/block-content-column -->
 
@@ -377,7 +385,7 @@
 
 <!-- wp:madeit/block-content-column {"width":6} -->
 <div class="wp-block-madeit-block-content-column col-12 col-lg-6"><div class="madeit-content-column__inner"><!-- wp:heading {"madeitTypoClass":"madeit-typo-1af6b76"} -->
-<h2 class="wp-block-heading">A Title to Turn the Visitor Into a Lead</h2>
+<h2 class="wp-block-heading">A Title to Turn <mark style="background-color:rgba(0, 0, 0, 0)" class="has-inline-color has-primary-color">the Visitor</mark> Into a Lead</h2>
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"madeitTypoClass":"madeit-typo-7038206"} -->

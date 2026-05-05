@@ -62,10 +62,12 @@ function madeit_support_popup()
             </p>
             <?php
             //save in transient
+            do_action('qm/start', 'madeit:generate_support_pagebuilder_cache');
             if(!get_transient('madeit_support_pagebuilder')) {
                 set_transient('madeit_support_pagebuilder', file_get_contents('https://portal.madeit.be/support-pagebuilder?website=' .get_home_url()), 60*60*24);
             }
             echo get_transient('madeit_support_pagebuilder');
+            do_action('qm/stop', 'madeit:generate_support_pagebuilder_cache');
             ?>
         </div>
     </div>

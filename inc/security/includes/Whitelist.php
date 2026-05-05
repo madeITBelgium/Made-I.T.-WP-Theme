@@ -23,12 +23,16 @@ class Whitelist
      */
     public static function is_allowed(string $ip): bool
     {
+        do_action('qm/start', 'madeit_security:whitelist_is_allowed');
+
         if (isset(self::$cache[$ip])) {
+            do_action('qm/stop', 'madeit_security:whitelist_is_allowed');
             return self::$cache[$ip];
         }
 
         // 1. Explicit whitelist table
         if (self::in_whitelist_table($ip)) {
+            do_action('qm/stop', 'madeit_security:whitelist_is_allowed');
             return self::$cache[$ip] = true;
         }
 
@@ -40,30 +44,36 @@ class Whitelist
         //    configured (Cloudflare integration on, or trusted proxies set).
         if (in_array($ip, ['127.0.0.1', '::1', 'localhost'], true)
             && !self::has_proxy_configured()) {
+            do_action('qm/stop', 'madeit_security:whitelist_is_allowed');
             return self::$cache[$ip] = true;
         }
 
         // 3. Admin grace: if LOGGED-IN user is administrator, bypass IP blocks (not WAF)
         //    Configurable — can be disabled via madeit_security_whitelist_admin_grace option
         if (get_option('madeit_security_whitelist_admin_grace', true) && self::is_admin_ip()) {
+            do_action('qm/stop', 'madeit_security:whitelist_is_allowed');
             return self::$cache[$ip] = true;
         }
 
         // 4. Trust Cloudflare IPs if integration enabled
         if (get_option('madeit_security_cloudflare_integration', false) && self::is_cloudflare_ip($ip)) {
+            do_action('qm/stop', 'madeit_security:whitelist_is_allowed');
             return self::$cache[$ip] = true;
         }
 
         // 5. Trust Google IPs (Cloud, services, crawlers) if integration enabled
         if (get_option('madeit_security_google_integration', false) && self::is_google_ip($ip)) {
+            do_action('qm/stop', 'madeit_security:whitelist_is_allowed');
             return self::$cache[$ip] = true;
         }
 
         // 6. Trust Microsoft IPs (Azure, Bing, Office) if integration enabled
         if (get_option('madeit_security_microsoft_integration', false) && self::is_microsoft_ip($ip)) {
+            do_action('qm/stop', 'madeit_security:whitelist_is_allowed');
             return self::$cache[$ip] = true;
         }
 
+        do_action('qm/stop', 'madeit_security:whitelist_is_allowed');
         return self::$cache[$ip] = false;
     }
 

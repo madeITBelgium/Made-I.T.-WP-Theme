@@ -221,25 +221,37 @@ class WAF {
     // Main inspection
     // ─────────────────────────────────────────────────────────────────────────
     public static function inspect_request(): void {
+        do_action( 'qm/start', 'madeit_security:waf_inspect_request' );
+
         // Whitelisted IPs bypass the WAF entirely
         $ip = \MadeIT\Security\RequestLogger::get_real_ip();
-        if ( class_exists( 'MadeIT\Security\\Whitelist' ) && \MadeIT\Security\Whitelist::is_allowed( $ip ) ) return;
+        if ( class_exists( 'MadeIT\Security\\Whitelist' ) && \MadeIT\Security\Whitelist::is_allowed( $ip ) ) {
+            do_action( 'qm/stop', 'madeit_security:waf_inspect_request' );
+            return;
+        }
 
         // Logged-in administrators bypass the WAF entirely.
         // If an admin account is compromised the attacker already has full
         // WordPress access; the WAF cannot mitigate that scenario, and
         // false positives could lock the admin out of their own site.
         if ( self::is_current_user_admin() ) {
+            do_action( 'qm/stop', 'madeit_security:waf_inspect_request' );
             return;
         }
 
         // Non-admin logged-in users: optionally skip WAF on AJAX requests
         if ( defined( 'DOING_AJAX' ) && DOING_AJAX && is_user_logged_in() ) {
-            if ( \MadeIT\Security\Settings::bool( 'madeit_security_waf_whitelist_logged_in', false ) ) return;
+            if ( \MadeIT\Security\Settings::bool( 'madeit_security_waf_whitelist_logged_in', false ) ) {
+                do_action( 'qm/stop', 'madeit_security:waf_inspect_request' );
+                return;
+            }
         }
 
         // Skip CLI
-        if ( defined( 'WP_CLI' ) && WP_CLI ) return;
+        if ( defined( 'WP_CLI' ) && WP_CLI ) {
+            do_action( 'qm/stop', 'madeit_security:waf_inspect_request' );
+            return;
+        }
 
         // Build request targets
         $targets = self::build_targets();
@@ -286,6 +298,8 @@ class WAF {
         // After regex rules pass, check if this IP is doing rapid plugin
         // enumeration (WPScan aggressive mode / WPProbe bruteforce mode).
         self::check_enumeration_burst( $targets, $mode );
+
+        do_action( 'qm/stop', 'madeit_security:waf_inspect_request' );
     }
 
     /**

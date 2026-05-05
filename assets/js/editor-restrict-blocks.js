@@ -81,6 +81,46 @@ wp.domReady(function () {
 
     });
 
+    //? Voeg een container block toe als de editor leeg is
+    let hasRestored = false;
+
+    wp.data.subscribe(() => {
+
+        const blocks = wp.data.select('core/block-editor').getBlocks();
+
+        const isEmpty =
+            blocks.length === 0 ||
+            (blocks.length === 1 &&
+            blocks[0].name === 'core/paragraph' &&
+            !blocks[0].attributes?.content?.trim());
+
+        if (isEmpty && !hasRestored) {
+
+            hasRestored = true;
+
+            wp.data.dispatch('core/block-editor').insertBlocks(
+                wp.blocks.parse(`
+                <!-- wp:madeit/block-content {"containerPaddingOnRow":true,"overflow":"visible","flexDirection":"row","flexDirectionTablet":"column","flexDirectionMobile":"column","alignItems":"stretch","justifyContent":"flex-start","rowGap":20,"rowGapTablet":20,"rowGapMobile":20,"columnsCount":0,"flexWrap":"nowrap"} -->
+                <div class="wp-block-madeit-block-content container madeit-block-content--frontend">
+                    <div class="container">
+                        <div class="row madeit-container-row rows-0"
+                            data-madeit-dir="row"
+                            data-madeit-dir-tablet="column"
+                            data-madeit-dir-mobile="column">
+                        </div>
+                    </div>
+                </div>
+                <!-- /wp:madeit/block-content -->
+                `)
+            );
+        }
+
+        // reset flag zodra er weer content is
+        if (!isEmpty) {
+            hasRestored = false;
+        }
+    });
+
 
     //? Zorg dat we geen blokken kunnen toevoegen buiten de container
     let isProcessing = false;
@@ -190,13 +230,13 @@ wp.domReady(function () {
 
             setTimeout(() => {
                 isFixingOutsideBlocks = false;
-            }, 1);
+            }, 8000);
 
             // Stop hier zodat er niks verwijderd wordt in dezelfde subscribe-run.
             return;
         }
 
-    });
+    }, 800);
 
 
     //? Laat de block inserter standaard open (maar forceer het niet daarna)
@@ -224,48 +264,6 @@ wp.domReady(function () {
     });
    
 
-
-
-
-    //? Voeg een container block toe als de editor leeg is
-    let hasRestored = false;
-
-    wp.data.subscribe(() => {
-
-        const blocks = wp.data.select('core/block-editor').getBlocks();
-
-        const isEmpty =
-            blocks.length === 0 ||
-            (blocks.length === 1 &&
-            blocks[0].name === 'core/paragraph' &&
-            !blocks[0].attributes?.content?.trim());
-
-        if (isEmpty && !hasRestored) {
-
-            hasRestored = true;
-
-            wp.data.dispatch('core/block-editor').insertBlocks(
-                wp.blocks.parse(`
-                <!-- wp:madeit/block-content {"containerPaddingOnRow":true,"overflow":"visible","flexDirection":"row","flexDirectionTablet":"column","flexDirectionMobile":"column","alignItems":"stretch","justifyContent":"flex-start","rowGap":20,"rowGapTablet":20,"rowGapMobile":20,"columnsCount":0,"flexWrap":"nowrap"} -->
-                <div class="wp-block-madeit-block-content container madeit-block-content--frontend">
-                    <div class="container">
-                        <div class="row madeit-container-row rows-0"
-                            data-madeit-dir="row"
-                            data-madeit-dir-tablet="column"
-                            data-madeit-dir-mobile="column">
-                        </div>
-                    </div>
-                </div>
-                <!-- /wp:madeit/block-content -->
-                `)
-            );
-        }
-
-        // reset flag zodra er weer content is
-        if (!isEmpty) {
-            hasRestored = false;
-        }
-    });
 
     //? Voeg een builder UI toe aan het laatste block
     wp.hooks.addFilter('editor.BlockListBlock', 'madeit/add-builder-ui', (BlockListBlock) => {
@@ -653,7 +651,16 @@ wp.domReady(function () {
 
                                         let items = [];
                                         if (activeTab === 'blocks') {
-                                            items = data.themePatterns;
+                                            // Exclude patterns with post type 'page' from blocks tab
+                                            items = data.themePatterns.filter(p => {
+                                                const categories = Array.isArray(p.categories)
+                                                    ? p.categories.map((category) => String(category).toLowerCase())
+                                                    : [];
+                                                const postTypes = Array.isArray(p.postTypes)
+                                                    ? p.postTypes.map((postType) => String(postType).toLowerCase())
+                                                    : [];
+                                                return !categories.includes('pages') && !categories.includes('page') && !postTypes.includes('page');
+                                            });
                                         } else if (activeTab === 'pages') {
                                             items = data.pages;
                                         } else if (activeTab === 'templates') {

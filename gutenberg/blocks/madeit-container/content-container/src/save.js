@@ -923,7 +923,6 @@ export default function save( props ) {
 
     // VARIANT A: container-content-boxed
     if ( defaultSize === 'container-content-boxed' ) {
-        console.log('Applying container-content-boxed markup with child class:', childClass );
         return (
             <HtmlTag { ...blockProps }>
                 <div { ...outerRowProps }>
@@ -955,7 +954,6 @@ export default function save( props ) {
                 ? attributes.boxedInnerRowClassName.trim()
                 : innerRowProps.className;
 
-        console.log('Applying legacy boxed inner row wrapper with class:', innerRowClass );
         return (
             <HtmlTag { ...blockProps }>
                 <div { ...outerRowProps }>
@@ -975,7 +973,6 @@ export default function save( props ) {
 
     // VARIANT C: legacy direct row (geen inner container)
     if ( legacy.hasDirectRowWrapper ) {
-        console.log('Applying legacy direct row wrapper with class:', outerRowProps.className );
         return (
             <HtmlTag { ...blockProps }>
                 <div { ...outerRowProps }>
@@ -989,7 +986,6 @@ export default function save( props ) {
 
     // VARIANT D: inner background wrapper (achtergrond op inner element)
     if ( applyBgToInner ) {
-        console.log('Applying inner background wrapper with class:', childClass );
         return (
             <HtmlTag { ...blockProps }>
                 <div className={ childClass } style={ childStyle }>
@@ -1010,7 +1006,6 @@ export default function save( props ) {
         contentWidthNormalized !== outerSizeNormalized;
 
     if ( shouldWrapContent ) {
-        console.log('Applying content-width wrapper with class:', contentWidthNormalized );
         return (
             <HtmlTag { ...blockProps }>
                 <div className={ classnames( {
@@ -1027,7 +1022,6 @@ export default function save( props ) {
         );
     }
 
-    console.log('Applying standard markup with class:', outerRowProps.className );
     return (
         <HtmlTag { ...blockProps }>
             <div { ...outerRowProps }>

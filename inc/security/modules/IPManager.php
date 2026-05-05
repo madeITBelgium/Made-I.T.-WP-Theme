@@ -5,6 +5,10 @@ defined( 'ABSPATH' ) || exit;
 
 class IPManager {
 
+    private const REMOTE_BLACKLIST_URL      = 'https://backend.bizhosting.be/api/2.0/firewall/txt';
+    private const REMOTE_BLACKLIST_META      = 'madeit_security_remote_blacklist_meta';
+    private const REMOTE_BLACKLIST_FILE_REL  = 'madeit-security/remote-blacklist.json';
+
     public static function init(): void {
         add_action( 'wp_ajax_madeit_security_block_ip',      [ __CLASS__, 'ajax_block_ip' ] );
         add_action( 'wp_ajax_madeit_security_unblock_ip',    [ __CLASS__, 'ajax_unblock_ip' ] );
@@ -13,6 +17,10 @@ class IPManager {
         add_action( 'wp_ajax_madeit_security_live_visitors',  [ __CLASS__, 'ajax_live_visitors' ] );
         add_action( 'wp_ajax_madeit_security_visitor_log',    [ __CLASS__, 'ajax_visitor_log' ] );
         add_action( 'wp_ajax_madeit_security_visitor_stats',  [ __CLASS__, 'ajax_visitor_stats' ] );
+
+        if ( defined( 'WP_CLI' ) && WP_CLI ) {
+            \WP_CLI::add_command( 'madeit-security refresh-blacklist', [ __CLASS__, 'cli_refresh_blacklist' ] );
+        }
     }
 
     // ── Public API ─────────────────────────────────────────────────────────────
@@ -93,8 +101,18 @@ class IPManager {
 
     public static function is_blocked( string $ip ): bool {
         global $wpdb;
+
+        do_action( 'qm/start', 'madeit_security:ip_is_blocked_total' );
+
+        if ( isset( self::get_remote_blacklist_set()[ $ip ] ) ) {
+            do_action( 'qm/stop', 'madeit_security:ip_is_blocked_total' );
+            return true;
+        }
+
+        do_action( 'qm/start', 'madeit_security:ip_is_blocked_db' );
+
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- security data must not be served from cache
-        return (bool) $wpdb->get_var( $wpdb->prepare(
+        $blocked = (bool) $wpdb->get_var( $wpdb->prepare(
             "SELECT id FROM {$wpdb->prefix}madeit_security_blocked_ips
             WHERE ip = %s
                 AND (permanent = 1 OR blocked_until > %s)
@@ -102,6 +120,11 @@ class IPManager {
             $ip,
             current_time( 'mysql' )
         ) );
+
+        do_action( 'qm/stop', 'madeit_security:ip_is_blocked_db' );
+        do_action( 'qm/stop', 'madeit_security:ip_is_blocked_total' );
+
+        return $blocked;
     }
 
     // ── AJAX Handlers ──────────────────────────────────────────────────────────
@@ -553,7 +576,225 @@ class IPManager {
             current_time( 'mysql' )
         ) );
         // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
-        return array_flip( $ips );
+        $set = array_flip( $ips );
+
+        foreach ( self::get_remote_blacklist_set() as $remote_ip => $true ) {
+            $set[ $remote_ip ] = $true;
+        }
+
+        return $set;
+    }
+
+    public static function refresh_remote_blacklist(): void {
+        if ( ! \MadeIT\Security\Settings::bool( 'madeit_security_remote_blacklist_enabled', true ) ) {
+            return;
+        }
+
+        $response = wp_remote_get(
+            self::REMOTE_BLACKLIST_URL,
+            [
+                'timeout'    => 15,
+                'redirection'=> 3,
+                'user-agent' => 'MadeIT-Security/' . ( defined( 'MADEIT_SECURITY_DB_VERSION' ) ? MADEIT_SECURITY_DB_VERSION : '1' ),
+            ]
+        );
+
+        if ( is_wp_error( $response ) ) {
+            self::set_remote_blacklist_meta( [
+                'updated_at'  => current_time( 'mysql' ),
+                'success'     => false,
+                'count'       => (int) self::get_remote_blacklist_meta()['count'] ?? 0,
+                'error'       => $response->get_error_message(),
+            ] );
+            return;
+        }
+
+        $code = (int) wp_remote_retrieve_response_code( $response );
+        if ( $code < 200 || $code >= 300 ) {
+            self::set_remote_blacklist_meta( [
+                'updated_at'  => current_time( 'mysql' ),
+                'success'     => false,
+                'count'       => (int) self::get_remote_blacklist_meta()['count'] ?? 0,
+                'error'       => 'HTTP ' . $code,
+            ] );
+            return;
+        }
+
+        $body = (string) wp_remote_retrieve_body( $response );
+        $ips  = self::parse_remote_blacklist_body( $body );
+
+        $stored = self::store_remote_blacklist_file( $ips );
+        if ( ! $stored ) {
+            self::set_remote_blacklist_meta( [
+                'updated_at'  => current_time( 'mysql' ),
+                'success'     => false,
+                'count'       => (int) ( self::get_remote_blacklist_meta()['count'] ?? 0 ),
+                'error'       => 'Could not write remote blacklist file',
+            ] );
+            return;
+        }
+
+        self::set_remote_blacklist_meta( [
+            'updated_at'  => current_time( 'mysql' ),
+            'success'     => true,
+            'count'       => count( $ips ),
+            'error'       => '',
+        ] );
+    }
+
+    /**
+     * WP-CLI: Manually refresh remote blacklist feed.
+     *
+     * Usage: wp madeit-security refresh-blacklist
+     */
+    public static function cli_refresh_blacklist(): void {
+        self::refresh_remote_blacklist();
+
+        $meta = self::get_remote_blacklist_meta();
+        $count = isset( $meta['count'] ) ? (int) $meta['count'] : 0;
+
+        if ( ! empty( $meta['success'] ) ) {
+            \WP_CLI::success( sprintf( 'Remote blacklist refreshed. %d IPs loaded.', $count ) );
+            if ( ! empty( $meta['updated_at'] ) ) {
+                \WP_CLI::log( 'Updated at: ' . (string) $meta['updated_at'] );
+            }
+            return;
+        }
+
+        $error = ! empty( $meta['error'] ) ? (string) $meta['error'] : 'Unknown error';
+        \WP_CLI::error( 'Remote blacklist refresh failed: ' . $error );
+    }
+
+    private static function parse_remote_blacklist_body( string $body ): array {
+        $ips = [];
+        $lines = preg_split( '/\r\n|\r|\n/', $body ) ?: [];
+
+        foreach ( $lines as $line ) {
+            $line = trim( $line );
+            if ( $line === '' || str_starts_with( $line, '#' ) ) {
+                continue;
+            }
+
+            // We currently support single IP blocks only.
+            // Accept /32 and /128 as single-host notations and normalize to raw IP.
+            if ( str_contains( $line, '/' ) ) {
+                [ $candidate, $prefix ] = array_pad( explode( '/', $line, 2 ), 2, '' );
+                $candidate = trim( $candidate );
+                $prefix    = trim( $prefix );
+
+                if ( filter_var( $candidate, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) && $prefix === '32' ) {
+                    $ips[] = $candidate;
+                    continue;
+                }
+                if ( filter_var( $candidate, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6 ) && $prefix === '128' ) {
+                    $ips[] = $candidate;
+                    continue;
+                }
+
+                continue;
+            }
+
+            if ( filter_var( $line, FILTER_VALIDATE_IP ) ) {
+                $ips[] = $line;
+            }
+        }
+
+        return $ips;
+    }
+
+    private static function get_remote_blacklist_set(): array {
+        static $request_cache = null;
+
+        do_action( 'qm/start', 'madeit_security:remote_blacklist_lookup' );
+
+        if ( is_array( $request_cache ) ) {
+            do_action( 'qm/stop', 'madeit_security:remote_blacklist_lookup' );
+            return $request_cache;
+        }
+
+        if ( ! \MadeIT\Security\Settings::bool( 'madeit_security_remote_blacklist_enabled', true ) ) {
+            $request_cache = [];
+            do_action( 'qm/stop', 'madeit_security:remote_blacklist_lookup' );
+            return [];
+        }
+
+        $ips = self::read_remote_blacklist_file();
+        if ( ! empty( $ips ) ) {
+            $request_cache = array_fill_keys( $ips, true );
+            do_action( 'qm/stop', 'madeit_security:remote_blacklist_lookup' );
+            return $request_cache;
+        }
+
+        self::refresh_remote_blacklist();
+        $ips = self::read_remote_blacklist_file();
+        $request_cache = ! empty( $ips ) ? array_fill_keys( $ips, true ) : [];
+
+        do_action( 'qm/stop', 'madeit_security:remote_blacklist_lookup' );
+
+        return $request_cache;
+    }
+
+    private static function store_remote_blacklist_file( array $ips ): bool {
+        $path = self::get_remote_blacklist_file_path();
+        if ( ! $path ) {
+            return false;
+        }
+
+        $dir = dirname( $path );
+        if ( ! wp_mkdir_p( $dir ) ) {
+            return false;
+        }
+
+        $payload = wp_json_encode(
+            [
+                'generated_at' => current_time( 'mysql' ),
+                'ips'          => array_values( array_unique( $ips ) ),
+            ]
+        );
+
+        if ( ! is_string( $payload ) ) {
+            return false;
+        }
+
+        return file_put_contents( $path, $payload, LOCK_EX ) !== false;
+    }
+
+    private static function read_remote_blacklist_file(): array {
+        $path = self::get_remote_blacklist_file_path();
+        if ( ! $path || ! is_readable( $path ) ) {
+            return [];
+        }
+
+        $raw = file_get_contents( $path );
+        if ( ! is_string( $raw ) || $raw === '' ) {
+            return [];
+        }
+
+        $decoded = json_decode( $raw, true );
+        if ( ! is_array( $decoded ) || empty( $decoded['ips'] ) || ! is_array( $decoded['ips'] ) ) {
+            return [];
+        }
+
+        $ips = array_filter( $decoded['ips'], static fn( $ip ) => is_string( $ip ) && filter_var( $ip, FILTER_VALIDATE_IP ) );
+        return array_values( array_unique( $ips ) );
+    }
+
+    private static function get_remote_blacklist_file_path(): ?string {
+        $uploads = wp_upload_dir();
+        if ( empty( $uploads['basedir'] ) || ! is_string( $uploads['basedir'] ) ) {
+            return null;
+        }
+
+        return trailingslashit( $uploads['basedir'] ) . self::REMOTE_BLACKLIST_FILE_REL;
+    }
+
+    private static function get_remote_blacklist_meta(): array {
+        $meta = get_option( self::REMOTE_BLACKLIST_META, [] );
+        return is_array( $meta ) ? $meta : [];
+    }
+
+    private static function set_remote_blacklist_meta( array $meta ): void {
+        update_option( self::REMOTE_BLACKLIST_META, $meta, false );
     }
 
     private static function get_whitelisted_ips_set(): array {

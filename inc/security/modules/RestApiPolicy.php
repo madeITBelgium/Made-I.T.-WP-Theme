@@ -50,13 +50,17 @@ class RestApiPolicy {
      * @return mixed WP_Error on block, otherwise the original $result.
      */
     public static function enforce_policies( $result, \WP_REST_Server $server, \WP_REST_Request $request ) {
+        do_action( 'qm/start', 'madeit_security:rest_api_policy_enforce' );
+
         // If a previous filter already short-circuited, honour it.
         if ( null !== $result ) {
+            do_action( 'qm/stop', 'madeit_security:rest_api_policy_enforce' );
             return $result;
         }
 
         // Skip CLI and cron contexts.
         if ( ( defined( 'WP_CLI' ) && WP_CLI ) || ( defined( 'DOING_CRON' ) && DOING_CRON ) ) {
+            do_action( 'qm/stop', 'madeit_security:rest_api_policy_enforce' );
             return $result;
         }
 
@@ -64,6 +68,7 @@ class RestApiPolicy {
 
         // Whitelisted IPs bypass all REST policies.
         if ( class_exists( 'MadeIT\Security\\Whitelist' ) && \MadeIT\Security\Whitelist::is_allowed( $ip ) ) {
+            do_action( 'qm/stop', 'madeit_security:rest_api_policy_enforce' );
             return $result;
         }
 
@@ -163,6 +168,7 @@ class RestApiPolicy {
 
                 if ( self::is_rate_limited( $rl_key, $rate_limit ) ) {
                     self::log_block( $policy, $ip, $route, $method, 'Rate limit exceeded' );
+                    do_action( 'qm/stop', 'madeit_security:rest_api_policy_enforce' );
                     return new \WP_Error(
                         'rest_rate_limit_exceeded',
                         __( 'Rate limit exceeded. Please slow down.', 'madeit' ),
@@ -172,6 +178,7 @@ class RestApiPolicy {
             }
         }
 
+        do_action( 'qm/stop', 'madeit_security:rest_api_policy_enforce' );
         return $result;
     }
 
@@ -183,6 +190,8 @@ class RestApiPolicy {
      * Returns true if the current request exceeds the per-minute limit.
      */
     private static function is_rate_limited( string $key, int $max_per_minute ): bool {
+        do_action( 'qm/start', 'madeit_security:rest_api_policy_is_rate_limited' );
+
         $now   = time();
         $floor = $now - self::RL_WINDOW;
 
@@ -192,7 +201,9 @@ class RestApiPolicy {
             $hits = array_filter( $hits, fn( $t ) => $t > $floor );
             $hits[] = $now;
             apcu_store( $key, $hits, self::RL_WINDOW + 10 );
-            return count( $hits ) > $max_per_minute;
+            $limited = count( $hits ) > $max_per_minute;
+            do_action( 'qm/stop', 'madeit_security:rest_api_policy_is_rate_limited' );
+            return $limited;
         }
 
         // WordPress transients fallback.
@@ -200,7 +211,9 @@ class RestApiPolicy {
         $hits  = array_values( array_filter( $hits, fn( $t ) => $t > $floor ) );
         $hits[] = $now;
         set_transient( $key, $hits, self::RL_WINDOW + 10 );
-        return count( $hits ) > $max_per_minute;
+        $limited = count( $hits ) > $max_per_minute;
+        do_action( 'qm/stop', 'madeit_security:rest_api_policy_is_rate_limited' );
+        return $limited;
     }
 
     // ═══════════════════════════════════════════════════════════════════════════
