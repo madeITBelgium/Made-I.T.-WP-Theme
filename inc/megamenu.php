@@ -93,6 +93,7 @@ function madeit_megamenu_menuitems($items, $args)
     }
 
     do_action('qm/stop', 'madeit:megamenu_menuitems');
+
     return $items;
 }
 add_filter('wp_nav_menu_objects', 'madeit_megamenu_menuitems', 10, 2);
