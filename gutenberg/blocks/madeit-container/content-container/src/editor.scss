@@ -19,6 +19,14 @@
 
 
 // ─── 1. Variabelen & mixins ───────────────────────────────────────────────────
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1400px
+);
 
 $break-medium:  782px;
 $break-large:   960px;
@@ -151,6 +159,52 @@ $default-block-margin:  28px;
 
     &:hover {
         border: 1px dashed #2d2e6c;
+    }
+
+    // Lege container: lichtgrijze achtergrond en vaste hoogte voor betere zichtbaarheid.
+    .components-dropdown.block-editor-inserter {
+        min-height: var(--madeit-min-height-desktop, 100px);
+        border: 1px dashed #bbb;
+
+        &:hover {
+            border: 1px dashed #bbb;
+        }
+
+        button {
+            position: absolute;
+            height: calc(100% - 12px);
+            width: calc(100% - 12px);
+            border: 1px dashed transparent;
+            box-shadow: none;
+            margin: auto;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+    }
+
+    :not(.rows-1) .components-dropdown.block-editor-inserter {
+        border: 1px dashed transparent;
+
+        button {
+            border: 1px dashed #bbb;
+        }
+    }
+
+    .block-list-appender:only-child.is-drag-over .block-editor-button-block-appender {
+        background-color: transparent;
+
+        &:after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 30px;
+            background-color: var(--wp-admin-theme-color);
+            top: 0;
+            left: 0;
+            bottom: 0;
+            margin: auto;
+        }
     }
 
     // Zorg dat inner content boven de achtergrond staat.

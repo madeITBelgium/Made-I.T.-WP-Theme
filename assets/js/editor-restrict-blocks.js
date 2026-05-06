@@ -164,7 +164,7 @@ wp.domReady(function () {
                     border-radius: 4px;
                     z-index: 9999;
                 `;
-                warning.textContent = 'Er werden blokken gedetecteerd buiten de container. Deze werden automatisch verplaatst naar binnen de container om verlies van content te voorkomen. Als je deze melding blijft zien, neem dan contact op met support@madeit.be.';
+                warning.textContent = 'Er werden blokken gedetecteerd buiten de container. Deze werden automatisch verplaatst naar binnen de container om verlies van content te voorkomen. Als je deze melding blijft zien, neem dan contact op met info@madeit.be.';
                 document.body.appendChild(warning);
                 // close button
                 const closeBtn = document.createElement('button');

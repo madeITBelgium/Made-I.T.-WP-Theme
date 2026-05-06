@@ -660,7 +660,7 @@ registerBlockType( metadata.name, {
                 }
 
                 if ( hasBackground && ! hasInnerWrapper ) {
-                    const legacyWrapperClasses = classnames( wrapperClasses, {
+                    const legacyWrapperClasses = classnames( 'madeit-content-column__inner', wrapperClasses, {
                         'has-background': !! backgroundColorClass,
                         [ backgroundColorClass ]: backgroundColorClass,
                     } );

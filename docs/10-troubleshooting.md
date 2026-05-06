@@ -611,7 +611,7 @@ madeit_log_error('Custom color system activated', [
 ## Support en Hulp
 
 ### Contact Informatie
-- **Email Support**: support@madeit.be
+- **Email Support**: info@madeit.be
 - **Documentatie**: Deze documentatie
 - **Website**: https://madeit.be
 

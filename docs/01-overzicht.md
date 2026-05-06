@@ -103,7 +103,7 @@ define('MADEIT_INFINITE_SCROLL', true);
 Het Made I.T. thema is eigendom van Made I.T. en wordt geleverd onder een commerciële licentie.
 
 ### Support
-- **Email Support**: support@madeit.be
+- **Email Support**: info@madeit.be
 - **Documentatie**: Deze documentatie
 - **Updates**: Automatische updates via Made I.T. updater systeem
 

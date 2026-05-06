@@ -94,6 +94,43 @@
 .wp-block-madeit-block-content:hover {
   border: 1px dashed #2d2e6c;
 }
+.wp-block-madeit-block-content .components-dropdown.block-editor-inserter {
+  min-height: var(--madeit-min-height-desktop, 100px);
+  border: 1px dashed #bbb;
+}
+.wp-block-madeit-block-content .components-dropdown.block-editor-inserter:hover {
+  border: 1px dashed #bbb;
+}
+.wp-block-madeit-block-content .components-dropdown.block-editor-inserter button {
+  position: absolute;
+  height: calc(100% - 12px);
+  width: calc(100% - 12px);
+  border: 1px dashed transparent;
+  box-shadow: none;
+  margin: auto;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.wp-block-madeit-block-content :not(.rows-1) .components-dropdown.block-editor-inserter {
+  border: 1px dashed transparent;
+}
+.wp-block-madeit-block-content :not(.rows-1) .components-dropdown.block-editor-inserter button {
+  border: 1px dashed #bbb;
+}
+.wp-block-madeit-block-content .block-list-appender:only-child.is-drag-over .block-editor-button-block-appender {
+  background-color: transparent;
+}
+.wp-block-madeit-block-content .block-list-appender:only-child.is-drag-over .block-editor-button-block-appender:after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 30px;
+  background-color: var(--wp-admin-theme-color);
+  top: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+}
 .wp-block-madeit-block-content > div {
   position: relative;
   z-index: 2;

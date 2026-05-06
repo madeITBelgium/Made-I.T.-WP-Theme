@@ -42,6 +42,10 @@ import './editor.scss';
 
 const ALLOWED_BLOCKS = [ 'madeit/block-content-column' ];
 
+
+
+// ─── 1. Inner component: heeft toegang tot BreakpointContext ─────────────────
+
 export function ColumnsEditContainer( props ) {
     const {
         attributes,
@@ -64,8 +68,11 @@ export function ColumnsEditContainer( props ) {
     );
     
     const {
+        // ─── General attributes ─────────────────
         verticalAlignment, 
         size,
+
+        // ─── Container attributes ─────────────────
         contentWidth,
         containerMargin,
         containerMarginTablet,
@@ -74,13 +81,19 @@ export function ColumnsEditContainer( props ) {
         containerPaddingTablet,
         containerPaddingMobile,
         containerPaddingOnRow,
+
+        // ─── Row attributes (only for "container-content-boxed" size) ─────────────────
         rowMargin,
         rowPadding,
+
+        // ─── Background attributes ─────────────────
         containerBackgroundImage,
         containerBackgroundPosition,
         containerBackgroundRepeat,
         containerBackgroundSize,
         containerBackgroundGradient,
+
+        // ─── Other attributes ─────────────────
         minHeight,
         minHeightUnit,
         minHeightTablet,
@@ -119,6 +132,97 @@ export function ColumnsEditContainer( props ) {
         hideOnMobile,
         backgroundType,
     } = attributes;
+
+    
+    
+    // ── Huidige breakpunt voor elke aanpasbare CSS-eigenschap ──────────────
+    const [ activeMaxWidthBreakpoint, setActiveMaxWidthBreakpoint ] = useState( 'desktop' );
+    const [ activeMinHeightBreakpoint, setActiveMinHeightBreakpoint ] = useState( 'desktop' );
+    const [ activeRowGapBreakpoint, setActiveRowGapBreakpoint ] = useState( 'desktop' );
+    const [ activePaddingBreakpoint, setActivePaddingBreakpoint ] = useState( 'desktop' );
+    const [ activeMarginBreakpoint, setActiveMarginBreakpoint ] = useState( 'desktop' );
+    const [ activeDirectionBreakpoint, setActiveDirectionBreakpoint ] = useState( 'desktop' );
+    
+
+    // ── Afgeleide keys — allemaal gestuurd door activeBreakpoint ───────────
+    const directionValueKey = activeDirectionBreakpoint === 'tablet' ? 'flexDirectionTablet' : activeDirectionBreakpoint === 'mobile' ? 'flexDirectionMobile' : 'flexDirection';
+    const maxWidthValueKey =  activeMaxWidthBreakpoint === 'tablet' ? 'maxWidthTablet' : activeMaxWidthBreakpoint === 'mobile' ? 'maxWidthMobile' : 'maxWidth';
+    const maxWidthUnitKey =   activeMaxWidthBreakpoint === 'tablet' ? 'maxWidthUnitTablet' : activeMaxWidthBreakpoint === 'mobile' ? 'maxWidthUnitMobile' : 'maxWidthUnit';
+    const minHeightValueKey = activeMinHeightBreakpoint === 'tablet' ? 'minHeightTablet' : activeMinHeightBreakpoint === 'mobile' ? 'minHeightMobile' : 'minHeight';
+    const minHeightUnitKey = activeMinHeightBreakpoint === 'tablet' ? 'minHeightUnitTablet' : activeMinHeightBreakpoint === 'mobile' ? 'minHeightUnitMobile' : 'minHeightUnit';
+    
+    
+    // ── Huidige waarden ────────────────────────────────────────────────────
+    const currentDirection = attributes?.[ directionValueKey ] || 'row';
+    const currentMaxWidthValue = attributes?.[ maxWidthValueKey ];
+    const currentMaxWidthUnit = attributes?.[ maxWidthUnitKey ] || 'px';
+    const currentMinHeightValue = attributes?.[ minHeightValueKey ];
+    const currentMinHeightUnit = attributes?.[ minHeightUnitKey ] || 'px';
+    
+
+    // ── Reset helpers ──────────────────────────────────────────────────────
+    const resetDirection = () =>
+        setAttributes( { [ directionValueKey ]: activeDirectionBreakpoint === 'desktop' ? 'row' : undefined, } );
+    const resetMaxWidth = () =>
+        setAttributes( { [ maxWidthValueKey ]: undefined, [ maxWidthUnitKey ]: 'px', madeitHasUserEdits: true, } );
+
+
+
+    // ── Container / size helpers ───────────────────────────────────────────
+    const containerSizes = [
+        { value: 'container', label: __( 'Boxed' ) },
+        { value: 'container-fluid', label: __( 'Full width' ) },
+    ];
+    const contentBoxedSizes = [
+        { value: 'container', label: __( 'Boxed' ) },
+        { value: 'container-fluid', label: __( 'Full width' ) },
+    ];
+    const fallbackTextColor = '#FFFFFF';
+    const fallbackBackgroundColor = '#000000';
+
+    const didInitContentWidth = useRef( false );
+    useEffect( () => {
+        if ( didInitContentWidth.current ) return;
+
+        if ( typeof contentWidth === 'string' && contentWidth.length > 0 ) {
+            didInitContentWidth.current = true;
+            return;
+        }
+
+        const initialContentWidth = size === 'container-fluid' ? 'container-fluid' : 'container';
+        setAttributes( { contentWidth: initialContentWidth } );
+        didInitContentWidth.current = true;
+    }, [ contentWidth, size, setAttributes ] );
+
+    useEffect( () => {
+        if ( size !== 'container' ) return;
+        if ( contentWidth !== 'container-fluid' ) return;
+        setAttributes( { contentWidth: 'container' } );
+    }, [ size, contentWidth, setAttributes ] );
+    
+    const { count } = useSelect( ( select ) => {
+        return {
+            count: select( 'core/block-editor' ).getBlockCount( clientId ),
+        };
+    } );
+
+    useEffect( () => {   
+        if ( columnsCount === count ) return;
+        setAttributes( { columnsCount: count } );
+    }, [ columnsCount, count, setAttributes ] );
+
+    // ── CSS klassen ────────────────────────────────────────────────────────
+    var classes = classnames( className, {
+        [ `are-vertically-aligned-${ verticalAlignment }` ]: verticalAlignment,
+        [ `container` ]: 'container' === size,
+        [ `container-fluid` ]: 'container-fluid' === size || 'container-content-boxed' === size,
+    } );
+
+    // classes = classnames( classes, {
+    // } );
+
+
+
 
     const computedContainerBackgroundPosition =
         typeof containerBackgroundPosition === 'string' && containerBackgroundPosition.length > 0
@@ -162,61 +266,14 @@ export function ColumnsEditContainer( props ) {
         return settings.gradients || gradientsFromFeatures || [];
     }, [] );
 
-    // Define the container size options and their corresponding CSS classes
-    const containerSizes = [
-        { value: 'container', label: __( 'Boxed' ) },
-        // { value: 'container-content-boxed', label: __( 'Full width - Content boxed' ) },
-        { value: 'container-fluid', label: __( 'Full width' ) },
-    ];
-    const contentBoxedSizes = [
-        { value: 'container', label: __( 'Boxed' ) },
-        { value: 'container-fluid', label: __( 'Full width' ) },
-    ];
-    const fallbackTextColor = '#FFFFFF';
-    const fallbackBackgroundColor = '#000000';
+    
+    
 
     // Initialize `contentWidth` once so it doesn't keep following `size`.
     // This keeps existing blocks stable, while making the controls truly independent.
-    const didInitContentWidth = useRef( false );
-    useEffect( () => {
-        if ( didInitContentWidth.current ) return;
-
-        if ( typeof contentWidth === 'string' && contentWidth.length > 0 ) {
-            didInitContentWidth.current = true;
-            return;
-        }
-
-        const initialContentWidth = size === 'container-fluid' ? 'container-fluid' : 'container';
-        setAttributes( { contentWidth: initialContentWidth } );
-        didInitContentWidth.current = true;
-    }, [ contentWidth, size, setAttributes ] );
-
-    // If the outer container is boxed, content cannot be full width.
-    useEffect( () => {
-        if ( size !== 'container' ) return;
-        if ( contentWidth !== 'container-fluid' ) return;
-        setAttributes( { contentWidth: 'container' } );
-    }, [ size, contentWidth, setAttributes ] );
     
-    const { count } = useSelect( ( select ) => {
-        return {
-            count: select( 'core/block-editor' ).getBlockCount( clientId ),
-        };
-    } );
-
-    useEffect( () => {   
-        if ( columnsCount === count ) return;
-        setAttributes( { columnsCount: count } );
-    }, [ columnsCount, count, setAttributes ] );
     
-    var classes = classnames( className, {
-        [ `are-vertically-aligned-${ verticalAlignment }` ]: verticalAlignment,
-    } );
-
-    classes = classnames( classes, {
-        [ `container` ]: 'container' === size,
-        [ `container-fluid` ]: 'container-fluid' === size || 'container-content-boxed' === size,
-    } );
+    
 
     const computedContentWidth =
         size === 'container'
@@ -606,59 +663,11 @@ export function ColumnsEditContainer( props ) {
     }, [ containerPaddingOnRow, containerPadding, setAttributes ] );
     
     const [activeTab, setActiveTab] = useState('layout');
-    const [ activeMaxWidthBreakpoint, setActiveMaxWidthBreakpoint ] = useState( 'desktop' );
-    const [ activeMinHeightBreakpoint, setActiveMinHeightBreakpoint ] = useState( 'desktop' );
-    const [ activeRowGapBreakpoint, setActiveRowGapBreakpoint ] = useState( 'desktop' );
-    const [ activePaddingBreakpoint, setActivePaddingBreakpoint ] = useState( 'desktop' );
-    const [ activeMarginBreakpoint, setActiveMarginBreakpoint ] = useState( 'desktop' );
+    
+   
 
-    const [ activeDirectionBreakpoint, setActiveDirectionBreakpoint ] = useState( 'desktop' );
-    const directionValueKey =
-        activeDirectionBreakpoint === 'tablet'
-            ? 'flexDirectionTablet'
-            : activeDirectionBreakpoint === 'mobile'
-                ? 'flexDirectionMobile'
-                : 'flexDirection';
-    const currentDirection = attributes?.[ directionValueKey ] || 'row';
-    const resetDirection = () =>
-        setAttributes( {
-            [ directionValueKey ]: activeDirectionBreakpoint === 'desktop' ? 'row' : undefined,
-        } );
-
-    const maxWidthValueKey =
-        activeMaxWidthBreakpoint === 'tablet'
-            ? 'maxWidthTablet'
-            : activeMaxWidthBreakpoint === 'mobile'
-                ? 'maxWidthMobile'
-                : 'maxWidth';
-    const maxWidthUnitKey =
-        activeMaxWidthBreakpoint === 'tablet'
-            ? 'maxWidthUnitTablet'
-            : activeMaxWidthBreakpoint === 'mobile'
-                ? 'maxWidthUnitMobile'
-                : 'maxWidthUnit';
-    const currentMaxWidthValue = attributes?.[ maxWidthValueKey ];
-    const currentMaxWidthUnit = attributes?.[ maxWidthUnitKey ] || 'px';
-    const resetMaxWidth = () =>
-        setAttributes( {
-            [ maxWidthValueKey ]: undefined,
-            [ maxWidthUnitKey ]: 'px',
-            madeitHasUserEdits: true,
-        } );
-    const minHeightValueKey =
-        activeMinHeightBreakpoint === 'tablet'
-            ? 'minHeightTablet'
-            : activeMinHeightBreakpoint === 'mobile'
-                ? 'minHeightMobile'
-                : 'minHeight';
-    const minHeightUnitKey =
-        activeMinHeightBreakpoint === 'tablet'
-            ? 'minHeightUnitTablet'
-            : activeMinHeightBreakpoint === 'mobile'
-                ? 'minHeightUnitMobile'
-                : 'minHeightUnit';
-    const currentMinHeightValue = attributes?.[ minHeightValueKey ];
-    const currentMinHeightUnit = attributes?.[ minHeightUnitKey ] || 'px';
+    
+    
 
     const parseWrapperLengthVar = ( varName ) => {
         const wrapperStyle = attributes?.wrapperStyle;

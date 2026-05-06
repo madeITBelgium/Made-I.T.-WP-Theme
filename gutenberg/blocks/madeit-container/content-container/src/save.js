@@ -869,7 +869,13 @@ export default function save( props ) {
     const childStyle      = buildChildStyle( attributes, defaultSize, backgroundStyle, applyBgToInner );
 
     // ── Klassen bouwen ─────────────────────────────────────────────────────
-    const extraClass    = filterExtraClasses( className );
+    // Merge custom classes from both attributes (stored) and props (Gutenberg default)
+    const customClassNames = [
+        typeof attributes.className === 'string' && attributes.className.trim() ? attributes.className.trim() : '',
+        typeof className === 'string' && className.trim() ? className.trim() : ''
+    ].filter( Boolean ).join( ' ' );
+    
+    const extraClass    = filterExtraClasses( customClassNames );
     const wrapperClass  = buildWrapperClasses( attributes, extraClass, defaultSize, legacy, colorClasses, applyBgToInner );
     const childClass    = buildChildClasses( attributes, defaultSize, contentWidthNormalized, colorClasses, applyBgToInner );
 
@@ -878,18 +884,19 @@ export default function save( props ) {
     // BELANGRIJK: useBlockProps.save() merget de meegegeven className met de
     // opgeslagen className uit de database. Die opgeslagen className kan nog
     // oude klassen bevatten (bv. `container` terwijl de block nu `container-fluid`
-    // is). Daarom overschrijven we blockProps.className expliciet na de call
-    // zodat we volledige controle hebben over de output.
+    // is). Daarom mergen we blockProps.className met onze zorgvuldig opgebouwde
+    // wrapperClass, waarbij onze managed classes prioriteit hebben maar we ook
+    // alle extra classes die Gutenberg toevoegt behouden.
     const hasStyleProps = Object.keys( wrapperStyle ).length > 0;
     const blockProps    = useBlockProps.save( {
         className: wrapperClass,
         style: hasStyleProps ? wrapperStyle : undefined,
     } );
 
-    // Overschrijf de className volledig — Gutenberg heeft haar eigen className
-    // al gemergd, maar wij willen uitsluitend onze zorgvuldig opgebouwde
-    // wrapperClass gebruiken.
-    blockProps.className = wrapperClass;
+    // Merge onze classes met eventuele extra classes van Gutenberg
+    // (bijv. alignment classes of andere door plugins toegevoegde classes).
+    // Classnames() zorgt dat dubbelen eruit gefilterd worden.
+    blockProps.className = classnames( wrapperClass, blockProps.className );
 
     // ── HTML-tag ───────────────────────────────────────────────────────────
     const HtmlTag = ALLOWED_HTML_TAGS.includes( attributes.htmlTag ) ? attributes.htmlTag : 'div';

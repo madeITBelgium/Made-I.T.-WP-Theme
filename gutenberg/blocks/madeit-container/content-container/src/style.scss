@@ -366,19 +366,19 @@ $break-medium: 782px;
     }
 
     @include desktop {
-        @for $i from 1 through 12 {
+        
+        // Kolombreedtes op basis van col-lg-* (rekening houdend met row-gap).
+        @for $i from 1 through 11 {
             .madeit-container-row > .col.col-lg-#{$i},
             .madeit-container-row > .wp-block-madeit-block-content-column.col-lg-#{$i} {
                 flex:  0 0 auto;
-                width: percentage($i / 12);
+                width: calc(#{percentage($i / 12)} - ( var(--madeit-row-gap-desktop, 20px) / 2 ));
             }
         }
-
-        // Kolombreedtes op basis van col-lg-* (rekening houdend met row-gap).
-        @for $i from 1 through 11 {
-            .wp-block-madeit-block-content-column.col-lg-#{$i} {
-                width: calc(#{percentage($i / 12)} - var(--madeit-row-gap-desktop, 20px));
-            }
+        .madeit-container-row > .col.col-lg-12,
+        .madeit-container-row > .wp-block-madeit-block-content-column.col-lg-12 {
+            flex:  0 0 auto;
+            width: percentage(12 / 12); 
         }
     }
 
