@@ -1,0 +1,7 @@
+body{background:#f0f0f1;font-family:-apple-system,sans-serif}
+.lc{background:#fff;padding:26px;border-radius:4px;box-shadow:0 1px 3px rgba(0,0,0,.13);width:320px;margin:80px auto}
+h1{text-align:center;margin-bottom:20px}
+label{display:block;font-size:.85rem;margin-bottom:4px}
+input{width:100%;padding:8px;border:1px solid #ddd;border-radius:3px;margin-bottom:12px;box-sizing:border-box}
+.btn{background:#2271b1;color:#fff;width:100%;padding:8px;border:none;border-radius:3px;cursor:pointer}
+.err{color:#d63638;font-size:.8rem;text-align:center;margin-bottom:10px}

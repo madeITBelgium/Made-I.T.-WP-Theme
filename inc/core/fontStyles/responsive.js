@@ -24,6 +24,7 @@ function ensureResponsiveTypographyUIStyles() {
         const styleEl = document.createElement('style');
         styleEl.id = 'madeit-responsive-typo-ui-styles';
         styleEl.textContent = `
+            .components-panel__body.responsive-typo { grid-column: 1 / -1; }
             .components-panel__body.responsive-typo .madeit-control { display: grid; gap: 10px; }
             .components-panel__body.responsive-typo .madeit-control-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
             .components-panel__body.responsive-typo .madeit-control-header__left { display: flex; align-items: center; gap: 10px; min-width: 0; }

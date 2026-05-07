@@ -63,7 +63,7 @@
     },
     "infiniteLoop": {
       "type": "boolean",
-      "default": false
+      "default": true
     },
     "pauseOnInteraction": {
       "type": "boolean",
@@ -92,6 +92,10 @@
     "objectFit": {
       "type": "string",
       "default": "cover"
+    },
+    "borderRadiusUnit": {
+      "type": "string",
+      "default": "%"
     },
     "borderRadius_leftTop": {
       "type": "string",
@@ -131,6 +135,18 @@
         "type": "number"
       },
       "default": []
+    },
+    "hideOnDesktop": {
+      "type": "boolean",
+      "default": false
+    },
+    "hideOnTablet": {
+      "type": "boolean",
+      "default": false
+    },
+    "hideOnMobile": {
+      "type": "boolean",
+      "default": false
     }
   },
   "supports": {

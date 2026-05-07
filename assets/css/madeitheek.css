@@ -1,0 +1,128 @@
+/* Madeitheek editor UI styles (block editor) */
+
+.madeitheek-container {
+    width: 80%;
+    max-width: 1200px;
+    background-color: rgb(255, 255, 255);
+    padding: 20px;
+    border-radius: 4px;
+    text-align: left;
+    max-height: 80vh;
+    min-height: 80vh;
+    overflow: auto;
+}
+
+.madeitheek-container .madeit-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: rgb(29, 35, 39);
+}
+
+/* Builder UI nooit tonen in modal previews */
+.madeitheek-modal .madeit-builder-bar {
+    display: none !important;
+}
+.madeitheek-list {
+
+}
+.madeitheek-list .madeit-template-item {
+    display: block; 
+    width: 100%; 
+    padding: 12px; 
+    font-size: 14px; 
+    cursor: pointer; 
+    border: 1px solid rgb(220, 220, 222); 
+    border-radius: 6px; 
+    background: rgb(255, 255, 255); 
+    color: rgb(29, 35, 39); 
+    text-align: center; 
+    margin-bottom: 12px; 
+    position: relative;
+}
+.madeitheek-list .madeit-template-item .madeitheek-item-label {
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    bottom: -10px;
+    padding: 10px;
+    z-index: 99;
+    opacity: 0;
+    background-color: #06171f;
+    color: #fff;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+.madeitheek-list .madeit-template-item:hover::after {
+    content: '+';
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.134);
+    z-index: 98;
+}
+.madeitheek-list .madeit-template-item:hover .madeitheek-item-label {
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    padding: 10px;
+    z-index: 99;
+    background-color: #0073aa;
+    pointer-events: none;
+    opacity: 1;
+    transition: all 0.3s ease;
+}
+
+.madeitheek-tab {
+	padding: 8px 12px;
+	border-radius: 4px;
+	cursor: pointer;
+	background: #f0f0f1;
+	border: 1px solid #c3c4c7;
+	color: #1d2327;
+}
+
+.madeitheek-tab.is-active {
+	background: #0073aa;
+	border-color: #0073aa;
+	color: #fff;
+}
+
+.madeitheek-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-align: center;
+    margin: 10px 0 20px;
+    font-size: 14px;
+    color: rgb(29, 35, 39);
+}
+
+.madeitheek-status:not(.is-loading) .madeitheek-loader {
+    display: none;
+}
+
+.madeitheek-loader {
+    width: 230px;
+    height: auto;
+}
+
+.madeitheek-status-text {
+    line-height: 1.2;
+    display: none;
+}
+
+.madeitheek-list .madeitheek-item-preview iframe .madeit-builder-bar {
+	display: none;
+}

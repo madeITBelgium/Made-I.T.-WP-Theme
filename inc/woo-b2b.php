@@ -23,6 +23,28 @@ if(defined('MADEIT_WOO_B2B_ONLY') && MADEIT_WOO_B2B_ONLY) {
             return false;
         }
 
+        /* Check if all products in cart have public price */
+        /*
+        if((is_cart() || is_checkout()) && function_exists('WC') && WC()->cart && !WC()->cart->is_empty()) {
+            $all_cart_products_public = true;
+
+            foreach(WC()->cart->get_cart() as $cart_item) {
+                if(empty($cart_item['data']) || !is_a($cart_item['data'], 'WC_Product')) {
+                    continue;
+                }
+
+                if(!madeit_b2b_product_is_public($cart_item['data'])) {
+                    $all_cart_products_public = false;
+                    break;
+                }
+            }
+
+            if($all_cart_products_public) {
+                return $isPurchasable;
+            }
+        }
+        */
+
         //check if user is approved
         $is_approved = get_user_meta($user->ID, 'active_b2b_user', true);
         if(!$is_approved) {
@@ -144,36 +166,13 @@ if(defined('MADEIT_WOO_B2B_ONLY') && MADEIT_WOO_B2B_ONLY) {
 
     function ran_woocommerce_cart_product_price( $price_html, $product ) {
         if ( ! $product->get_sale_price() || ! $product->get_regular_price() || $product->get_sale_price() >= $product->get_regular_price() ) {
-            error_log('No sale price for product in cart ' . $product->get_id() . ' - ' . $price_html);
             return $price_html;
         }
 
         if ( ! $product->is_on_sale() ) {
-            error_log('H2 Product not on sale ' . $product->get_id() . ' - ' . $price_html);
             return $price_html;
         }
 
-        //Check if sales date is current
-        /*
-        $sale_from = $product->get_date_on_sale_from();
-        $sale_to = $product->get_date_on_sale_to();
-        if ($sale_from && $sale_from->getTimestamp() > time()) {
-            error_log('H2 Sale not started yet for product ' . $product->get_id() . ' - ' . $price_html);
-            return $price_html; // Sale not started yet
-        }
-        
-        // Sale end date is valid until 23:59:59 (end of day)
-        if ($sale_to) {
-            $sale_to_end_of_day = clone $sale_to;
-            $sale_to_end_of_day->setTime(23, 59, 59);
-            if ($sale_to_end_of_day->getTimestamp() < time()) {
-                error_log('H2 Sale ended for product ' . $product->get_id() . ' - ' . $price_html);
-                return $price_html; // Sale ended
-            }
-        }
-
-        error_log('H2 Sale price applied for product ' . $product->get_id() . ' - ' . $price_html);
-        */
         return wc_format_sale_price(
                 wc_get_price_to_display( $product, array( 'price' => $product->get_regular_price() ) ),
                 wc_get_price_to_display( $product, array( 'price' => $product->get_sale_price() ) )

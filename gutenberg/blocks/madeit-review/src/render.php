@@ -93,6 +93,10 @@ $wrapper_classes = [
     'madeit-reviews',
     'review',
     'review-' . sanitize_title($layout),
+    // Responsive visibility classes
+    $attributes['hideOnDesktop'] ? 'hide-desktop' : '',
+    $attributes['hideOnTablet'] ? 'hide-tablet' : '',
+    $attributes['hideOnMobile'] ? 'hide-mobile' : '',
 ];
 
 ob_start();
@@ -162,12 +166,15 @@ ob_start();
                         $img_styles = [];
                         if ($image_width !== '') {
                             $img_styles[] = 'width:' . $image_width;
+                            $initial_styles[] = 'width:' . $image_width;
                         }
                         if ($image_height !== '') {
-                            $img_styles[] = 'height:' . $image_height;
+                            $img_styles[] = 'height:' . $image_height . ' !important';
+                            $initial_styles[] = 'height:' . $image_height . ' !important';
                         }
                         if ($object_fit !== '') {
                             $img_styles[] = 'object-fit:' . $object_fit;
+                            $initial_styles[] = 'object-fit:' . $object_fit;
                         }
                         $br_values = array_filter([
                             $br_lt,
@@ -182,7 +189,13 @@ ob_start();
                                 $br_lt !== '' ? $br_lt : '0',
                                 $br_rt !== '' ? $br_rt : '0',
                                 $br_rb !== '' ? $br_rb : '0',
-                                $br_lb !== '' ? $br_lb : '0',
+                                $br_lb !== '' ? $br_lb . ' !important' : '0 !important',
+                            ]);
+                            $initial_styles[] = 'border-radius:' . implode(' ', [
+                                $br_lt !== '' ? $br_lt : '0',
+                                $br_rt !== '' ? $br_rt : '0',
+                                $br_rb !== '' ? $br_rb : '0',
+                                $br_lb !== '' ? $br_lb . ' !important' : '0 !important',
                             ]);
                         }
                         ?>
@@ -191,16 +204,39 @@ ob_start();
                                 <!-- import the right layout -->
                                 <?php
 
-                                    if ($layout === 'standaard') {
-                                        // Import the /layouts/standaard.php file if it exists.
-                                        $default_layout_file = dirname(__DIR__) . '/src/layouts/standaard.php';
-                                        if (is_readable($default_layout_file)) {
-                                            include $default_layout_file;
-                                        } else {
-                                            echo 'Kan layout niet vinden.';
-                                        }
-                                    } else {
-                                        echo 'Ongeldige layout.'; 
+                                    switch ($layout) {
+                                        case 'standaard':
+                                            $default_layout_file = dirname(__DIR__) . '/src/layouts/standaard.php';
+                                            break;
+
+                                        case 'modern':
+                                            $default_layout_file = dirname(__DIR__) . '/src/layouts/modern.php';
+                                            break;
+
+                                        case 'minimal':
+                                            $default_layout_file = dirname(__DIR__) . '/src/layouts/minimal.php';
+                                            break;
+
+                                        case 'klassiek':
+                                            $default_layout_file = dirname(__DIR__) . '/src/layouts/klassiek.php';
+                                            break;
+
+                                        case 'compact':
+                                            $default_layout_file = dirname(__DIR__) . '/src/layouts/compact.php';
+                                            break;
+
+                                        case 'spotlight':
+                                            $default_layout_file = dirname(__DIR__) . '/src/layouts/spotlight.php';
+                                            break;
+
+
+                                        // Future layouts can be added here with additional cases.
+                                        default:
+                                            $default_layout_file = '';
+                                    }
+
+                                    if (!empty($default_layout_file) && file_exists($default_layout_file)) {
+                                        include $default_layout_file;
                                     }
                                 ?>
                             
@@ -224,7 +260,7 @@ ob_start();
         </div>
 
         <?php if (!$query->have_posts()) : ?>
-            <p class="madeit-reviews__empty"><?php echo esc_html(__('Geen reviews gevonden.', 'madeit-review')); ?></p>
+            <p class="madeit-reviews__empty"><?php echo esc_html(__('Er zijn nog geen gekoppelde reviews, bekijk of de juiste API is ingesteld.', 'madeit-review')); ?></p>
         <?php endif; ?>
     </div>
 

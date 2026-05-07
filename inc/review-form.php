@@ -10,6 +10,11 @@ function madeit_review_form($atts = [])
     $rating = $_POST['review-rating'] ?? $_GET['rating'] ?? 5;
     ?>
     <form action="" id="madeit-review-form" method="POST">
+        <input type="hidden" name="review_started_at" value="" />
+        <div aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;overflow:hidden;">
+            <label for="review-company"><?php _e('Bedrijfsnaam', 'madeit'); ?></label>
+            <input type="text" id="review-company" name="review-company" value="" tabindex="-1" autocomplete="off" />
+        </div>
         <div class="loading" style="display: none;">
             <div class="spinner-border text-primary" role="status">
                 <span class="sr-only"><?php _e('Laden...', 'madeit'); ?></span>
@@ -140,6 +145,22 @@ function madeit_review_form($atts = [])
             </div>
         <?php } ?>
     </form>
+    <script>
+        (function () {
+            var forms = document.querySelectorAll('#madeit-review-form');
+            if (!forms.length) {
+                return;
+            }
+
+            var startedAt = Math.floor(Date.now() / 1000).toString();
+            forms.forEach(function (form) {
+                var startedField = form.querySelector('input[name="review_started_at"]');
+                if (startedField) {
+                    startedField.value = startedAt;
+                }
+            });
+        })();
+    </script>
     <?php
     return ob_get_clean();
 }
@@ -147,11 +168,28 @@ add_shortcode('review_form', 'madeit_review_form');
 
 function madeit_review_save_ajax()
 {
-    $name = $_POST['reviewer_name'];
-    $email = $_POST['email'];
-    $rating = $_POST['rating'];
-    $title = $_POST['title'];
-    $description = $_POST['description'];
+    $honeypot = sanitize_text_field(wp_unslash($_POST['review-company'] ?? ''));
+    $startedAt = absint($_POST['review_started_at'] ?? 0);
+    $minimumReviewTime = (int) apply_filters('madeit_review_min_seconds', 4);
+
+    // Quietly accept obvious bot traffic to avoid retry storms.
+    if (!empty($honeypot)) {
+        wp_send_json_success(['success' => true]);
+    }
+
+    if ($startedAt > 0 && (time() - $startedAt) < $minimumReviewTime) {
+        wp_send_json_success(['success' => true]);
+    }
+
+    $name = sanitize_text_field(wp_unslash($_POST['reviewer_name'] ?? ''));
+    $email = sanitize_email(wp_unslash($_POST['email'] ?? ''));
+    $rating = absint($_POST['rating'] ?? 0);
+    $title = sanitize_text_field(wp_unslash($_POST['title'] ?? ''));
+    $description = sanitize_textarea_field(wp_unslash($_POST['description'] ?? ''));
+
+    if (empty($name) || empty($email) || $rating < 1 || $rating > 5) {
+        wp_send_json_error(['success' => false, 'message' => 'Ongeldige invoer.'], 400);
+    }
 
     $ip = $_SERVER['REMOTE_ADDR'] ?? '';
     $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
@@ -164,7 +202,7 @@ function madeit_review_save_ajax()
         'post_title'  => $name . (!empty($title) ? ' - ' . $title : ''),
         'post_status' => $rating >= 4 ? 'publish' : 'concept',
         'post_type'   => 'review',
-        'post_date'   => date('Y-m-d H:i:s', $review['time']),
+        'post_date'   => current_time('mysql'),
     ];
     $postId = wp_insert_post($post);
     update_post_meta($postId, 'naam', $name);

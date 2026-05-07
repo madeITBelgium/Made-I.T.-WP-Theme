@@ -229,3 +229,28 @@ add_action('enqueue_block_editor_assets', function (): void {
     wp_enqueue_script('madeit-block-editor-inline');
     wp_add_inline_script('madeit-block-editor-inline', "(function(){\n\tfunction setAdvancedPanelTitle(){\n\t\tvar el = document.querySelector('.block-editor-block-inspector__advanced .components-panel__body-title .components-panel__body-toggle');\n\t\tif(!el) return;\n\t\tif(el.textContent !== 'CSS classe') el.textContent = 'CSS classe';\n\t}\n\tfunction boot(){\n\t\tsetAdvancedPanelTitle();\n\t\tvar target = document.querySelector('.interface-interface-skeleton__sidebar') || document.body;\n\t\tif(!target || !window.MutationObserver) return;\n\t\tvar obs = new MutationObserver(function(){ setAdvancedPanelTitle(); });\n\t\tobs.observe(target,{subtree:true,childList:true});\n\t}\n\tif(window.wp && wp.domReady){ wp.domReady(boot); } else if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', boot); } else { boot(); }\n})();", 'after');
 });
+
+// Ensure our shared editor control styles are also available inside the editor canvas iframe.
+// `enqueue_block_editor_assets` targets the outer editor UI; the canvas often runs in an iframe.
+add_action('enqueue_block_assets', function (): void {
+    if (!is_admin()) {
+        return;
+    }
+
+    $shared_rel = 'gutenberg/shared/editor-controls.css';
+    $shared_src = get_parent_theme_file_uri($shared_rel);
+    $shared_path = get_parent_theme_file_path($shared_rel);
+    $shared_version = is_readable($shared_path) ? (string) filemtime($shared_path) : MADEIT_BLOCKS_VERSION;
+
+    wp_enqueue_style('madeit-shared-editor-controls', $shared_src, [], $shared_version);
+}, 9);
+
+// Shared frontend-only utility CSS (e.g. responsive visibility classes).
+add_action('wp_enqueue_scripts', function (): void {
+    $shared_rel = 'gutenberg/shared/frontend-utilities.css';
+    $shared_src = get_parent_theme_file_uri($shared_rel);
+    $shared_path = get_parent_theme_file_path($shared_rel);
+    $shared_version = is_readable($shared_path) ? (string) filemtime($shared_path) : MADEIT_BLOCKS_VERSION;
+
+    wp_enqueue_style('madeit-shared-frontend-utilities', $shared_src, [], $shared_version);
+});

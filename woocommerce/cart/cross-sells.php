@@ -1,4 +1,3 @@
-
 <?php
 /**
  * Cross-sells.

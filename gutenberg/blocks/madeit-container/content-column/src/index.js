@@ -27,6 +27,8 @@ import icon from './icon';
 
 // Oude save versies importeren
 import save_20260407 from './save-versions/save_20260407';
+import save_20260422 from './save-versions/save_20260422';
+import save_20260422_color_legacy_duplicates from './save-versions/save_20260422_color_legacy_duplicates';
 
 const stripBackgroundClasses = ( className = '' ) =>
     className
@@ -93,6 +95,285 @@ registerBlockType( metadata.name, {
     save,
     
     deprecated: [
+            {
+                // Deprecated (2026-04-22): early color support could serialize
+                // duplicated/conflicting background classes on the inner wrapper.
+                // Keep as-is so existing posts validate.
+                save: save_20260422_color_legacy_duplicates,
+            },
+            {
+                // Deprecated (2026-04-22): previous save did not output
+                // background/text colors to the frontend.
+                save: save_20260422,
+            },
+            {
+                // Deprecated (width default compatibility): before `width`
+                // defaulted to 12, legacy content could be saved without
+                // `col-lg-12`. Keep raw wrapper classes to match that markup.
+                attributes: {
+                    wrapperClassName: {
+                        type: 'string',
+                        source: 'attribute',
+                        selector: '.wp-block-madeit-block-content-column',
+                        attribute: 'class',
+                    },
+                    legacyWrapperStyle: {
+                        type: 'string',
+                        source: 'attribute',
+                        selector: '.wp-block-madeit-block-content-column',
+                        attribute: 'style',
+                    },
+                    innerWrapperClassName: {
+                        type: 'string',
+                        source: 'attribute',
+                        selector: '.madeit-content-column__inner',
+                        attribute: 'class',
+                    },
+                    legacyInnerStyle: {
+                        type: 'string',
+                        source: 'attribute',
+                        selector: '.madeit-content-column__inner',
+                        attribute: 'style',
+                    },
+                    verticalAlignment: { type: 'string' },
+                    width: { type: 'number', min: 0, max: 12 },
+                    margin: { type: 'object' },
+                    padding: { type: 'object' },
+                    maxContainerSize: { type: 'boolean' },
+                },
+                save: function( props ) {
+                    const {
+                        wrapperClassName,
+                        legacyWrapperStyle,
+                        innerWrapperClassName,
+                        legacyInnerStyle,
+                        margin,
+                        padding,
+                    } = props.attributes;
+
+                    const rawOuterClassName =
+                        typeof wrapperClassName === 'string' && wrapperClassName.trim().length > 0
+                            ? wrapperClassName.trim()
+                            : 'wp-block-madeit-block-content-column col-12';
+
+                    const outerStyle = {};
+                    if ( margin?.top !== undefined ) outerStyle.marginTop = margin.top;
+                    if ( margin?.bottom !== undefined ) outerStyle.marginBottom = margin.bottom;
+
+                    if ( legacyWrapperStyle && Object.keys( outerStyle ).length === 0 ) {
+                        const readPx = ( key ) => {
+                            const re = new RegExp( `${ key }\\s*:\\s*([0-9.]+)px`, 'i' );
+                            const m = String( legacyWrapperStyle ).match( re );
+                            return m ? `${ m[ 1 ] }px` : undefined;
+                        };
+
+                        const mt = readPx( 'margin-top' );
+                        const mb = readPx( 'margin-bottom' );
+
+                        if ( mt !== undefined ) outerStyle.marginTop = mt;
+                        if ( mb !== undefined ) outerStyle.marginBottom = mb;
+                    }
+
+                    const rawInnerClassName =
+                        typeof innerWrapperClassName === 'string' && innerWrapperClassName.trim().length > 0
+                            ? innerWrapperClassName.trim()
+                            : 'madeit-content-column__inner';
+
+                    const innerStyle = {};
+                    if ( padding?.top !== undefined ) innerStyle.paddingTop = padding.top;
+                    if ( padding?.bottom !== undefined ) innerStyle.paddingBottom = padding.bottom;
+                    if ( padding?.left !== undefined ) innerStyle.paddingLeft = padding.left;
+                    if ( padding?.right !== undefined ) innerStyle.paddingRight = padding.right;
+
+                    if ( legacyInnerStyle ) {
+                        const readCssValue = ( key ) => {
+                            const re = new RegExp( `(?:^|;)\\s*${ key }\\s*:\\s*([^;]+)`, 'i' );
+                            const m = String( legacyInnerStyle ).match( re );
+                            return m ? String( m[ 1 ] ).trim() : undefined;
+                        };
+
+                        const legacyColor = readCssValue( 'color' );
+                        const legacyBackgroundColor = readCssValue( 'background-color' );
+
+                        if ( legacyColor !== undefined && innerStyle.color === undefined ) {
+                            innerStyle.color = legacyColor;
+                        }
+                        if (
+                            legacyBackgroundColor !== undefined &&
+                            innerStyle.backgroundColor === undefined
+                        ) {
+                            innerStyle.backgroundColor = legacyBackgroundColor;
+                        }
+                    }
+
+                    const hasPaddingFromAttributes =
+                        innerStyle.paddingTop !== undefined ||
+                        innerStyle.paddingBottom !== undefined ||
+                        innerStyle.paddingLeft !== undefined ||
+                        innerStyle.paddingRight !== undefined;
+
+                    if ( legacyInnerStyle && ! hasPaddingFromAttributes ) {
+                        const readPx = ( key ) => {
+                            const re = new RegExp( `${ key }\\s*:\\s*([0-9.]+)px`, 'i' );
+                            const m = String( legacyInnerStyle ).match( re );
+                            return m ? `${ m[ 1 ] }px` : undefined;
+                        };
+
+                        const pt = readPx( 'padding-top' );
+                        const pb = readPx( 'padding-bottom' );
+                        const pl = readPx( 'padding-left' );
+                        const pr = readPx( 'padding-right' );
+
+                        if ( pt !== undefined ) innerStyle.paddingTop = pt;
+                        if ( pb !== undefined ) innerStyle.paddingBottom = pb;
+                        if ( pl !== undefined ) innerStyle.paddingLeft = pl;
+                        if ( pr !== undefined ) innerStyle.paddingRight = pr;
+                    }
+
+                    return (
+                        <div className={ rawOuterClassName } style={ outerStyle }>
+                            <div className={ rawInnerClassName } style={ innerStyle }>
+                                <InnerBlocks.Content />
+                            </div>
+                        </div>
+                    );
+                },
+            },
+            {
+                // Deprecated (legacy whitespace + raw wrapper classes): some older
+                // saved blocks did not include `col-lg-12` when width was 12, and
+                // kept an empty line inside the inner wrapper when no inner blocks
+                // were present. Keep this to avoid block validation errors.
+                attributes: {
+                    wrapperClassName: {
+                        type: 'string',
+                        source: 'attribute',
+                        selector: '.wp-block-madeit-block-content-column',
+                        attribute: 'class',
+                    },
+                    legacyWrapperStyle: {
+                        type: 'string',
+                        source: 'attribute',
+                        selector: '.wp-block-madeit-block-content-column',
+                        attribute: 'style',
+                    },
+                    innerWrapperClassName: {
+                        type: 'string',
+                        source: 'attribute',
+                        selector: '.madeit-content-column__inner',
+                        attribute: 'class',
+                    },
+                    legacyInnerStyle: {
+                        type: 'string',
+                        source: 'attribute',
+                        selector: '.madeit-content-column__inner',
+                        attribute: 'style',
+                    },
+                    verticalAlignment: { type: 'string' },
+                    width: { type: 'number', min: 0, max: 12 },
+                    margin: { type: 'object' },
+                    padding: { type: 'object' },
+                    maxContainerSize: { type: 'boolean' },
+                },
+                save: function( props ) {
+                    const {
+                        wrapperClassName,
+                        legacyWrapperStyle,
+                        innerWrapperClassName,
+                        legacyInnerStyle,
+                        margin,
+                        padding,
+                    } = props.attributes;
+
+                    const rawOuterClassName =
+                        typeof wrapperClassName === 'string' && wrapperClassName.trim().length > 0
+                            ? wrapperClassName.trim()
+                            : 'wp-block-madeit-block-content-column col-12';
+
+                    const outerStyle = {};
+                    if ( margin?.top !== undefined ) outerStyle.marginTop = margin.top;
+                    if ( margin?.bottom !== undefined ) outerStyle.marginBottom = margin.bottom;
+
+                    if ( legacyWrapperStyle && Object.keys( outerStyle ).length === 0 ) {
+                        const readPx = ( key ) => {
+                            const re = new RegExp( `${ key }\\s*:\\s*([0-9.]+)px`, 'i' );
+                            const m = String( legacyWrapperStyle ).match( re );
+                            return m ? `${ m[ 1 ] }px` : undefined;
+                        };
+
+                        const mt = readPx( 'margin-top' );
+                        const mb = readPx( 'margin-bottom' );
+
+                        if ( mt !== undefined ) outerStyle.marginTop = mt;
+                        if ( mb !== undefined ) outerStyle.marginBottom = mb;
+                    }
+
+                    const rawInnerClassName =
+                        typeof innerWrapperClassName === 'string' && innerWrapperClassName.trim().length > 0
+                            ? innerWrapperClassName.trim()
+                            : 'madeit-content-column__inner';
+
+                    const innerStyle = {};
+                    if ( padding?.top !== undefined ) innerStyle.paddingTop = padding.top;
+                    if ( padding?.bottom !== undefined ) innerStyle.paddingBottom = padding.bottom;
+                    if ( padding?.left !== undefined ) innerStyle.paddingLeft = padding.left;
+                    if ( padding?.right !== undefined ) innerStyle.paddingRight = padding.right;
+
+                    if ( legacyInnerStyle ) {
+                        const readCssValue = ( key ) => {
+                            const re = new RegExp( `(?:^|;)\\s*${ key }\\s*:\\s*([^;]+)`, 'i' );
+                            const m = String( legacyInnerStyle ).match( re );
+                            return m ? String( m[ 1 ] ).trim() : undefined;
+                        };
+
+                        const legacyColor = readCssValue( 'color' );
+                        const legacyBackgroundColor = readCssValue( 'background-color' );
+
+                        if ( legacyColor !== undefined && innerStyle.color === undefined ) {
+                            innerStyle.color = legacyColor;
+                        }
+                        if (
+                            legacyBackgroundColor !== undefined &&
+                            innerStyle.backgroundColor === undefined
+                        ) {
+                            innerStyle.backgroundColor = legacyBackgroundColor;
+                        }
+                    }
+
+                    const hasPaddingFromAttributes =
+                        innerStyle.paddingTop !== undefined ||
+                        innerStyle.paddingBottom !== undefined ||
+                        innerStyle.paddingLeft !== undefined ||
+                        innerStyle.paddingRight !== undefined;
+
+                    if ( legacyInnerStyle && ! hasPaddingFromAttributes ) {
+                        const readPx = ( key ) => {
+                            const re = new RegExp( `${ key }\\s*:\\s*([0-9.]+)px`, 'i' );
+                            const m = String( legacyInnerStyle ).match( re );
+                            return m ? `${ m[ 1 ] }px` : undefined;
+                        };
+
+                        const pt = readPx( 'padding-top' );
+                        const pb = readPx( 'padding-bottom' );
+                        const pl = readPx( 'padding-left' );
+                        const pr = readPx( 'padding-right' );
+
+                        if ( pt !== undefined ) innerStyle.paddingTop = pt;
+                        if ( pb !== undefined ) innerStyle.paddingBottom = pb;
+                        if ( pl !== undefined ) innerStyle.paddingLeft = pl;
+                        if ( pr !== undefined ) innerStyle.paddingRight = pr;
+                    }
+
+                    return (
+                        <div className={ rawOuterClassName } style={ outerStyle }>
+                            <div className={ rawInnerClassName } style={ innerStyle }>
+                                { '\n\n' }
+                                <InnerBlocks.Content />
+                            </div>
+                        </div>
+                    );
+                },
+            },
         {
             // Deprecated (previous markup): padding was saved on the OUTER wrapper,
             // while background classes were stored on the INNER wrapper.
@@ -379,7 +660,7 @@ registerBlockType( metadata.name, {
                 }
 
                 if ( hasBackground && ! hasInnerWrapper ) {
-                    const legacyWrapperClasses = classnames( wrapperClasses, {
+                    const legacyWrapperClasses = classnames( 'madeit-content-column__inner', wrapperClasses, {
                         'has-background': !! backgroundColorClass,
                         [ backgroundColorClass ]: backgroundColorClass,
                     } );

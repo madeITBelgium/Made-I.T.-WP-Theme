@@ -522,6 +522,22 @@ function madeit_get_all_blocks(): array
         $dirs[] = $forms_plugin_block_dir;
     }
 
+    $find_block_json = static function (string $dir): ?string {
+        $candidates = [
+            $dir . '/block.json',
+            $dir . '/src/block.json',
+            $dir . '/build/block.json',
+        ];
+
+        foreach ($candidates as $candidate) {
+            if (is_readable($candidate)) {
+                return $candidate;
+            }
+        }
+
+        return null;
+    };
+
     foreach ($dirs as $dir) {
         $slug = basename($dir);
         if ($slug === 'advanced-controls') {
@@ -535,9 +551,8 @@ function madeit_get_all_blocks(): array
         $madeit  = [];
         $category = 'madeit';
 
-
-        $block_json_file = $dir . '/block.json';
-        if (is_readable($block_json_file)) {
+        $block_json_file = $find_block_json($dir);
+        if (is_string($block_json_file) && $block_json_file !== '' && is_readable($block_json_file)) {
             $decoded = json_decode((string) file_get_contents($block_json_file), true);
             if (is_array($decoded)) {
                 $title = $decoded['title'] ?? $title;
@@ -561,6 +576,9 @@ function madeit_get_all_blocks(): array
             'status' => $status,
 
             'category'    => $category,
+
+            'dir'         => $dir,
+            'block_json'  => $block_json_file,
 
             'version'     => $version,
             'madeit'      => $madeit,

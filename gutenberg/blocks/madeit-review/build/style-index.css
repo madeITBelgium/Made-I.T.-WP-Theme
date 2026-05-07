@@ -21,11 +21,17 @@
 }
 .wp-block-madeit-reviews .swiper .swiper-wrapper .madeit-review-card {
   padding: 20px;
+  background-color: var(--madeit-review-card-bg, #fff);
+}
+.wp-block-madeit-reviews .swiper .swiper-wrapper .madeit-review-card .company {
+  font-size: smaller;
+  opacity: 0.7;
 }
 
 .wp-block-madeit-reviews .swiper-button-next,
 .wp-block-madeit-reviews .swiper-button-prev {
   color: var(--madeit-review-arrow-color, currentColor);
+  top: calc(50% - 20px) !important;
 }
 
 .wp-block-madeit-reviews .swiper-button-next:after,
@@ -44,12 +50,34 @@
   opacity: 1;
 }
 
+.wp-block-madeit-reviews .madeit-swiper-pagination--numbers .swiper-pagination-bullet {
+  background: transparent;
+  width: auto;
+  height: auto;
+  opacity: 0.6;
+  border-radius: 0;
+  margin: 0 0.35em;
+  color: var(--madeit-review-pagination-color, currentColor);
+  font-size: calc(var(--madeit-review-pagination-size) * 1.5);
+  line-height: 1;
+}
+
+.wp-block-madeit-reviews .madeit-swiper-pagination--numbers .swiper-pagination-bullet-active {
+  opacity: 1;
+}
+
 .wp-block-madeit-reviews .swiper-button-lock {
   display: flex !important;
 }
 
 .wp-block-madeit-reviews .swiper-pagination-lock {
   display: block !important;
+}
+
+.madeit-review-card__content .madeit-review-card__title {
+  font-size: 1.25em;
+  font-weight: bold;
+  margin-bottom: 0.5em;
 }
 
 /*# sourceMappingURL=style-index.css.map*/

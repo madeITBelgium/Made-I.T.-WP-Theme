@@ -17,9 +17,30 @@ function madeit_blocks_updates_page() {
     };
 
     $get_last_updated = function (string $slug, array $block_data): string {
-        $block_json = function_exists('get_theme_file_path')
-            ? get_theme_file_path('gutenberg/blocks/' . $slug . '/block.json')
-            : (get_stylesheet_directory() . '/gutenberg/blocks/' . $slug . '/block.json');
+        $block_json = null;
+        if (isset($block_data['block_json']) && is_string($block_data['block_json']) && $block_data['block_json'] !== '') {
+            $block_json = $block_data['block_json'];
+        }
+
+        if (!is_string($block_json) || $block_json === '' || !is_readable($block_json)) {
+            // Backwards compat / safety net for older block data.
+            $base_dir = function_exists('get_theme_file_path')
+                ? get_theme_file_path('gutenberg/blocks/' . $slug)
+                : (get_stylesheet_directory() . '/gutenberg/blocks/' . $slug);
+
+            $candidates = [
+                $base_dir . '/block.json',
+                $base_dir . '/src/block.json',
+                $base_dir . '/build/block.json',
+            ];
+
+            foreach ($candidates as $candidate) {
+                if (is_string($candidate) && $candidate !== '' && is_readable($candidate)) {
+                    $block_json = $candidate;
+                    break;
+                }
+            }
+        }
 
         $ts = (is_string($block_json) && is_readable($block_json)) ? filemtime($block_json) : false;
         if (is_int($ts) && $ts > 0) {

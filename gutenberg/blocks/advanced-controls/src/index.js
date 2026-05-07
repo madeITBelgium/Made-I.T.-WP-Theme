@@ -1,6 +1,7 @@
 const MADEIT_ADVANCED_CONTROLS_EXCLUDED_BLOCKS = [
     'madeit/block-content',
     'madeit/block-tabs',
+    'madeit/reviews',
 ];
 
 function madeit_hide_block_mobile(settings, name) {
@@ -70,115 +71,115 @@ const madeitAdvancedControls = wp.compose.createHigherOrderComponent((BlockEdit)
         
         var animationOptions = [
             {
-	                label: wp.i18n.__( 'No Animation', 'mandiet' ),
+	                label: wp.i18n.__( 'No Animation', 'madeit' ),
 	                value: '',
 	        },
 	        {
-	                label: wp.i18n.__( 'Fade', 'mandiet' ),
+	                label: wp.i18n.__( 'Fade', 'madeit' ),
 	                value: 'fade',
 	        },
 	        {
-	                label: wp.i18n.__( 'Fade up', 'mandiet' ),
+	                label: wp.i18n.__( 'Fade up', 'madeit' ),
 	                value: 'fade-up',
 	        },
 	        {
-	                label: wp.i18n.__( 'Fade down', 'mandiet' ),
+	                label: wp.i18n.__( 'Fade down', 'madeit' ),
 	                value: 'fade-down',
 	        },
 	        {
-	                label: wp.i18n.__( 'Fade left', 'mandiet' ),
+	                label: wp.i18n.__( 'Fade left', 'madeit' ),
 	                value: 'fade-left',
 	        },
 	        {
-	                label: wp.i18n.__( 'Fade right', 'mandiet' ),
+	                label: wp.i18n.__( 'Fade right', 'madeit' ),
 	                value: 'fade-right',
 	        },
 	        {
-	                label: wp.i18n.__( 'Fade up right', 'mandiet' ),
+	                label: wp.i18n.__( 'Fade up right', 'madeit' ),
 	                value: 'fade-up-right',
 	        },
 	        {
-	                label: wp.i18n.__( 'Fade up left', 'mandiet' ),
+	                label: wp.i18n.__( 'Fade up left', 'madeit' ),
 	                value: 'fade-up-left',
 	        },
 	        {
-	                label: wp.i18n.__( 'Fade down right', 'mandiet' ),
+	                label: wp.i18n.__( 'Fade down right', 'madeit' ),
 	                value: 'fade-down-right',
 	        },
 	        {
-	                label: wp.i18n.__( 'Fade down left', 'mandiet' ),
+	                label: wp.i18n.__( 'Fade down left', 'madeit' ),
 	                value: 'fade-down-left',
 	        },
 	        {
-	                label: wp.i18n.__( 'Flip up', 'mandiet' ),
+	                label: wp.i18n.__( 'Flip up', 'madeit' ),
 	                value: 'flip-up',
 	        },
 	        {
-	                label: wp.i18n.__( 'Flip down', 'mandiet' ),
+	                label: wp.i18n.__( 'Flip down', 'madeit' ),
 	                value: 'flip-down',
 	        },
 	        {
-	                label: wp.i18n.__( 'Flip left', 'mandiet' ),
+	                label: wp.i18n.__( 'Flip left', 'madeit' ),
 	                value: 'flip-left',
 	        },
 	        {
-	                label: wp.i18n.__( 'Flip right', 'mandiet' ),
+	                label: wp.i18n.__( 'Flip right', 'madeit' ),
 	                value: 'flip-right',
 	        },
 	        {
-	                label: wp.i18n.__( 'Slide up', 'mandiet' ),
+	                label: wp.i18n.__( 'Slide up', 'madeit' ),
 	                value: 'slide-up',
 	        },
 	        {
-	                label: wp.i18n.__( 'Slide down', 'mandiet' ),
+	                label: wp.i18n.__( 'Slide down', 'madeit' ),
 	                value: 'slide-down',
 	        },
 	        {
-	                label: wp.i18n.__( 'Slide left', 'mandiet' ),
+	                label: wp.i18n.__( 'Slide left', 'madeit' ),
 	                value: 'slide-left',
 	        },
 	        {
-	                label: wp.i18n.__( 'Slide right', 'mandiet' ),
+	                label: wp.i18n.__( 'Slide right', 'madeit' ),
 	                value: 'slide-right',
 	        },
 	        {
-	                label: wp.i18n.__( 'Zoom in', 'mandiet' ),
+	                label: wp.i18n.__( 'Zoom in', 'madeit' ),
 	                value: 'zoom-in',
 	        },
 	        {
-	                label: wp.i18n.__( 'Zoom in up', 'mandiet' ),
+	                label: wp.i18n.__( 'Zoom in up', 'madeit' ),
 	                value: 'zoom-in-up',
 	        },
 	        {
-	                label: wp.i18n.__( 'Zoom in down', 'mandiet' ),
+	                label: wp.i18n.__( 'Zoom in down', 'madeit' ),
 	                value: 'zoom-in-down',
 	        },
 	        {
-	                label: wp.i18n.__( 'Zoom in left', 'mandiet' ),
+	                label: wp.i18n.__( 'Zoom in left', 'madeit' ),
 	                value: 'zoom-in-left',
 	        },
 	        {
-	                label: wp.i18n.__( 'Zoom in right', 'mandiet' ),
+	                label: wp.i18n.__( 'Zoom in right', 'madeit' ),
 	                value: 'zoom-in-right',
 	        },
 	        {
-	                label: wp.i18n.__( 'Zoom out', 'mandiet' ),
+	                label: wp.i18n.__( 'Zoom out', 'madeit' ),
 	                value: 'zoom-out',
 	        },
 	        {
-	                label: wp.i18n.__( 'Zoom out up', 'mandiet' ),
+	                label: wp.i18n.__( 'Zoom out up', 'madeit' ),
 	                value: 'zoom-out-up',
 	        },
 	        {
-	                label: wp.i18n.__( 'Zoom out down', 'mandiet' ),
+	                label: wp.i18n.__( 'Zoom out down', 'madeit' ),
 	                value: 'zoom-out-down',
 	        },
 	        {
-	                label: wp.i18n.__( 'Zoom out left', 'mandiet' ),
+	                label: wp.i18n.__( 'Zoom out left', 'madeit' ),
 	                value: 'zoom-out-left',
 	        },
 	        {
-	                label: wp.i18n.__( 'Zoom out right', 'mandiet' ),
+	                label: wp.i18n.__( 'Zoom out right', 'madeit' ),
 	                value: 'zoom-out-right',
 	        },
 	    ];

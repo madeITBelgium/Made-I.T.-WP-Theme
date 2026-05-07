@@ -2,6 +2,7 @@
 
 function madeit_filter_lock_content($content)
 {
+    do_action('qm/start', 'madeit:filter_lock_content');
     if (!is_string($content)) {
         $content = (string) $content;
     }
@@ -57,7 +58,7 @@ function madeit_filter_lock_content($content)
             $content .= ob_get_clean();
         }
     }
-
+    do_action('qm/stop', 'madeit:filter_lock_content');
     return $content;
 }
 add_filter('the_content', 'madeit_filter_lock_content');

@@ -36,11 +36,15 @@ import {
     getRedistributedColumnWidths,
     toWidthPrecision,
 } from './utils.js';
-import { ControlHeader, ResponsiveBoxControl } from '../../../../shared';
+import { ControlHeader, ResponsiveBoxControl, ResponsiveVisibilityPanel } from '../../../../shared';
 import containerVariations from './variations';
 import './editor.scss';
 
 const ALLOWED_BLOCKS = [ 'madeit/block-content-column' ];
+
+
+
+// ─── 1. Inner component: heeft toegang tot BreakpointContext ─────────────────
 
 export function ColumnsEditContainer( props ) {
     const {
@@ -64,8 +68,11 @@ export function ColumnsEditContainer( props ) {
     );
     
     const {
+        // ─── General attributes ─────────────────
         verticalAlignment, 
         size,
+
+        // ─── Container attributes ─────────────────
         contentWidth,
         containerMargin,
         containerMarginTablet,
@@ -74,13 +81,19 @@ export function ColumnsEditContainer( props ) {
         containerPaddingTablet,
         containerPaddingMobile,
         containerPaddingOnRow,
+
+        // ─── Row attributes (only for "container-content-boxed" size) ─────────────────
         rowMargin,
         rowPadding,
+
+        // ─── Background attributes ─────────────────
         containerBackgroundImage,
         containerBackgroundPosition,
         containerBackgroundRepeat,
         containerBackgroundSize,
         containerBackgroundGradient,
+
+        // ─── Other attributes ─────────────────
         minHeight,
         minHeightUnit,
         minHeightTablet,
@@ -119,6 +132,97 @@ export function ColumnsEditContainer( props ) {
         hideOnMobile,
         backgroundType,
     } = attributes;
+
+    
+    
+    // ── Huidige breakpunt voor elke aanpasbare CSS-eigenschap ──────────────
+    const [ activeMaxWidthBreakpoint, setActiveMaxWidthBreakpoint ] = useState( 'desktop' );
+    const [ activeMinHeightBreakpoint, setActiveMinHeightBreakpoint ] = useState( 'desktop' );
+    const [ activeRowGapBreakpoint, setActiveRowGapBreakpoint ] = useState( 'desktop' );
+    const [ activePaddingBreakpoint, setActivePaddingBreakpoint ] = useState( 'desktop' );
+    const [ activeMarginBreakpoint, setActiveMarginBreakpoint ] = useState( 'desktop' );
+    const [ activeDirectionBreakpoint, setActiveDirectionBreakpoint ] = useState( 'desktop' );
+    
+
+    // ── Afgeleide keys — allemaal gestuurd door activeBreakpoint ───────────
+    const directionValueKey = activeDirectionBreakpoint === 'tablet' ? 'flexDirectionTablet' : activeDirectionBreakpoint === 'mobile' ? 'flexDirectionMobile' : 'flexDirection';
+    const maxWidthValueKey =  activeMaxWidthBreakpoint === 'tablet' ? 'maxWidthTablet' : activeMaxWidthBreakpoint === 'mobile' ? 'maxWidthMobile' : 'maxWidth';
+    const maxWidthUnitKey =   activeMaxWidthBreakpoint === 'tablet' ? 'maxWidthUnitTablet' : activeMaxWidthBreakpoint === 'mobile' ? 'maxWidthUnitMobile' : 'maxWidthUnit';
+    const minHeightValueKey = activeMinHeightBreakpoint === 'tablet' ? 'minHeightTablet' : activeMinHeightBreakpoint === 'mobile' ? 'minHeightMobile' : 'minHeight';
+    const minHeightUnitKey = activeMinHeightBreakpoint === 'tablet' ? 'minHeightUnitTablet' : activeMinHeightBreakpoint === 'mobile' ? 'minHeightUnitMobile' : 'minHeightUnit';
+    
+    
+    // ── Huidige waarden ────────────────────────────────────────────────────
+    const currentDirection = attributes?.[ directionValueKey ] || 'row';
+    const currentMaxWidthValue = attributes?.[ maxWidthValueKey ];
+    const currentMaxWidthUnit = attributes?.[ maxWidthUnitKey ] || 'px';
+    const currentMinHeightValue = attributes?.[ minHeightValueKey ];
+    const currentMinHeightUnit = attributes?.[ minHeightUnitKey ] || 'px';
+    
+
+    // ── Reset helpers ──────────────────────────────────────────────────────
+    const resetDirection = () =>
+        setAttributes( { [ directionValueKey ]: activeDirectionBreakpoint === 'desktop' ? 'row' : undefined, } );
+    const resetMaxWidth = () =>
+        setAttributes( { [ maxWidthValueKey ]: undefined, [ maxWidthUnitKey ]: 'px', madeitHasUserEdits: true, } );
+
+
+
+    // ── Container / size helpers ───────────────────────────────────────────
+    const containerSizes = [
+        { value: 'container', label: __( 'Boxed' ) },
+        { value: 'container-fluid', label: __( 'Full width' ) },
+    ];
+    const contentBoxedSizes = [
+        { value: 'container', label: __( 'Boxed' ) },
+        { value: 'container-fluid', label: __( 'Full width' ) },
+    ];
+    const fallbackTextColor = '#FFFFFF';
+    const fallbackBackgroundColor = '#000000';
+
+    const didInitContentWidth = useRef( false );
+    useEffect( () => {
+        if ( didInitContentWidth.current ) return;
+
+        if ( typeof contentWidth === 'string' && contentWidth.length > 0 ) {
+            didInitContentWidth.current = true;
+            return;
+        }
+
+        const initialContentWidth = size === 'container-fluid' ? 'container-fluid' : 'container';
+        setAttributes( { contentWidth: initialContentWidth } );
+        didInitContentWidth.current = true;
+    }, [ contentWidth, size, setAttributes ] );
+
+    useEffect( () => {
+        if ( size !== 'container' ) return;
+        if ( contentWidth !== 'container-fluid' ) return;
+        setAttributes( { contentWidth: 'container' } );
+    }, [ size, contentWidth, setAttributes ] );
+    
+    const { count } = useSelect( ( select ) => {
+        return {
+            count: select( 'core/block-editor' ).getBlockCount( clientId ),
+        };
+    } );
+
+    useEffect( () => {   
+        if ( columnsCount === count ) return;
+        setAttributes( { columnsCount: count } );
+    }, [ columnsCount, count, setAttributes ] );
+
+    // ── CSS klassen ────────────────────────────────────────────────────────
+    var classes = classnames( className, {
+        [ `are-vertically-aligned-${ verticalAlignment }` ]: verticalAlignment,
+        [ `container` ]: 'container' === size,
+        [ `container-fluid` ]: 'container-fluid' === size || 'container-content-boxed' === size,
+    } );
+
+    // classes = classnames( classes, {
+    // } );
+
+
+
 
     const computedContainerBackgroundPosition =
         typeof containerBackgroundPosition === 'string' && containerBackgroundPosition.length > 0
@@ -162,61 +266,14 @@ export function ColumnsEditContainer( props ) {
         return settings.gradients || gradientsFromFeatures || [];
     }, [] );
 
-    // Define the container size options and their corresponding CSS classes
-    const containerSizes = [
-        { value: 'container', label: __( 'Boxed' ) },
-        // { value: 'container-content-boxed', label: __( 'Full width - Content boxed' ) },
-        { value: 'container-fluid', label: __( 'Full width' ) },
-    ];
-    const contentBoxedSizes = [
-        { value: 'container', label: __( 'Boxed' ) },
-        { value: 'container-fluid', label: __( 'Full width' ) },
-    ];
-    const fallbackTextColor = '#FFFFFF';
-    const fallbackBackgroundColor = '#000000';
+    
+    
 
     // Initialize `contentWidth` once so it doesn't keep following `size`.
     // This keeps existing blocks stable, while making the controls truly independent.
-    const didInitContentWidth = useRef( false );
-    useEffect( () => {
-        if ( didInitContentWidth.current ) return;
-
-        if ( typeof contentWidth === 'string' && contentWidth.length > 0 ) {
-            didInitContentWidth.current = true;
-            return;
-        }
-
-        const initialContentWidth = size === 'container-fluid' ? 'container-fluid' : 'container';
-        setAttributes( { contentWidth: initialContentWidth } );
-        didInitContentWidth.current = true;
-    }, [ contentWidth, size, setAttributes ] );
-
-    // If the outer container is boxed, content cannot be full width.
-    useEffect( () => {
-        if ( size !== 'container' ) return;
-        if ( contentWidth !== 'container-fluid' ) return;
-        setAttributes( { contentWidth: 'container' } );
-    }, [ size, contentWidth, setAttributes ] );
     
-    const { count } = useSelect( ( select ) => {
-        return {
-            count: select( 'core/block-editor' ).getBlockCount( clientId ),
-        };
-    } );
-
-    useEffect( () => {   
-        if ( columnsCount === count ) return;
-        setAttributes( { columnsCount: count } );
-    }, [ columnsCount, count, setAttributes ] );
     
-    var classes = classnames( className, {
-        [ `are-vertically-aligned-${ verticalAlignment }` ]: verticalAlignment,
-    } );
-
-    classes = classnames( classes, {
-        [ `container` ]: 'container' === size,
-        [ `container-fluid` ]: 'container-fluid' === size || 'container-content-boxed' === size,
-    } );
+    
 
     const computedContentWidth =
         size === 'container'
@@ -433,6 +490,14 @@ export function ColumnsEditContainer( props ) {
 
     const setCssVarIfDefined = ( targetStyle, key, value ) => {
         if ( value === undefined || value === null ) return;
+
+        // BoxControl typically returns strings like "12px", but some older
+        // blocks/controls can still pass numbers.
+        if ( typeof value === 'number' && Number.isFinite( value ) ) {
+            targetStyle[ key ] = `${ value }px`;
+            return;
+        }
+
         if ( typeof value !== 'string' ) return;
         const trimmed = value.trim();
         if ( trimmed === '' ) return;
@@ -442,35 +507,56 @@ export function ColumnsEditContainer( props ) {
     const setSpacingVars = ( targetStyle, prefix, spacing, breakpoint ) => {
         if ( ! spacing || typeof spacing !== 'object' ) return;
 
+        const rawTop = spacing.top;
+        const rawRight = spacing.right;
+        const rawBottom = spacing.bottom;
+        const rawLeft = spacing.left;
+
+        const hasAnyValue =
+            rawTop !== undefined && rawTop !== null && String( rawTop ).trim() !== '' ||
+            rawRight !== undefined && rawRight !== null && String( rawRight ).trim() !== '' ||
+            rawBottom !== undefined && rawBottom !== null && String( rawBottom ).trim() !== '' ||
+            rawLeft !== undefined && rawLeft !== null && String( rawLeft ).trim() !== '';
+
+        if ( ! hasAnyValue ) return;
+
+        // Important: the build pipeline can merge longhand padding declarations
+        // into a single `padding: ...` shorthand. If any of the 4 values is an
+        // invalid var() (missing), the whole shorthand becomes invalid.
+        // To keep responsive padding working, always emit all 4 sides when
+        // spacing is used (missing sides default to 0).
         setCssVarIfDefined(
             targetStyle,
             `--${ prefix }-top-${ breakpoint }`,
-            spacing.top
+            rawTop === undefined || rawTop === null || String( rawTop ).trim() === '' ? '0px' : rawTop
         );
         setCssVarIfDefined(
             targetStyle,
             `--${ prefix }-right-${ breakpoint }`,
-            spacing.right
+            rawRight === undefined || rawRight === null || String( rawRight ).trim() === '' ? '0px' : rawRight
         );
         setCssVarIfDefined(
             targetStyle,
             `--${ prefix }-bottom-${ breakpoint }`,
-            spacing.bottom
+            rawBottom === undefined || rawBottom === null || String( rawBottom ).trim() === '' ? '0px' : rawBottom
         );
         setCssVarIfDefined(
             targetStyle,
             `--${ prefix }-left-${ breakpoint }`,
-            spacing.left
+            rawLeft === undefined || rawLeft === null || String( rawLeft ).trim() === '' ? '0px' : rawLeft
         );
     };
 
-    // Desktop margin stays inline; tablet/mobile overrides via CSS variables.
+    // Desktop margin stays inline; we also set matching desktop CSS variables
+    // so tablet/mobile fallbacks can safely reference them.
     if ( containerMargin && typeof containerMargin === 'object' ) {
         if ( containerMargin.top !== undefined ) {
             style.marginTop = containerMargin.top;
+            setCssVarIfDefined( style, '--madeit-container-margin-top-desktop', containerMargin.top );
         }
         if ( containerMargin.bottom !== undefined ) {
             style.marginBottom = containerMargin.bottom;
+            setCssVarIfDefined( style, '--madeit-container-margin-bottom-desktop', containerMargin.bottom );
         }
     }
     if ( containerMarginTablet && typeof containerMarginTablet === 'object' ) {
@@ -484,7 +570,8 @@ export function ColumnsEditContainer( props ) {
 
     const shouldApplyContainerPaddingOnRow = containerPaddingOnRow === true;
 
-    // Desktop padding stays inline; tablet/mobile overrides via CSS variables.
+    // Desktop padding stays inline; we also set matching desktop CSS variables
+    // so tablet/mobile fallbacks can safely reference them.
     var rowStyle = {};
     if ( shouldApplyContainerPaddingOnRow ) {
         if ( containerPadding && typeof containerPadding === 'object' ) {
@@ -493,6 +580,8 @@ export function ColumnsEditContainer( props ) {
             if ( containerPadding.bottom !== undefined ) rowStyle.paddingBottom = containerPadding.bottom;
             if ( containerPadding.left !== undefined ) rowStyle.paddingLeft = containerPadding.left;
         }
+
+        setSpacingVars( rowStyle, 'madeit-container-row-padding', containerPadding, 'desktop' );
 
         setSpacingVars( rowStyle, 'madeit-container-row-padding', containerPaddingTablet, 'tablet' );
         setSpacingVars( rowStyle, 'madeit-container-row-padding', containerPaddingMobile, 'mobile' );
@@ -503,6 +592,8 @@ export function ColumnsEditContainer( props ) {
             if ( containerPadding.bottom !== undefined ) style.paddingBottom = containerPadding.bottom;
             if ( containerPadding.left !== undefined ) style.paddingLeft = containerPadding.left;
         }
+
+        setSpacingVars( style, 'madeit-container-padding', containerPadding, 'desktop' );
 
         setSpacingVars( style, 'madeit-container-padding', containerPaddingTablet, 'tablet' );
         setSpacingVars( style, 'madeit-container-padding', containerPaddingMobile, 'mobile' );
@@ -572,62 +663,57 @@ export function ColumnsEditContainer( props ) {
     }, [ containerPaddingOnRow, containerPadding, setAttributes ] );
     
     const [activeTab, setActiveTab] = useState('layout');
-    const [ activeMaxWidthBreakpoint, setActiveMaxWidthBreakpoint ] = useState( 'desktop' );
-    const [ activeMinHeightBreakpoint, setActiveMinHeightBreakpoint ] = useState( 'desktop' );
-    const [ activeRowGapBreakpoint, setActiveRowGapBreakpoint ] = useState( 'desktop' );
-    const [ activePaddingBreakpoint, setActivePaddingBreakpoint ] = useState( 'desktop' );
-    const [ activeMarginBreakpoint, setActiveMarginBreakpoint ] = useState( 'desktop' );
+    
+   
 
-    const [ activeDirectionBreakpoint, setActiveDirectionBreakpoint ] = useState( 'desktop' );
-    const directionValueKey =
-        activeDirectionBreakpoint === 'tablet'
-            ? 'flexDirectionTablet'
-            : activeDirectionBreakpoint === 'mobile'
-                ? 'flexDirectionMobile'
-                : 'flexDirection';
-    const currentDirection = attributes?.[ directionValueKey ] || 'row';
-    const resetDirection = () =>
-        setAttributes( {
-            [ directionValueKey ]: activeDirectionBreakpoint === 'desktop' ? 'row' : undefined,
-        } );
+    
+    
 
-    const maxWidthValueKey =
-        activeMaxWidthBreakpoint === 'tablet'
-            ? 'maxWidthTablet'
-            : activeMaxWidthBreakpoint === 'mobile'
-                ? 'maxWidthMobile'
-                : 'maxWidth';
-    const maxWidthUnitKey =
-        activeMaxWidthBreakpoint === 'tablet'
-            ? 'maxWidthUnitTablet'
-            : activeMaxWidthBreakpoint === 'mobile'
-                ? 'maxWidthUnitMobile'
-                : 'maxWidthUnit';
-    const currentMaxWidthValue = attributes?.[ maxWidthValueKey ];
-    const currentMaxWidthUnit = attributes?.[ maxWidthUnitKey ] || 'px';
-    const resetMaxWidth = () =>
-        setAttributes( {
-            [ maxWidthValueKey ]: undefined,
-            [ maxWidthUnitKey ]: 'px',
-        } );
-    const minHeightValueKey =
+    const parseWrapperLengthVar = ( varName ) => {
+        const wrapperStyle = attributes?.wrapperStyle;
+        if ( typeof wrapperStyle !== 'string' || wrapperStyle.trim() === '' ) {
+            return undefined;
+        }
+
+        const match = wrapperStyle.match(
+            new RegExp( `${ varName }\\s*:\\s*([^;]+)` )
+        );
+        const raw = match?.[ 1 ]?.trim();
+        if ( ! raw ) return undefined;
+
+        const lengthMatch = raw.match( /^(-?\d+(?:\.\d+)?)([a-z%]+)$/i );
+        if ( ! lengthMatch ) return undefined;
+        const value = Number.parseFloat( lengthMatch[ 1 ] );
+        const unit = String( lengthMatch[ 2 ] ).toLowerCase();
+        if ( ! Number.isFinite( value ) ) return undefined;
+
+        return { value, unit };
+    };
+
+    const madeitHasUserEdits = attributes?.madeitHasUserEdits === true;
+    const legacyMinHeightVarName =
         activeMinHeightBreakpoint === 'tablet'
-            ? 'minHeightTablet'
+            ? '--madeit-min-height-tablet'
             : activeMinHeightBreakpoint === 'mobile'
-                ? 'minHeightMobile'
-                : 'minHeight';
-    const minHeightUnitKey =
-        activeMinHeightBreakpoint === 'tablet'
-            ? 'minHeightUnitTablet'
-            : activeMinHeightBreakpoint === 'mobile'
-                ? 'minHeightUnitMobile'
-                : 'minHeightUnit';
-    const currentMinHeightValue = attributes?.[ minHeightValueKey ];
-    const currentMinHeightUnit = attributes?.[ minHeightUnitKey ] || 'px';
+                ? '--madeit-min-height-mobile'
+                : '--madeit-min-height-desktop';
+    const legacyMinHeight = ! madeitHasUserEdits
+        ? parseWrapperLengthVar( legacyMinHeightVarName )
+        : undefined;
+
+    const minHeightValueForUi =
+        typeof currentMinHeightValue === 'number'
+            ? currentMinHeightValue
+            : legacyMinHeight?.value ?? 0;
+    const minHeightUnitForUi =
+        typeof currentMinHeightValue === 'number'
+            ? currentMinHeightUnit
+            : legacyMinHeight?.unit ?? currentMinHeightUnit;
     const resetMinHeight = () =>
         setAttributes( {
             [ minHeightValueKey ]: undefined,
             [ minHeightUnitKey ]: 'px',
+            madeitHasUserEdits: true,
         } );
 
 
@@ -667,6 +753,7 @@ export function ColumnsEditContainer( props ) {
         setAttributes( {
             [ rowGapValueKey ]: activeRowGapBreakpoint === 'desktop' ? 20 : undefined,
             [ rowGapUnitKey ]: 'px',
+            madeitHasUserEdits: true,
         } );
 
 
@@ -936,7 +1023,7 @@ export function ColumnsEditContainer( props ) {
                                 <Button
                                     key={ value }
                                     isPrimary={ size === value }
-                                    onClick={ () => setAttributes( { size: value } ) }
+                                    onClick={ () => setAttributes( { size: value, madeitHasUserEdits: true } ) }
                                 >
                                     { label }
                                 </Button>
@@ -969,6 +1056,7 @@ export function ColumnsEditContainer( props ) {
                                             onClick={ () =>
                                                 setAttributes( {
                                                     [ maxWidthUnitKey ]: 'px',
+                                                    madeitHasUserEdits: true,
                                                 } )
                                             }
                                         >
@@ -980,6 +1068,7 @@ export function ColumnsEditContainer( props ) {
                                             onClick={ () =>
                                                 setAttributes( {
                                                     [ maxWidthUnitKey ]: '%',
+                                                    madeitHasUserEdits: true,
                                                 } )
                                             }
                                         >
@@ -991,6 +1080,7 @@ export function ColumnsEditContainer( props ) {
                                             onClick={ () =>
                                                 setAttributes( {
                                                     [ maxWidthUnitKey ]: 'vh',
+                                                    madeitHasUserEdits: true,
                                                 } )
                                             }
                                         >
@@ -1012,6 +1102,7 @@ export function ColumnsEditContainer( props ) {
                                     onChange={ ( value ) =>
                                         setAttributes( {
                                             [ maxWidthValueKey ]: value,
+                                            madeitHasUserEdits: true,
                                         } )
                                     }
                                     min={ 0 }
@@ -1038,10 +1129,11 @@ export function ColumnsEditContainer( props ) {
                                 afterBreakpoint={
                                     <ButtonGroup className="madeit-control-units">
                                         <Button
-                                            isPressed={ currentMinHeightUnit === 'px' }
+                                            isPressed={ minHeightUnitForUi === 'px' }
                                             onClick={ () =>
                                                 setAttributes( {
                                                     [ minHeightUnitKey ]: 'px',
+                                                    madeitHasUserEdits: true,
                                                 } )
                                             }
                                         >
@@ -1049,10 +1141,11 @@ export function ColumnsEditContainer( props ) {
                                         </Button>
 
                                         <Button
-                                            isPressed={ currentMinHeightUnit === 'vh' }
+                                            isPressed={ minHeightUnitForUi === 'vh' }
                                             onClick={ () =>
                                                 setAttributes( {
                                                     [ minHeightUnitKey ]: 'vh',
+                                                    madeitHasUserEdits: true,
                                                 } )
                                             }
                                         >
@@ -1066,18 +1159,15 @@ export function ColumnsEditContainer( props ) {
                             <div className="madeit-control-rangeRow">
                                 <RangeControl
                                     label=""
-                                    value={
-                                        typeof currentMinHeightValue === 'number'
-                                            ? currentMinHeightValue
-                                            : 0
-                                    }
+                                    value={ minHeightValueForUi }
                                     onChange={ ( value ) =>
                                         setAttributes( {
                                             [ minHeightValueKey ]: value,
+                                            madeitHasUserEdits: true,
                                         } )
                                     }
                                     min={ 0 }
-                                    max={ currentMinHeightUnit === 'vh' ? 100 : 1000 }
+                                    max={ minHeightUnitForUi === 'vh' ? 100 : 1000 }
                                 />
 
                                 <Button
@@ -1643,6 +1733,7 @@ export function ColumnsEditContainer( props ) {
                                                 onClick={ () =>
                                                     setAttributes( {
                                                         [ rowGapUnitKey ]: 'px',
+                                                        madeitHasUserEdits: true,
                                                     } )
                                                 }
                                             >
@@ -1654,6 +1745,7 @@ export function ColumnsEditContainer( props ) {
                                                 onClick={ () =>
                                                     setAttributes( {
                                                         [ rowGapUnitKey ]: 'em',
+                                                        madeitHasUserEdits: true,
                                                     } )
                                                 }
                                             >
@@ -1665,6 +1757,7 @@ export function ColumnsEditContainer( props ) {
                                                 onClick={ () =>
                                                     setAttributes( {
                                                         [ rowGapUnitKey ]: 'rem',
+                                                        madeitHasUserEdits: true,
                                                     } )
                                                 }
                                             >
@@ -1686,6 +1779,7 @@ export function ColumnsEditContainer( props ) {
                                         onChange={ ( value ) =>
                                             setAttributes( {
                                                 [ rowGapValueKey ]: value,
+                                                madeitHasUserEdits: true,
                                             } )
                                         }
                                         min={ 0 }
@@ -1741,29 +1835,14 @@ export function ColumnsEditContainer( props ) {
 
                 {activeTab === 'advanced' && (
                     <>
-                        <PanelBody title="Responsive" initialOpen={true}>
-                            {/* Hide on Desktop */}
-                            <ToggleControl
-                                label={ __( 'Hide on Desktop' ) }
-                                checked={ !! hideOnDesktop }
-                                onChange={ () => setAttributes( { hideOnDesktop: ! hideOnDesktop } ) }
-                            />
-
-                            {/* Hide on Tablet */}
-                            <ToggleControl
-                                label={ __( 'Hide on Tablet' )}
-                                checked={ !! hideOnTablet }
-                                onChange={ () => setAttributes( { hideOnTablet: ! hideOnTablet } ) }
-                            />
-
-                            {/* Hide on Mobile */}
-                            <ToggleControl
-                                label={ __( 'Hide on Mobile' )}
-                                checked={ !! hideOnMobile }
-                                onChange={ () => setAttributes( { hideOnMobile: ! hideOnMobile } ) }
-                            />
-
-                        </PanelBody>
+                        <ResponsiveVisibilityPanel
+                            title="Responsive"
+                            initialOpen={ true }
+                            hideOnDesktop={ hideOnDesktop }
+                            hideOnTablet={ hideOnTablet }
+                            hideOnMobile={ hideOnMobile }
+                            setAttributes={ setAttributes }
+                        />
 
                         <PanelBody className="disabledPanel" title="Binnenkomende animatie" initialOpen={false}>
                             {/* Animatie type */}

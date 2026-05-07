@@ -29,6 +29,122 @@ const ALLOWED_BLOCKS = [
     "core/table",
 ];
 
+const FALLBACK_THEME_COLOR_SLUGS = [
+    "primary",
+    "secondary",
+    "success",
+    "danger",
+    "warning",
+    "info",
+    "light",
+    "dark",
+    "white",
+    "black",
+];
+
+function getThemeColorPalette() {
+    const settings = wp?.data?.select?.("core/block-editor")?.getSettings?.() || {};
+
+    const paletteFromFeatures =
+        settings?.__experimentalFeatures?.color?.palette?.theme ||
+        settings?.__experimentalFeatures?.color?.palette?.default ||
+        settings?.__experimentalFeatures?.color?.palette?.custom;
+
+    return Array.isArray(settings.colors)
+        ? settings.colors
+        : Array.isArray(paletteFromFeatures)
+        ? paletteFromFeatures
+        : [];
+}
+
+function getAllowedThemeColorSlugs() {
+    const palette = getThemeColorPalette();
+    const paletteSlugs = palette
+        .map((item) => String(item?.slug || "").trim().toLowerCase())
+        .filter((item) => item !== "");
+
+    const source = paletteSlugs.length > 0 ? paletteSlugs : FALLBACK_THEME_COLOR_SLUGS;
+    return new Set(source);
+}
+
+function normalizeThemeColorSlug(value) {
+    const raw = String(value || "").trim().toLowerCase();
+
+    if (!raw) {
+        return undefined;
+    }
+
+    let slug = raw;
+
+    const presetMatch = slug.match(/^var:preset\|color\|([a-z0-9-]+)$/i);
+    if (presetMatch?.[1]) {
+        slug = presetMatch[1].toLowerCase();
+    }
+
+    const classMatch = slug.match(/^has-([a-z0-9-]+)-(?:color|background-color)$/i);
+    if (classMatch?.[1]) {
+        slug = classMatch[1].toLowerCase();
+    }
+
+    const allowedSlugs = getAllowedThemeColorSlugs();
+    return allowedSlugs.has(slug) ? slug : undefined;
+}
+
+function toSpacingCssValue(value) {
+    if (typeof value === "number" && Number.isFinite(value)) {
+        return `${value}px`;
+    }
+
+    const raw = String(value || "").trim();
+    if (!raw) {
+        return undefined;
+    }
+
+    if (/^-?\d+(?:\.\d+)?$/.test(raw)) {
+        return `${raw}px`;
+    }
+
+    if (/^-?\d+(?:\.\d+)?(?:px|rem|em|%|vw|vh|vmin|vmax)$/.test(raw)) {
+        return raw;
+    }
+
+    return undefined;
+}
+
+function normalizeSpacing(value) {
+    if (!value || typeof value !== "object") {
+        return undefined;
+    }
+
+    const normalized = {};
+    const all = toSpacingCssValue(value.all);
+    const vertical = toSpacingCssValue(value.vertical ?? value.y);
+    const horizontal = toSpacingCssValue(value.horizontal ?? value.x);
+
+    const top = toSpacingCssValue(value.top ?? value.marginTop ?? value.paddingTop);
+    const right = toSpacingCssValue(value.right ?? value.marginRight ?? value.paddingRight);
+    const bottom = toSpacingCssValue(value.bottom ?? value.marginBottom ?? value.paddingBottom);
+    const left = toSpacingCssValue(value.left ?? value.marginLeft ?? value.paddingLeft);
+
+    if (top !== undefined || vertical !== undefined || all !== undefined) {
+        normalized.top = top ?? vertical ?? all;
+    }
+
+    if (right !== undefined || horizontal !== undefined || all !== undefined) {
+        normalized.right = right ?? horizontal ?? all;
+    }
+
+    if (bottom !== undefined || vertical !== undefined || all !== undefined) {
+        normalized.bottom = bottom ?? vertical ?? all;
+    }
+
+    if (left !== undefined || horizontal !== undefined || all !== undefined) {
+        normalized.left = left ?? horizontal ?? all;
+    }
+
+    return Object.keys(normalized).length > 0 ? normalized : undefined;
+}
+
 function mapCells(cells, tag) {
     if (!Array.isArray(cells)) {
         return [];
@@ -281,6 +397,15 @@ function createMadeitContentBlocksFromSections(sections) {
 
     return sections
         .map((section) => {
+            const sectionRowTextColor = normalizeThemeColorSlug(
+                section?.rowTextColor ?? section?.textColor
+            );
+            const sectionContainerBackgroundColor = normalizeThemeColorSlug(
+                section?.containerBackgroundColor ?? section?.backgroundColor
+            );
+            const sectionRowMargin = normalizeSpacing(section?.rowMargin ?? section?.margin);
+            const sectionRowPadding = normalizeSpacing(section?.rowPadding ?? section?.padding);
+
             const sectionColumns = Array.isArray(section?.columns) ? section.columns : [];
             const fallbackBlocks = Array.isArray(section?.blocks) ? section.blocks : [];
 
@@ -306,11 +431,29 @@ function createMadeitContentBlocksFromSections(sections) {
                         return null;
                     }
 
+                    const columnTextColor = normalizeThemeColorSlug(column?.textColor);
+                    const columnMargin = normalizeSpacing(column?.margin);
+                    const columnPadding = normalizeSpacing(column?.padding);
+
+                    const columnAttributes = {
+                        width: clampColumnWidth(column?.width),
+                    };
+
+                    if (columnTextColor) {
+                        columnAttributes.textColor = columnTextColor;
+                    }
+
+                    if (columnMargin) {
+                        columnAttributes.margin = columnMargin;
+                    }
+
+                    if (columnPadding) {
+                        columnAttributes.padding = columnPadding;
+                    }
+
                     return createBlock(
                         "madeit/block-content-column",
-                        {
-                            width: clampColumnWidth(column?.width),
-                        },
+                        columnAttributes,
                         innerBlocks
                     );
                 })
@@ -320,24 +463,38 @@ function createMadeitContentBlocksFromSections(sections) {
                 return null;
             }
 
-            return createBlock(
-                "madeit/block-content",
-                {
-                    containerPaddingOnRow: true,
-                    overflow: "visible",
-                    flexDirection: "row",
-                    flexDirectionTablet: "column",
-                    flexDirectionMobile: "column",
-                    alignItems: "stretch",
-                    justifyContent: "flex-start",
-                    rowGap: 20,
-                    rowGapTablet: 20,
-                    rowGapMobile: 20,
-                    columnsCount: columnBlocks.length,
-                    flexWrap: "nowrap",
-                },
-                columnBlocks
-            );
+            const sectionAttributes = {
+                containerPaddingOnRow: true,
+                overflow: "visible",
+                flexDirection: "row",
+                flexDirectionTablet: "column",
+                flexDirectionMobile: "column",
+                alignItems: "stretch",
+                justifyContent: "flex-start",
+                rowGap: 20,
+                rowGapTablet: 20,
+                rowGapMobile: 20,
+                columnsCount: columnBlocks.length,
+                flexWrap: "nowrap",
+            };
+
+            if (sectionRowTextColor) {
+                sectionAttributes.rowTextColor = sectionRowTextColor;
+            }
+
+            if (sectionContainerBackgroundColor) {
+                sectionAttributes.containerBackgroundColor = sectionContainerBackgroundColor;
+            }
+
+            if (sectionRowMargin) {
+                sectionAttributes.rowMargin = sectionRowMargin;
+            }
+
+            if (sectionRowPadding) {
+                sectionAttributes.rowPadding = sectionRowPadding;
+            }
+
+            return createBlock("madeit/block-content", sectionAttributes, columnBlocks);
         })
         .filter((sectionBlock) => sectionBlock !== null);
 }
@@ -414,6 +571,40 @@ function insertGeneratedBlocks(rawBlocks, insertBlocks) {
 }
 
 function getFunctionsForModel(modelName) {
+    const spacingSchema = {
+        type: "object",
+        properties: {
+            top: {
+                type: "string",
+                description: "Top spacing value (e.g. 40px, 2rem, 10%)",
+            },
+            right: {
+                type: "string",
+                description: "Right spacing value (e.g. 20px)",
+            },
+            bottom: {
+                type: "string",
+                description: "Bottom spacing value (e.g. 40px, 2rem, 10%)",
+            },
+            left: {
+                type: "string",
+                description: "Left spacing value (e.g. 20px)",
+            },
+            vertical: {
+                type: "string",
+                description: "Shortcut for top and bottom",
+            },
+            horizontal: {
+                type: "string",
+                description: "Shortcut for left and right",
+            },
+            all: {
+                type: "string",
+                description: "Shortcut for all 4 sides",
+            },
+        },
+    };
+
     const blockProps = {
         blockType: {
             type: "string",
@@ -490,6 +681,23 @@ function getFunctionsForModel(modelName) {
     const sectionSchema = {
         type: "object",
         properties: {
+            textColor: {
+                type: "string",
+                description:
+                    "Theme text color slug for madeit/block-content row (only theme colors, e.g. primary, secondary, success, danger, info)",
+            },
+            backgroundColor: {
+                type: "string",
+                description:
+                    "Theme background color slug for madeit/block-content container (mapped to containerBackgroundColor, only theme colors)",
+            },
+            containerBackgroundColor: {
+                type: "string",
+                description:
+                    "Theme background color slug for madeit/block-content container (only theme colors)",
+            },
+            margin: spacingSchema,
+            padding: spacingSchema,
             columns: {
                 type: "array",
                 items: {
@@ -508,6 +716,13 @@ function getFunctionsForModel(modelName) {
                                 required: ["blockType"],
                             },
                         },
+                        textColor: {
+                            type: "string",
+                            description:
+                                "Theme text color slug for madeit/block-content-column (only theme colors)",
+                        },
+                        margin: spacingSchema,
+                        padding: spacingSchema,
                     },
                     required: ["blocks"],
                 },
@@ -706,7 +921,7 @@ function getCompletionTextFromApiResponse(response) {
 
 function buildLayoutSystemPrompt() {
     return (
-        "Je bent een Gutenberg layout-assistent. Geef ALLEEN geldige JSON terug, zonder markdown of extra tekst. Formaat: {\"insert\":{\"position\":\"before|after\",\"clientId\":\"...\"},\"sections\":[{\"columns\":[{\"width\":6,\"blocks\":[{\"blockType\":\"core/heading\",\"content\":\"...\"},{\"blockType\":\"core/paragraph\",\"content\":\"...\"}]}]}]}. Op root niveau worden sections altijd omgezet naar madeit/block-content. Gebruik in blocks uitsluitend deze blockTypes: " +
+        "Je bent een Gutenberg layout-assistent. Geef ALLEEN geldige JSON terug, zonder markdown of extra tekst. Formaat: {\"insert\":{\"position\":\"before|after\",\"clientId\":\"...\"},\"sections\":[{\"textColor\":\"primary\",\"containerBackgroundColor\":\"secondary\",\"padding\":{\"top\":\"40px\",\"bottom\":\"40px\"},\"margin\":{\"top\":\"20px\",\"bottom\":\"20px\"},\"columns\":[{\"width\":6,\"textColor\":\"primary\",\"padding\":{\"top\":\"20px\",\"bottom\":\"20px\"},\"blocks\":[{\"blockType\":\"core/heading\",\"content\":\"...\"},{\"blockType\":\"core/paragraph\",\"content\":\"...\"}]}]}]}. Op root niveau worden sections altijd omgezet naar madeit/block-content. Gebruik voor achtergrondkleur vooral containerBackgroundColor op section-niveau (niet per kolom en niet op row-niveau). Kleuren moeten ALTIJD thema-color slugs zijn (zoals primary, secondary, success, danger, info) en nooit hex of custom kleuren. Gebruik in blocks uitsluitend deze blockTypes: " +
         ALLOWED_BLOCKS.join(", ") +
         ". Als je geen specifieke clientId hebt, laat insert.clientId leeg."
     );

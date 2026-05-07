@@ -4,13 +4,28 @@
  *
  * @since 1.0
  */
-$navBarClass = apply_filters('madeit_upper_navbar_class', ['container-fluid', 'd-none', 'd-lg-block', 'mb-2', 'pb-1', 'font-weight-light', 'upper-top-navbar']);
+$options = get_option( 'madeit_navbar_options', [] );
+$background = function_exists( 'madeit_nav_background_attributes' )
+    ? madeit_nav_background_attributes( $options['background_color_top'] ?? '' )
+    : [ 'class' => '', 'style' => '' ];
+
+$nav_style_attr = '';
+if ( ! empty( $background['style'] ) ) {
+    $nav_style_attr = ' style="' . esc_attr( $background['style'] ) . '"';
+}
+
+$navBarClass = apply_filters(
+    'madeit_upper_navbar_class',
+    array_filter( [ 'container-fluid', 'd-none', 'd-lg-block', 'mb-2', 'pb-1', 'font-weight-light', 'upper-top-navbar', $background['class'] ] )
+);
 $containerClass = apply_filters('madeit_upper_navbar_container_class', ['container']);
 $leftCollPostition = apply_filters('madeit_upper_navbar_left_col_position', 'left');
+
+$text_alignment = $options['text_align'] ?? 'left';
 ?>
 
-<div class="<?php echo is_array($navBarClass) ? implode(' ', $navBarClass) : $navBarClass; ?>">
-    <?php if (!in_array('container', $navBarClass)) { ?>
+<div class="<?php echo is_array($navBarClass) ? implode(' ', $navBarClass) : $navBarClass; ?>"<?php echo $nav_style_attr; ?>>
+    <?php if ( ! ( is_array( $navBarClass ) && in_array( 'container', $navBarClass, true ) ) ) { ?>
     <div class="row">
         <div class="col">
             <div class="<?php echo is_array($containerClass) ? implode(' ', $containerClass) : $containerClass; ?>">
@@ -27,7 +42,7 @@ $leftCollPostition = apply_filters('madeit_upper_navbar_left_col_position', 'lef
                                 'container'         => 'nav',
                                 'container_id'      => 'secondary-navigation',
                                 'container_class'   => 'secondary-navigation '.($leftCollPostition !== 'left' ? 'ms-auto ml-auto' : ''),
-                                'menu_class'        => 'menu nav navbar-nav',
+                                'menu_class'        => 'menu nav navbar-nav justify-content-' . esc_attr($text_alignment),
                                 'fallback_cb'       => 'wp_bootstrap_navwalker::fallback',
                                 'walker'            => new wp_bootstrap_navwalker(),
                             ]); ?>
@@ -52,7 +67,7 @@ $leftCollPostition = apply_filters('madeit_upper_navbar_left_col_position', 'lef
                     <?php } ?>
                     <?php echo do_action('madeit_upper_top_navbar_after_col'); ?>
                 </div>
-    <?php if (!in_array('container', $navBarClass)) { ?>
+    <?php if ( ! ( is_array( $navBarClass ) && in_array( 'container', $navBarClass, true ) ) ) { ?>
             </div>
         </div>
     </div>

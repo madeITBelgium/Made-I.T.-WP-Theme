@@ -4,6 +4,17 @@ function under_construction_register_settings() {
     register_setting('under_construction_options_group', 'under_construction_mode');
     register_setting(
         'under_construction_options_group',
+        'under_construction_allow_crawlers',
+        [
+            'type' => 'string',
+            'sanitize_callback' => function($value) {
+                return $value === '1' ? '1' : '0';
+            },
+            'default' => '0',
+        ]
+    );
+    register_setting(
+        'under_construction_options_group',
         'under_construction_user_roles',
         [
             'type' => 'array',
@@ -106,6 +117,18 @@ function under_construction_page() {
                                                 </div>
                                             </div>
                                             <p class="small">Door het inschakelen van de bouw modus gebruikers zullen niet in staat zijn om toegang tot de website inhoud. <br> Ze zien alleen de in aanbouw zijnde pagina. Uitzonderingen configureren op de witte lijst geplaatste gebruikersrollen.</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Zoekmachinebots toestaan</th>
+                                        <td>
+                                            <?php $allow_crawlers = get_option('under_construction_allow_crawlers', '0'); ?>
+                                            <label>
+                                                <input type="hidden" name="under_construction_allow_crawlers" value="0" />
+                                                <input type="checkbox" name="under_construction_allow_crawlers" value="1" <?php checked($allow_crawlers, '1'); ?> />
+                                                Laat Google/Bing en andere bekende zoekmachinebots toe tijdens under construction.
+                                            </label>
+                                            <p class="small">Wanneer ingeschakeld kunnen crawlers de echte website blijven bezoeken, terwijl bezoekers nog steeds de under construction pagina zien.</p>
                                         </td>
                                     </tr>
                                     <!-- User roles who can see the page -->
@@ -484,6 +507,38 @@ function under_construction_forced_by_setup_wizard(): bool {
     return madeit_setup_requires_child_theme();
 }
 
+function under_construction_is_allowed_crawler(): bool {
+    $user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? (string) $_SERVER['HTTP_USER_AGENT'] : '';
+    if ($user_agent === '') {
+        return false;
+    }
+
+    $allowed_crawlers = [
+        'googlebot',
+        'bingbot',
+        'yandexbot',
+        'baiduspider',
+        'duckduckbot',
+        'slurp',
+        'applebot',
+        'petalbot',
+    ];
+
+    $allowed_crawlers = apply_filters('under_construction_allowed_crawlers', $allowed_crawlers);
+
+    foreach ((array) $allowed_crawlers as $crawler_signature) {
+        if (!is_string($crawler_signature) || $crawler_signature === '') {
+            continue;
+        }
+
+        if (stripos($user_agent, $crawler_signature) !== false) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 // Redirect users to the under construction page if the mode is on
 function under_construction_template_redirect() {
     if (is_admin()) return; // voorkom in admin
@@ -505,6 +560,11 @@ function under_construction_template_redirect() {
         $user = wp_get_current_user();
         foreach ($user->roles as $role) {
             if (in_array($role, $allowed_roles, true)) return;
+        }
+
+        // Optionally allow known search engine crawlers to bypass maintenance mode.
+        if (get_option('under_construction_allow_crawlers', '0') === '1' && under_construction_is_allowed_crawler()) {
+            return;
         }
     }
 

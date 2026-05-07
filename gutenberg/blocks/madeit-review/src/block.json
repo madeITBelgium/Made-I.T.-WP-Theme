@@ -30,7 +30,7 @@
 		"transitionDuration": { "type": "number", "default": 500 },
 		"autoplay": { "type": "boolean", "default": true },
 		"autoplaySpeed": { "type": "number", "default": 5000 },
-		"infiniteLoop": { "type": "boolean", "default": false },
+		"infiniteLoop": { "type": "boolean", "default": true },
 		"pauseOnInteraction": { "type": "boolean", "default": true },
 		"textColor": { "type": "string", "default": "" },
 		"containerBackgroundColor": { "type": "string", "default": "" },
@@ -38,6 +38,7 @@
 		"width": { "type": "string", "default": "48px" },
 		"height": { "type": "string", "default": "48px" },
 		"objectFit": { "type": "string", "default": "cover" },
+		"borderRadiusUnit": { "type": "string", "default": "%" },
 		"borderRadius_leftTop": { "type": "string", "default": "50%" },
 		"borderRadius_rightTop": { "type": "string", "default": "50%" },
 		"borderRadius_rightBottom": { "type": "string", "default": "50%" },
@@ -46,7 +47,11 @@
 		"arrowColor": { "type": "string", "default": "" },
 		"paginationSize": { "type": "string", "default": "8px" },
 		"paginationColor": { "type": "string", "default": "" },
-		"categoryIds": { "type": "array", "items": { "type": "number" }, "default": [] }
+		"categoryIds": { "type": "array", "items": { "type": "number" }, "default": [] },
+
+		"hideOnDesktop": { "type": "boolean", "default": false },
+		"hideOnTablet": { "type": "boolean", "default": false },
+		"hideOnMobile": { "type": "boolean", "default": false }
 	},
 	"supports": {
 		"html": false

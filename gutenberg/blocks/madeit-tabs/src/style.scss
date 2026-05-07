@@ -43,6 +43,10 @@
     --madeit-tabs-justify-desktop: flex-start;
     --madeit-tabs-justify-tablet: var(--madeit-tabs-justify-desktop);
     --madeit-tabs-justify-mobile: var(--madeit-tabs-justify-tablet);
+
+    .tab-content {
+        min-width: 0;
+    }
 }
 
 

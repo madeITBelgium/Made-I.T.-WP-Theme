@@ -112,6 +112,30 @@ export default function save( props ) {
         defaultSize = 'container';
     }
 
+    // Legacy compatibility (2026-04-17 default change follow-up):
+    // Some older content was saved with a `.container` wrapper while the block
+    // had no explicit `size` attribute. After changing the default to
+    // `container-content-boxed`, those blocks parse with the new default but
+    // still carry the legacy wrapper classes from markup. In that case we must
+    // serialize as `container` to avoid injecting `container-fluid` and the
+    // boxed `.row > .col > .container > .row` structure, which triggers block
+    // validation errors.
+    const wrapperClassNameRaw =
+        typeof wrapperClassName === 'string' ? wrapperClassName.trim() : '';
+    if ( wrapperClassNameRaw.length > 0 ) {
+        const wrapperTokens = wrapperClassNameRaw.split( /\s+/ );
+        const wrapperHasContainer = wrapperTokens.includes( 'container' );
+        const wrapperHasContainerFluid = wrapperTokens.includes( 'container-fluid' );
+
+        if (
+            defaultSize === 'container-content-boxed' &&
+            wrapperHasContainer &&
+            ! wrapperHasContainerFluid
+        ) {
+            defaultSize = 'container';
+        }
+    }
+
     const outerSizeNormalized = defaultSize === 'container' ? 'container' : 'container-fluid';
 
     const FRONTEND_WRAPPER_CLASS = 'madeit-block-content--frontend';
@@ -128,6 +152,22 @@ export default function save( props ) {
     // fails and the editor shows recovery prompts.
     const shouldUseLegacyWrapperClasses =
         hasWrapperClassNameFromMarkup && ! wrapperHasFrontendClass;
+
+    // Very old saved content (no frontend wrapper class) also did not include
+    // the enhanced layout-related CSS variables. To keep block validation
+    // stable, do not serialize these vars for that legacy markup.
+    const shouldSerializeEnhancedLayoutVars = ! shouldUseLegacyWrapperClasses;
+
+    // Defaults from the block's default variation (`madeit-default-responsive`).
+    // Older content could have these attribute values but did NOT serialize the
+    // corresponding CSS vars. This deprecated save matches that behavior.
+    const DEFAULT_ROW_GAP = 20;
+    const DEFAULT_FLEX_DIRECTION_DESKTOP = 'row';
+    const DEFAULT_FLEX_DIRECTION_TABLET = 'column';
+    const DEFAULT_FLEX_DIRECTION_MOBILE = 'column';
+    const DEFAULT_ALIGN_ITEMS_DESKTOP = 'stretch';
+    const DEFAULT_JUSTIFY_CONTENT_DESKTOP = 'flex-start';
+    const DEFAULT_FLEX_WRAP_DESKTOP = 'nowrap';
 
     // Legacy boxed markup (the one throwing validation errors):
     // - Wrapper did NOT include `madeit-block-content--frontend`
@@ -327,63 +367,102 @@ export default function save( props ) {
         // Row gap via CSS variables.
         // Important for block validation stability: only serialize tablet/mobile overrides
         // when a desktop rowGap is explicitly set.
-        const hasRowGapDesktop = typeof rowGap === 'number';
-        if ( hasRowGapDesktop ) {
-            style['--madeit-row-gap-desktop'] = `${ rowGap }${ rowGapUnit || 'px' }`;
+        if ( shouldSerializeEnhancedLayoutVars ) {
+            const hasRowGapDesktop =
+                typeof rowGap === 'number' && rowGap !== DEFAULT_ROW_GAP;
+            if ( hasRowGapDesktop ) {
+                style['--madeit-row-gap-desktop'] = `${ rowGap }${ rowGapUnit || 'px' }`;
 
-            if ( typeof rowGapTablet === 'number' ) {
-                style['--madeit-row-gap-tablet'] = `${ rowGapTablet }${
-                    rowGapUnitTablet || 'px'
-                }`;
+                if (
+                    typeof rowGapTablet === 'number' &&
+                    rowGapTablet !== DEFAULT_ROW_GAP
+                ) {
+                    style['--madeit-row-gap-tablet'] = `${ rowGapTablet }${
+                        rowGapUnitTablet || 'px'
+                    }`;
+                }
+                if (
+                    typeof rowGapMobile === 'number' &&
+                    rowGapMobile !== DEFAULT_ROW_GAP
+                ) {
+                    style['--madeit-row-gap-mobile'] = `${ rowGapMobile }${
+                        rowGapUnitMobile || 'px'
+                    }`;
+                }
             }
-            if ( typeof rowGapMobile === 'number' ) {
-                style['--madeit-row-gap-mobile'] = `${ rowGapMobile }${
-                    rowGapUnitMobile || 'px'
-                }`;
-            }
+        }
+
+    // Responsive flex-direction via CSS variables.
+    if ( shouldSerializeEnhancedLayoutVars ) {
+        if (
+            typeof flexDirection === 'string' &&
+            flexDirection.length > 0 &&
+            flexDirection !== DEFAULT_FLEX_DIRECTION_DESKTOP
+        ) {
+            style['--madeit-flex-direction-desktop'] = flexDirection;
+        }
+        if (
+            typeof flexDirectionTablet === 'string' &&
+            flexDirectionTablet.length > 0 &&
+            flexDirectionTablet !== DEFAULT_FLEX_DIRECTION_TABLET
+        ) {
+            style['--madeit-flex-direction-tablet'] = flexDirectionTablet;
+        }
+        if (
+            typeof flexDirectionMobile === 'string' &&
+            flexDirectionMobile.length > 0 &&
+            flexDirectionMobile !== DEFAULT_FLEX_DIRECTION_MOBILE
+        ) {
+            style['--madeit-flex-direction-mobile'] = flexDirectionMobile;
+        }
     }
 
-    // Responsive flex-direction via CSS variables (only if explicitly set).
-    if ( typeof flexDirection === 'string' && flexDirection.length > 0 ) {
-        style['--madeit-flex-direction-desktop'] = flexDirection;
-    }
-    if ( typeof flexDirectionTablet === 'string' && flexDirectionTablet.length > 0 ) {
-        style['--madeit-flex-direction-tablet'] = flexDirectionTablet;
-    }
-    if ( typeof flexDirectionMobile === 'string' && flexDirectionMobile.length > 0 ) {
-        style['--madeit-flex-direction-mobile'] = flexDirectionMobile;
+    // Responsive align-items / justify-content via CSS variables.
+    if ( shouldSerializeEnhancedLayoutVars ) {
+        if (
+            typeof alignItems === 'string' &&
+            alignItems.length > 0 &&
+            alignItems !== DEFAULT_ALIGN_ITEMS_DESKTOP
+        ) {
+            style['--madeit-align-items-desktop'] = alignItems;
+        }
+        if ( typeof alignItemsTablet === 'string' && alignItemsTablet.length > 0 ) {
+            style['--madeit-align-items-tablet'] = alignItemsTablet;
+        }
+        if ( typeof alignItemsMobile === 'string' && alignItemsMobile.length > 0 ) {
+            style['--madeit-align-items-mobile'] = alignItemsMobile;
+        }
+
+        if (
+            typeof justifyContent === 'string' &&
+            justifyContent.length > 0 &&
+            justifyContent !== DEFAULT_JUSTIFY_CONTENT_DESKTOP
+        ) {
+            style['--madeit-justify-content-desktop'] = justifyContent;
+        }
+        if ( typeof justifyContentTablet === 'string' && justifyContentTablet.length > 0 ) {
+            style['--madeit-justify-content-tablet'] = justifyContentTablet;
+        }
+        if ( typeof justifyContentMobile === 'string' && justifyContentMobile.length > 0 ) {
+            style['--madeit-justify-content-mobile'] = justifyContentMobile;
+        }
     }
 
-    // Responsive align-items / justify-content via CSS variables (only if explicitly set).
-    if ( typeof alignItems === 'string' && alignItems.length > 0 ) {
-        style['--madeit-align-items-desktop'] = alignItems;
-    }
-    if ( typeof alignItemsTablet === 'string' && alignItemsTablet.length > 0 ) {
-        style['--madeit-align-items-tablet'] = alignItemsTablet;
-    }
-    if ( typeof alignItemsMobile === 'string' && alignItemsMobile.length > 0 ) {
-        style['--madeit-align-items-mobile'] = alignItemsMobile;
-    }
-
-    if ( typeof justifyContent === 'string' && justifyContent.length > 0 ) {
-        style['--madeit-justify-content-desktop'] = justifyContent;
-    }
-    if ( typeof justifyContentTablet === 'string' && justifyContentTablet.length > 0 ) {
-        style['--madeit-justify-content-tablet'] = justifyContentTablet;
-    }
-    if ( typeof justifyContentMobile === 'string' && justifyContentMobile.length > 0 ) {
-        style['--madeit-justify-content-mobile'] = justifyContentMobile;
-    }
-
-    // Responsive flex-wrap via CSS variables (only if explicitly set).
-    if ( typeof flexWrap === 'string' && flexWrap.length > 0 ) {
-        style['--madeit-flex-wrap-desktop'] = flexWrap;
-    }
-    if ( typeof flexWrapTablet === 'string' && flexWrapTablet.length > 0 ) {
-        style['--madeit-flex-wrap-tablet'] = flexWrapTablet;
-    }
-    if ( typeof flexWrapMobile === 'string' && flexWrapMobile.length > 0 ) {
-        style['--madeit-flex-wrap-mobile'] = flexWrapMobile;
+    // Responsive flex-wrap via CSS variables.
+    if ( shouldSerializeEnhancedLayoutVars ) {
+        if (
+            typeof flexWrap === 'string' &&
+            flexWrap.length > 0 &&
+            flexWrap !== DEFAULT_FLEX_WRAP_DESKTOP
+        ) {
+            style['--madeit-flex-wrap-desktop'] = flexWrap;
+        }
+        if ( typeof flexWrapTablet === 'string' && flexWrapTablet.length > 0 ) {
+            style['--madeit-flex-wrap-tablet'] = flexWrapTablet;
+        }
+        if ( typeof flexWrapMobile === 'string' && flexWrapMobile.length > 0 ) {
+            style['--madeit-flex-wrap-mobile'] = flexWrapMobile;
+        }
     }
     
     if(containerMargin !== undefined && containerMargin.top !== undefined) {

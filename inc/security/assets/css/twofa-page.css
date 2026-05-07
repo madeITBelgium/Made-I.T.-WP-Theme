@@ -1,0 +1,10 @@
+.madeit-security-2fa-wrap{max-width:360px;margin:40px auto;text-align:center}
+.madeit-security-2fa-wrap h1{font-size:1.3rem;color:#1a252f;margin-bottom:8px}
+.madeit-security-2fa-wrap p{color:#666;font-size:.9rem;margin-bottom:24px}
+.madeit-security-code-input{width:100%;text-align:center;font-size:1.6rem;letter-spacing:.3em;padding:14px;border:2px solid #ccc;border-radius:8px;outline:none;font-family:monospace}
+.madeit-security-code-input:focus{border-color:#1a5276}
+.madeit-security-2fa-submit{width:100%;padding:12px;background:#1a5276;color:#fff;border:none;border-radius:8px;font-size:1rem;cursor:pointer;margin-top:12px}
+.madeit-security-2fa-submit:hover{background:#2471a3}
+.madeit-security-2fa-error{background:#fde8e6;color:#c0392b;padding:10px;border-radius:6px;font-size:.85rem;margin-bottom:16px}
+.madeit-security-2fa-resend{display:block;margin-top:12px;color:#2471a3;font-size:.82rem;cursor:pointer;background:none;border:none;text-decoration:underline}
+.madeit-security-2fa-resend:disabled{color:#999;cursor:not-allowed;text-decoration:none}

@@ -1,7 +1,11 @@
 // Use var so this script can be loaded multiple times without redeclare errors.
-var React = window.React || (window.wp && window.wp.element);
+// var React = window.React || (window.wp && window.wp.element);
 const { ToolbarButton, ToolbarGroup, Modal } = wp.components;
-
+// delectcontrol
+const { SelectControl } = wp.components;
+const { useState, useEffect, Fragment } = wp.element;
+// const { spinner }
+// const apiFetch = wp.apiFetch;
 const { BlockControls } = wp.blockEditor;
 
 const TARGET_BLOCK = 'core/button';
@@ -33,7 +37,7 @@ const withPopupToolbarButton = wp.compose.createHigherOrderComponent((BlockEdit)
     return (props) => {
 
         if (props.name !== TARGET_BLOCK) {
-            returnReact.createElement(BlockEdit, props);
+            return React.createElement(BlockEdit, props);
         }
 
         const { attributes, setAttributes } = props;
@@ -107,7 +111,7 @@ const withPopupToolbarButton = wp.compose.createHigherOrderComponent((BlockEdit)
             setView('select');
         };
 
-        returnReact.createElement(
+        return React.createElement(
             Fragment,
             null,
 
