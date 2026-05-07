@@ -2432,6 +2432,11 @@ if (in_array('woocommerce/woocommerce.php', $activePlugins)) {
     if(defined('MADEIT_WOOCOMMERCE_ADD_PRODUCT_AJAX') && MADEIT_WOOCOMMERCE_ADD_PRODUCT_AJAX) {
         require get_parent_theme_file_path('/inc/add-to-cart-ajax.php');
     }
+
+    // Google Merchant feed (custom RSS) for WooCommerce products
+    if (file_exists(get_parent_theme_file_path('/inc/google-merchant.php'))) {
+        require get_parent_theme_file_path('/inc/google-merchant.php');
+    }
 }
 
 if (in_array('woocommerce/woocommerce.php', $activePlugins) && in_array('sfwd-lms/sfwd_lms.php', $activePlugins)) {
