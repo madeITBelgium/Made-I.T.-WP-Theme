@@ -10,9 +10,8 @@
  * Author:            Made I.T.
  * Text Domain:       madeit
  * Requires PHP:      7.4
- * Requires at least: 6.2
+ * Requires at least: 6.2.
  */
-
 function madeit_perf_mu_plugin_loaded_start()
 {
     do_action('qm/start', 'madeit:perf_mu_plugin_loaded');
@@ -75,13 +74,13 @@ add_action('registered_post_type', 'madeit_perf_registered_post_type_end', PHP_I
 */
 function madeit_perf_plugin_loaded_start($plugin)
 {
-    do_action('qm/start', 'madeit:perf_plugin_loaded_' . $plugin);
+    do_action('qm/start', 'madeit:perf_plugin_loaded_'.$plugin);
 }
 add_action('plugin_loaded', 'madeit_perf_plugin_loaded_start', 0, 1);
 
 function madeit_perf_plugin_loaded_end($plugin)
 {
-    do_action('qm/stop', 'madeit:perf_plugin_loaded_' . $plugin);
+    do_action('qm/stop', 'madeit:perf_plugin_loaded_'.$plugin);
 }
 add_action('plugin_loaded', 'madeit_perf_plugin_loaded_end', PHP_INT_MAX, 1);
 
@@ -251,7 +250,7 @@ function madeit_perf_shutdown_end()
 {
     do_action('qm/stop', 'madeit:perf_shutdown');
 }
-add_action('shutdown', 'madeit_perf_shutdown_end', PHP_INT_MAX-1);
+add_action('shutdown', 'madeit_perf_shutdown_end', PHP_INT_MAX - 1);
 
 /*
 send_headers
