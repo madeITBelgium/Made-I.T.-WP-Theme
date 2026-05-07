@@ -502,3 +502,117 @@ if (defined('WP_CLI') && WP_CLI) {
 	WP_CLI::add_command('google-merchant', 'MadeIT_Google_Merchant_CLI');
 }
 
+/**
+ * Write the Google Merchant XML to uploads. Returns array with file info or WP_Error on failure.
+ *
+ * @param string $filename
+ * @return array|WP_Error
+ */
+function madeit_google_merchant_write_file(string $filename = 'google-merchant.xml') {
+	if (!function_exists('wc_get_products')) {
+		return new WP_Error('no_woocommerce', 'WooCommerce is required to generate this feed.');
+	}
+
+	$uploads = wp_upload_dir();
+	if (!empty($uploads['error'])) {
+		return new WP_Error('upload_dir_error', $uploads['error']);
+	}
+
+	$filename = $filename ? basename($filename) : 'google-merchant.xml';
+	$target   = trailingslashit($uploads['basedir']) . $filename;
+
+	if (!file_exists($uploads['basedir'])) {
+		if (!wp_mkdir_p($uploads['basedir'])) {
+			return new WP_Error('mkdir_failed', 'Cannot create uploads directory.');
+		}
+	}
+
+	$items    = madeit_google_merchant_products();
+	$currency = function_exists('get_woocommerce_currency') ? get_woocommerce_currency() : get_option('woocommerce_currency', 'EUR');
+
+	$fh = @fopen($target, 'wb');
+	if (!$fh) {
+		return new WP_Error('open_failed', 'Failed to open file for writing: ' . $target);
+	}
+
+	fwrite($fh, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+	fwrite($fh, '<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">' . "\n");
+	fwrite($fh, "  <channel>\n");
+	$site_title = get_bloginfo('name');
+	$site_link  = home_url('/');
+	$site_desc  = trim((string) get_bloginfo('description'));
+	fwrite($fh, '    <title>' . madeit_xml_cdata($site_title . ' - Product Feed') . "</title>\n");
+	fwrite($fh, '    <link>' . esc_url($site_link) . "</link>\n");
+	fwrite($fh, '    <description>' . madeit_xml_cdata($site_desc !== '' ? $site_desc : $site_title . ' product feed') . "</description>\n");
+
+	$bytes = 0;
+	foreach ($items as $it) {
+		$chunk = madeit_render_google_item_xml($it, $currency);
+		$bytes += fwrite($fh, $chunk . "\n");
+	}
+
+	fwrite($fh, "  </channel>\n");
+	fwrite($fh, "</rss>\n");
+	fclose($fh);
+
+	return [
+		'file'  => $target,
+		'url'   => trailingslashit($uploads['baseurl']) . $filename,
+		'bytes' => $bytes,
+		'count' => count($items),
+	];
+}
+
+/**
+ * Schedule a daily cron at ~22:00 server/site local time and hook the task.
+ */
+add_action('init', function () {
+	if (!wp_next_scheduled('madeit_google_merchant_cron_generate')) {
+		$ts = madeit_next_timestamp_at(22, 0, 0);
+		// Fallback to now+60s if calc fails
+		if (!$ts || $ts < time()) {
+			$ts = time() + 60;
+		}
+		wp_schedule_event($ts, 'daily', 'madeit_google_merchant_cron_generate');
+	}
+});
+
+/**
+ * Cron callback: generate the feed into uploads nightly.
+ */
+add_action('madeit_google_merchant_cron_generate', function () {
+	$res = madeit_google_merchant_write_file(apply_filters('madeit_google_merchant_filename', 'google-merchant.xml'));
+	if (is_wp_error($res)) {
+		error_log('[Google Merchant Feed] Cron generation failed: ' . $res->get_error_message());
+		return;
+	}
+	do_action('madeit_google_merchant_generated', $res);
+});
+
+/**
+ * Compute the next timestamp for today at H:i:s in the site timezone; if past, returns tomorrow.
+ */
+function madeit_next_timestamp_at(int $hour, int $minute = 0, int $second = 0): int
+{
+	$tz_string = get_option('timezone_string');
+	if ($tz_string) {
+		$tz = new DateTimeZone($tz_string);
+	} else {
+		$offset = (float) get_option('gmt_offset');
+		$hours = (int) $offset;
+		$mins  = (abs($offset - $hours)) * 60;
+		$sign  = $offset < 0 ? '-' : '+';
+		// Create a timezone like +02:00 or -05:30
+		$tz = new DateTimeZone(sprintf('%s%02d:%02d', $sign, abs($hours), abs($mins)));
+	}
+
+	$now = new DateTime('now', $tz);
+	$target = clone $now;
+	$target->setTime($hour, $minute, $second);
+	if ($target <= $now) {
+		$target->modify('+1 day');
+		$target->setTime($hour, $minute, $second);
+	}
+	return $target->getTimestamp();
+}
+

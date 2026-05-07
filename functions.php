@@ -2720,7 +2720,7 @@ if(MADEIT_BOOTSTRAP_VERSION === 5) {
 //check if wordfence is active
 if (!in_array('wordfence/wordfence.php', apply_filters('active_plugins', get_option('active_plugins')))) {
     //disable REST API in wordfence settings
-    include_once __DIR__.'/inc/security/security.php';
+    //include_once __DIR__.'/inc/security/security.php';
 } else {
     add_filter('rest_endpoints', function ($endpoints) {
         // Hide user endpoints for unauthenticated visitors.
