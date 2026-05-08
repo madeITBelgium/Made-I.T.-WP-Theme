@@ -234,9 +234,10 @@ function madeit_cron_daily()
     }
 }
 
-function madeit_check_queued_updates(): void {
+function madeit_check_queued_updates(): void
+{
     $portal_url = 'https://portal.madeit.be/api/wordpress/queued-actions';
-    
+
     $response = wp_remote_get(add_query_arg([
         'website' => get_site_url(),
     ], $portal_url));
@@ -262,11 +263,11 @@ function madeit_check_queued_updates(): void {
         $plugin = $action['plugin'];
 
         // Gebruik de WordPress upgrade API
-        require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
-        require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        require_once ABSPATH.'wp-admin/includes/class-wp-upgrader.php';
+        require_once ABSPATH.'wp-admin/includes/plugin.php';
 
         $upgrader = new Plugin_Upgrader(new Automatic_Upgrader_Skin());
-        $result   = $upgrader->upgrade($plugin);
+        $result = $upgrader->upgrade($plugin);
 
         if ($result !== false) {
             $completed[] = $plugin;
@@ -286,7 +287,6 @@ function madeit_check_queued_updates(): void {
 if (defined('WP_CLI') && WP_CLI) {
     WP_CLI::add_command('madeit_update_daily', 'madeit_check_queued_updates');
 }
-
 
 //wp cli command
 if (defined('WP_CLI') && WP_CLI) {
