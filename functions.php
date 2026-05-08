@@ -2572,6 +2572,11 @@ if (in_array('woocommerce/woocommerce.php', $activePlugins)) {
     if(defined('MADEIT_WOOCOMMERCE_ADD_PRODUCT_AJAX') && MADEIT_WOOCOMMERCE_ADD_PRODUCT_AJAX) {
         require get_parent_theme_file_path('/inc/add-to-cart-ajax.php');
     }
+
+    // Google Merchant feed (custom RSS) for WooCommerce products
+    if (file_exists(get_parent_theme_file_path('/inc/google-merchant.php'))) {
+        require get_parent_theme_file_path('/inc/google-merchant.php');
+    }
 }
 
 if (in_array('woocommerce/woocommerce.php', $activePlugins) && in_array('sfwd-lms/sfwd_lms.php', $activePlugins)) {
@@ -2715,7 +2720,7 @@ if(MADEIT_BOOTSTRAP_VERSION === 5) {
 //check if wordfence is active
 if (!in_array('wordfence/wordfence.php', apply_filters('active_plugins', get_option('active_plugins')))) {
     //disable REST API in wordfence settings
-    include_once __DIR__.'/inc/security/security.php';
+    //include_once __DIR__.'/inc/security/security.php';
 } else {
     add_filter('rest_endpoints', function ($endpoints) {
         // Hide user endpoints for unauthenticated visitors.
