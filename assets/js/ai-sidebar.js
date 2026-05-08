@@ -2161,14 +2161,14 @@ const SIDEBAR_MODULES = {
         key: "languageCheck",
         label: __("Taalcheck", "madeit"),
         description: __(
-            "Plak tekst en ontvang AI-voorstellen voor spelling, grammatica en leesbaarheid.",
+            "Ontvang AI-voorstellen voor spelling, grammatica en leesbaarheid.",
             "madeit"
         ),
     },
     chat: {
         key: "chat",
         label: __("Chat", "madeit"),
-        description: __("Vraag AI om contentblokken te genereren voor je pagina.", "madeit"),
+        description: __("Chat met de AI assistant", "madeit"),
     },
     altTags: {
         key: "altTags",
@@ -4903,47 +4903,61 @@ registerPlugin("madeit-chatbot-sidebar", {
             error,
         });
     },
-    icon: React.createElement(
-        "svg",
-        {
-            xmlns: "http://www.w3.org/2000/svg",
-            viewBox: "0 0 64 64",
-            fill: "none",
-        },
-        React.createElement("circle", {
-            cx: "32",
-            cy: "32",
-            r: "30",
-            fill: "white",
-        }),
-        React.createElement("path", {
-            d: "M12 20l1.5 3 3 1.5-3 1.5-1.5 3-1.5-3-3-1.5 3-1.5 1.5-3z",
-            fill: "black",
-            opacity: "0.8",
-        }),
-        React.createElement("path", {
-            d: "M50 14l1 2 2 1-2 1-1 2-1-2-2-1 2-1 1-2z",
-            fill: "black",
-            opacity: "0.6",
-        }),
-        React.createElement("path", {
-            d: "M52 46l1.5 3 3 1.5-3 1.5-1.5 3-1.5-3-3-1.5 3-1.5 1.5-3z",
-            fill: "black",
-            opacity: "0.7",
-        }),
-        React.createElement("path", {
-            d: "M10 48l1 2 2 1-2 1-1 2-1-2-2-1 2-1 1-2z",
-            fill: "black",
-            opacity: "0.5",
-        }),
-        React.createElement("text", {
-            x: "32",
-            y: "38",
-            textAnchor: "middle",
-            fontFamily: "system-ui, -apple-system, sans-serif",
-            fontSize: "20",
-            fontWeight: "700",
-            fill: "black",
-        }, "AI")
-    ),
+   icon: React.createElement(
+    "svg",
+    {
+        xmlns: "http://www.w3.org/2000/svg",
+        viewBox: "0 0 64 64",
+        fill: "none",
+    },
+
+    // Achtergrond
+    React.createElement("circle", {
+        cx: "32",
+        cy: "32",
+        r: "30",
+        fill: "white",
+    }),
+
+    // Grote sparkle links
+    React.createElement("path", {
+        d: "M14 18L15.8 21.8L19.5 23.5L15.8 25.2L14 29L12.2 25.2L8.5 23.5L12.2 21.8L14 18Z",
+        fill: "#E3B468",
+    }),
+
+    // Kleine sparkle rechtsboven
+    React.createElement("path", {
+        d: "M50 12L51 14L53 15L51 16L50 18L49 16L47 15L49 14L50 12Z",
+        fill: "#E3B468",
+        opacity: "0.8",
+    }),
+
+    // Middelgrote sparkle rechtsonder
+    React.createElement("path", {
+        d: "M50 42L51.5 45L54.5 46.5L51.5 48L50 51L48.5 48L45.5 46.5L48.5 45L50 42Z",
+        fill: "#E3B468",
+        opacity: "0.9",
+    }),
+
+    // Kleine sparkle linksonder
+    React.createElement("path", {
+        d: "M12 46L13 48L15 49L13 50L12 52L11 50L9 49L11 48L12 46Z",
+        fill: "#E3B468",
+        opacity: "0.7",
+    }),
+
+    // AI logo
+    React.createElement("path", {
+        d: "M24 42L30 22H34L40 42H36.5L35 37H28.5L27 42H24ZM29.5 33.5H34L31.8 27C31.4 25.9 31.1 24.9 30.9 24.1C30.7 25 30.4 25.9 30 26.8L29.5 33.5Z",
+        fill: "black",
+    }),
+
+    React.createElement("rect", {
+        x: "42",
+        y: "22",
+        width: "4",
+        height: "20",
+        fill: "black",
+    })
+),
 });

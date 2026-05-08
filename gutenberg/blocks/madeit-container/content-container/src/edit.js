@@ -273,14 +273,10 @@ export function ColumnsEditContainer( props ) {
     // This keeps existing blocks stable, while making the controls truly independent.
     
     
-    
-
-    const computedContentWidth =
-        size === 'container'
-            ? 'container'
-            : contentWidth === 'container-fluid'
+    // Als we in "container" zitten, is contentWidth altijd "container". Anders is het "container-fluid" tenzij het al een andere waarde had (omdat de gebruiker die heeft aangepast).
+    const computedContentWidth = size === 'container' ? 'container' : contentWidth === 'container-fluid'
                 ? 'container-fluid'
-                : 'container';
+                : 'container-fluid';
 
     const canChooseContentWidth = size !== 'container';
     
@@ -288,6 +284,9 @@ export function ColumnsEditContainer( props ) {
         [ `container` ]: computedContentWidth === 'container',
         [ `container-fluid` ]: computedContentWidth === 'container-fluid',
     });
+
+
+
 
     const setContainerPadding = ( containerPadding ) => {
         setAttributes( { containerPadding } );
@@ -392,7 +391,8 @@ export function ColumnsEditContainer( props ) {
     const allowedHtmlTags = [ 'div', 'section', 'article', 'main', 'header', 'footer' ];
     const HtmlTag = allowedHtmlTags.includes( computedHtmlTag ) ? computedHtmlTag : 'div';
 
-    const applyContainerBackgroundToChild = size === 'container';
+    // background-image always on the outher container, never on the inner row, because that's more intuitive for users and works better with the way the block is structured (the inner row can be toggled between "container" and "container-fluid" widths, which would be weird if it also had the background image). The "container-content-boxed" size is a special case where we want the background color on the inner row but the background image on the outer container, so we also apply the background image styles to the inner row in that case.
+    const applyContainerBackgroundToChild = size === 'container-fluid' || size === 'container-content-boxed';
 
     const containerBackgroundStyle = {
         backgroundColor:
@@ -1030,7 +1030,7 @@ export function ColumnsEditContainer( props ) {
                             ) )}
                         </ButtonGroup>
                         <br /><br />
-                        { canChooseContentWidth && (
+                        {/* { canChooseContentWidth && (
                             <SelectControl
                                 label={ __( 'Content breedte' ) }
                                 value={ computedContentWidth }
@@ -1039,7 +1039,7 @@ export function ColumnsEditContainer( props ) {
                                 }
                                 options={ contentBoxedSizes }
                             />
-                        ) }
+                        ) } */}
                         
 
 

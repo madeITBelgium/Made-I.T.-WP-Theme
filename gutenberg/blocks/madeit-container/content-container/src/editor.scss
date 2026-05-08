@@ -231,12 +231,15 @@ $default-block-margin:  28px;
         --container-offset: 0px;
         --sidebar: 100px;
 
+        .wp-block-madeit-block-content > .container {
+            @media (max-width: 575px)  { --container-offset: 100%; }
+        }
         @media (max-width: 575px)  { --container-offset: calc(100% - 32px); }
-        @media (min-width: 576px)  { --container-offset: calc(540px - var(--sidebar)); }
-        @media (min-width: 768px)  { --container-offset: calc(720px - var(--sidebar)); }
-        @media (min-width: 992px)  { --container-offset: calc(960px - var(--sidebar)); }
-        @media (min-width: 1200px) { --container-offset: calc(1140px - var(--sidebar)); }
-        @media (min-width: 1400px) { --container-offset: calc(1320px - var(--sidebar)); }
+        @media (min-width: 576px)  { --container-offset: calc(540px); }
+        @media (min-width: 768px)  { --container-offset: calc(720px); }
+        @media (min-width: 992px)  { --container-offset: calc(960px); }
+        @media (min-width: 1200px) { --container-offset: calc(1140px); }
+        @media (min-width: 1400px) { --container-offset: calc(1320px); }
 
         width: var(--container-offset);
         min-height: var(--madeit-min-height-desktop);
@@ -337,7 +340,7 @@ $default-block-margin:  28px;
 
     // ── Tablet preview ──────────────────────────────────────────────────────
 
-    .is-root-container.is-tablet-preview & {
+    @media (max-width: 991px) {
         > .container,
         > .container-fluid {
             > .madeit-container-row {
@@ -370,7 +373,7 @@ $default-block-margin:  28px;
 
     // ── Mobiel preview ──────────────────────────────────────────────────────
 
-    .is-root-container.is-mobile-preview & {
+    @media (max-width: 767px) {
         > .container,
         > .container-fluid {
             > .madeit-container-row {
@@ -390,26 +393,26 @@ $default-block-margin:  28px;
             }
         }
 
-        // Kolommen op volle breedte bij column-richting op mobiel.
-        .madeit-container-row[data-madeit-dir-mobile="column"],
-        .madeit-container-row[data-madeit-dir-mobile="column-reverse"] {
-            > [data-type="madeit/block-content-column"] {
-                width: 100% !important;
-                flex: 0 0 auto !important;
-                max-width: 100% !important;
+        // Kolommen op volle breedte bij column-richting op mobiel. 
+        .madeit-container-row[data-madeit-dir-mobile="column"], 
+        .madeit-container-row[data-madeit-dir-mobile="column-reverse"] { 
+            > [data-type="madeit/block-content-column"] { 
+                width: 100% !important; 
+                flex: 0 0 auto !important; 
+                max-width: 100% !important; 
             }
         }
 
-        // Op mobiel altijd alle kolommen op volle breedte (ongeacht richting),
-        // tenzij er een expliciete mobiele richting is ingesteld die rijen toelaat.
-        > .container,
-        > .container-fluid {
-            > .madeit-container-row:not([data-madeit-dir-mobile="row"]):not([data-madeit-dir-mobile="row-reverse"]) {
-                > .block-editor-inner-blocks > .block-editor-block-list__layout {
-                    > [data-type="madeit/block-content-column"] {
-                        width: 100% !important;
-                        flex: 0 0 100% !important;
-                        max-width: 100% !important;
+        // Op mobiel altijd alle kolommen op volle breedte (ongeacht richting), 
+        // tenzij er een expliciete mobiele richting is ingesteld die rijen toelaat. 
+        > .container, 
+        > .container-fluid { 
+            > .madeit-container-row:not([data-madeit-dir-mobile="row"]):not([data-madeit-dir-mobile="row-reverse"]) { 
+                > .block-editor-inner-blocks > .block-editor-block-list__layout { 
+                    > [data-type="madeit/block-content-column"] { 
+                        width: 100% !important; 
+                        flex: 0 0 auto !important;
+                        max-width: 100% !important; 
                     }
                 }
             }
@@ -499,41 +502,54 @@ $default-block-margin:  28px;
 
     // Max-breedte berekeningen voor kolommen in de editor (op basis van data-madeit-dir).
     @for $i from 1 through 11 {
-        [data-madeit-dir="row"] [data-type="madeit/block-content-column"].is-width-#{$i},
-        [data-madeit-dir="row-reverse"] [data-type="madeit/block-content-column"].is-width-#{$i} {
-            max-width: calc(var(--madeit-max-width-desktop, 100%) * #{$i} / 12) !important;
+        &[data-madeit-dir="row"] [data-type="madeit/block-content-column"].is-width-#{$i},
+        &[data-madeit-dir="row-reverse"] [data-type="madeit/block-content-column"].is-width-#{$i},
+        &[data-madeit-dir="row"] [data-title="Made I.T. Inner Column"].is-width-#{$i},
+        &[data-madeit-dir="row-reverse"] [data-title="Made I.T. Inner Column"].is-width-#{$i} {
+            // max-width: calc(var(--madeit-max-width-desktop, 100%) * #{$i} / 12) !important;
+            // max-width: calc(var(--madeit-max-width-desktop, 100%) * 6 / 12 - (var(--madeit-row-gap-desktop, 20px) / 1.65)) !important;
+            flex-basis: calc(var(--madeit-max-width-desktop, 100%) * #{$i} / 12 - var(--madeit-row-gap-desktop, 20px) / 1.65) !important;
+            min-width: calc(var(--madeit-max-width-desktop, 100%) * #{$i} / 12 - var(--madeit-row-gap-desktop, 20px) / 1.65) !important;
+            width: 100%;
+
+            &.keep-max-container-size {
+                min-width: auto !important;
+            }
         }
 
-        [data-madeit-dir="column"] [data-type="madeit/block-content-column"].is-width-#{$i},
-        [data-madeit-dir="column-reverse"] [data-type="madeit/block-content-column"].is-width-#{$i} {
+        &[data-madeit-dir="column"] [data-type="madeit/block-content-column"].is-width-#{$i},
+        &[data-madeit-dir="column-reverse"] [data-type="madeit/block-content-column"].is-width-#{$i},
+        &[data-madeit-dir="column"] [data-title="Made I.T. Inner Column"].is-width-#{$i},
+        &[data-madeit-dir="column-reverse"] [data-title="Made I.T. Inner Column"].is-width-#{$i} {
             max-width: var(--madeit-max-width-desktop, 100%) !important;
+            width: 100%;
         }
 
         // Tablet preview: gebruik de tablet max-breedte var.
-        .is-root-container.is-tablet-preview {
+        @media (max-width: 780px) {
             [data-madeit-dir="row"] [data-type="madeit/block-content-column"].is-width-#{$i},
-            [data-madeit-dir="row-reverse"] [data-type="madeit/block-content-column"].is-width-#{$i} {
+            &[data-madeit-dir="row-reverse"] [data-type="madeit/block-content-column"].is-width-#{$i} {
                 // max-width: calc(var(--madeit-max-width-tablet, var(--madeit-max-width-desktop, 100%)) * #{$i} / 12) !important;
                 max-width: 100% !important; // col-12 is still avaible
             }
 
-            [data-madeit-dir="column"] [data-type="madeit/block-content-column"].is-width-#{$i},
-            [data-madeit-dir="column-reverse"] [data-type="madeit/block-content-column"].is-width-#{$i} {
+            &[data-madeit-dir="column"] [data-type="madeit/block-content-column"].is-width-#{$i},
+            &[data-madeit-dir="column-reverse"] [data-type="madeit/block-content-column"].is-width-#{$i} {
                 // max-width: var(--madeit-max-width-tablet, var(--madeit-max-width-desktop, 100%)) !important;
                 max-width: 100% !important; // col-12 is still avaible
-            }
+            } 
         }
 
         // Mobiel preview: gebruik de mobile max-breedte var.
-        .is-root-container.is-mobile-preview {
-            [data-madeit-dir="row"] [data-type="madeit/block-content-column"].is-width-#{$i},
-            [data-madeit-dir="row-reverse"] [data-type="madeit/block-content-column"].is-width-#{$i} {
+        @media(max-width: 360px) {
+            &[data-madeit-dir="row"] [data-type="madeit/block-content-column"].is-width-#{$i},
+            &[data-madeit-dir="row-reverse"] [data-type="madeit/block-content-column"].is-width-#{$i} {
                 // max-width: calc(var(--madeit-max-width-mobile, var(--madeit-max-width-tablet, var(--madeit-max-width-desktop, 100%))) * #{$i} / 12) !important;
                 max-width: 100% !important; // col-12 is still avaible
             }
 
-            [data-madeit-dir="column"] [data-type="madeit/block-content-column"].is-width-#{$i},
-            [data-madeit-dir="column-reverse"] [data-type="madeit/block-content-column"].is-width-#{$i} {
+            &[data-madeit-dir="column"] [data-type="madeit/block-content-column"].is-width-#{$i},
+            &[data-madeit-dir="column-reverse"] [data-type="madeit/block-content-column"].is-width-#{$i} {
                 // max-width: var(--madeit-max-width-mobile, var(--madeit-max-width-tablet, var(--madeit-max-width-desktop, 100%))) !important;
                 max-width: 100% !important; // col-12 is still avaible
             }

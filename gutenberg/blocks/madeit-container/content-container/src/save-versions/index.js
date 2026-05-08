@@ -42,6 +42,7 @@
 
 // ─── Recente deprecated versies (intern ontwikkeld, mogelijk niet live) ───────
 
+export { default as saveV0  } from './save_20260508_deprecated';
 export { default as saveV1  } from './save-v1-size-default-container';
 export { default as saveV2  } from './save-2026-04-08-vars';
 export { default as saveV3  } from './save-2026-04-08';
@@ -55,6 +56,17 @@ export { default as saveV10 } from './save-v10-pre-rowgap-responsive-vars';
 export { default as saveV11 } from './save-v11-transparent-background-default';
 
 // ─── Versies die live staan op websites ───────────────────────────────────────
+
+/**
+ * saveV0 — De versie die tijdens de ontwikkeling is gebruikt, maar nooit live is gegaan.
+ *
+ * Kenmerken:
+ * - Spacing als directe inline stijlen (geen CSS vars)
+ * - `<div class="row">` (let op: `class` ipv `className` — JSX typo die bewaard moet worden)
+ * - Geen `madeit-block-content--frontend` klasse
+ * - Geen flex/layout CSS vars
+ */
+export { default as saveV0 } from './save_20260508_deprecated';
 
 /**
  * saveV12 — De versie die op alle huidige live websites staat.

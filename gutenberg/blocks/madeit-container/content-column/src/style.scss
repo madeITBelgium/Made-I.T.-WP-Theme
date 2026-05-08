@@ -62,7 +62,7 @@
         }
 
         .wp-block-madeit-block-content-column {
-            flex: auto 1 !important;
+            // flex: auto 1 !important;
 
             &.is-vertically-aligned-center {
                 align-content: center !important;
@@ -100,15 +100,15 @@
         --container-offset-maxContainer: 0px;
 
         @media (min-width: 992px) {
-            --container-offset-maxContainer: calc((100vw - 960px) / 2 + var(--madeit-row-gap-tablet, var(--madeit-row-gap-desktop, 20px))) !important;
+            --container-offset-maxContainer: calc((100vw - 960px) / 2) !important;
         }
 
         @media (min-width: 1200px) {
-            --container-offset-maxContainer: calc((100vw - 1140px) / 2 + var(--madeit-row-gap-desktop, 20px)) !important;
+            --container-offset-maxContainer: calc((100vw - 1140px) / 2) !important;
         }
 
         @media (min-width: 1400px) {
-            --container-offset-maxContainer: calc((100vw - 1320px) / 2 + var(--madeit-row-gap-desktop, 20px)) !important;
+            --container-offset-maxContainer: calc((100vw - 1320px) / 2) !important;
         }
 
         padding-left: var(--container-offset-maxContainer) !important;
@@ -119,15 +119,15 @@
         --container-offset-maxContainer: 0px;
 
         @media (min-width: 992px) {
-            --container-offset-maxContainer: calc((100vw - 960px) / 2 - var(--sidebar)) !important;
+            --container-offset-maxContainer: calc((100vw - 960px) / 2) !important;
         }
 
         @media (min-width: 1200px) {
-            --container-offset-maxContainer: calc((100vw - 1140px) / 2 - var(--sidebar)) !important;
+            --container-offset-maxContainer: calc((100vw - 1140px) / 2) !important;
         }
 
         @media (min-width: 1400px) {
-            --container-offset-maxContainer: calc((100vw - 1320px) / 2 - var(--sidebar)) !important;
+            --container-offset-maxContainer: calc((100vw - 1320px) / 2) !important;
         }
 
         padding-right: var(--container-offset-maxContainer) !important;
@@ -140,7 +140,7 @@
         --sidebar: 90px;
         --container-offset-maxContainer: 0px;
 
-        padding-left: var(--container-offset-maxContainer);
+        padding-left: var(--container-offset-maxContainer); 
     }
 
     &[data-madeit-dir]:not([data-madeit-dir="row-reverse"]) [data-type="madeit/block-content-column"].wp-block-madeit-block-content-column.keep-max-container-size:last-child:not(.max-start-size),
