@@ -27,6 +27,7 @@ function mp_get_popup_status($popup_id) {
     if ($end && strtotime($end) < $now) return ['status'=>'expired','label'=>'<span style="color:#d63638">Verlopen</span>'];
 
     return ['status'=>'online','label'=>'<span style="color:#46b450;font-weight:bold">Online</span>'];
+    return ['status' =>'OnClick', 'label'=>'<span style="color:#46b450;font-weight:bold">OnClick</span>'];
 }
 
 // Admin active time

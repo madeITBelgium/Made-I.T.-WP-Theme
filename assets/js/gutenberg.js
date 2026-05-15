@@ -473,3 +473,56 @@ wp.blocks.registerBlockStyle('core/image', {
         bootPreviewDeviceSync();
     }
 } )( window.wp );
+
+
+
+// POPUP
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Alle subtab knoppen
+    const subtabs = document.querySelectorAll('.m-popup-subtab');
+    // Alle field groups van display
+    const groups = {
+        preset: document.querySelector('.acf-field-group[data-name="display_preset_group"]'),
+        style: document.querySelector('.acf-field-group[data-name="display_style_group"]'),
+        size: document.querySelector('.acf-field-group[data-name="display_size_group"]'),
+        animation: document.querySelector('.acf-field-group[data-name="display_animation_group"]'),
+        position: document.querySelector('.acf-field-group[data-name="display_position_group"]'),
+    };
+
+    console.log(groups);
+    // Functie om groepen te toggelen
+    function showGroup(tab) {
+        for (let key in groups) {
+            if (!groups[key]) continue;
+            groups[key].style.display = (key === tab) ? 'block' : 'none';
+        }
+
+        console.log('function showGroup called with tab: ' + tab);
+    }
+
+    // Voeg click event toe aan elke subtab
+    subtabs.forEach(function(tabBtn){
+        tabBtn.addEventListener('click', function(){
+            // active class
+            subtabs.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+
+            // toon juiste groep
+            const tabName = this.getAttribute('data-tab');
+            showGroup(tabName);
+        });
+
+        console.log('clickEvent' + tabBtn.getAttribute('data-tab'));
+    });
+
+    // Init: toon preset groep standaard
+    showGroup('preset');
+    const firstTab = document.querySelector('.m-popup-subtab[data-tab="preset"]');
+    const fieldGroep = document.querySelector('.acf-field-group[name="group_display_preset"]');
+    if (firstTab) firstTab.classList.add('active');
+    if (fieldGroep) fieldGroep.style.display = 'block';
+    
+
+
+});

@@ -200,3 +200,34 @@ p {
 p.block-editor-rich-text__editable[aria-label="Leeg blok; begin met schrijven of type een schuine streep om een blok te kiezen"] {
     margin-bottom: 0;
 }
+
+
+
+
+/* POPUP */
+.acf-fields.inside {
+        min-height: 500px !important;
+    }
+    .acf-field-display-subtabs {
+        padding-top: 0 !important;
+    }
+    .m-popup-subtabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    }
+    .m-popup-subtab {
+        padding: 5px 10px;
+        color: black;
+        cursor: pointer;
+    }
+    .m-popup-subtab.active {
+        color: #0073aa;
+    }
+
+    .acf-field-group {
+        display: none;
+    }
+    .acf-field-group.active {
+        display: block;
+    }

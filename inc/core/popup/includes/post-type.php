@@ -29,6 +29,15 @@ $svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
     ];
 
     register_post_type('popup', $args);
+
+    register_post_type('popup_template', [
+        'label' => 'Popup Templates',
+        'public' => false,
+        'show_ui' => true,
+        'show_in_menu' => 'edit.php?post_type=popup', // sub menu!
+        'supports' => ['title'],
+        'menu_icon' => 'dashicons-layout',
+    ]);
 }
 add_action('init', 'mp_register_post_type');
 
@@ -59,11 +68,4 @@ add_action('manage_popup_posts_custom_column', function($column, $post_id){
 }, 10, 2);
 
 
-register_post_type('popup_template', [
-    'label' => 'Popup Templates',
-    'public' => false,
-    'show_ui' => true,
-    'show_in_menu' => 'edit.php?post_type=popup', // sub menu!
-    'supports' => ['title'],
-    'menu_icon' => 'dashicons-layout',
-]);
+
