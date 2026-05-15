@@ -1,3 +1,7 @@
+* {
+    box-sizing: border-box;
+}
+
 .editor-visual-editor, .editor-visual-editor p {
 	font-family: "Libre Franklin", "Helvetica Neue", helvetica, arial, sans-serif;
 	font-size: 16px;
@@ -165,4 +169,34 @@ figure:not(.size-full) {
 }
 [aria-label="Verloop: Primary dark darkened"] + svg {
     fill: white;
+}
+
+
+/* DEFAULT (desktop) */
+:root {
+    --madeit-cols: var(--madeit-cols-desktop, 3);
+}
+
+/* TABLET */
+body.is-preview-tablet {
+    --madeit-cols: var(--madeit-cols-tablet, var(--madeit-cols-desktop, 2));
+}
+
+/* MOBILE */
+body.is-preview-mobile {
+    --madeit-cols: var(--madeit-cols-mobile, 1);
+}
+
+
+
+h6, .h6, h5, .h5, h4, .h4, h3, .h3, h2, .h2, h1, .h1 {
+    margin-bottom: 0.5rem;
+    margin-top: 0;
+}
+p {
+    margin-bottom: 1rem;
+    margin-top: 0;
+}
+p.block-editor-rich-text__editable[aria-label="Leeg blok; begin met schrijven of type een schuine streep om een blok te kiezen"] {
+    margin-bottom: 0;
 }

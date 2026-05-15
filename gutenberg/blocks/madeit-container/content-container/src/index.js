@@ -1,19 +1,12 @@
 /**
  * index.js — madeit/block-content
  *
- * Registreert het block type en definieert:
- * - Variaties (layout presets)
- * - Edit & save functies
- * - Deprecated versies (voor backward compatibility met bestaande content)
+ * DEPRECATED VOLGORDE (meest recent bovenaan):
  *
- * DEPRECATED VOLGORDE
- * ───────────────────
- * Gutenberg doorloopt de deprecated array van boven naar onder.
- * De meest recente deprecated versie staat bovenaan (saveV0),
- * de oudste versie staat onderaan (saveV13).
- *
- * ⚠️  BELANGRIJK: Verwijder nooit een deprecated versie tenzij je 100% zeker
- * bent dat er geen live content meer bestaat die met die versie werd opgeslagen.
+ * Vpre0b: geen dubbele classes + inner container div + partial CSS-vars
+ * Vpre0:  dubbele classes + inner container div + partial CSS-vars
+ * V0:     geen inner div + inline margin + volledige CSS-vars
+ * V1–V15: alle vorige deprecated versies
  */
 
 import { registerBlockType } from '@wordpress/blocks';
@@ -25,6 +18,8 @@ import metadata from './../block.json';
 import icon from './icon';
 
 import {
+    saveVpre0b,
+    saveVpre0,
     saveV0,
     saveV1, saveV2, saveV3, saveV4, saveV5, saveV6,
     saveV7, saveV8, saveV9, saveV10, saveV11, saveV12,
@@ -34,9 +29,6 @@ import {
 
 // ─── Hulpfuncties voor migrate() ──────────────────────────────────────────────
 
-/**
- * Normaliseert een CSS-lengtewaarde naar een string met eenheid.
- */
 const normalizeCssLength = ( value, defaultUnit = 'px' ) => {
     if ( value === undefined || value === null ) return undefined;
     if ( typeof value === 'number' && Number.isFinite( value ) ) {
@@ -50,9 +42,6 @@ const normalizeCssLength = ( value, defaultUnit = 'px' ) => {
     return undefined;
 };
 
-/**
- * Normaliseert een spacing-object { top, right, bottom, left }.
- */
 const normalizeSpacingObject = ( spacing ) => {
     if ( ! spacing || typeof spacing !== 'object' ) return undefined;
     const { top, right, bottom, left } = spacing;
@@ -68,9 +57,6 @@ const normalizeSpacingObject = ( spacing ) => {
     };
 };
 
-/**
- * Normaliseert alle spacing-attributen van een block (margin + padding).
- */
 const normalizeSpacingAttributes = ( attributes ) => {
     const next = { ...( attributes || {} ) };
     next.containerMargin        = normalizeSpacingObject( next.containerMargin );
@@ -82,6 +68,24 @@ const normalizeSpacingAttributes = ( attributes ) => {
     next.rowMargin              = normalizeSpacingObject( next.rowMargin );
     next.rowPadding             = normalizeSpacingObject( next.rowPadding );
     return next;
+};
+
+/**
+ * Detecteert of de opgeslagen wrapperStyle de partial vars heeft:
+ * - Geen --madeit-row-gap-tablet (tablet/mobile row-gap ontbreekt)
+ * - Geen --madeit-flex-direction-* vars
+ * - Geen --madeit-flex-wrap-* vars
+ */
+const isPartialVarsStyle = ( wrapperStyle ) => {
+    if ( typeof wrapperStyle !== 'string' ) return false;
+    const s = wrapperStyle.replace( /\s+/g, '' );
+    if ( ! s.length ) return false;
+    const hasRowGapTablet     = s.includes( '--madeit-row-gap-tablet:' );
+    const hasFlexDirection    = s.includes( '--madeit-flex-direction-desktop:' ) ||
+                                s.includes( '--madeit-flex-direction-tablet:' )  ||
+                                s.includes( '--madeit-flex-direction-mobile:' );
+    const hasFlexWrap         = s.includes( '--madeit-flex-wrap-desktop:' );
+    return ! hasRowGapTablet && ! hasFlexDirection && ! hasFlexWrap;
 };
 
 
@@ -130,10 +134,59 @@ registerBlockType( metadata.name, {
 
     deprecated: [
 
-        // ── V0: Inner container div toegevoegd + CSS-vars voor margin/padding (2026-05-08) ──
-        // Vóór deze wijziging had de HtmlTag geen inner <div class="container|container-fluid">
-        // en werden margin/padding als directe inline stijlen geserialiseerd
-        // (marginTop, marginBottom) in plaats van CSS-variabelen.
+        // ── Vpre0b: Geen dubbele classes + inner container div + partial vars ──
+        //
+        // Meest recente tussenfase vóór de huidige save:
+        // - Classes zijn normaal (niet verdubbeld)
+        // - Inner <div class="container"> altijd aanwezig (size werd nog niet
+        //   doorvertaald naar de inner div class)
+        // - Slechts partial CSS-vars (geen row-gap tablet/mobile,
+        //   geen flex-direction, geen flex-wrap)
+        // - Geen madeitHasUserEdits → dit block werd nog niet gemigreerd
+        {
+            attributes: metadata.attributes,
+            isEligible( attributes ) {
+                // Sla over als al gemigreerd
+                if ( attributes?.madeitHasUserEdits ) return false;
+
+                const wrapperClassName = typeof attributes?.wrapperClassName === 'string'
+                    ? attributes.wrapperClassName : '';
+                const tokens = wrapperClassName.trim().split( /\s+/ ).filter( Boolean );
+
+                // Niet matchen als classes verdubbeld zijn (dat is Vpre0)
+                const isDoubled = tokens.filter( t => t === 'wp-block-madeit-block-content' ).length >= 2;
+                if ( isDoubled ) return false;
+
+                // Moet madeit-block-content--frontend hebben (recente versie)
+                // of geen wrapperClassName (nieuwe blocks die nog niet zijn opgeslagen)
+                return tokens.includes( 'madeit-block-content--frontend' ) ||
+                       tokens.length === 0;
+            },
+            save: saveVpre0b,
+            migrate( attributes ) {
+                return { ...normalizeSpacingAttributes( attributes ), madeitHasUserEdits: true };
+            },
+        },
+
+        // ── Vpre0: Dubbele classes + inner container div + partial vars ────────
+        //
+        // Veroorzaakt door bug: blockProps.className = classnames( wrapperClass, blockProps.className )
+        // gecombineerd met partial CSS-vars.
+        {
+            attributes: metadata.attributes,
+            isEligible( attributes ) {
+                const wrapperClassName = typeof attributes?.wrapperClassName === 'string'
+                    ? attributes.wrapperClassName : '';
+                const tokens = wrapperClassName.trim().split( /\s+/ ).filter( Boolean );
+                return tokens.filter( t => t === 'wp-block-madeit-block-content' ).length >= 2;
+            },
+            save: saveVpre0,
+            migrate( attributes ) {
+                return { ...normalizeSpacingAttributes( attributes ), madeitHasUserEdits: true };
+            },
+        },
+
+        // ── V0: Geen inner div + inline margin + volledige CSS-vars ───────────
         {
             attributes: metadata.attributes,
             save: saveV0,

@@ -520,10 +520,12 @@ export default function save( props ) {
     ) {
         return (
             <HtmlTag { ...blockProps }>
-                <div { ...outerRowProps }>
-                    { '\n\n' }
-                    <InnerBlocks.Content />
-                    { '\n\n' }
+                <div className={ innerDivClass }>
+                    <div { ...outerRowProps }>
+                        { '\n\n' }
+                        <InnerBlocks.Content />
+                        { '\n\n' }
+                    </div>
                 </div>
             </HtmlTag>
         );

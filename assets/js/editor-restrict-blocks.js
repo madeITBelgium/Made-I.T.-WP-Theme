@@ -372,18 +372,6 @@ wp.domReady(function () {
                         onClick: () => {
                             const modal = document.createElement('div');
                             modal.classList.add('madeitheek-modal');
-                            modal.style = `
-                                            position: fixed;
-                                            top: 0;
-                                            left: 0;
-                                            width: 100%;
-                                            height: 100%;
-                                            background-color: rgba(0, 0, 0, 0.5);
-                                            display: flex;
-                                            justify-content: center;
-                                            align-items: center;
-                                            z-index: 9999;
-                                        `;
 
                             const templateContainer = document.createElement('div');
                             templateContainer.classList.add('madeitheek-container');
@@ -410,7 +398,6 @@ wp.domReady(function () {
                             // Header: Madeitheek + tabs + sluiten
                             const header = document.createElement('div');
                             header.classList.add('madeitheek-header');
-                            header.style = 'display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom: 12px; position:sticky; top:0; background:#fff; padding: 20px 0; z-index:999;';
 
                             const headerTitle = document.createElement('div');
                             headerTitle.textContent = 'Madeitheek';
@@ -423,7 +410,6 @@ wp.domReady(function () {
                             const closeBtn = document.createElement('button');
                             closeBtn.type = 'button';
                             closeBtn.textContent = 'Sluiten';
-                            closeBtn.style = 'padding: 8px 12px; cursor: pointer; border: 1px solid #c3c3c3; background: #fff; border-radius: 4px;';
                             closeBtn.addEventListener('click', () => removeModal());
 
                             header.appendChild(headerTitle);
@@ -477,6 +463,12 @@ wp.domReady(function () {
                                         builderBarsInIframe.forEach((bar) => {
                                             bar.style.display = 'none';
                                         });
+
+                                        const vhBlocks = iframeDoc.querySelectorAll('.block-editor-block-list__block[style*="--madeit-min-height-desktop: 100vh;"]');
+                                        vhBlocks.forEach((block) => {
+                                            block.style.setProperty('--madeit-min-height-desktop', '40vh');
+                                        });
+
                                     } catch (e) {
                                         console.warn('Could not access iframe content to hide builder bars:', e);
                                     }
@@ -747,7 +739,7 @@ wp.domReady(function () {
                                         });
 
                                         if (!items.length) {
-                                            setStatus('Geen items gevonden.', false);
+                                            setStatus('Nog geen teamplates gemaakt.', false);
                                         } else {
                                             setStatus('', false);
                                         }

@@ -534,141 +534,141 @@ export default function Edit({ attributes, setAttributes }) {
 								</div>
 							)}
 
-																		{/* Border radius */}
-																		<div style={{ marginTop: '20px' }}>
-																			<ControlHeader
-																				title={ __( 'Border radius', 'madeit-review' ) }
-																				afterBreakpoint={
-																					<ButtonGroup className="madeit-control-units">
-																						{['px', '%', 'vh'].map((unit) => (
-																							<Button
-																								key={unit}
-																								isPressed={detectedBorderRadiusUnit === unit}
-																								onClick={() => {
-																									const nextAttributes = { borderRadiusUnit: unit };
-																									BORDER_RADIUS_KEYS.forEach((key) => {
-																										const raw = attributes[key];
-																										if (!raw) return;
-																										const numeric = parseFloat(raw);
-																										if (!Number.isFinite(numeric)) return;
-																										nextAttributes[key] = `${numeric}${unit}`;
-																									});
-																									setAttributes(nextAttributes);
-																								}}
-																							>
-																								{unit}
-																							</Button>
-																						))}
-																				</ButtonGroup>
-																			}
-																		/>
+							{/* Border radius */}
+							<div style={{ marginTop: '20px' }}>
+								<ControlHeader
+									title={ __( 'Border radius', 'madeit-review' ) }
+									afterBreakpoint={
+										<ButtonGroup className="madeit-control-units">
+											{['px', '%', 'vh'].map((unit) => (
+												<Button
+													key={unit}
+													isPressed={detectedBorderRadiusUnit === unit}
+													onClick={() => {
+														const nextAttributes = { borderRadiusUnit: unit };
+														BORDER_RADIUS_KEYS.forEach((key) => {
+															const raw = attributes[key];
+															if (!raw) return;
+															const numeric = parseFloat(raw);
+															if (!Number.isFinite(numeric)) return;
+															nextAttributes[key] = `${numeric}${unit}`;
+														});
+														setAttributes(nextAttributes);
+													}}
+												>
+													{unit}
+												</Button>
+											))}
+									</ButtonGroup>
+								}
+							/>
 
-																			<div
-																				style={{
-																					display: 'flex',
-																					alignItems: 'flex-start',
-																				}}
-																			>
-																				{[
-																					{ label: 'Bovenaan', key: 'borderRadius_leftTop' },
-																					{ label: 'Rechts', key: 'borderRadius_rightTop' },
-																					{ label: 'Onderaan', key: 'borderRadius_rightBottom' },
-																					{ label: 'Links', key: 'borderRadius_leftBottom' },
-																				].map((item) => {
-																					const rawValue = attributes[item.key] || '';
-																					const numericValue = parseFloat(rawValue);
-																					const displayValue = Number.isFinite(numericValue) ? numericValue : '';
+								<div
+									style={{
+										display: 'flex',
+										alignItems: 'flex-start',
+									}}
+								>
+									{[
+										{ label: 'Bovenaan', key: 'borderRadius_leftTop' },
+										{ label: 'Rechts', key: 'borderRadius_rightTop' },
+										{ label: 'Onderaan', key: 'borderRadius_rightBottom' },
+										{ label: 'Links', key: 'borderRadius_leftBottom' },
+									].map((item) => {
+										const rawValue = attributes[item.key] || '';
+										const numericValue = parseFloat(rawValue);
+										const displayValue = Number.isFinite(numericValue) ? numericValue : '';
 
-																					return (
-																						<div
-																							key={item.key}
-																							style={{
-																								display: 'flex',
-																								flexDirection: 'column',
-																								alignItems: 'center',
-																								flex: 1,
-																							}}
-																						>
-																							<input
-																								type="number"
-																								value={displayValue}
-																								min={0}
-																								onChange={(e) => {
-																									const val = e.target.value;
-																									setAttributes({
-																										[item.key]: val !== '' ? `${val}${detectedBorderRadiusUnit}` : '',
-																									});
-																								}}
-																								style={{
-																									width: '100%',
-																									height: '35px',
-																									// Only round the outer corners of the input group.
-																																	borderRadius:
-																																		item.key === 'borderRadius_leftTop'
-																																			? '4px 0 0 4px'
-																																			: item.key === 'borderRadius_rightTop'
-																																			? '0 0 0 0'
-																																			: item.key === 'borderRadius_rightBottom'
-																																			? '0 0 0 0'
-																																			: item.key === 'borderRadius_leftBottom'
-																																			? '0 4px 4px 0'
-																																			: '4px',
-																									textAlign: 'center',
-																								}}
-																							/>
+										return (
+											<div
+												key={item.key}
+												style={{
+													display: 'flex',
+													flexDirection: 'column',
+													alignItems: 'center',
+													flex: 1,
+												}}
+											>
+												<input
+													type="number"
+													value={displayValue}
+													min={0}
+													onChange={(e) => {
+														const val = e.target.value;
+														setAttributes({
+															[item.key]: val !== '' ? `${val}${detectedBorderRadiusUnit}` : '',
+														});
+													}}
+													style={{
+														width: '100%',
+														height: '35px',
+														// Only round the outer corners of the input group.
+														borderRadius:
+															item.key === 'borderRadius_leftTop'
+																? '4px 0 0 4px'
+																: item.key === 'borderRadius_rightTop'
+																? '0 0 0 0'
+																: item.key === 'borderRadius_rightBottom'
+																? '0 0 0 0'
+																: item.key === 'borderRadius_leftBottom'
+																? '0 4px 4px 0'
+																: '4px',
+														textAlign: 'center',
+													}}
+												/>
 
-																							<span style={{ fontSize: '9px', marginTop: '4px' }}>
-																								{__(item.label, 'madeit-review')}
-																							</span>
-																						</div>
-																					);
-																				})}
+												<span style={{ fontSize: '9px', marginTop: '4px' }}>
+													{__(item.label, 'madeit-review')}
+												</span>
+											</div>
+										);
+									})}
 
-																				<Button
-																					title="Waarden koppelen"
-																					variant="tertiary"
-																					onClick={() => {
-																						const values = BORDER_RADIUS_KEYS.map((key) => attributes[key] || '');
-																						const allEqual = values.every((val) => val === values[0]);
-																						if (allEqual) {
-																							setAttributes({
-																								borderRadius_leftTop: '',
-																								borderRadius_rightTop: '',
-																								borderRadius_rightBottom: '',
-																								borderRadius_leftBottom: '',
-																							});
-																							} else {
-																							const firstValue = values.find((val) => val) || '';
-																							setAttributes({
-																								borderRadius_leftTop: firstValue,
-																								borderRadius_rightTop: firstValue,
-																								borderRadius_rightBottom: firstValue,
-																								borderRadius_leftBottom: firstValue,
-																							});
-																						}
-																					}}
-																					style={{ height: '35px', marginLeft: '10px', marginTop: '4px', padding: '0' }}
-																					showTooltip
-																					label={__( 'Koppel waarden', 'madeit-review' )}
-																				>
-																					{(() => {
-																						const values = BORDER_RADIUS_KEYS.map((key) => attributes[key] || '');
-																						const allEqual = values.every((val) => val === values[0]);
-																						return allEqual ? (
-																							<span
-																								className="dashicons dashicons-editor-unlink"
-																								style={{ fontSize: '15px', width: 'min-content' }}
-																							/>
-																						) : (
-																							<span
-																								className="dashicons dashicons-admin-links"
-																								style={{ fontSize: '15px', width: 'min-content' }}
-																							/>
-																						);
-																					})()}
-																				</Button>
-																			</div>
-																		</div>
+									<Button
+										title="Waarden koppelen"
+										variant="tertiary"
+										onClick={() => {
+											const values = BORDER_RADIUS_KEYS.map((key) => attributes[key] || '');
+											const allEqual = values.every((val) => val === values[0]);
+											if (allEqual) {
+												setAttributes({
+													borderRadius_leftTop: '',
+													borderRadius_rightTop: '',
+													borderRadius_rightBottom: '',
+													borderRadius_leftBottom: '',
+												});
+												} else {
+												const firstValue = values.find((val) => val) || '';
+												setAttributes({
+													borderRadius_leftTop: firstValue,
+													borderRadius_rightTop: firstValue,
+													borderRadius_rightBottom: firstValue,
+													borderRadius_leftBottom: firstValue,
+												});
+											}
+										}}
+										style={{ height: '35px', marginLeft: '10px', marginTop: '4px', padding: '0' }}
+										showTooltip
+										label={__( 'Koppel waarden', 'madeit-review' )}
+									>
+										{(() => {
+											const values = BORDER_RADIUS_KEYS.map((key) => attributes[key] || '');
+											const allEqual = values.every((val) => val === values[0]);
+											return allEqual ? (
+												<span
+													className="dashicons dashicons-editor-unlink"
+													style={{ fontSize: '15px', width: 'min-content' }}
+												/>
+											) : (
+												<span
+													className="dashicons dashicons-admin-links"
+													style={{ fontSize: '15px', width: 'min-content' }}
+												/>
+											);
+										})()}
+									</Button>
+								</div>
+							</div>
 						</PanelBody>
 						</>
 					)}

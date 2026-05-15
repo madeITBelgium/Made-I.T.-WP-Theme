@@ -169,7 +169,7 @@
 			...(extraProps.style || {}),
 			'width': `${attributes.separatorWidth}%`,
 			'border-top': attributes.separatorStyle === 'solid' ? `solid ${attributes.separatorThickness}px` : `${attributes.separatorStyle} ${attributes.separatorThickness}px`,
-			'margin-inline': attributes.separatorAlign === 'left' ? '0 auto' :
+			'margin': attributes.separatorAlign === 'left' ? '0 auto' :
 							 attributes.separatorAlign === 'right' ? '0 0 0 auto' : '0 auto'
 
 		};

@@ -1,59 +1,48 @@
-// import { createElement } from '@wordpress/element';
-// import { Button, ButtonGroup } from '@wordpress/components';
-
-// export default function BreakpointSwitcher(props) {
-//     var active = props && props.active ? props.active : 'desktop';
-//     var onChange = props && props.onChange ? props.onChange : null;
-
-//     return createElement(
-//         ButtonGroup,
-//         { className: 'madeit-control-breakpoints' },
-//         createElement(Button, {
-//             icon: 'desktop',
-//             isPressed: active === 'desktop',
-//             onClick: function () {
-//                 if (onChange) onChange('desktop');
-//             },
-//         }),
-//         createElement(Button, {
-//             icon: 'tablet',
-//             isPressed: active === 'tablet',
-//             onClick: function () {
-//                 if (onChange) onChange('tablet');
-//             },
-//         }),
-//         createElement(Button, {
-//             icon: 'smartphone',
-//             isPressed: active === 'mobile',
-//             onClick: function () {
-//                 if (onChange) onChange('mobile');
-//             },
-//         })
-//     );
-// }
-
-import { useBreakpoint } from './breakpoint-context';
 import { Button, ButtonGroup } from '@wordpress/components';
+import { useDispatch, useSelect } from '@wordpress/data';
 
-export default function BreakpointSwitcher() {
-    const { breakpoint, setBreakpoint } = useBreakpoint();
+const DEVICE_MAP = {
+    desktop: 'Desktop',
+    tablet:  'Tablet',
+    mobile:  'Mobile',
+};
+
+// Omgekeerde mapping voor uitlezen
+const REVERSE_DEVICE_MAP = Object.fromEntries(
+    Object.entries(DEVICE_MAP).map(([k, v]) => [v, k])
+);
+
+export default function BreakpointSwitcher({ onChange }) {
+    const { __experimentalSetPreviewDeviceType } = useDispatch('core/edit-post');
+
+    const gutenbergDevice = useSelect((select) =>
+        select('core/edit-post').__experimentalGetPreviewDeviceType()
+    );
+
+    // Sync met Gutenberg, fallback naar 'desktop'
+    const active = REVERSE_DEVICE_MAP[gutenbergDevice] ?? 'desktop';
+
+    const handleChange = (breakpoint) => {
+        __experimentalSetPreviewDeviceType(DEVICE_MAP[breakpoint]);
+        onChange?.(breakpoint);
+    };
 
     return (
         <ButtonGroup className="madeit-control-breakpoints">
             <Button
                 icon="desktop"
-                isPressed={breakpoint === 'desktop'}
-                onClick={() => setBreakpoint('desktop')}
+                isPressed={active === 'desktop'}
+                onClick={() => handleChange('desktop')}
             />
             <Button
                 icon="tablet"
-                isPressed={breakpoint === 'tablet'}
-                onClick={() => setBreakpoint('tablet')}
+                isPressed={active === 'tablet'}
+                onClick={() => handleChange('tablet')}
             />
             <Button
                 icon="smartphone"
-                isPressed={breakpoint === 'mobile'}
-                onClick={() => setBreakpoint('mobile')}
+                isPressed={active === 'mobile'}
+                onClick={() => handleChange('mobile')}
             />
         </ButtonGroup>
     );

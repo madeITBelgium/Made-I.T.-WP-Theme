@@ -1,3 +1,7 @@
+* {
+    box-sizing: border-box;
+}
+
 .is-style-grid {
     height: calc(100% - 220px);
     overflow: hidden;
@@ -134,4 +138,15 @@
   content: "";
   display: block;
   padding-bottom: 100%;
+}
+
+@media(max-width:991px) {
+    .wp-block-group-is-layout-grid {
+        grid-template-columns: repeat(var(--madeit-cols-tablet, var(--madeit-cols-tablet)), minmax(0, 1fr)) !important;
+    }
+}
+@media(max-width:767px) {
+    .wp-block-group-is-layout-grid {
+        grid-template-columns: repeat(var(--madeit-cols-mobile, var(--madeit-cols-tablet), var(--madeit-cols-tablet)), minmax(0, 1fr)) !important;
+    }
 }

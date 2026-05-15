@@ -1,45 +1,42 @@
-import { createElement } from '@wordpress/element';
+/**
+ * ControlHeader.js — Shared component for managing control headers in Gutenberg blocks.
+ *
+ */
+
 import { __ } from '@wordpress/i18n';
 import { Button } from '@wordpress/components';
-
 import BreakpointSwitcher from './BreakpointSwitcher';
 
-export default function ControlHeader(props) {
-    var title = props && typeof props.title !== 'undefined' ? props.title : '';
-    var breakpoint = props && props.breakpoint ? props.breakpoint : null;
-    var onBreakpointChange = props && props.onBreakpointChange ? props.onBreakpointChange : null;
-    var afterBreakpoint = props && props.afterBreakpoint ? props.afterBreakpoint : null;
-    var onReset = props && props.onReset ? props.onReset : null;
-    var resetLabel = props && props.resetLabel ? props.resetLabel : null;
-
-    return createElement(
-        'div',
-        { className: 'madeit-control-header' },
-        createElement(
-            'span',
-            { className: 'madeit-control-header__title' },
-            title
-        ),
-        createElement(
-            'div',
-            { className: 'madeit-control-header__tools' },
-            breakpoint && onBreakpointChange
-                ? createElement(BreakpointSwitcher, {
-                    active: breakpoint,
-                    onChange: onBreakpointChange,
-                })
-                : null,
-            afterBreakpoint,
-            onReset
-                ? createElement(Button, {
-                    className: 'madeit-control-header__reset',
-                    icon: 'undo',
-                    variant: 'tertiary',
-                    onClick: onReset,
-                    showTooltip: true,
-                    label: resetLabel || __('Reset'),
-                })
-                : null
-        )
+export default function ControlHeader({
+    title = '',
+    breakpoint = null,
+    onBreakpointChange = null,
+    afterBreakpoint = null,
+    onReset = null,
+    resetLabel = null,
+}) {
+    return (
+        <div className="madeit-control-header" style={{ width: '100%' }}>
+            <span className="madeit-control-header__title">{ title }</span>
+            <div className="madeit-control-header__tools">
+                { breakpoint && onBreakpointChange && (
+                    <BreakpointSwitcher
+                        active={ breakpoint }
+                        onChange={ onBreakpointChange }
+                    />
+                )}
+                { afterBreakpoint }
+                { onReset && (
+                    <Button
+                        className="madeit-control-header__reset"
+                        icon="undo"
+                        variant="tertiary"
+                        onClick={ onReset }
+                        showTooltip
+                        label={ resetLabel || __('Reset') }
+                    />
+                )}
+            </div>
+        </div>
     );
 }

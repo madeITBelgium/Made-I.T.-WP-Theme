@@ -55,8 +55,16 @@
         "margin": {
             "type": "object"
         },
+        "marginUnit": {
+            "type": "string",
+            "default": "px"
+        },
         "padding": {
             "type": "object"
+        },
+        "paddingUnit": {
+            "type": "string",
+            "default": "px"
         },
         "innerWrapperClassName": {
             "type": "string",

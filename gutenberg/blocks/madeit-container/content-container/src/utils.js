@@ -1,5 +1,6 @@
 /**
- * External dependencies
+ * utils.js — madeit-block-content
+ *
  */
 import memoize from 'memize';
 import { times, findIndex, sumBy, merge, mapValues } from 'lodash';

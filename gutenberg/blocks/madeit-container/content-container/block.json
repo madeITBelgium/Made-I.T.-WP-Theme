@@ -93,6 +93,10 @@
         "containerMarginMobile": {
             "type": "object"
         },
+        "marginUnit": {
+            "type": "string",
+            "default": "px"
+        },
         "containerPadding": {
             "type": "object"
         },
@@ -104,6 +108,10 @@
         },
         "containerPaddingOnRow": {
             "type": "boolean"
+        },
+        "paddingUnit": {
+            "type": "string",
+            "default": "px"
         },
         "rowBackgroundColor": {
             "type": "string"

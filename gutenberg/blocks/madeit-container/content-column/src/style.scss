@@ -5,6 +5,25 @@
  * Replace them with your own styles or remove the file completely.
  */
 
+
+.madeit-controls {
+    .control-item {
+        &:first-child {
+            input {
+                border-radius: 4px 0 0 4px;
+            }
+        }
+        &:last-child {
+            input {
+                border-radius: 0 4px 4px 0;
+            }
+        }
+        input {
+            border-radius: 0;
+        }
+    }
+}
+
 .wp-block-create-block-content-column {
 	background-color: #21759b;
 	color: #fff;

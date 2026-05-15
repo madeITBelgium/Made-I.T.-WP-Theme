@@ -45,6 +45,65 @@ $default-block-margin:  28px;
     flex: 1;
 }
 
+// ─── 1.1. Components ──────────────────────────────────────────────────────────
+.TabContents {
+    button {
+        border-bottom: 2px solid transparent;
+
+        &:hover {
+            color: var(--wp-components-color-foreground, #1e1e1e);
+            background: #f6f6f6;
+        }
+        &:focus {
+            box-shadow: none !important;
+        }
+        &.is-primary {
+            background: transparent;
+            color: var(--wp-components-color-foreground, #1e1e1e);
+            outline: 1px solid #0000;
+            text-decoration: none;
+            text-shadow: none;
+            white-space: nowrap;
+
+            border-bottom: 4px solid var(--wp-admin-theme-color, #3858e9);
+            border-radius: 0;
+
+            &:hover, &:active {
+                background: transparent !important  ;
+                color: var(--wp-components-color-foreground, #1e1e1e) !important    ;
+                border-bottom-color: var(--wp-admin-theme-color, #3858e9);
+            }
+        }
+    }
+}
+
+.madeit-unit-select {
+
+    .components-select-control {
+        margin-bottom: 0 !important;
+    }
+    .components-select-control__input {
+        padding: 0 !important;
+        width: 40px !important;
+        text-align: left;
+        max-height: 20px;
+    }
+    .components-input-control__backdrop {
+        border: none !important;
+    }
+}
+
+p.description {
+    font-size: smaller;
+    font-style: italic;
+    opacity: .5;
+}
+
+body.madeit-content-container-advanced-tabs
+.block-editor-block-styles,
+.madeit-gutenberg-styles-panel {
+    display: none;
+}
 
 // ─── 2. Editor layout overrides ───────────────────────────────────────────────
 
@@ -242,7 +301,7 @@ $default-block-margin:  28px;
         @media (min-width: 1400px) { --container-offset: calc(1320px); }
 
         width: var(--container-offset);
-        min-height: var(--madeit-min-height-desktop);
+        
         max-width: 100%;
         margin-left: auto;
         margin-right: auto;
@@ -272,6 +331,10 @@ $default-block-margin:  28px;
         }
     }
 
+    &[style*="--madeit-min-height-"] > .container {
+        min-height: var(--madeit-min-height-desktop);
+    }
+
     // Gedeelde flex-layout voor zowel .container als .container-fluid.
     //
     // RESPONSIVE PREVIEW
@@ -289,7 +352,7 @@ $default-block-margin:  28px;
     > .container-fluid {
         > .madeit-container-row {
             > .block-editor-inner-blocks {
-                min-height: var(--madeit-min-height-desktop);
+                // min-height: var(--madeit-min-height-desktop);
                 display: flex;
                 align-items: var(--madeit-align-items-desktop, stretch);
                 justify-content: var(--madeit-justify-content-desktop, flex-start);
@@ -310,7 +373,7 @@ $default-block-margin:  28px;
 
                         > .block-editor-block-list__layout {
                             align-content: var(--madeit-align-items-mobile, var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch)));
-                            min-height: var(--madeit-min-height-mobile, var(--madeit-min-height-tablet, var(--madeit-min-height-desktop))) !important;
+                            // min-height: var(--madeit-min-height-mobile, var(--madeit-min-height-tablet, var(--madeit-min-height-desktop))) !important;
                             padding-right: calc(1.5rem * 0.5);
                             padding-left: calc(1.5rem * 0.5);
                         }
@@ -318,6 +381,10 @@ $default-block-margin:  28px;
                 }
             }
         }
+    }
+
+    &[style*="--madeit-min-height-"] > div > .madeit-container-row > .block-editor-inner-blocks {
+        min-height: var(--madeit-min-height-desktop);
     }
 
 
@@ -345,7 +412,6 @@ $default-block-margin:  28px;
         > .container-fluid {
             > .madeit-container-row {
                 > .block-editor-inner-blocks {
-                    min-height: var(--madeit-min-height-tablet, var(--madeit-min-height-desktop));
                     align-items: var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch));
                     justify-content: var(--madeit-justify-content-tablet, var(--madeit-justify-content-desktop, flex-start));
 
@@ -358,6 +424,10 @@ $default-block-margin:  28px;
                     }
                 }
             }
+        }
+
+        &[style*="--madeit-min-height-"] > div > .madeit-container-row > .block-editor-inner-blocks {
+            min-height: var(--madeit-min-height-tablet, var(--madeit-min-height-desktop));
         }
 
         // Kolommen op volle breedte bij column-richting op tablet.
@@ -378,7 +448,7 @@ $default-block-margin:  28px;
         > .container-fluid {
             > .madeit-container-row {
                 > .block-editor-inner-blocks {
-                    min-height: var(--madeit-min-height-mobile, var(--madeit-min-height-tablet, var(--madeit-min-height-desktop)));
+                    // min-height: var(--madeit-min-height-mobile, var(--madeit-min-height-tablet, var(--madeit-min-height-desktop)));
                     align-items: var(--madeit-align-items-mobile, var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch)));
                     justify-content: var(--madeit-justify-content-mobile, var(--madeit-justify-content-tablet, var(--madeit-justify-content-desktop, flex-start)));
 
@@ -391,6 +461,10 @@ $default-block-margin:  28px;
                     }
                 }
             }
+        }
+
+        &[style*="--madeit-min-height-"] > div > .madeit-container-row > .block-editor-inner-blocks {
+            min-height: var(--madeit-min-height-mobile, var(--madeit-min-height-tablet, var(--madeit-min-height-desktop)));
         }
 
         // Kolommen op volle breedte bij column-richting op mobiel. 
@@ -458,6 +532,7 @@ $default-block-margin:  28px;
             word-break: break-word;
             overflow-wrap: break-word;
             flex: 1 0 0%;
+            max-width: 100%;
 
             // Vaste breedte-klassen blijven hun breedte behouden.
             &[class*="is-width-"] {
@@ -502,18 +577,29 @@ $default-block-margin:  28px;
 
     // Max-breedte berekeningen voor kolommen in de editor (op basis van data-madeit-dir).
     @for $i from 1 through 11 {
-        &[data-madeit-dir="row"] [data-type="madeit/block-content-column"].is-width-#{$i},
-        &[data-madeit-dir="row-reverse"] [data-type="madeit/block-content-column"].is-width-#{$i},
-        &[data-madeit-dir="row"] [data-title="Made I.T. Inner Column"].is-width-#{$i},
-        &[data-madeit-dir="row-reverse"] [data-title="Made I.T. Inner Column"].is-width-#{$i} {
-            // max-width: calc(var(--madeit-max-width-desktop, 100%) * #{$i} / 12) !important;
-            // max-width: calc(var(--madeit-max-width-desktop, 100%) * 6 / 12 - (var(--madeit-row-gap-desktop, 20px) / 1.65)) !important;
-            flex-basis: calc(var(--madeit-max-width-desktop, 100%) * #{$i} / 12 - var(--madeit-row-gap-desktop, 20px) / 1.65) !important;
-            min-width: calc(var(--madeit-max-width-desktop, 100%) * #{$i} / 12 - var(--madeit-row-gap-desktop, 20px) / 1.65) !important;
-            width: 100%;
+        @media(min-width: 991px) {
+            &[data-madeit-dir="row"] [data-type="madeit/block-content-column"].is-width-#{$i},
+            &[data-madeit-dir="row-reverse"] [data-type="madeit/block-content-column"].is-width-#{$i},
+            &[data-madeit-dir="row"] [data-title="Made I.T. Inner Column"].is-width-#{$i},
+            &[data-madeit-dir="row-reverse"] [data-title="Made I.T. Inner Column"].is-width-#{$i} {
+                // max-width: calc(var(--madeit-max-width-desktop, 100%) * #{$i} / 12) !important;
+                // max-width: calc(var(--madeit-max-width-desktop, 100%) * 6 / 12 - (var(--madeit-row-gap-desktop, 20px) / 1.65)) !important;
+                // flex-basis: calc(var(--madeit-max-width-desktop, 100%) * #{$i} / 12 - var(--madeit-row-gap-desktop, 20px) / 1.65) !important;
+                width: calc((100% - var(--madeit-row-gap-desktop, 20px)) * #{$i} / 12) !important;
+                
 
-            &.keep-max-container-size {
-                min-width: auto !important;
+                &.keep-max-container-size {
+                    min-width: auto !important;
+                }
+            }
+        }
+
+        @media(max-width: 991px) {
+            &[data-madeit-dir="column"] [data-type="madeit/block-content-column"].is-width-#{$i},
+            &[data-madeit-dir="column-reverse"] [data-type="madeit/block-content-column"].is-width-#{$i},
+            &[data-madeit-dir="column"] [data-title="Made I.T. Inner Column"].is-width-#{$i},
+            &[data-madeit-dir="column-reverse"] [data-title="Made I.T. Inner Column"].is-width-#{$i} {
+                flex-basis: 1% !important;
             }
         }
 
@@ -522,7 +608,7 @@ $default-block-margin:  28px;
         &[data-madeit-dir="column"] [data-title="Made I.T. Inner Column"].is-width-#{$i},
         &[data-madeit-dir="column-reverse"] [data-title="Made I.T. Inner Column"].is-width-#{$i} {
             max-width: var(--madeit-max-width-desktop, 100%) !important;
-            width: 100%;
+            width: 100% !important;
         }
 
         // Tablet preview: gebruik de tablet max-breedte var.
