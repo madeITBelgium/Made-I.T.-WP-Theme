@@ -35,12 +35,12 @@ function mp_register_post_type()
     register_post_type('popup', $args);
 
     register_post_type('popup_template', [
-        'label' => 'Popup Templates',
-        'public' => false,
-        'show_ui' => true,
+        'label'        => 'Popup Templates',
+        'public'       => false,
+        'show_ui'      => true,
         'show_in_menu' => 'edit.php?post_type=popup', // sub menu!
-        'supports' => ['title'],
-        'menu_icon' => 'dashicons-layout',
+        'supports'     => ['title'],
+        'menu_icon'    => 'dashicons-layout',
     ]);
 }
 add_action('init', 'mp_register_post_type');
@@ -73,5 +73,3 @@ add_action('manage_popup_posts_custom_column', function ($column, $post_id) {
         echo $time['label'];
     }
 }, 10, 2);
-
-
