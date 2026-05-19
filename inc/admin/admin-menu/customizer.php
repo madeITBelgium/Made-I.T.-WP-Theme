@@ -20,7 +20,7 @@ function madeit_get_navbar_option( $key, $default = null ) {
 
 function madeit_sanitize_breakpoint( $value ) {
     $allowed = [ 'none', 'sm', 'md', 'lg', 'xl', 'xxl', 'custom' ];
-    return in_array( $value, $allowed, true ) ? $value : 'md';
+    return in_array( $value, $allowed, true ) ? $value : 'lg';
 }
 
 function madeit_sanitize_alignment( $value ) {
@@ -783,7 +783,7 @@ function theme_navbar_customizer($wp_customize){
 
     // Breekpunt mobile menu
     $wp_customize->add_setting('madeit_navbar_options[mobile_menu_breakpoint]', array(
-        'default'        => 'md',
+        'default'        => 'lg',
         'capability'     => 'edit_theme_options',
         'type'           => 'option',
         'sanitize_callback' => 'madeit_sanitize_breakpoint',

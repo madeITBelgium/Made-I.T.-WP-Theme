@@ -797,3 +797,62 @@ document.querySelectorAll('.dropdown a.dropdown-toggle').forEach(function(item) 
     });
 });
 */
+
+
+
+
+// ─── Fix content_inner block ──────────────────────────────────────────────────
+( function fixMissingColumnInner() {
+    const columns = document.querySelectorAll('.wp-block-madeit-block-content-column');
+    const innerColumn = document.querySelectorAll('.madeit-content-column__inner');
+
+    const paddingProps = [
+        'padding-top',
+        'padding-right',
+        'padding-bottom',
+        'padding-left',
+        'padding',
+    ];
+
+    if ( ! columns.length ) {
+        console.log( '[fix-column-inner] Geen kolommen gevonden.' );
+        return;
+    }
+
+    let fixed   = 0;
+    let skipped = 0;
+
+    columns.forEach( ( column ) => {
+        const firstChild = column.firstElementChild;
+ 
+        // Column__inner is al aanwezig -> Skip
+        if ( firstChild && firstChild.classList.contains( innerColumn ) ) {
+            skipped++;
+            return;
+        }
+ 
+        // Create column__inner en verplaats alle padding styles van de column naar de column__inner
+        const inner = document.createElement( 'div' );
+        inner.className = innerColumn;
+ 
+        paddingProps.forEach( ( prop ) => {
+            const value = column.style.getPropertyValue( prop );
+            if ( value ) {
+                inner.style.setProperty( prop, value );
+                column.style.removeProperty( prop );
+            }
+        } );
+ 
+        // Verplaats alle bestaande blokken in de column__inner
+        while ( column.firstChild ) {
+            inner.appendChild( column.firstChild );
+        }
+ 
+        column.appendChild( inner );
+        fixed++;
+    } );
+ 
+    console.log(
+        `[fix-column-inner] Klaar — ${ fixed } gefixt, ${ skipped } overgeslagen.`
+    );
+} )();
