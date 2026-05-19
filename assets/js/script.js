@@ -826,14 +826,14 @@ document.querySelectorAll('.dropdown a.dropdown-toggle').forEach(function(item) 
         const firstChild = column.firstElementChild;
  
         // Column__inner is al aanwezig -> Skip
-        if ( firstChild && firstChild.classList.contains( innerColumn ) ) {
+        if ( firstChild && firstChild.classList.contains( 'madeit-content-column__inner' ) ) {
             skipped++;
             return;
         }
  
         // Create column__inner en verplaats alle padding styles van de column naar de column__inner
         const inner = document.createElement( 'div' );
-        inner.className = innerColumn;
+        inner.className = 'madeit-content-column__inner';
  
         paddingProps.forEach( ( prop ) => {
             const value = column.style.getPropertyValue( prop );
