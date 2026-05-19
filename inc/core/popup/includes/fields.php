@@ -1,59 +1,62 @@
 <?php
-if (!defined('ABSPATH') || !function_exists('acf_add_local_field_group')) return;
+
+if (!defined('ABSPATH') || !function_exists('acf_add_local_field_group')) {
+    return;
+}
 
 acf_add_local_field_group([
-    'key' => 'group_popup',
-    'title' => 'M-Popup',
+    'key'    => 'group_popup',
+    'title'  => 'M-Popup',
     'fields' => [
         // Trigger
         [
-            'key' => 'tab_trigger',
-            'label' => 'Trigger',
-            'type' => 'tab',
+            'key'       => 'tab_trigger',
+            'label'     => 'Trigger',
+            'type'      => 'tab',
             'placement' => 'left',
         ],
         [
-            'key' => 'field_popup_enabled',
-            'label' => 'Popup actief',
-            'name' => 'popup_enabled',
-            'type' => 'true_false',
-            'ui' => 1,
+            'key'           => 'field_popup_enabled',
+            'label'         => 'Popup actief',
+            'name'          => 'popup_enabled',
+            'type'          => 'true_false',
+            'ui'            => 1,
             'default_value' => 1,
         ],
         [
-            'key' => 'field_popup_start',
-            'label' => 'Actief vanaf',
-            'name' => 'popup_start',
-            'type' => 'date_time_picker',
+            'key'           => 'field_popup_start',
+            'label'         => 'Actief vanaf',
+            'name'          => 'popup_start',
+            'type'          => 'date_time_picker',
             'return_format' => 'Y-m-d H:i:s',
         ],
         [
-            'key' => 'field_popup_end',
-            'label' => 'Actief tot',
-            'name' => 'popup_end',
-            'type' => 'date_time_picker',
+            'key'           => 'field_popup_end',
+            'label'         => 'Actief tot',
+            'name'          => 'popup_end',
+            'type'          => 'date_time_picker',
             'return_format' => 'Y-m-d H:i:s',
         ],
         [
-            'key' => 'field_popup_delay',
-            'label' => 'Uitstellen (ms)',
-            'name' => 'popup_delay',
-            'type' => 'number',
+            'key'           => 'field_popup_delay',
+            'label'         => 'Uitstellen (ms)',
+            'name'          => 'popup_delay',
+            'type'          => 'number',
             'default_value' => 0,
         ],
         [
-            'key' => 'field_popup_sessions',
-            'label' => 'Sessies',
-            'name' => 'popup_sessions',
-            'type' => 'select',
+            'key'     => 'field_popup_sessions',
+            'label'   => 'Sessies',
+            'name'    => 'popup_sessions',
+            'type'    => 'select',
             'choices' => [
-                'once_per_visit' => 'Elke bezoek één keer',
-                'every_page' => 'Elke pagina',
-                'once_per_day' => 'Eén keer per dag',
-                'once_per_week' => 'Eén keer per week',
-                'once_per_month' => 'Eén keer per maand',
-                'once_per_year' => 'Eén keer per jaar',
-                'once_total' => 'Eén keer in totaal',
+                'once_per_visit'       => 'Elke bezoek één keer',
+                'every_page'           => 'Elke pagina',
+                'once_per_day'         => 'Eén keer per dag',
+                'once_per_week'        => 'Eén keer per week',
+                'once_per_month'       => 'Eén keer per maand',
+                'once_per_year'        => 'Eén keer per jaar',
+                'once_total'           => 'Eén keer in totaal',
                 'five_times_per_visit' => '5 keer, één keer per bezoek',
             ],
             'default_value' => 'once_per_visit',
@@ -61,27 +64,27 @@ acf_add_local_field_group([
 
         // Target
         [
-            'key' => 'tab_target',
-            'label' => 'Target',
-            'type' => 'tab',
+            'key'       => 'tab_target',
+            'label'     => 'Target',
+            'type'      => 'tab',
             'placement' => 'left',
         ],
         [
-            'key' => 'field_popup_pages',
-            'label' => 'Pagina\'s',
-            'name' => 'popup_pages',
-            'type' => 'relationship',
-            'post_type' => ['page','post','product'],
+            'key'           => 'field_popup_pages',
+            'label'         => 'Pagina\'s',
+            'name'          => 'popup_pages',
+            'type'          => 'relationship',
+            'post_type'     => ['page', 'post', 'product'],
             'return_format' => 'id',
         ],
         [
-            'key' => 'field_popup_action',
-            'label' => 'Actie',
-            'name' => 'popup_action',
-            'type' => 'select',
+            'key'     => 'field_popup_action',
+            'label'   => 'Actie',
+            'name'    => 'popup_action',
+            'type'    => 'select',
             'choices' => [
                 'specific_pages' => 'Openen van specifieke pagina\'s',
-                'click' => 'Openen na klik',
+                'click'          => 'Openen na klik',
             ],
             'default_value' => 'specific_pages',
         ],
@@ -139,7 +142,6 @@ acf_add_local_field_group([
         //         ]
         //     ],
         // ],
-
 
         // // Group: Style
         // [
@@ -261,40 +263,39 @@ acf_add_local_field_group([
         //         ],
         //     ],
         // ],
-        
 
         // Advanced
         [
-            'key' => 'tab_advanced',
-            'label' => 'Geavanceerd',
-            'type' => 'tab',
+            'key'       => 'tab_advanced',
+            'label'     => 'Geavanceerd',
+            'type'      => 'tab',
             'placement' => 'left',
         ],
 
         [
-            'key' => 'field_popup_info',
-            'label' => 'Informatie',
-            'name' => 'popup_info',
-            'type' => 'message',
-            'message' => 'Hier kun je instellen hoe en wanneer de popup verschijnt. Kies een start- en eindtijd, en welke pagina\'s de popup moet tonen.',
+            'key'       => 'field_popup_info',
+            'label'     => 'Informatie',
+            'name'      => 'popup_info',
+            'type'      => 'message',
+            'message'   => 'Hier kun je instellen hoe en wanneer de popup verschijnt. Kies een start- en eindtijd, en welke pagina\'s de popup moet tonen.',
             'new_lines' => 'wpautop',
-            'esc_html' => 0, // Laat HTML toe als je het wilt
+            'esc_html'  => 0, // Laat HTML toe als je het wilt
         ],
         [
-            'key' => 'field_popup_custom_css',
-            'label' => 'Custom CSS',
-            'name' => 'popup_custom_css',
-            'type' => 'textarea',
+            'key'          => 'field_popup_custom_css',
+            'label'        => 'Custom CSS',
+            'name'         => 'popup_custom_css',
+            'type'         => 'textarea',
             'instructions' => 'Voeg hier je eigen CSS toe om de popup verder te customizen.',
-            'rows' => 6,
+            'rows'         => 6,
         ],
 
     ],
     'location' => [
         [
-            ['param' => 'post_type', 'operator' => '==', 'value' => 'popup']
-            
-        ]
-    ]
-    
+            ['param' => 'post_type', 'operator' => '==', 'value' => 'popup'],
+
+        ],
+    ],
+
 ]);

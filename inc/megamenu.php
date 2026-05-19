@@ -16,10 +16,11 @@ function madeit_megamenu_menuitems($items, $args)
         $wpmlCurLanguage = 'default';
     }
 
-    $cache_key = 'madeit_megamenu_menuitems_' . sanitize_key($args->theme_location ?: 'default') . '_' . sanitize_key($wpmlCurLanguage);
+    $cache_key = 'madeit_megamenu_menuitems_'.sanitize_key($args->theme_location ?: 'default').'_'.sanitize_key($wpmlCurLanguage);
     $cache = wp_cache_get($cache_key, 'madeit_megamenu');
     if ($cache !== false) {
         do_action('qm/stop', 'madeit:megamenu_menuitems');
+
         return $cache;
     }
 
