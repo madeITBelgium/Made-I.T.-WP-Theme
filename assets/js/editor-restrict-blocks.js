@@ -313,7 +313,7 @@ wp.domReady(function () {
                 const parents = select('core/block-editor').getBlockParents(props.clientId);
                 return parents.some(parentId => {
                     const block = select('core/block-editor').getBlock(parentId);
-                    return block?.name === 'core/query' || block?.name === 'core/post-template';
+                    return block?.name === 'core/query' || block?.name === 'core/post-template' || block?.name === 'woocommerce/product-template';
                 });
             }, [props.clientId]);
 
