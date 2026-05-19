@@ -32,7 +32,7 @@ function mp_get_popup_status($popup_id)
     $enabled = get_field('popup_enabled', $popup_id);
     $start = get_field('popup_start', $popup_id);
     $end = get_field('popup_end', $popup_id);
-    $action  = get_field('popup_action', $popup_id);
+    $action = get_field('popup_action', $popup_id);
 
     if (!$enabled) {
         return ['status'=>'disabled', 'label'=>'<span style="color:#999">Uitgeschakeld</span>'];
@@ -47,11 +47,11 @@ function mp_get_popup_status($popup_id)
     if ($action === 'click') {
         return [
             'status' => 'click',
-            'label'  => '<span style="color:#f0b429;font-weight:bold">Click trigger</span>'
+            'label'  => '<span style="color:#f0b429;font-weight:bold">Click trigger</span>',
         ];
     }
-    return ['status'=>'online','label'=>'<span style="color:#46b450;font-weight:bold">Online</span>'];
-    
+
+    return ['status'=>'online', 'label'=>'<span style="color:#46b450;font-weight:bold">Online</span>'];
 }
 
 // Admin active time
