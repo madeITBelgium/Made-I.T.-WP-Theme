@@ -191,7 +191,7 @@ if (!defined('MADEIT_FEEDBACK')) {
 
 // Added in 3.0.0
 if (!defined('MADEIT_ADMIN_CHAT')) {
-    define('MADEIT_ADMIN_CHAT', false);
+    define('MADEIT_ADMIN_CHAT', true);
 }
 if (!defined('MADEIT_ADMIN_CHAT_OPENAI_API_KEY')) {
     define('MADEIT_ADMIN_CHAT_OPENAI_API_KEY', '');
@@ -216,6 +216,10 @@ if(!defined('MADEIT_NAME')) {
 
 if(!defined('MADEIT_RESTRICT_EDITOR')) {
     define('MADEIT_RESTRICT_EDITOR', true);
+}
+
+if(!defined('MADEIT_SECURITY')) {
+    define('MADEIT_SECURITY', true);
 }
 
 if (version_compare($GLOBALS['wp_version'], '4.7-alpha', '<')) {
@@ -2736,9 +2740,9 @@ if(MADEIT_BOOTSTRAP_VERSION === 5) {
 }
 
 //check if wordfence is active
-if (!in_array('wordfence/wordfence.php', apply_filters('active_plugins', get_option('active_plugins')))) {
+if (!in_array('wordfence/wordfence.php', apply_filters('active_plugins', get_option('active_plugins'))) && defined('MADEIT_SECURITY') && MADEIT_SECURITY === true) {
     //disable REST API in wordfence settings
-    //include_once __DIR__.'/inc/security/security.php';
+    include_once __DIR__.'/inc/security/security.php';
 } else {
     add_filter('rest_endpoints', function ($endpoints) {
         // Hide user endpoints for unauthenticated visitors.

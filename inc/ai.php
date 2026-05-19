@@ -44,6 +44,7 @@ if (!function_exists('madeit_ai_portal_request')) {
         $url = trailingslashit($base_url).ltrim($path, '/');
 
         $body['website'] = home_url('/');
+        $body['ip'] = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? null;
 
         $headers = [
             'Content-Type' => 'application/json',
