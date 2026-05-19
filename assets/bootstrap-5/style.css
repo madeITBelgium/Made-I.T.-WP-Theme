@@ -5499,6 +5499,16 @@ textarea.form-control-lg {
 }
 .modal.show .modal-dialog {
   transform: none;
+  align-content: center;
+  margin: auto;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  position: absolute;
+
+  width: clamp(320px, 90vw, 900px);
+  height: min(65vh, 800px);
 }
 .modal.modal-static .modal-dialog {
   transform: scale(1.02);
@@ -5533,6 +5543,9 @@ textarea.form-control-lg {
   border: var(--bs-modal-border-width) solid var(--bs-modal-border-color);
   border-radius: var(--bs-modal-border-radius);
   outline: 0;
+
+  width: clamp(320px, 90vw, 900px);
+  height: min(65vh, 800px);
 }
 
 .modal-backdrop {
@@ -5604,7 +5617,7 @@ textarea.form-control-lg {
     --bs-modal-box-shadow: var(--bs-box-shadow);
   }
   .modal-dialog {
-    max-width: var(--bs-modal-width);
+    /* max-width: var(--bs-modal-width); */
     margin-right: auto;
     margin-left: auto;
   }

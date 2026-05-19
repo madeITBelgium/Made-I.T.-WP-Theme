@@ -123,120 +123,146 @@ wp.domReady(function () {
 
 
     //? Zorg dat we geen blokken kunnen toevoegen buiten de container
-    let isProcessing = false;
     let isFixingOutsideBlocks = false;
+    let hasRunInitialFix = false;
+    let isEditorReady = false;
+
+    const allowedOutsideRootBlocks = [
+        'madeit/block-content',
+        'madeit/block-content-column',
+        'core/cover',
+        'core/spacer'
+    ];
+
+    // Warning block
+    const showOutsideBlockWarning = () => {
+        if (document.querySelector('.madeit-outside-block-warning')) return;
+
+        const warning = document.createElement('div');
+        warning.classList.add('madeit-outside-block-warning');
+        warning.style = `
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ffebe6;
+            color: #c00;
+            padding: 20px;
+            border: 1px solid #c00;
+            border-radius: 4px;
+            z-index: 9999;
+        `;
+        warning.textContent = 'Er werden blokken gedetecteerd buiten de container. Deze werden automatisch verplaatst naar binnen de container om verlies van content te voorkomen. Als je deze melding blijft zien, neem dan contact op met info@madeit.be.';
+
+        const closeBtn = document.createElement('button');
+        closeBtn.textContent = 'X';
+        closeBtn.style = `
+            margin-left: 20px;
+            padding: 5px 10px;
+            background-color: transparent;
+            border: none;
+            color: rgb(204, 0, 0);
+            border-radius: 4px;
+            cursor: pointer;
+            position: absolute;
+            right: 5px;
+            top: 5px;
+        `;
+        closeBtn.addEventListener('click', () => {
+            warning.parentNode?.removeChild(warning);
+        });
+        warning.appendChild(closeBtn);
+        document.body.appendChild(warning);
+    };
 
     wp.data.subscribe(() => {
-
+        // Tijdens het renderen van block previews (zoals in de template inserter) willen we deze logica NIET uitvoeren.
         if (window?.madeitIsRenderingBlockPreview) return;
-        if (isProcessing || isFixingOutsideBlocks) return;
+        if (isFixingOutsideBlocks) return;
 
         const editorSelect = wp.data.select('core/block-editor');
         const editorDispatch = wp.data.dispatch('core/block-editor');
 
-        // Root-level blocks die wél buiten de container mogen staan
-        const allowedOutsideRootBlocks = [
-            'madeit/block-content',
-            'madeit/block-content-column',
-            'core/cover',
-            'core/spacer'
-        ];
+        // Wacht tot de editor klaar is met laden
+        if (!isEditorReady) {
+            const isReady = editorSelect.isEditorReady ? editorSelect.isEditorReady() : null;
+            const rootBlocks = editorSelect.getBlocks();
 
-        const rootBlocks = editorSelect.getBlocks();
-        const outsideRootBlocks = rootBlocks.filter((block) => !allowedOutsideRootBlocks.includes(block.name));
+            // Editor is klaar als isEditorReady true is én er blokken zijn (of de post echt leeg is)
+            const postId = wp.data.select('core/editor')?.getCurrentPostId();
+            const isSavingOrLoading = wp.data.select('core/editor')?.isAutosavingPost?.() || 
+                                    wp.data.select('core/editor')?.isSavingPost?.();
 
-        // Als er root-level blocks buiten de container staan: zet ze veilig in een container.
-        if (outsideRootBlocks.length) {
-            isFixingOutsideBlocks = true;
+            if (!postId || isSavingOrLoading) return;
+            if (rootBlocks.length === 0) return; // Nog niet geladen
 
-            if (!document.querySelector('.madeit-outside-block-warning')) {
-                const warning = document.createElement('div');
-                warning.classList.add('madeit-outside-block-warning');
-                warning.style = `
-                    position: fixed;
-                    top: 20px;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    background-color: #ffebe6;
-                    color: #c00;
-                    padding: 20px;
-                    border: 1px solid #c00;
-                    border-radius: 4px;
-                    z-index: 9999;
-                `;
-                warning.textContent = 'Er werden blokken gedetecteerd buiten de container. Deze werden automatisch verplaatst naar binnen de container om verlies van content te voorkomen. Als je deze melding blijft zien, neem dan contact op met info@madeit.be.';
-                document.body.appendChild(warning);
-                // close button
-                const closeBtn = document.createElement('button');
-                closeBtn.textContent = 'Sluiten';
-                closeBtn.style = `
-                    margin-left: 20px;
-                    padding: 5px 10px;
-                    background-color: transparent;
-                    border: none;
-                    color: rgb(204, 0, 0);
-                    border-radius: 4px;
-                    cursor: pointer;
-                    position: absolute;
-                    right: 5px;
-                    top: 5px;
-                `;
-                closeBtn.addEventListener('click', () => {
-                    if (warning.parentNode) {
-                        warning.parentNode.removeChild(warning);
-                    }
-                });
-                warning.appendChild(closeBtn);
-            }
+            isEditorReady = true;
+            console.log('Editor ready, running outside block check for the first time.');
+        }
 
-            // Belangrijk: maak een NIEUWE container op de plaats waar blocks stonden.
-            // We willen niets “bijplakken” in een bestaande container.
+        // Enkel de root-level blocks controleren, niet de volledige boom (performance). en zorg voor returning data-type consistentie (altijd array).
+        const rootBlocks = editorSelect.getBlocks(); 
+
+        if (!rootBlocks || rootBlocks.length === 0) return;
+
+        const outsideBlocks = rootBlocks.filter(
+            (block) => !allowedOutsideRootBlocks.includes(block.name)
+        );
+
+        // Als er geen outside blocks zijn, hoeven we niets te doen. Belangrijk: dit moet na de initiële fix check komen, anders krijgen we een loop.
+        if (!outsideBlocks.length) {
+            // Geen outside blocks
+            return;
+        }
+        // Er zijn outside blocks, dus we moeten ingrijpen
+        isFixingOutsideBlocks = true;
+
+        if (!hasRunInitialFix) {
+            // Initiële fix: verplaats naar container + toon melding
+            hasRunInitialFix = true; // Set onmiddellijk, VOOR resetBlocks
+            
+            showOutsideBlockWarning();
+
             const newRootBlocks = [];
             let pendingOutsideGroup = [];
 
             const flushPendingOutsideGroup = () => {
                 if (!pendingOutsideGroup.length) return;
-
-                // madeit/block-content laat enkel madeit/block-content-column toe als innerBlocks.
-                // Daarom wrappen we deze outside root blocks in één column.
                 const movedColumn = wp.blocks.createBlock(
                     'madeit/block-content-column',
                     { width: 12 },
                     pendingOutsideGroup
                 );
-
                 const containerBlock = wp.blocks.createBlock('madeit/block-content', {}, [movedColumn]);
                 newRootBlocks.push(containerBlock);
                 pendingOutsideGroup = [];
             };
 
             rootBlocks.forEach((block) => {
-                const isAllowedOutside = allowedOutsideRootBlocks.includes(block.name);
-
-                if (isAllowedOutside) {
-                    // Sluit eerst een groep outside blocks af (als die er is)
+                if (allowedOutsideRootBlocks.includes(block.name)) {
                     flushPendingOutsideGroup();
                     newRootBlocks.push(block);
                 } else {
-                    // Deel van outside blocks group (root-level)
                     pendingOutsideGroup.push(block);
                 }
             });
 
-            // flush eventuele groep op het einde
             flushPendingOutsideGroup();
-
             editorDispatch.resetBlocks(newRootBlocks);
 
-            setTimeout(() => {
-                isFixingOutsideBlocks = false;
-            }, 8000);
-
-            // Stop hier zodat er niks verwijderd wordt in dezelfde subscribe-run.
-            return;
+        } 
+        else {
+            // Na initiële fix: stil verwijderen
+            const cleanedBlocks = rootBlocks.filter(
+                (block) => allowedOutsideRootBlocks.includes(block.name)
+            );
+            editorDispatch.resetBlocks(cleanedBlocks);
         }
 
-    }, 800);
+        setTimeout(() => {
+            isFixingOutsideBlocks = false;
+        }, 500);
+    });
 
 
     //? Laat de block inserter standaard open (maar forceer het niet daarna)
@@ -346,18 +372,6 @@ wp.domReady(function () {
                         onClick: () => {
                             const modal = document.createElement('div');
                             modal.classList.add('madeitheek-modal');
-                            modal.style = `
-                                            position: fixed;
-                                            top: 0;
-                                            left: 0;
-                                            width: 100%;
-                                            height: 100%;
-                                            background-color: rgba(0, 0, 0, 0.5);
-                                            display: flex;
-                                            justify-content: center;
-                                            align-items: center;
-                                            z-index: 9999;
-                                        `;
 
                             const templateContainer = document.createElement('div');
                             templateContainer.classList.add('madeitheek-container');
@@ -384,7 +398,6 @@ wp.domReady(function () {
                             // Header: Madeitheek + tabs + sluiten
                             const header = document.createElement('div');
                             header.classList.add('madeitheek-header');
-                            header.style = 'display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom: 12px;';
 
                             const headerTitle = document.createElement('div');
                             headerTitle.textContent = 'Madeitheek';
@@ -397,7 +410,6 @@ wp.domReady(function () {
                             const closeBtn = document.createElement('button');
                             closeBtn.type = 'button';
                             closeBtn.textContent = 'Sluiten';
-                            closeBtn.style = 'padding: 8px 12px; cursor: pointer; border: 1px solid #c3c3c3; background: #fff; border-radius: 4px;';
                             closeBtn.addEventListener('click', () => removeModal());
 
                             header.appendChild(headerTitle);
@@ -426,6 +438,10 @@ wp.domReady(function () {
                             };
 
                             setStatus('Laden…', true);
+                            // wacht nog enkele minuten voor het 'laden' weg is, zodat alles zeker is geladen (vooral de block previews kunnen soms nog even duren)
+                            setTimeout(() => {
+                                setStatus('', false);
+                            }, 2000);
 
                             const list = document.createElement('div');
                             list.classList.add('madeitheek-list');
@@ -433,6 +449,37 @@ wp.domReady(function () {
 
                             let activeTab = 'blocks';
                             const tabButtons = {};
+
+                            // remove the builder bar in the preview, we don't want it there and it can cause issues with the block preview rendering
+                            const removeBuilderBar = (container) => {
+                                if (!container) return;
+                                // zoek naar het iframe binnen de container
+                                const iframe = container.querySelector('iframe');
+                                if (iframe) {
+                                    // Als er een iframe is, zoek dan binnen het iframe document
+                                    try {
+                                        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                                        const builderBarsInIframe = iframeDoc.querySelectorAll('.madeit-builder-bar');
+                                        builderBarsInIframe.forEach((bar) => {
+                                            bar.style.display = 'none';
+                                        });
+
+                                        const vhBlocks = iframeDoc.querySelectorAll('.block-editor-block-list__block[style*="--madeit-min-height-desktop: 100vh;"]');
+                                        vhBlocks.forEach((block) => {
+                                            block.style.setProperty('--madeit-min-height-desktop', '40vh');
+                                        });
+
+                                    } catch (e) {
+                                        console.warn('Could not access iframe content to hide builder bars:', e);
+                                    }
+                                } else {
+                                    // Anders, zoek direct binnen de container (voor previews die geen iframe gebruiken)
+                                    const builderBars = container.querySelectorAll('.madeit-builder-bar');
+                                    builderBars.forEach((bar) => {
+                                        bar.style.display = 'none';
+                                    });
+                                }
+                            };
 
                             const getBlockPreviewComponent = () => {
                                 return wp?.blockEditor?.BlockPreview || wp?.blockEditor?.__experimentalBlockPreview || null;
@@ -457,6 +504,26 @@ wp.domReady(function () {
                                 } catch (e) { }
                                 finally {
                                     window.madeitIsRenderingBlockPreview = false;
+                                    
+                                    // Use MutationObserver to hide builder bars as they appear
+                                    const observer = new MutationObserver(() => {
+                                        removeBuilderBar(mountNode);
+                                    });
+                                    
+                                    observer.observe(mountNode, {
+                                        childList: true,
+                                        subtree: true,
+                                        attributes: true,
+                                        attributeFilter: ['style', 'class']
+                                    });
+                                    
+                                    // Initial removal
+                                    removeBuilderBar(mountNode);
+                                    
+                                    // Stop observing after 1 second
+                                    setTimeout(() => {
+                                        observer.disconnect();
+                                    }, 1000);
                                 }
                             };
 
@@ -672,7 +739,7 @@ wp.domReady(function () {
                                         });
 
                                         if (!items.length) {
-                                            setStatus('Geen items gevonden.', false);
+                                            setStatus('Nog geen teamplates gemaakt.', false);
                                         } else {
                                             setStatus('', false);
                                         }

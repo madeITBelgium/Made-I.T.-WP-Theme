@@ -30,6 +30,8 @@ import {
     getAdjacentBlocks,
     getRedistributedColumnWidths,
 } from '../../content-container/src/utils';
+import { Button, ButtonGroup } from '@wordpress/components';
+import { ControlHeader } from '../../../../shared';
 
 const stripBackgroundClasses = ( className = '' ) =>
     className
@@ -80,7 +82,9 @@ function ColumnEdit( props ) {
         hasCustomVerticalAlignment,
         width,
         margin,
+        marginUnit,
         padding,
+        paddingUnit,
         maxContainerSize
     } = attributes;
 
@@ -170,6 +174,7 @@ function ColumnEdit( props ) {
         }
     );
     
+    
     return (
         <div { ...sanitizedBlockProps }>
             <BlockControls>
@@ -216,32 +221,454 @@ function ColumnEdit( props ) {
                     />
                 </PanelColorSettings>
                 <ToolsPanel label={ __( 'Dimensions' ) } resetAll={ resetAll }>
+
+                    {/* ----------------------- PADDING -------------------- */}
                     <ToolsPanelItem
+                        className="madeit-padding-controls"
+                        style={{display: 'flex', flexWrap: 'wrap', gap: '6px'}}
                         hasValue={ () => !! padding }
                         label={ __( 'Padding' ) }
                         onDeselect={ () => setPadding( undefined ) }
                     >
-                        <BoxControl
+                        {/* <BoxControl
                             __next40pxDefaultSize
                             label={ __( 'Padding' ) }
                             onChange={ setPadding }
                             values={ padding }
                             allowReset={ false }
-                        />
+                        /> */}
+
+                        {/* Padding als één geheel */}
+                            <ControlHeader
+                                title={ __( 'Padding', 'madeit' ) }
+                                afterBreakpoint={
+                                    <ButtonGroup className="madeit-control-units">
+                                        {['px', '%', 'em', 'rem', 'vw', 'vh'].map((unit) => (
+                                            <Button
+                                            
+                                            key={unit}
+                                            isPressed={ paddingUnit === unit }
+                                            onClick={() => {
+
+                                                const nextPadding = {
+                                                    ...(padding || {}),
+                                                };
+                                                const PADDING_KEYS = [ 'top', 'right', 'bottom', 'left' ];
+
+                                                PADDING_KEYS.forEach((key) => {
+
+                                                    const raw = padding?.[key];
+
+                                                    if (!raw) {
+                                                        return;
+                                                    }
+
+                                                    const numeric = parseFloat(raw);
+
+                                                    if (!Number.isFinite(numeric)) {
+                                                        return;
+                                                    }
+
+                                                    nextPadding[key] = `${numeric}${unit}`;
+
+                                                });
+
+                                                setAttributes({
+                                                    padding: nextPadding,
+                                                    paddingUnit: unit,
+                                                });
+
+                                            }}
+                                        >
+                                            {unit}
+                                        </Button>
+                                        ))}
+                                    </ButtonGroup>
+                                }
+                            />
+                        <div
+                            className="madeit-controls"
+                            style={{
+                                display: 'flex',
+                                alignItems: 'flex-start',
+                                maxWidth: 'calc(100% - 35px)',
+                            }}
+                        >
+                            {[
+                                { label: 'Bovenaan', key: 'top' },
+                                { label: 'Rechts',   key: 'right' },
+                                { label: 'Onderaan', key: 'bottom' },
+                                { label: 'Links',    key: 'left' },
+                            ].map((item) => {
+
+                                const rawValue = padding?.[item.key] || '';
+                                const numericValue = parseFloat(rawValue);
+                                const displayValue = Number.isFinite(numericValue) 
+                                    ? numericValue 
+                                    : '';
+                                return (
+                                    <div
+                                        key={item.key}
+                                        style={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            alignItems: 'center',
+                                            flex: 1,
+                                        }}
+                                        className='control-item'
+                                    >
+
+                                        <input
+                                            type="number"
+                                            value={displayValue}
+                                            min={0}
+                                            onChange={(e) => {
+
+                                                const val = e.target.value;
+
+                                                setPadding({
+                                                    ...(padding || {}),
+                                                    [item.key]: val === ''
+                                                        ? undefined
+                                                        : `${val}px`,
+                                                });
+
+                                            }}
+                                            style={{
+                                                width: '100%',
+                                                height: '27px',
+                                                fontSize: '.85em',
+                                                textAlign: 'center',
+                                            }}
+                                        />
+
+                                        <span
+                                            style={{
+                                                fontSize: '9px',
+                                                marginTop: '4px',
+                                            }}
+                                        >
+                                            {__(item.label, 'madeit')}
+                                        </span>
+
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        <Button
+                            title="Waarden koppelen"
+                            variant="tertiary"
+                            onClick={() => {
+
+                                const values = [
+                                    padding?.top,
+                                    padding?.right,
+                                    padding?.bottom,
+                                    padding?.left,
+                                ];
+
+                                const allEqual = values.every(
+                                    (val) => val === values[0]
+                                );
+
+                                if (allEqual) {
+
+                                    setPadding({
+                                        top: undefined,
+                                        right: undefined,
+                                        bottom: undefined,
+                                        left: undefined,
+                                    });
+
+                                } else {
+
+                                    const firstValue =
+                                        values.find((val) => val) || '';
+
+                                    setPadding({
+                                        top: firstValue,
+                                        right: firstValue,
+                                        bottom: firstValue,
+                                        left: firstValue,
+                                    });
+
+                                }
+
+                            }}
+                            style={{
+                                height: 'fit-content',
+                                marginLeft: '10px',
+                                marginTop: '9px',
+                                padding: '0',
+                            }}
+                            showTooltip
+                        >
+                            
+                            {(() => {
+
+                                const values = [
+                                    padding?.top,
+                                    padding?.right,
+                                    padding?.bottom,
+                                    padding?.left,
+                                ];
+
+                                const allEqual = values.every(
+                                    (val) =>
+                                        val === values[0] &&
+                                        val !== undefined
+                                );
+
+                                return allEqual ? (
+                                    <span
+                                        className="dashicons dashicons-editor-unlink"
+                                        style={{
+                                            fontSize: '15px',
+                                            width: 'min-content',
+                                        }}
+                                    />
+                                ) : (
+                                    <span
+                                        className="dashicons dashicons-admin-links"
+                                        style={{
+                                            fontSize: '15px',
+                                            width: 'min-content',
+                                        }}
+                                    />
+                                );
+
+                            })()}
+                            </Button>
                     </ToolsPanelItem>
+
+
+                    {/* ----------------------- MARGIN -------------------- */}
                     <ToolsPanelItem
+                        className="madeit-margin-controls"
+                        style={{display: 'flex', flexWrap: 'wrap', gap: '6px'}}
                         hasValue={ () => !! margin }
                         label={ __( 'Margin' ) }
                         onDeselect={ () => setMargin( undefined ) }
                     >
-                        <BoxControl
+                        {/* <BoxControl
                             __next40pxDefaultSize
                             label={ __( 'Margin' ) }
                             onChange={ setMargin }
                             values={ margin }
                             allowReset={ false }
                             sides={ [ 'bottom', 'top' ] }
-                        />
+                        /> */}
+
+
+                        {/* Margin als één geheel */}
+                            <ControlHeader
+                                title={ __( 'Margin', 'madeit' ) }
+                                afterBreakpoint={
+                                    <ButtonGroup className="madeit-control-units">
+                                        {['px', '%', 'em', 'rem', 'vw', 'vh'].map((unit) => (
+                                            <Button
+                                            
+                                            key={unit}
+                                            isPressed={ marginUnit === unit }
+                                            onClick={() => {
+
+                                                const nextMargin = {
+                                                    ...(margin || {}),
+                                                };
+                                                const MARGIN_KEYS = [ 'top', 'right', 'bottom', 'left' ];
+
+                                                MARGIN_KEYS.forEach((key) => {
+
+                                                    const raw = margin?.[key];
+
+                                                    if (!raw) {
+                                                        return;
+                                                    }
+
+                                                    const numeric = parseFloat(raw);
+
+                                                    if (!Number.isFinite(numeric)) {
+                                                        return;
+                                                    }
+
+                                                    nextMargin[key] = `${numeric}${unit}`;
+
+                                                });
+
+                                                setAttributes({
+                                                    margin: nextMargin,
+                                                    marginUnit: unit,
+                                                });
+
+                                            }}
+                                        >
+                                            {unit}
+                                        </Button>
+                                        ))}
+                                    </ButtonGroup>
+                                }
+                            />
+                        <div
+                            className="madeit-controls"
+                            style={{
+                                display: 'flex',
+                                alignItems: 'flex-start',
+                                maxWidth: 'calc(100% - 35px)',
+                            }}
+                        >
+                            {[
+                                { label: 'Bovenaan', key: 'top',    status: 'default' },
+                                { label: 'Rechts',   key: 'right',  status: 'disabled' },
+                                { label: 'Onderaan', key: 'bottom', status: 'default' },
+                                { label: 'Links',    key: 'left',   status: 'disabled' },
+                            ].map((item) => {
+
+                                const rawValue = margin?.[item.key] || '';
+                                const numericValue = parseFloat(rawValue);
+                                const displayValue = Number.isFinite(numericValue) 
+                                    ? numericValue 
+                                    : '';
+
+                                
+                                return (
+                                    <div
+                                        key={item.key}
+                                        style={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            alignItems: 'center',
+                                            flex: 1,
+                                        }}
+                                        className='control-item'
+                                    >
+
+                                        <input
+                                            type="number"
+                                            value={displayValue}
+                                            min={-9999}
+                                            disabled={item.status === 'disabled'}
+                                            onChange={(e) => {
+
+                                                const val = e.target.value;
+
+                                                setMargin({
+                                                    ...(margin || {}),
+                                                    [item.key]: val === ''
+                                                        ? undefined
+                                                        : `${val}px`,
+                                                });
+
+                                            }}
+                                            style={{
+                                                width: '100%',
+                                                height: '27px',
+                                                fontSize: '.85em',
+                                                textAlign: 'center',
+                                            }}
+                                        />
+
+                                        <span
+                                            style={{
+                                                fontSize: '9px',
+                                                marginTop: '4px',
+                                            }}
+                                        >
+                                            {__(item.label, 'madeit')}
+                                        </span>
+
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        <Button
+                            title="Waarden koppelen"
+                            variant="tertiary"
+                            onClick={() => {
+
+                                const values = [
+                                    margin?.top,
+                                    margin?.right,
+                                    margin?.bottom,
+                                    margin?.left,
+                                ];
+
+                                const allEqual = values.every(
+                                    (val) => val === values[0]
+                                );
+
+                                if (allEqual) {
+
+                                    setMargin({
+                                        top: undefined,
+                                        right: undefined,
+                                        bottom: undefined,
+                                        left: undefined,
+                                    });
+
+                                } else {
+
+                                    const firstValue =
+                                        values.find((val) => val) || '';
+
+                                    setMargin({
+                                        top: firstValue,
+                                        right: firstValue,
+                                        bottom: firstValue,
+                                        left: firstValue,
+                                    });
+
+                                }
+
+                            }}
+                            style={{
+                                height: 'fit-content',
+                                marginLeft: '10px',
+                                marginTop: '9px',
+                                padding: '0',
+                            }}
+                            showTooltip
+                        >
+                            
+                            {(() => {
+
+                                const values = [
+                                    margin?.top,
+                                    margin?.right,
+                                    margin?.bottom,
+                                    margin?.left,
+                                ];
+
+                                const allEqual = values.every(
+                                    (val) =>
+                                        val === values[0] &&
+                                        val !== undefined
+                                );
+
+                                return allEqual ? (
+                                    <span
+                                        className="dashicons dashicons-editor-unlink"
+                                        style={{
+                                            fontSize: '15px',
+                                            width: 'min-content',
+                                        }}
+                                    />
+                                ) : (
+                                    <span
+                                        className="dashicons dashicons-admin-links"
+                                        style={{
+                                            fontSize: '15px',
+                                            width: 'min-content',
+                                        }}
+                                    />
+                                );
+
+                            })()}
+
+                        </Button>
+                        
+
                     </ToolsPanelItem>
                 </ToolsPanel>
             </InspectorControls>

@@ -1,3 +1,9 @@
+/**
+ * ResponsiveBoxControl.js — Shared component for managing responsive box controls in Gutenberg blocks.
+ *
+ */
+
+
 import { createElement } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { __experimentalBoxControl as BoxControl } from '@wordpress/components';

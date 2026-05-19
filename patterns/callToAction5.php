@@ -1,0 +1,59 @@
+<?php
+/**
+ * Title: Call to action - 5
+ * Slug: madeit/call-to-action-5
+ * Categories: call-to-action
+ */
+?>
+
+<!-- wp:madeit/block-content {"contentWidth":"container","containerPadding":{"top":"50px","bottom":"50px"},"containerPaddingOnRow":true,"overflow":"visible","flexDirection":"row","flexDirectionTablet":"column","flexDirectionMobile":"column","alignItems":"center","justifyContent":"flex-start","rowGap":20,"rowGapTablet":20,"rowGapMobile":20,"columnsCount":2,"flexWrap":"nowrap","madeitHasUserEdits":true} -->
+<div class="wp-block-madeit-block-content container-fluid madeit-block-content--frontend" style="--madeit-row-gap-desktop:20px;--madeit-row-gap-tablet:20px;--madeit-row-gap-mobile:20px;--madeit-flex-direction-desktop:row;--madeit-flex-direction-tablet:column;--madeit-flex-direction-mobile:column;--madeit-align-items-desktop:center;--madeit-justify-content-desktop:flex-start;--madeit-flex-wrap-desktop:nowrap"><div class="container"><div class="row madeit-container-row rows-2" data-madeit-dir="row" data-madeit-dir-tablet="column" data-madeit-dir-mobile="column" style="--madeit-container-row-padding-top-desktop:50px;--madeit-container-row-padding-right-desktop:0px;--madeit-container-row-padding-bottom-desktop:50px;--madeit-container-row-padding-left-desktop:0px">
+
+<!-- wp:madeit/block-content-column {"width":6} -->
+<div class="wp-block-madeit-block-content-column col-12 col-lg-6"><div class="madeit-content-column__inner"><!-- wp:heading {"madeitTypoClass":"madeit-typo-843f4f2"} -->
+<h2 class="wp-block-heading">Your digital<br>Presence is about<br>to take off</h2>
+<!-- /wp:heading -->
+
+<!-- wp:spacer {"height":"20px"} -->
+<div style="height:20px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:paragraph {"madeitTypoClass":"madeit-typo-31975c8"} -->
+<p>A short introduction to the workshop instructors and why their background should inspire potential student’s confidence.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:buttons -->
+<div class="wp-block-buttons"><!-- wp:button {"textColor":"secondary","className":"is-style-outline","style":{"elements":{"link":{"color":{"text":"var:preset|color|secondary"}}}}} -->
+<div class="wp-block-button is-style-outline"><a class="wp-block-button__link has-secondary-color has-text-color has-link-color wp-element-button">Contact us</a></div>
+<!-- /wp:button --></div>
+<!-- /wp:buttons --></div></div>
+<!-- /wp:madeit/block-content-column -->
+
+<!-- wp:madeit/block-content-column {"width":6} -->
+<div class="wp-block-madeit-block-content-column col-12 col-lg-6"><div class="madeit-content-column__inner"><!-- wp:group {"layout":{"type":"grid","columnCount":2,"minimumColumnWidth":null},"madeitColumnsTablet":2,"madeitColumnsMobile":2} -->
+<div class="wp-block-group" style="--madeit-cols-desktop:2;--madeit-cols-tablet:2;--madeit-cols-mobile:2"><!-- wp:group {"style":{"layout":{"rowSpan":2}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group"><!-- wp:image {"id":2534,"width":"auto","height":"500px","aspectRatio":"3/4","scale":"cover","sizeSlug":"full","linkDestination":"none","style":{"layout":{"selfStretch":"fixed","flexSize":"100%"}}} -->
+<figure class="wp-block-image size-full is-resized" id="h-100" style="layout:[object Object]"><img src="https://test.madeit.be/wp-content/uploads/2026/05/placeholder-2.png" alt="" class="wp-image-2534" style="aspect-ratio:3/4;object-fit:cover;width:auto;height:500px"/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"layout":{"type":"constrained"}} -->
+<div class="wp-block-group"><!-- wp:image {"id":2534,"width":"auto","height":"246px","aspectRatio":"4/3","scale":"cover","sizeSlug":"full","linkDestination":"none"} -->
+<figure class="wp-block-image size-full is-resized"><img src="https://test.madeit.be/wp-content/uploads/2026/05/placeholder-2.png" alt="" class="wp-image-2534" style="aspect-ratio:4/3;object-fit:cover;width:auto;height:246px"/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"layout":{"type":"constrained"}} -->
+<div class="wp-block-group"><!-- wp:image {"id":2534,"width":"auto","height":"246px","aspectRatio":"4/3","scale":"cover","sizeSlug":"full","linkDestination":"none"} -->
+<figure class="wp-block-image size-full is-resized"><img src="https://test.madeit.be/wp-content/uploads/2026/05/placeholder-2.png" alt="" class="wp-image-2534" style="aspect-ratio:4/3;object-fit:cover;width:auto;height:246px"/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group --></div></div>
+<!-- /wp:madeit/block-content-column -->
+
+</div></div></div>
+<!-- /wp:madeit/block-content -->

@@ -4,7 +4,7 @@
     width: 80%;
     max-width: 1200px;
     background-color: rgb(255, 255, 255);
-    padding: 20px;
+    padding: 0 20px;
     border-radius: 4px;
     text-align: left;
     max-height: 80vh;
@@ -23,11 +23,43 @@
 }
 
 /* Builder UI nooit tonen in modal previews */
+.madeitheek-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.madeitheek-header {
+    display:flex; 
+    align-items:center; 
+    justify-content:space-between; 
+    gap:12px; 
+    margin-bottom: 12px; 
+    position:sticky; 
+    top:0; 
+    background:#fff; 
+    padding: 20px 0; 
+    z-index:999;
+}
+.madeitheek-header button {
+    padding: 8px 12px; 
+    cursor: pointer; 
+    border: 1px solid #c3c3c3; 
+    background: #fff; 
+    border-radius: 4px;
+}
 .madeitheek-modal .madeit-builder-bar {
     display: none !important;
 }
 .madeitheek-list {
-
+    
 }
 .madeitheek-list .madeit-template-item {
     display: block; 
@@ -125,4 +157,11 @@
 
 .madeitheek-list .madeitheek-item-preview iframe .madeit-builder-bar {
 	display: none;
+}
+
+
+/* In IFRAME */
+
+iframe html body .block-editor-block-list__block[style*="--madeit-min-height-desktop: 100vh;"] {
+    --madeit-min-height-desktop: 40vh !important;
 }

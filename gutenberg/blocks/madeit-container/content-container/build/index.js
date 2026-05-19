@@ -1,6 +1,80 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "../../../shared/AdvancedUnitSelect.js"
+/*!*********************************************!*\
+  !*** ../../../shared/AdvancedUnitSelect.js ***!
+  \*********************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ UnitSelect)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
+
+
+
+
+const PRESET_UNITS = ['px', '%', 'vh', 'vw', 'em', 'rem'];
+function UnitSelect({
+  value = 'px',
+  onChange,
+  units = ['px', '%', 'vh']
+}) {
+  const isCustom = value && !PRESET_UNITS.includes(value);
+  const [showCustom, setShowCustom] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(isCustom);
+  const options = [...units.map(u => ({
+    value: u,
+    label: u
+  })), {
+    value: '__custom__',
+    label: '✎'
+  }];
+  const selectValue = showCustom ? '__custom__' : value || 'px';
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "madeit-unit-select"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+    value: selectValue,
+    options: options,
+    onChange: next => {
+      if (next === '__custom__') {
+        setShowCustom(true);
+        onChange('__custom__'); // ← sla '__custom__' op als tijdelijke waarde
+      } else {
+        setShowCustom(false);
+        onChange(next);
+      }
+    },
+    __nextHasNoMarginBottom: true
+  }), showCustom && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+    style: {
+      width: '100%',
+      position: 'absolute',
+      right: 0,
+      left: '-3px',
+      maxWidth: '251px',
+      margin: 'auto',
+      transform: 'translateY(8px)'
+    },
+    placeholder: "calc(100% - 2rem)",
+    value: value === '__custom__' ? '' : value,
+    onChange: val => onChange(val || '__custom__') // ← val leeg? blijf '__custom__'
+    ,
+    __nextHasNoMarginBottom: true
+  }));
+}
+
+/***/ },
+
 /***/ "../../../shared/BreakpointSwitcher.js"
 /*!*********************************************!*\
   !*** ../../../shared/BreakpointSwitcher.js ***!
@@ -14,65 +88,50 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _breakpoint_context__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./breakpoint-context */ "../../../shared/breakpoint-context.js");
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
-
-// import { createElement } from '@wordpress/element';
-// import { Button, ButtonGroup } from '@wordpress/components';
-
-// export default function BreakpointSwitcher(props) {
-//     var active = props && props.active ? props.active : 'desktop';
-//     var onChange = props && props.onChange ? props.onChange : null;
-
-//     return createElement(
-//         ButtonGroup,
-//         { className: 'madeit-control-breakpoints' },
-//         createElement(Button, {
-//             icon: 'desktop',
-//             isPressed: active === 'desktop',
-//             onClick: function () {
-//                 if (onChange) onChange('desktop');
-//             },
-//         }),
-//         createElement(Button, {
-//             icon: 'tablet',
-//             isPressed: active === 'tablet',
-//             onClick: function () {
-//                 if (onChange) onChange('tablet');
-//             },
-//         }),
-//         createElement(Button, {
-//             icon: 'smartphone',
-//             isPressed: active === 'mobile',
-//             onClick: function () {
-//                 if (onChange) onChange('mobile');
-//             },
-//         })
-//     );
-// }
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_2__);
 
 
 
-function BreakpointSwitcher() {
+const DEVICE_MAP = {
+  desktop: 'Desktop',
+  tablet: 'Tablet',
+  mobile: 'Mobile'
+};
+
+// Omgekeerde mapping voor uitlezen
+const REVERSE_DEVICE_MAP = Object.fromEntries(Object.entries(DEVICE_MAP).map(([k, v]) => [v, k]));
+function BreakpointSwitcher({
+  onChange
+}) {
+  var _REVERSE_DEVICE_MAP$g;
   const {
-    breakpoint,
-    setBreakpoint
-  } = (0,_breakpoint_context__WEBPACK_IMPORTED_MODULE_1__.useBreakpoint)();
-  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ButtonGroup, {
+    __experimentalSetPreviewDeviceType
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useDispatch)('core/edit-post');
+  const gutenbergDevice = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useSelect)(select => select('core/edit-post').__experimentalGetPreviewDeviceType());
+
+  // Sync met Gutenberg, fallback naar 'desktop'
+  const active = (_REVERSE_DEVICE_MAP$g = REVERSE_DEVICE_MAP[gutenbergDevice]) !== null && _REVERSE_DEVICE_MAP$g !== void 0 ? _REVERSE_DEVICE_MAP$g : 'desktop';
+  const handleChange = breakpoint => {
+    __experimentalSetPreviewDeviceType(DEVICE_MAP[breakpoint]);
+    onChange?.(breakpoint);
+  };
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ButtonGroup, {
     className: "madeit-control-breakpoints"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
     icon: "desktop",
-    isPressed: breakpoint === 'desktop',
-    onClick: () => setBreakpoint('desktop')
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+    isPressed: active === 'desktop',
+    onClick: () => handleChange('desktop')
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
     icon: "tablet",
-    isPressed: breakpoint === 'tablet',
-    onClick: () => setBreakpoint('tablet')
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+    isPressed: active === 'tablet',
+    onClick: () => handleChange('tablet')
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
     icon: "smartphone",
-    isPressed: breakpoint === 'mobile',
-    onClick: () => setBreakpoint('mobile')
+    isPressed: active === 'mobile',
+    onClick: () => handleChange('mobile')
   }));
 }
 
@@ -89,41 +148,50 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ ControlHeader)
 /* harmony export */ });
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _BreakpointSwitcher__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./BreakpointSwitcher */ "../../../shared/BreakpointSwitcher.js");
 
+/**
+ * ControlHeader.js — Shared component for managing control headers in Gutenberg blocks.
+ *
+ */
 
 
 
-function ControlHeader(props) {
-  var title = props && typeof props.title !== 'undefined' ? props.title : '';
-  var breakpoint = props && props.breakpoint ? props.breakpoint : null;
-  var onBreakpointChange = props && props.onBreakpointChange ? props.onBreakpointChange : null;
-  var afterBreakpoint = props && props.afterBreakpoint ? props.afterBreakpoint : null;
-  var onReset = props && props.onReset ? props.onReset : null;
-  var resetLabel = props && props.resetLabel ? props.resetLabel : null;
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)('div', {
-    className: 'madeit-control-header'
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)('span', {
-    className: 'madeit-control-header__title'
-  }, title), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)('div', {
-    className: 'madeit-control-header__tools'
-  }, breakpoint && onBreakpointChange ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_BreakpointSwitcher__WEBPACK_IMPORTED_MODULE_3__["default"], {
+
+function ControlHeader({
+  title = '',
+  breakpoint = null,
+  onBreakpointChange = null,
+  afterBreakpoint = null,
+  onReset = null,
+  resetLabel = null
+}) {
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "madeit-control-header",
+    style: {
+      width: '100%'
+    }
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "madeit-control-header__title"
+  }, title), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "madeit-control-header__tools"
+  }, breakpoint && onBreakpointChange && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_BreakpointSwitcher__WEBPACK_IMPORTED_MODULE_3__["default"], {
     active: breakpoint,
     onChange: onBreakpointChange
-  }) : null, afterBreakpoint, onReset ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
-    className: 'madeit-control-header__reset',
-    icon: 'undo',
-    variant: 'tertiary',
+  }), afterBreakpoint, onReset && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+    className: "madeit-control-header__reset",
+    icon: "undo",
+    variant: "tertiary",
     onClick: onReset,
     showTooltip: true,
     label: resetLabel || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Reset')
-  }) : null));
+  })));
 }
 
 /***/ },
@@ -146,6 +214,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _ControlHeader__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ControlHeader */ "../../../shared/ControlHeader.js");
+/**
+ * ResponsiveBoxControl.js — Shared component for managing responsive box controls in Gutenberg blocks.
+ *
+ */
+
 
 
 
@@ -257,6 +330,45 @@ function ResponsiveVisibilityPanel(props) {
 
 /***/ },
 
+/***/ "../../../shared/UnitSelect.js"
+/*!*************************************!*\
+  !*** ../../../shared/UnitSelect.js ***!
+  \*************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ UnitSelect)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
+
+
+const PRESET_UNITS = ['px', '%', 'vh', 'vw', 'em', 'rem'];
+function UnitSelect({
+  value = 'px',
+  onChange,
+  units = PRESET_UNITS
+}) {
+  const options = units.map(unit => ({
+    value: unit,
+    label: unit
+  }));
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "madeit-unit-select"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+    value: value,
+    options: options,
+    onChange: onChange,
+    __nextHasNoMarginBottom: true
+  }));
+}
+
+/***/ },
+
 /***/ "../../../shared/breakpoint-context.js"
 /*!*********************************************!*\
   !*** ../../../shared/breakpoint-context.js ***!
@@ -275,6 +387,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
+
+/**
+ * breakpoint-context.js — Shared context for managing responsive breakpoints in Gutenberg blocks.
+ *
+ */
 
 
 const BreakpointContext = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createContext)({
@@ -314,11 +431,13 @@ function getBreakpointKey(baseKey, breakpoint) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   AdvancedUnitSelect: () => (/* reexport safe */ _AdvancedUnitSelect__WEBPACK_IMPORTED_MODULE_6__["default"]),
 /* harmony export */   BreakpointProvider: () => (/* reexport safe */ _breakpoint_context__WEBPACK_IMPORTED_MODULE_1__.BreakpointProvider),
 /* harmony export */   BreakpointSwitcher: () => (/* reexport safe */ _BreakpointSwitcher__WEBPACK_IMPORTED_MODULE_0__["default"]),
 /* harmony export */   ControlHeader: () => (/* reexport safe */ _ControlHeader__WEBPACK_IMPORTED_MODULE_2__["default"]),
 /* harmony export */   ResponsiveBoxControl: () => (/* reexport safe */ _ResponsiveBoxControl__WEBPACK_IMPORTED_MODULE_3__["default"]),
 /* harmony export */   ResponsiveVisibilityPanel: () => (/* reexport safe */ _ResponsiveVisibilityPanel__WEBPACK_IMPORTED_MODULE_4__["default"]),
+/* harmony export */   UnitSelect: () => (/* reexport safe */ _UnitSelect__WEBPACK_IMPORTED_MODULE_5__["default"]),
 /* harmony export */   getBreakpointKey: () => (/* reexport safe */ _breakpoint_context__WEBPACK_IMPORTED_MODULE_1__.getBreakpointKey),
 /* harmony export */   useBreakpoint: () => (/* reexport safe */ _breakpoint_context__WEBPACK_IMPORTED_MODULE_1__.useBreakpoint)
 /* harmony export */ });
@@ -327,6 +446,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ControlHeader__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ControlHeader */ "../../../shared/ControlHeader.js");
 /* harmony import */ var _ResponsiveBoxControl__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ResponsiveBoxControl */ "../../../shared/ResponsiveBoxControl.js");
 /* harmony import */ var _ResponsiveVisibilityPanel__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./ResponsiveVisibilityPanel */ "../../../shared/ResponsiveVisibilityPanel.js");
+/* harmony import */ var _UnitSelect__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./UnitSelect */ "../../../shared/UnitSelect.js");
+/* harmony import */ var _AdvancedUnitSelect__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./AdvancedUnitSelect */ "../../../shared/AdvancedUnitSelect.js");
+
+
 
 
 
@@ -372,6 +495,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _variations__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./variations */ "./src/variations.js");
 /* harmony import */ var _editor_scss__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./editor.scss */ "./src/editor.scss");
 
+/**
+ * edit.js — madeit-block-content
+*
+*/
 
 
 
@@ -421,7 +548,9 @@ function ColumnsEditContainer(props) {
     containerPaddingOnRow,
     // ─── Row attributes (only for "container-content-boxed" size) ─────────────────
     rowMargin,
+    marginUnit,
     rowPadding,
+    paddingUnit,
     // ─── Background attributes ─────────────────
     containerBackgroundImage,
     containerBackgroundPosition,
@@ -561,6 +690,29 @@ function ColumnsEditContainer(props) {
   // classes = classnames( classes, {
   // } );
 
+  // In ColumnsEditContainer, naast je andere hooks:
+  const blockStyles = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_8__.useSelect)(select => select(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_5__.store).getBlockStyles('madeit/block-content'),
+  // jouw block name
+  []);
+  const {
+    updateBlockAttributes
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_8__.useDispatch)('core/block-editor');
+  const currentClassName = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_8__.useSelect)(select => {
+    var _select$getBlockAttri;
+    return (_select$getBlockAttri = select('core/block-editor').getBlockAttributes(clientId)?.className) !== null && _select$getBlockAttri !== void 0 ? _select$getBlockAttri : '';
+  }, [clientId]);
+  const applyBlockStyle = styleName => {
+    const withoutStyles = currentClassName.split(' ').filter(cls => !cls.startsWith('is-style-')).join(' ').trim();
+
+    // Is deze stijl al actief? Dan uitzetten
+    const isActive = currentClassName.includes(`is-style-${styleName}`);
+    const newClass = isActive ? withoutStyles // uitzetten
+    : `${withoutStyles} is-style-${styleName}`.trim(); // aanzetten
+
+    updateBlockAttributes(clientId, {
+      className: newClass
+    });
+  };
   const computedContainerBackgroundPosition = typeof containerBackgroundPosition === 'string' && containerBackgroundPosition.length > 0 ? containerBackgroundPosition : 'center center';
   const computedContainerBackgroundRepeat = typeof containerBackgroundRepeat === 'string' && containerBackgroundRepeat.length > 0 ? containerBackgroundRepeat : 'no-repeat';
   const computedContainerBackgroundSize = typeof containerBackgroundSize === 'string' && containerBackgroundSize.length > 0 ? containerBackgroundSize : 'cover';
@@ -580,7 +732,8 @@ function ColumnsEditContainer(props) {
   // Initialize `contentWidth` once so it doesn't keep following `size`.
   // This keeps existing blocks stable, while making the controls truly independent.
 
-  const computedContentWidth = size === 'container' ? 'container' : contentWidth === 'container-fluid' ? 'container-fluid' : 'container';
+  // Als we in "container" zitten, is contentWidth altijd "container". Anders is het "container-fluid" tenzij het al een andere waarde had (omdat de gebruiker die heeft aangepast).
+  const computedContentWidth = size === 'container' ? 'container' : contentWidth === 'container-fluid' ? 'container-fluid' : 'container-fluid';
   const canChooseContentWidth = size !== 'container';
   var classesChild = classnames__WEBPACK_IMPORTED_MODULE_1___default()('', {
     [`container`]: computedContentWidth === 'container',
@@ -685,7 +838,9 @@ function ColumnsEditContainer(props) {
   const computedHtmlTag = htmlTag !== null && htmlTag !== void 0 ? htmlTag : 'div';
   const allowedHtmlTags = ['div', 'section', 'article', 'main', 'header', 'footer'];
   const HtmlTag = allowedHtmlTags.includes(computedHtmlTag) ? computedHtmlTag : 'div';
-  const applyContainerBackgroundToChild = size === 'container';
+
+  // background-image always on the outher container, never on the inner row, because that's more intuitive for users and works better with the way the block is structured (the inner row can be toggled between "container" and "container-fluid" widths, which would be weird if it also had the background image). The "container-content-boxed" size is a special case where we want the background color on the inner row but the background image on the outer container, so we also apply the background image styles to the inner row in that case.
+  const applyContainerBackgroundToChild = size === 'container-fluid' || size === 'container-content-boxed';
   const containerBackgroundStyle = {
     backgroundColor: computedBackgroundType === 'transparent' ? 'transparent' : containerBackgroundColor.color
   };
@@ -1375,82 +1530,99 @@ function ColumnsEditContainer(props) {
       advancedPanel.style.display = 'none';
     }
   }, [activeTab, isBlockSelected]);
+
+  // 1. Body-class: enkel afhankelijk van isBlockSelected
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_6__.useEffect)(() => {
+    const bodyClass = 'madeit-content-container-advanced-tabs';
+    if (isBlockSelected) {
+      document.body.classList.add(bodyClass);
+    } else {
+      document.body.classList.remove(bodyClass);
+    }
+    return () => {
+      document.body.classList.remove(bodyClass);
+    };
+  }, [isBlockSelected]);
+
+  // 2. Stijlen panel klasse: ook direct bij selectie toevoegen, niet bij tab-wissel
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_6__.useEffect)(() => {
+    if (!isBlockSelected) return;
+    const stylesPanel = document.querySelector('.block-editor-block-styles')?.closest('.components-panel__body');
+    if (!stylesPanel) return;
+    stylesPanel.classList.add('madeit-gutenberg-styles-panel');
+    return () => {
+      stylesPanel.classList.remove('madeit-gutenberg-styles-panel');
+    };
+  }, [isBlockSelected]);
   return [(0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_4__.InspectorControls, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     style: {
       display: 'flex',
       justifyContent: 'space-evenly'
-    }
+    },
+    className: 'TabContents'
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.Button, {
     isPrimary: activeTab === 'layout',
     onClick: () => setActiveTab('layout'),
     style: {
-      marginRight: '5px'
+      flex: '1',
+      justifyContent: 'center'
     }
   }, "Layout"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.Button, {
     isPrimary: activeTab === 'style',
     onClick: () => setActiveTab('style'),
     style: {
-      marginRight: '5px'
+      flex: '1',
+      justifyContent: 'center'
     }
   }, "Style"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.Button, {
     isPrimary: activeTab === 'advanced',
-    onClick: () => setActiveTab('advanced')
+    onClick: () => setActiveTab('advanced'),
+    style: {
+      flex: '1',
+      justifyContent: 'center'
+    }
   }, "Advanced")), activeTab === 'layout' && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.PanelBody, {
-    title: "Algemeen",
+    title: "Container",
     initialOpen: true
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.RangeControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Wijzig kolommen'),
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Aantal kolommen'),
     value: count,
     onChange: value => updateColumns(count, value),
     min: 1,
     max: 6
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_shared__WEBPACK_IMPORTED_MODULE_11__.ControlHeader, {
-    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Container breedte')
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.ButtonGroup, null, containerSizes.map(({
-    value,
-    label
-  }) => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.Button, {
-    key: value,
-    isPrimary: size === value,
-    onClick: () => setAttributes({
-      size: value,
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.SelectControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Inhoud breedte'),
+    labelPosition: "left",
+    value: size,
+    options: [{
+      value: 'container',
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Boxed')
+    }, {
+      value: 'container-fluid',
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Full width')
+    }],
+    onChange: newSize => setAttributes({
+      size: newSize,
       madeitHasUserEdits: true
     })
-  }, label))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("br", null), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("br", null), canChooseContentWidth && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.SelectControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Content breedte'),
-    value: computedContentWidth,
-    onChange: newSize => setAttributes({
-      contentWidth: newSize
-    }),
-    options: contentBoxedSizes
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "madeit-control"
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", null), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "madeit-control",
+    style: currentMaxWidthUnit == '__custom__' ? {
+      marginBottom: '52px'
+    } : {}
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_shared__WEBPACK_IMPORTED_MODULE_11__.ControlHeader, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('max breedte'),
     breakpoint: activeMaxWidthBreakpoint,
     onBreakpointChange: setActiveMaxWidthBreakpoint,
-    afterBreakpoint: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.ButtonGroup, {
-      className: "madeit-control-units"
-    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.Button, {
-      isPressed: currentMaxWidthUnit === 'px',
-      onClick: () => setAttributes({
-        [maxWidthUnitKey]: 'px',
+    afterBreakpoint: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_shared__WEBPACK_IMPORTED_MODULE_11__.AdvancedUnitSelect, {
+      value: currentMaxWidthUnit,
+      units: ['px', '%', 'em', 'rem', 'vw'],
+      onChange: unit => setAttributes({
+        [maxWidthUnitKey]: unit,
         madeitHasUserEdits: true
       })
-    }, "px"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.Button, {
-      isPressed: currentMaxWidthUnit === '%',
-      onClick: () => setAttributes({
-        [maxWidthUnitKey]: '%',
-        madeitHasUserEdits: true
-      })
-    }, "%"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.Button, {
-      isPressed: currentMaxWidthUnit === 'vh',
-      onClick: () => setAttributes({
-        [maxWidthUnitKey]: 'vh',
-        madeitHasUserEdits: true
-      })
-    }, "vh"))
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    })
+  }), currentMaxWidthUnit !== '__custom__' && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "madeit-control-rangeRow"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.RangeControl, {
     label: "",
@@ -1469,27 +1641,48 @@ function ColumnsEditContainer(props) {
     showTooltip: true,
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Reset max breedte')
   }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    className: "madeit-control"
+    className: "madeit-control",
+    style: currentMinHeightUnit == '__custom__' ? {
+      marginBottom: '52px'
+    } : {}
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_shared__WEBPACK_IMPORTED_MODULE_11__.ControlHeader, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Min hoogte'),
     breakpoint: activeMinHeightBreakpoint,
     onBreakpointChange: setActiveMinHeightBreakpoint,
-    afterBreakpoint: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.ButtonGroup, {
-      className: "madeit-control-units"
-    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.Button, {
-      isPressed: minHeightUnitForUi === 'px',
-      onClick: () => setAttributes({
-        [minHeightUnitKey]: 'px',
+    afterBreakpoint: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_shared__WEBPACK_IMPORTED_MODULE_11__.AdvancedUnitSelect, {
+      value: currentMinHeightUnit,
+      units: ['px', '%', 'em', 'rem', 'vh'],
+      onChange: unit => setAttributes({
+        [minHeightUnitKey]: unit,
         madeitHasUserEdits: true
       })
-    }, "px"), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.Button, {
-      isPressed: minHeightUnitForUi === 'vh',
-      onClick: () => setAttributes({
-        [minHeightUnitKey]: 'vh',
-        madeitHasUserEdits: true
-      })
-    }, "vh"))
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    })
+    // <ButtonGroup className="madeit-control-units">
+    //     <Button
+    //         isPressed={ minHeightUnitForUi === 'px' }
+    //         onClick={ () =>
+    //             setAttributes( {
+    //                 [ minHeightUnitKey ]: 'px',
+    //                 madeitHasUserEdits: true,
+    //             } )
+    //         }
+    //     >
+    //         px
+    //     </Button>
+
+    //     <Button
+    //         isPressed={ minHeightUnitForUi === 'vh' }
+    //         onClick={ () =>
+    //             setAttributes( {
+    //                 [ minHeightUnitKey ]: 'vh',
+    //                 madeitHasUserEdits: true,
+    //             } )
+    //         }
+    //     >
+    //         vh
+    //     </Button>
+    // </ButtonGroup>
+  }), currentMinHeightUnit !== '__custom__' && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "madeit-control-rangeRow"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.RangeControl, {
     label: "",
@@ -1499,7 +1692,8 @@ function ColumnsEditContainer(props) {
       madeitHasUserEdits: true
     }),
     min: 0,
-    max: minHeightUnitForUi === 'vh' ? 100 : 1000
+    max: minHeightUnitForUi === 'vh' ? 100 : 1000,
+    description: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Gebruik 100vh om de container op volledige hoogte te bereiken')
   }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.Button, {
     className: "madeit-control-rangeRow__reset",
     icon: "undo",
@@ -1507,54 +1701,15 @@ function ColumnsEditContainer(props) {
     onClick: resetMinHeight,
     showTooltip: true,
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Reset min hoogte')
-  }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.SelectControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Overflow'),
-    value: computedOverflow,
-    options: [{
-      value: 'visible',
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Visible')
-    }, {
-      value: 'hidden',
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Hidden')
-    }, {
-      value: 'scroll',
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Scroll')
-    }, {
-      value: 'auto',
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Auto')
-    }],
-    onChange: newOverflow => setAttributes({
-      overflow: newOverflow
-    })
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.SelectControl, {
-    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('HTML tag'),
-    value: computedHtmlTag,
-    options: [{
-      value: 'div',
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('div')
-    }, {
-      value: 'section',
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('section')
-    }, {
-      value: 'article',
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('article')
-    }, {
-      value: 'main',
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('main')
-    }, {
-      value: 'header',
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('header')
-    }, {
-      value: 'footer',
-      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('footer')
-    }],
-    onChange: newHtmlTag => setAttributes({
-      htmlTag: newHtmlTag
-    })
-  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.PanelBody, {
-    title: "Flex",
-    initialOpen: false
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("p", {
+    className: "description",
+    style: currentMinHeightUnit == '__custom__' ? {
+      marginTop: '49px',
+      marginBottom: '-51px'
+    } : {}
+  }, "Gebruik 100vh om de container op volledige hoogte te bereiken")), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("hr", null), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_shared__WEBPACK_IMPORTED_MODULE_11__.ControlHeader, {
+    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Items')
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "madeit-control"
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_shared__WEBPACK_IMPORTED_MODULE_11__.ControlHeader, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Direction'),
@@ -1772,7 +1927,69 @@ function ColumnsEditContainer(props) {
       [flexWrapValueKey]: 'nowrap'
     }),
     "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('No wrap')
-  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('No wrap')))))), activeTab === 'style' && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.PanelBody, {
+  }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('No wrap'))))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.PanelBody, {
+    title: "Extra opties",
+    initialOpen: false
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.SelectControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Overflow'),
+    labelPosition: "left",
+    value: computedOverflow,
+    options: [{
+      value: 'visible',
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Visible')
+    }, {
+      value: 'hidden',
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Hidden')
+    }, {
+      value: 'scroll',
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Scroll')
+    }, {
+      value: 'auto',
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Auto')
+    }],
+    onChange: newOverflow => setAttributes({
+      overflow: newOverflow
+    })
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.SelectControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('HTML tag'),
+    labelPosition: "left",
+    value: computedHtmlTag,
+    options: [{
+      value: 'div',
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Standaard')
+    }, {
+      value: 'div',
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('div')
+    }, {
+      value: 'section',
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('section')
+    }, {
+      value: 'article',
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('article')
+    }, {
+      value: 'main',
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('main')
+    }, {
+      value: 'header',
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('header')
+    }, {
+      value: 'footer',
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('footer')
+    }],
+    onChange: newHtmlTag => setAttributes({
+      htmlTag: newHtmlTag
+    })
+  }))), activeTab === 'style' && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, blockStyles?.length > 0 && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.PanelBody, {
+    title: "Stijlen",
+    initialOpen: false
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.ButtonGroup, {
+    className: "madeit-block-styles-picker"
+  }, blockStyles.map(style => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.Button, {
+    key: style.name,
+    isPressed: currentClassName.includes(`is-style-${style.name}`),
+    onClick: () => applyBlockStyle(style.name),
+    variant: "secondary"
+  }, style.label)))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.PanelBody, {
     title: "Achtergrond",
     initialOpen: true
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_shared__WEBPACK_IMPORTED_MODULE_11__.ControlHeader, {
@@ -1970,41 +2187,309 @@ function ColumnsEditContainer(props) {
     onClick: resetRowGap,
     showTooltip: true,
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Reset Row Gap')
-  }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_shared__WEBPACK_IMPORTED_MODULE_11__.ResponsiveBoxControl, {
-    __next40pxDefaultSize: true,
-    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Padding'),
+  }))), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "madeit-control",
+    style: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      gap: '6px'
+    }
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_shared__WEBPACK_IMPORTED_MODULE_11__.ControlHeader, {
+    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Padding', 'madeit'),
     breakpoint: activePaddingBreakpoint,
     onBreakpointChange: setActivePaddingBreakpoint,
-    values: attributes?.[paddingValueKey],
-    onChange: next => setAttributes({
-      [paddingValueKey]: next
-    }),
-    onReset: () => setAttributes({
-      [paddingValueKey]: undefined
-    }),
-    resetLabel: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Reset padding')
-    // allowReset={ true }
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_shared__WEBPACK_IMPORTED_MODULE_11__.ResponsiveBoxControl, {
-    __next40pxDefaultSize: true,
-    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Margin'),
+    afterBreakpoint: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_shared__WEBPACK_IMPORTED_MODULE_11__.UnitSelect, {
+      value: paddingUnit,
+      units: ['px', '%', 'em', 'rem', 'vw', 'vh'],
+      onChange: unit => {
+        const currentPadding = attributes?.[paddingValueKey] || {};
+        const nextPadding = {};
+        ['top', 'right', 'bottom', 'left'].forEach(key => {
+          const raw = currentPadding?.[key];
+          if (!raw) {
+            return;
+          }
+          const numeric = parseFloat(raw);
+          if (!Number.isFinite(numeric)) {
+            return;
+          }
+          nextPadding[key] = `${numeric}${unit}`;
+        });
+        setAttributes({
+          [paddingValueKey]: nextPadding,
+          paddingUnit: unit,
+          madeitHasUserEdits: true
+        });
+      }
+    })
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "madeit-controls",
+    style: {
+      display: 'flex',
+      alignItems: 'flex-start',
+      maxWidth: 'calc(100% - 35px)'
+    }
+  }, [{
+    label: 'Bovenaan',
+    key: 'top',
+    status: 'default'
+  }, {
+    label: 'Rechts',
+    key: 'right',
+    status: 'default'
+  }, {
+    label: 'Onderaan',
+    key: 'bottom',
+    status: 'default'
+  }, {
+    label: 'Links',
+    key: 'left',
+    status: 'default'
+  }].map(item => {
+    const currentPadding = attributes?.[paddingValueKey] || {};
+    const rawValue = currentPadding?.[item.key];
+    const numericValue = parseFloat(rawValue);
+    const displayValue = Number.isFinite(numericValue) ? numericValue : '';
+    return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      key: item.key,
+      style: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        flex: 1
+      },
+      className: "control-item"
+    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+      type: "number",
+      value: displayValue,
+      min: -9999,
+      disabled: item.status === 'disabled',
+      onChange: e => {
+        const val = e.target.value;
+        const currentPadding = attributes?.[paddingValueKey] || {};
+        setAttributes({
+          [paddingValueKey]: {
+            ...currentPadding,
+            [item.key]: val === '' ? undefined : `${val}${paddingUnit || 'px'}`
+          }
+        });
+      },
+      style: {
+        width: '100%',
+        height: '27px',
+        fontSize: '.85em',
+        textAlign: 'center'
+      }
+    }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      style: {
+        fontSize: '9px',
+        marginTop: '4px'
+      }
+    }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(item.label, 'madeit')));
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.Button, {
+    title: "Waarden koppelen",
+    variant: "tertiary",
+    onClick: () => {
+      const currentPadding = attributes?.[paddingValueKey] || {};
+      const values = [currentPadding.top, currentPadding.right, currentPadding.bottom, currentPadding.left];
+      const allEqual = values.every(val => val === values[0]);
+      if (allEqual) {
+        setAttributes({
+          [paddingValueKey]: {
+            top: undefined,
+            right: undefined,
+            bottom: undefined,
+            left: undefined
+          }
+        });
+      } else {
+        const firstValue = values.find(val => val) || '';
+        setAttributes({
+          [paddingValueKey]: {
+            top: firstValue,
+            right: firstValue,
+            bottom: firstValue,
+            left: firstValue
+          }
+        });
+      }
+    },
+    style: {
+      height: 'fit-content',
+      marginLeft: '10px',
+      marginTop: '9px',
+      padding: '0'
+    },
+    showTooltip: true
+  }, (() => {
+    const currentPadding = attributes?.[paddingValueKey] || {};
+    const values = [currentPadding.top, currentPadding.right, currentPadding.bottom, currentPadding.left];
+    const allEqual = values.every(val => val === values[0] && val !== undefined);
+    return allEqual ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: "dashicons dashicons-editor-unlink",
+      style: {
+        fontSize: '15px',
+        width: 'min-content'
+      }
+    }) : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: "dashicons dashicons-admin-links",
+      style: {
+        fontSize: '15px',
+        width: 'min-content'
+      }
+    });
+  })())), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "madeit-control",
+    style: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      gap: '6px'
+    }
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_shared__WEBPACK_IMPORTED_MODULE_11__.ControlHeader, {
+    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Margin', 'madeit'),
     breakpoint: activeMarginBreakpoint,
     onBreakpointChange: setActiveMarginBreakpoint,
-    values: attributes?.[marginValueKey],
-    onChange: next => setAttributes({
-      [marginValueKey]: next
-    }),
-    onReset: () => setAttributes({
-      [marginValueKey]: undefined
-    }),
-    resetLabel: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Reset margin')
-    // allowReset={ true }
-    ,
-    inputProps: {
-      min: -1000,
-      max: 1000
+    afterBreakpoint: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_shared__WEBPACK_IMPORTED_MODULE_11__.UnitSelect, {
+      value: marginUnit,
+      units: ['px', '%', 'em', 'rem', 'vw', 'vh'],
+      onChange: unit => {
+        const currentMargin = attributes?.[marginValueKey] || {};
+        const nextMargin = {};
+        ['top', 'right', 'bottom', 'left'].forEach(key => {
+          const raw = currentMargin?.[key];
+          if (!raw) {
+            return;
+          }
+          const numeric = parseFloat(raw);
+          if (!Number.isFinite(numeric)) {
+            return;
+          }
+          nextMargin[key] = `${numeric}${unit}`;
+        });
+        setAttributes({
+          [marginValueKey]: nextMargin,
+          marginUnit: unit,
+          madeitHasUserEdits: true
+        });
+      }
+    })
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "madeit-controls",
+    style: {
+      display: 'flex',
+      alignItems: 'flex-start',
+      maxWidth: 'calc(100% - 35px)'
+    }
+  }, [{
+    label: 'Bovenaan',
+    key: 'top',
+    status: 'default'
+  }, {
+    label: 'Rechts',
+    key: 'right',
+    status: 'disabled'
+  }, {
+    label: 'Onderaan',
+    key: 'bottom',
+    status: 'default'
+  }, {
+    label: 'Links',
+    key: 'left',
+    status: 'disabled'
+  }].map(item => {
+    const currentMargin = attributes?.[marginValueKey] || {};
+    const rawValue = currentMargin?.[item.key];
+    const numericValue = parseFloat(rawValue);
+    const displayValue = Number.isFinite(numericValue) ? numericValue : '';
+    return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      key: item.key,
+      style: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        flex: 1
+      },
+      className: "control-item"
+    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("input", {
+      type: "number",
+      value: displayValue,
+      min: -9999,
+      disabled: item.status === 'disabled',
+      onChange: e => {
+        const val = e.target.value;
+        const currentMargin = attributes?.[marginValueKey] || {};
+        setAttributes({
+          [marginValueKey]: {
+            ...currentMargin,
+            [item.key]: val === '' ? undefined : `${val}${marginUnit || 'px'}`
+          }
+        });
+      },
+      style: {
+        width: '100%',
+        height: '27px',
+        fontSize: '.85em',
+        textAlign: 'center'
+      }
+    }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      style: {
+        fontSize: '9px',
+        marginTop: '4px'
+      }
+    }, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)(item.label, 'madeit')));
+  })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.Button, {
+    title: "Waarden koppelen",
+    variant: "tertiary",
+    onClick: () => {
+      const currentMargin = attributes?.[marginValueKey] || {};
+      const values = [currentMargin.top, currentMargin.right, currentMargin.bottom, currentMargin.left];
+      const allEqual = values.every(val => val === values[0]);
+      if (allEqual) {
+        setAttributes({
+          [marginValueKey]: {
+            top: undefined,
+            right: undefined,
+            bottom: undefined,
+            left: undefined
+          }
+        });
+      } else {
+        const firstValue = values.find(val => val) || '';
+        setAttributes({
+          [marginValueKey]: {
+            top: firstValue,
+            right: firstValue,
+            bottom: firstValue,
+            left: firstValue
+          }
+        });
+      }
     },
-    sides: ['top', 'bottom']
-  }))), activeTab === 'advanced' && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_shared__WEBPACK_IMPORTED_MODULE_11__.ResponsiveVisibilityPanel, {
+    style: {
+      height: 'fit-content',
+      marginLeft: '10px',
+      marginTop: '9px',
+      padding: '0'
+    },
+    showTooltip: true
+  }, (() => {
+    const currentMargin = attributes?.[marginValueKey] || {};
+    const values = [currentMargin.top, currentMargin.right, currentMargin.bottom, currentMargin.left];
+    const allEqual = values.every(val => val === values[0] && val !== undefined);
+    return allEqual ? (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: "dashicons dashicons-editor-unlink",
+      style: {
+        fontSize: '15px',
+        width: 'min-content'
+      }
+    }) : (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+      className: "dashicons dashicons-admin-links",
+      style: {
+        fontSize: '15px',
+        width: 'min-content'
+      }
+    });
+  })())))), activeTab === 'advanced' && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(react__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_shared__WEBPACK_IMPORTED_MODULE_11__.ResponsiveVisibilityPanel, {
     title: "Responsive",
     initialOpen: true,
     hideOnDesktop: hideOnDesktop,
@@ -2148,7 +2633,7 @@ const ColumnsEdit = props => {
     didInitNewResponsiveDefaults.current = true;
 
     // Only apply defaults for truly new blocks (placeholder state).
-    if (hasInnerBlocks) return;
+    // if ( hasInnerBlocks ) return;
 
     // If the block already has a layout chosen at least once, don't override.
     if (columnsCount !== undefined && columnsCount !== null) return;
@@ -2287,19 +2772,12 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * index.js — madeit/block-content
  *
- * Registreert het block type en definieert:
- * - Variaties (layout presets)
- * - Edit & save functies
- * - Deprecated versies (voor backward compatibility met bestaande content)
+ * DEPRECATED VOLGORDE (meest recent bovenaan):
  *
- * DEPRECATED VOLGORDE
- * ───────────────────
- * Gutenberg doorloopt de deprecated array van boven naar onder.
- * De meest recente deprecated versie staat bovenaan (saveV1),
- * de oudste versie staat onderaan (saveV13).
- *
- * ⚠️  BELANGRIJK: Verwijder nooit een deprecated versie tenzij je 100% zeker
- * bent dat er geen live content meer bestaat die met die versie werd opgeslagen.
+ * Vpre0b: geen dubbele classes + inner container div + partial CSS-vars
+ * Vpre0:  dubbele classes + inner container div + partial CSS-vars
+ * V0:     geen inner div + inline margin + volledige CSS-vars
+ * V1–V15: alle vorige deprecated versies
  */
 
 
@@ -2312,12 +2790,6 @@ __webpack_require__.r(__webpack_exports__);
 
 // ─── Hulpfuncties voor migrate() ──────────────────────────────────────────────
 
-/**
- * Normaliseert een CSS-lengtewaarde naar een string met eenheid.
- * - Getal:             20       → '20px'
- * - Getal met eenheid: '1.5rem' → '1.5rem'
- * - Leeg / undefined:           → undefined
- */
 const normalizeCssLength = (value, defaultUnit = 'px') => {
   if (value === undefined || value === null) return undefined;
   if (typeof value === 'number' && Number.isFinite(value)) {
@@ -2330,12 +2802,6 @@ const normalizeCssLength = (value, defaultUnit = 'px') => {
   if (/^-?\d+(?:\.\d+)?[a-z%]+$/i.test(trimmed)) return trimmed;
   return undefined;
 };
-
-/**
- * Normaliseert een spacing-object { top, right, bottom, left }.
- * Zorgt ervoor dat alle 4 zijden aanwezig zijn als minstens één zijde een waarde heeft.
- * Dit voorkomt ongeldige CSS-var-kortschriften in responsieve stijlen.
- */
 const normalizeSpacingObject = spacing => {
   var _normalizeCssLength, _normalizeCssLength2, _normalizeCssLength3, _normalizeCssLength4;
   if (!spacing || typeof spacing !== 'object') return undefined;
@@ -2354,11 +2820,6 @@ const normalizeSpacingObject = spacing => {
     left: (_normalizeCssLength4 = normalizeCssLength(left)) !== null && _normalizeCssLength4 !== void 0 ? _normalizeCssLength4 : '0px'
   };
 };
-
-/**
- * Normaliseert alle spacing-attributen van een block (margin + padding).
- * Gebruik dit in migrate()-functies om verouderde waarden op te schonen.
- */
 const normalizeSpacingAttributes = attributes => {
   const next = {
     ...(attributes || {})
@@ -2374,17 +2835,27 @@ const normalizeSpacingAttributes = attributes => {
   return next;
 };
 
+/**
+ * Detecteert of de opgeslagen wrapperStyle de partial vars heeft:
+ * - Geen --madeit-row-gap-tablet (tablet/mobile row-gap ontbreekt)
+ * - Geen --madeit-flex-direction-* vars
+ * - Geen --madeit-flex-wrap-* vars
+ */
+const isPartialVarsStyle = wrapperStyle => {
+  if (typeof wrapperStyle !== 'string') return false;
+  const s = wrapperStyle.replace(/\s+/g, '');
+  if (!s.length) return false;
+  const hasRowGapTablet = s.includes('--madeit-row-gap-tablet:');
+  const hasFlexDirection = s.includes('--madeit-flex-direction-desktop:') || s.includes('--madeit-flex-direction-tablet:') || s.includes('--madeit-flex-direction-mobile:');
+  const hasFlexWrap = s.includes('--madeit-flex-wrap-desktop:');
+  return !hasRowGapTablet && !hasFlexDirection && !hasFlexWrap;
+};
+
 // ─── Block registratie ────────────────────────────────────────────────────────
 
 (0,_wordpress_blocks__WEBPACK_IMPORTED_MODULE_0__.registerBlockType)(_block_json__WEBPACK_IMPORTED_MODULE_4__.name, {
   ..._block_json__WEBPACK_IMPORTED_MODULE_4__,
   icon: _icon__WEBPACK_IMPORTED_MODULE_5__["default"],
-  /**
-   * Variaties / Layout presets
-   *
-   * Deze waarden worden automatisch als attributen ingesteld wanneer iemand
-   * het block toevoegt via de inserter. Ze wijzigen bestaande blocks NIET.
-   */
   variations: [{
     name: 'madeit-default-responsive',
     title: _block_json__WEBPACK_IMPORTED_MODULE_4__.title,
@@ -2408,10 +2879,6 @@ const normalizeSpacingAttributes = attributes => {
       rowGapUnitMobile: 'px'
     }
   }],
-  /**
-   * Bepaalt de breedte van het block in de editor.
-   * Full-width voor fluid containers, normale breedte voor boxed.
-   */
   getEditWrapperProps(attributes) {
     const {
       size
@@ -2427,12 +2894,70 @@ const normalizeSpacingAttributes = attributes => {
   },
   edit: _edit__WEBPACK_IMPORTED_MODULE_2__["default"],
   save: _save__WEBPACK_IMPORTED_MODULE_3__["default"],
-  // ─── Deprecated versies ────────────────────────────────────────────────────
-  //
-  // Volgorde: meest recent bovenaan (V1), oudste onderaan (V13).
-  // Gutenberg probeert ze van boven naar onder totdat er een match is.
-
   deprecated: [
+  // ── Vpre0b: Geen dubbele classes + inner container div + partial vars ──
+  //
+  // Meest recente tussenfase vóór de huidige save:
+  // - Classes zijn normaal (niet verdubbeld)
+  // - Inner <div class="container"> altijd aanwezig (size werd nog niet
+  //   doorvertaald naar de inner div class)
+  // - Slechts partial CSS-vars (geen row-gap tablet/mobile,
+  //   geen flex-direction, geen flex-wrap)
+  // - Geen madeitHasUserEdits → dit block werd nog niet gemigreerd
+  {
+    attributes: _block_json__WEBPACK_IMPORTED_MODULE_4__.attributes,
+    isEligible(attributes) {
+      // Sla over als al gemigreerd
+      if (attributes?.madeitHasUserEdits) return false;
+      const wrapperClassName = typeof attributes?.wrapperClassName === 'string' ? attributes.wrapperClassName : '';
+      const tokens = wrapperClassName.trim().split(/\s+/).filter(Boolean);
+
+      // Niet matchen als classes verdubbeld zijn (dat is Vpre0)
+      const isDoubled = tokens.filter(t => t === 'wp-block-madeit-block-content').length >= 2;
+      if (isDoubled) return false;
+
+      // Moet madeit-block-content--frontend hebben (recente versie)
+      // of geen wrapperClassName (nieuwe blocks die nog niet zijn opgeslagen)
+      return tokens.includes('madeit-block-content--frontend') || tokens.length === 0;
+    },
+    save: _save_versions__WEBPACK_IMPORTED_MODULE_6__.saveVpre0b,
+    migrate(attributes) {
+      return {
+        ...normalizeSpacingAttributes(attributes),
+        madeitHasUserEdits: true
+      };
+    }
+  },
+  // ── Vpre0: Dubbele classes + inner container div + partial vars ────────
+  //
+  // Veroorzaakt door bug: blockProps.className = classnames( wrapperClass, blockProps.className )
+  // gecombineerd met partial CSS-vars.
+  {
+    attributes: _block_json__WEBPACK_IMPORTED_MODULE_4__.attributes,
+    isEligible(attributes) {
+      const wrapperClassName = typeof attributes?.wrapperClassName === 'string' ? attributes.wrapperClassName : '';
+      const tokens = wrapperClassName.trim().split(/\s+/).filter(Boolean);
+      return tokens.filter(t => t === 'wp-block-madeit-block-content').length >= 2;
+    },
+    save: _save_versions__WEBPACK_IMPORTED_MODULE_6__.saveVpre0,
+    migrate(attributes) {
+      return {
+        ...normalizeSpacingAttributes(attributes),
+        madeitHasUserEdits: true
+      };
+    }
+  },
+  // ── V0: Geen inner div + inline margin + volledige CSS-vars ───────────
+  {
+    attributes: _block_json__WEBPACK_IMPORTED_MODULE_4__.attributes,
+    save: _save_versions__WEBPACK_IMPORTED_MODULE_6__.saveV0,
+    migrate(attributes) {
+      return {
+        ...normalizeSpacingAttributes(attributes),
+        madeitHasUserEdits: true
+      };
+    }
+  },
   // ── V1: Size default veranderd van 'container' naar 'container-content-boxed' (2026-04-17) ──
   {
     attributes: _block_json__WEBPACK_IMPORTED_MODULE_4__.attributes,
@@ -2443,11 +2968,6 @@ const normalizeSpacingAttributes = attributes => {
       const wrapperHasContainer = wrapperTokens.includes('container');
       const wrapperHasContainerFluid = wrapperTokens.includes('container-fluid');
       const isLegacyDefaultContainer = wrapperHasContainer && !wrapperHasContainerFluid;
-
-      // Bepaal de correcte size op basis van de opgeslagen markup.
-      // Na migratie zetten we madeitHasUserEdits zodat resolveSize()
-      // in save.js het size-attribuut vertrouwt en wrapperClassName
-      // niet meer als override gebruikt.
       const correctedSize = typeof attributes?.size === 'string' && attributes.size.length > 0 && attributes.size !== 'container-content-boxed' ? attributes.size : isLegacyDefaultContainer ? 'container' : attributes.size;
       return {
         ...attributes,
@@ -2543,13 +3063,10 @@ const normalizeSpacingAttributes = attributes => {
     save: _save_versions__WEBPACK_IMPORTED_MODULE_6__.saveV11
   },
   // ── V12 ⭐ LIVE OP WEBSITES ────────────────────────────────────────────
-  // Object-gebaseerde spacing, `<div class="row">` typo,
-  // geen madeit-block-content--frontend klasse, geen flex CSS vars.
   {
     save: _save_versions__WEBPACK_IMPORTED_MODULE_6__.saveV12
   },
   // ── V13 ⭐ LIVE OP WEBSITES (alleroudste versie) ──────────────────────
-  // Afzonderlijke numerieke attributen (containerPaddingTop, etc.)
   {
     supports: {
       html: false
@@ -2648,9 +3165,6 @@ const normalizeSpacingAttributes = attributes => {
     save: _save_versions__WEBPACK_IMPORTED_MODULE_6__.saveV13,
     migrate(attributes) {
       const toPx = value => value !== null && value !== undefined ? value + 'px' : undefined;
-
-      // Leid de correcte size af uit de opgeslagen markup zodat
-      // resolveSize() in save.js het size-attribuut kan vertrouwen.
       const wrapperClassName = typeof attributes?.wrapperClassName === 'string' ? attributes.wrapperClassName : '';
       const wrapperTokens = wrapperClassName.trim().split(/\s+/);
       const wrapperHasContainerFluid = wrapperTokens.includes('container-fluid');
@@ -2701,37 +3215,43 @@ const normalizeSpacingAttributes = attributes => {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   saveV1: () => (/* reexport safe */ _save_v1_size_default_container__WEBPACK_IMPORTED_MODULE_0__["default"]),
-/* harmony export */   saveV10: () => (/* reexport safe */ _save_v10_pre_rowgap_responsive_vars__WEBPACK_IMPORTED_MODULE_9__["default"]),
-/* harmony export */   saveV11: () => (/* reexport safe */ _save_v11_transparent_background_default__WEBPACK_IMPORTED_MODULE_10__["default"]),
-/* harmony export */   saveV12: () => (/* reexport safe */ _v1__WEBPACK_IMPORTED_MODULE_11__["default"]),
-/* harmony export */   saveV13: () => (/* reexport safe */ _save_v13_legacy_attributes__WEBPACK_IMPORTED_MODULE_12__["default"]),
-/* harmony export */   saveV14: () => (/* reexport safe */ _save_v14_legacy_direct_row_overflow_visible__WEBPACK_IMPORTED_MODULE_13__["default"]),
-/* harmony export */   saveV15: () => (/* reexport safe */ _save_v15_legacy_wrapper_container_inner_container__WEBPACK_IMPORTED_MODULE_14__["default"]),
-/* harmony export */   saveV2: () => (/* reexport safe */ _save_2026_04_08_vars__WEBPACK_IMPORTED_MODULE_1__["default"]),
-/* harmony export */   saveV3: () => (/* reexport safe */ _save_2026_04_08__WEBPACK_IMPORTED_MODULE_2__["default"]),
-/* harmony export */   saveV4: () => (/* reexport safe */ _save_2026_03_26__WEBPACK_IMPORTED_MODULE_3__["default"]),
-/* harmony export */   saveV5: () => (/* reexport safe */ _save_padding_on_wrapper_min__WEBPACK_IMPORTED_MODULE_4__["default"]),
-/* harmony export */   saveV6: () => (/* reexport safe */ _save_padding_on_wrapper__WEBPACK_IMPORTED_MODULE_5__["default"]),
-/* harmony export */   saveV7: () => (/* reexport safe */ _save_v7_legacy_boxed_no_inner_container__WEBPACK_IMPORTED_MODULE_6__["default"]),
-/* harmony export */   saveV8: () => (/* reexport safe */ _save_v8_very_old_markup_plain_row__WEBPACK_IMPORTED_MODULE_7__["default"]),
-/* harmony export */   saveV9: () => (/* reexport safe */ _save_v9_legacy_no_overflow_serialized__WEBPACK_IMPORTED_MODULE_8__["default"])
+/* harmony export */   saveV0: () => (/* reexport safe */ _save_20260508_deprecated__WEBPACK_IMPORTED_MODULE_2__["default"]),
+/* harmony export */   saveV1: () => (/* reexport safe */ _save_v1_size_default_container__WEBPACK_IMPORTED_MODULE_3__["default"]),
+/* harmony export */   saveV10: () => (/* reexport safe */ _save_v10_pre_rowgap_responsive_vars__WEBPACK_IMPORTED_MODULE_12__["default"]),
+/* harmony export */   saveV11: () => (/* reexport safe */ _save_v11_transparent_background_default__WEBPACK_IMPORTED_MODULE_13__["default"]),
+/* harmony export */   saveV12: () => (/* reexport safe */ _v1__WEBPACK_IMPORTED_MODULE_14__["default"]),
+/* harmony export */   saveV13: () => (/* reexport safe */ _save_v13_legacy_attributes__WEBPACK_IMPORTED_MODULE_15__["default"]),
+/* harmony export */   saveV14: () => (/* reexport safe */ _save_v14_legacy_direct_row_overflow_visible__WEBPACK_IMPORTED_MODULE_16__["default"]),
+/* harmony export */   saveV15: () => (/* reexport safe */ _save_v15_legacy_wrapper_container_inner_container__WEBPACK_IMPORTED_MODULE_17__["default"]),
+/* harmony export */   saveV2: () => (/* reexport safe */ _save_2026_04_08_vars__WEBPACK_IMPORTED_MODULE_4__["default"]),
+/* harmony export */   saveV3: () => (/* reexport safe */ _save_2026_04_08__WEBPACK_IMPORTED_MODULE_5__["default"]),
+/* harmony export */   saveV4: () => (/* reexport safe */ _save_2026_03_26__WEBPACK_IMPORTED_MODULE_6__["default"]),
+/* harmony export */   saveV5: () => (/* reexport safe */ _save_padding_on_wrapper_min__WEBPACK_IMPORTED_MODULE_7__["default"]),
+/* harmony export */   saveV6: () => (/* reexport safe */ _save_padding_on_wrapper__WEBPACK_IMPORTED_MODULE_8__["default"]),
+/* harmony export */   saveV7: () => (/* reexport safe */ _save_v7_legacy_boxed_no_inner_container__WEBPACK_IMPORTED_MODULE_9__["default"]),
+/* harmony export */   saveV8: () => (/* reexport safe */ _save_v8_very_old_markup_plain_row__WEBPACK_IMPORTED_MODULE_10__["default"]),
+/* harmony export */   saveV9: () => (/* reexport safe */ _save_v9_legacy_no_overflow_serialized__WEBPACK_IMPORTED_MODULE_11__["default"]),
+/* harmony export */   saveVpre0: () => (/* reexport safe */ _saveVpre0__WEBPACK_IMPORTED_MODULE_1__["default"]),
+/* harmony export */   saveVpre0b: () => (/* reexport safe */ _savevpre0b__WEBPACK_IMPORTED_MODULE_0__["default"])
 /* harmony export */ });
-/* harmony import */ var _save_v1_size_default_container__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./save-v1-size-default-container */ "./src/save-versions/save-v1-size-default-container.js");
-/* harmony import */ var _save_2026_04_08_vars__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./save-2026-04-08-vars */ "./src/save-versions/save-2026-04-08-vars.js");
-/* harmony import */ var _save_2026_04_08__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./save-2026-04-08 */ "./src/save-versions/save-2026-04-08.js");
-/* harmony import */ var _save_2026_03_26__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./save-2026-03-26 */ "./src/save-versions/save-2026-03-26.js");
-/* harmony import */ var _save_padding_on_wrapper_min__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./save-padding-on-wrapper-min */ "./src/save-versions/save-padding-on-wrapper-min.js");
-/* harmony import */ var _save_padding_on_wrapper__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./save-padding-on-wrapper */ "./src/save-versions/save-padding-on-wrapper.js");
-/* harmony import */ var _save_v7_legacy_boxed_no_inner_container__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./save-v7-legacy-boxed-no-inner-container */ "./src/save-versions/save-v7-legacy-boxed-no-inner-container.js");
-/* harmony import */ var _save_v8_very_old_markup_plain_row__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./save-v8-very-old-markup-plain-row */ "./src/save-versions/save-v8-very-old-markup-plain-row.js");
-/* harmony import */ var _save_v9_legacy_no_overflow_serialized__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./save-v9-legacy-no-overflow-serialized */ "./src/save-versions/save-v9-legacy-no-overflow-serialized.js");
-/* harmony import */ var _save_v10_pre_rowgap_responsive_vars__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./save-v10-pre-rowgap-responsive-vars */ "./src/save-versions/save-v10-pre-rowgap-responsive-vars.js");
-/* harmony import */ var _save_v11_transparent_background_default__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./save-v11-transparent-background-default */ "./src/save-versions/save-v11-transparent-background-default.js");
-/* harmony import */ var _v1__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./v1 */ "./src/save-versions/v1.js");
-/* harmony import */ var _save_v13_legacy_attributes__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./save-v13-legacy-attributes */ "./src/save-versions/save-v13-legacy-attributes.js");
-/* harmony import */ var _save_v14_legacy_direct_row_overflow_visible__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./save-v14-legacy-direct-row-overflow-visible */ "./src/save-versions/save-v14-legacy-direct-row-overflow-visible.js");
-/* harmony import */ var _save_v15_legacy_wrapper_container_inner_container__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./save-v15-legacy-wrapper-container-inner-container */ "./src/save-versions/save-v15-legacy-wrapper-container-inner-container.js");
+/* harmony import */ var _savevpre0b__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./savevpre0b */ "./src/save-versions/savevpre0b.js");
+/* harmony import */ var _saveVpre0__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./saveVpre0 */ "./src/save-versions/saveVpre0.js");
+/* harmony import */ var _save_20260508_deprecated__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./save_20260508_deprecated */ "./src/save-versions/save_20260508_deprecated.js");
+/* harmony import */ var _save_v1_size_default_container__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./save-v1-size-default-container */ "./src/save-versions/save-v1-size-default-container.js");
+/* harmony import */ var _save_2026_04_08_vars__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./save-2026-04-08-vars */ "./src/save-versions/save-2026-04-08-vars.js");
+/* harmony import */ var _save_2026_04_08__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./save-2026-04-08 */ "./src/save-versions/save-2026-04-08.js");
+/* harmony import */ var _save_2026_03_26__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./save-2026-03-26 */ "./src/save-versions/save-2026-03-26.js");
+/* harmony import */ var _save_padding_on_wrapper_min__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./save-padding-on-wrapper-min */ "./src/save-versions/save-padding-on-wrapper-min.js");
+/* harmony import */ var _save_padding_on_wrapper__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./save-padding-on-wrapper */ "./src/save-versions/save-padding-on-wrapper.js");
+/* harmony import */ var _save_v7_legacy_boxed_no_inner_container__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./save-v7-legacy-boxed-no-inner-container */ "./src/save-versions/save-v7-legacy-boxed-no-inner-container.js");
+/* harmony import */ var _save_v8_very_old_markup_plain_row__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./save-v8-very-old-markup-plain-row */ "./src/save-versions/save-v8-very-old-markup-plain-row.js");
+/* harmony import */ var _save_v9_legacy_no_overflow_serialized__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./save-v9-legacy-no-overflow-serialized */ "./src/save-versions/save-v9-legacy-no-overflow-serialized.js");
+/* harmony import */ var _save_v10_pre_rowgap_responsive_vars__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./save-v10-pre-rowgap-responsive-vars */ "./src/save-versions/save-v10-pre-rowgap-responsive-vars.js");
+/* harmony import */ var _save_v11_transparent_background_default__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./save-v11-transparent-background-default */ "./src/save-versions/save-v11-transparent-background-default.js");
+/* harmony import */ var _v1__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./v1 */ "./src/save-versions/v1.js");
+/* harmony import */ var _save_v13_legacy_attributes__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./save-v13-legacy-attributes */ "./src/save-versions/save-v13-legacy-attributes.js");
+/* harmony import */ var _save_v14_legacy_direct_row_overflow_visible__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./save-v14-legacy-direct-row-overflow-visible */ "./src/save-versions/save-v14-legacy-direct-row-overflow-visible.js");
+/* harmony import */ var _save_v15_legacy_wrapper_container_inner_container__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./save-v15-legacy-wrapper-container-inner-container */ "./src/save-versions/save-v15-legacy-wrapper-container-inner-container.js");
 /**
  * save-versions.js
  *
@@ -2775,6 +3295,9 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 // ─── Recente deprecated versies (intern ontwikkeld, mogelijk niet live) ───────
+
+
+
 
 
 
@@ -7102,6 +7625,785 @@ function saveV9LegacyNoOverflowSerialized(props) {
 
 /***/ },
 
+/***/ "./src/save-versions/saveVpre0.js"
+/*!****************************************!*\
+  !*** ./src/save-versions/saveVpre0.js ***!
+  \****************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ save)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__);
+
+/**
+ * saveVpre0 — MET inner container div + partial CSS-vars
+ *
+ * Dit matcht de eerste versie NADAT de inner container div werd toegevoegd,
+ * maar VOORDAT de volledige set CSS-vars (row-gap tablet/mobile,
+ * flex-direction desktop/tablet/mobile, flex-wrap) werd uitgebreid.
+ *
+ * Patroon in opgeslagen markup (inner div aanwezig, partial vars):
+ *   <div class="wp-block-madeit-block-content container-fluid madeit-block-content--frontend" style="...;--madeit-align-items-desktop:center">
+ *     <div class="container">
+ *       <div class="row ...">
+ *
+ * Vars die ONTBRAKEN in deze versie (t.o.v. huidige save):
+ * - --madeit-row-gap-tablet, --madeit-row-gap-mobile
+ * - --madeit-flex-direction-desktop, tablet, mobile
+ * - --madeit-flex-wrap-desktop, tablet, mobile
+ * - --madeit-justify-content-tablet, mobile
+ * - --madeit-align-items-tablet, mobile
+ */
+
+
+
+const FRONTEND_WRAPPER_CLASS = 'madeit-block-content--frontend';
+const ALLOWED_HTML_TAGS = ['div', 'section', 'article', 'main', 'header', 'footer'];
+function setCssVar(targetStyle, key, value) {
+  if (value === undefined || value === null) return;
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    targetStyle[key] = `${value}px`;
+    return;
+  }
+  if (typeof value !== 'string') return;
+  const trimmed = value.trim();
+  if (trimmed) targetStyle[key] = trimmed;
+}
+function toCssLength(value, unit = 'px') {
+  if (typeof value === 'number' && Number.isFinite(value)) return `${value}${unit || 'px'}`;
+  if (typeof value !== 'string') return undefined;
+  const trimmed = value.trim();
+  if (trimmed === '') return undefined;
+  if (/^-?\d+(?:\.\d+)?$/.test(trimmed)) return `${trimmed}${unit || 'px'}`;
+  if (/^-?\d+(?:\.\d+)?[a-z%]+$/i.test(trimmed)) return trimmed;
+  return undefined;
+}
+function setSpacingVars(targetStyle, prefix, spacing, breakpoint) {
+  if (!spacing || typeof spacing !== 'object') return;
+  const {
+    top,
+    right,
+    bottom,
+    left
+  } = spacing;
+  const hasAnyValue = [top, right, bottom, left].some(v => v !== undefined && v !== null && String(v).trim() !== '');
+  if (!hasAnyValue) return;
+  const fallback = v => v === undefined || v === null || String(v).trim() === '' ? '0px' : v;
+  setCssVar(targetStyle, `--${prefix}-top-${breakpoint}`, fallback(top));
+  setCssVar(targetStyle, `--${prefix}-right-${breakpoint}`, fallback(right));
+  setCssVar(targetStyle, `--${prefix}-bottom-${breakpoint}`, fallback(bottom));
+  setCssVar(targetStyle, `--${prefix}-left-${breakpoint}`, fallback(left));
+}
+function filterExtraClasses(className) {
+  if (typeof className !== 'string' || !className.trim()) return '';
+  return className.trim().split(/\s+/).filter(Boolean).filter(token => {
+    if (token === 'wp-block-madeit-block-content') return false;
+    if (token === 'container' || token === 'container-fluid') return false;
+    if (token === FRONTEND_WRAPPER_CLASS) return false;
+    if (token === 'has-text-color' || token === 'has-background') return false;
+    if (token.startsWith('are-vertically-aligned-')) return false;
+    if (token.startsWith('is-hidden-')) return false;
+    return true;
+  }).join(' ');
+}
+function buildBackgroundStyle(attributes) {
+  const {
+    backgroundType,
+    containerBackgroundColor,
+    customContainerBackgroundColor,
+    containerBackgroundImage,
+    containerBackgroundPosition,
+    containerBackgroundRepeat,
+    containerBackgroundSize,
+    containerBackgroundGradient
+  } = attributes;
+  const hasClassicBackground = !!(containerBackgroundImage?.url || containerBackgroundColor || customContainerBackgroundColor);
+  const computedBackgroundType = backgroundType || (hasClassicBackground ? 'classic' : undefined);
+  const containerBgClass = containerBackgroundColor ? (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.getColorClassName)('background-color', containerBackgroundColor) : undefined;
+  const style = {
+    backgroundColor: backgroundType === 'transparent' ? 'transparent' : containerBgClass ? undefined : customContainerBackgroundColor
+  };
+  if (computedBackgroundType === 'classic' && containerBackgroundImage?.url) {
+    style.backgroundImage = `url(${containerBackgroundImage.url})`;
+    if (containerBackgroundPosition) style.backgroundPosition = containerBackgroundPosition;
+    if (containerBackgroundRepeat) style.backgroundRepeat = containerBackgroundRepeat;
+    if (containerBackgroundSize) style.backgroundSize = containerBackgroundSize;
+  }
+  const gradientValue = typeof containerBackgroundGradient?.gradient === 'string' && containerBackgroundGradient.gradient.trim().length > 0 ? containerBackgroundGradient.gradient : undefined;
+  if (computedBackgroundType === 'gradient' && gradientValue) {
+    style.backgroundImage = gradientValue;
+  }
+  return style;
+}
+function save(props) {
+  const {
+    attributes,
+    className
+  } = props;
+  const containerBgClass = attributes.containerBackgroundColor ? (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.getColorClassName)('background-color', attributes.containerBackgroundColor) : undefined;
+  const rowTextClass = attributes.rowTextColor ? (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.getColorClassName)('color', attributes.rowTextColor) : undefined;
+  const customClassNames = [typeof attributes.className === 'string' && attributes.className.trim() ? attributes.className.trim() : '', typeof className === 'string' && className.trim() ? className.trim() : ''].filter(Boolean).join(' ');
+  const extraClass = filterExtraClasses(customClassNames);
+  const {
+    hideOnDesktop,
+    hideOnTablet,
+    hideOnMobile
+  } = attributes;
+  const wrapperClass = classnames__WEBPACK_IMPORTED_MODULE_1___default()('wp-block-madeit-block-content', 'container-fluid', FRONTEND_WRAPPER_CLASS, extraClass, {
+    'is-hidden-desktop': !!hideOnDesktop,
+    'is-hidden-tablet': !!hideOnTablet,
+    'is-hidden-mobile': !!hideOnMobile,
+    'has-text-color': !!rowTextClass,
+    [rowTextClass]: !!rowTextClass,
+    'has-background': !!containerBgClass,
+    [containerBgClass]: !!containerBgClass
+  });
+
+  // ── PARTIAL stijl: alleen de vars die in deze versie bestonden ─────────────
+  const backgroundStyle = buildBackgroundStyle(attributes);
+  const {
+    overflow,
+    minHeight,
+    minHeightUnit,
+    minHeightMobile,
+    minHeightUnitMobile,
+    maxWidth,
+    maxWidthUnit,
+    rowGap,
+    rowGapUnit,
+    // alignItems desktop was aanwezig, tablet/mobile niet
+    alignItems,
+    // justifyContent desktop was aanwezig, tablet/mobile niet
+    justifyContent,
+    // flex-direction bestond NIET in deze versie
+    // flex-wrap bestond NIET in deze versie
+    // row-gap tablet/mobile bestonden NIET in deze versie
+    containerMargin,
+    containerMarginTablet,
+    containerMarginMobile,
+    containerPadding,
+    containerPaddingTablet,
+    containerPaddingMobile,
+    containerPaddingOnRow,
+    flexDirection,
+    flexDirectionTablet,
+    flexDirectionMobile,
+    columnsCount
+  } = attributes;
+  const wrapperStyle = {
+    ...backgroundStyle
+  };
+  if (typeof overflow === 'string' && overflow.length > 0 && overflow !== 'visible') {
+    wrapperStyle.overflow = overflow;
+  }
+  const minHeightDesktopV = toCssLength(minHeight, minHeightUnit || 'px');
+  const minHeightMobileVV = toCssLength(minHeightMobile, minHeightUnitMobile || minHeightUnit || 'px');
+  if (minHeightDesktopV) setCssVar(wrapperStyle, '--madeit-min-height-desktop', minHeightDesktopV);
+  if (minHeightMobileVV) setCssVar(wrapperStyle, '--madeit-min-height-mobile', minHeightMobileVV);
+  if (typeof maxWidth === 'number') setCssVar(wrapperStyle, '--madeit-max-width-desktop', `${maxWidth}${maxWidthUnit || 'px'}`);
+
+  // Row-gap: alleen desktop in deze versie
+  if (typeof rowGap === 'number') setCssVar(wrapperStyle, '--madeit-row-gap-desktop', `${rowGap}${rowGapUnit || 'px'}`);
+
+  // Align-items: alleen desktop in deze versie
+  if (typeof alignItems === 'string' && alignItems.length > 0) setCssVar(wrapperStyle, '--madeit-align-items-desktop', alignItems);
+
+  // Justify-content: alleen desktop in deze versie
+  if (typeof justifyContent === 'string' && justifyContent.length > 0) setCssVar(wrapperStyle, '--madeit-justify-content-desktop', justifyContent);
+
+  // Container margin als CSS-vars
+  if (containerMargin && typeof containerMargin === 'object') {
+    if (containerMargin.top !== undefined) setCssVar(wrapperStyle, '--madeit-container-margin-top-desktop', containerMargin.top);
+    if (containerMargin.bottom !== undefined) setCssVar(wrapperStyle, '--madeit-container-margin-bottom-desktop', containerMargin.bottom);
+  }
+  if (containerMarginTablet && typeof containerMarginTablet === 'object') {
+    setCssVar(wrapperStyle, '--madeit-container-margin-top-tablet', containerMarginTablet.top);
+    setCssVar(wrapperStyle, '--madeit-container-margin-bottom-tablet', containerMarginTablet.bottom);
+  }
+  if (containerMarginMobile && typeof containerMarginMobile === 'object') {
+    setCssVar(wrapperStyle, '--madeit-container-margin-top-mobile', containerMarginMobile.top);
+    setCssVar(wrapperStyle, '--madeit-container-margin-bottom-mobile', containerMarginMobile.bottom);
+  }
+  if (containerPaddingOnRow !== true) {
+    setSpacingVars(wrapperStyle, 'madeit-container-padding', containerPadding, 'desktop');
+  }
+  const hasStyleProps = Object.keys(wrapperStyle).length > 0;
+  const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps.save({
+    className: wrapperClass,
+    style: hasStyleProps ? wrapperStyle : undefined
+  });
+  const HtmlTag = ALLOWED_HTML_TAGS.includes(attributes.htmlTag) ? attributes.htmlTag : 'div';
+  const dirDesktop = typeof flexDirection === 'string' && flexDirection.length > 0 ? flexDirection : 'row';
+  const dirTablet = typeof flexDirectionTablet === 'string' && flexDirectionTablet.length > 0 ? flexDirectionTablet : undefined;
+  const dirMobile = typeof flexDirectionMobile === 'string' && flexDirectionMobile.length > 0 ? flexDirectionMobile : undefined;
+  const hasEnhancedRowWrapper = Number.isFinite(columnsCount) || typeof flexDirection === 'string' && flexDirection.length > 0 || typeof flexDirectionTablet === 'string' && flexDirectionTablet.length > 0 || typeof flexDirectionMobile === 'string' && flexDirectionMobile.length > 0;
+  const rowsCount = Number.isFinite(columnsCount) ? columnsCount : 0;
+  const rowClassName = hasEnhancedRowWrapper ? `row madeit-container-row rows-${rowsCount}` : 'row';
+  const baseRowProps = hasEnhancedRowWrapper ? {
+    className: rowClassName,
+    'data-madeit-dir': dirDesktop,
+    'data-madeit-dir-tablet': dirTablet,
+    'data-madeit-dir-mobile': dirMobile
+  } : {
+    className: rowClassName
+  };
+  const rowStyle = {};
+  if (containerPaddingOnRow === true) {
+    setSpacingVars(rowStyle, 'madeit-container-row-padding', containerPadding, 'desktop');
+    setSpacingVars(rowStyle, 'madeit-container-row-padding', containerPaddingTablet, 'tablet');
+    setSpacingVars(rowStyle, 'madeit-container-row-padding', containerPaddingMobile, 'mobile');
+  }
+  const hasRowStyleProps = Object.keys(rowStyle).length > 0;
+  const outerRowProps = hasRowStyleProps ? {
+    ...baseRowProps,
+    style: rowStyle
+  } : baseRowProps;
+  const rawSize = typeof attributes.size === 'string' ? attributes.size.trim() : '';
+  const innerDivClass = rawSize === 'container-fluid' ? 'container-fluid' : 'container';
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(HtmlTag, {
+    ...blockProps
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: innerDivClass
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    ...outerRowProps
+  }, '\n\n', (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InnerBlocks.Content, null), '\n\n')));
+}
+
+/***/ },
+
+/***/ "./src/save-versions/save_20260508_deprecated.js"
+/*!*******************************************************!*\
+  !*** ./src/save-versions/save_20260508_deprecated.js ***!
+  \*******************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ save)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__);
+
+/**
+ * saveV0 — Geen inner container div + inline margin/padding
+ *
+ * Structuur:
+ *   <HtmlTag class="wp-block-madeit-block-content container-fluid madeit-block-content--frontend ...">
+ *     <div class="row ...">          ← GEEN inner container div
+ *       <InnerBlocks />
+ *     </div>
+ *   </HtmlTag>
+ *
+ * Verschil met huidige save:
+ * - Geen <div class="container|container-fluid"> tussen HtmlTag en .row
+ * - margin/padding als directe inline stijlen (marginTop, paddingTop, ...)
+ *   in plaats van CSS-variabelen
+ * - Alle CSS-vars aanwezig (row-gap desktop+tablet+mobile, flex-direction, etc.)
+ */
+
+
+
+const FRONTEND_WRAPPER_CLASS = 'madeit-block-content--frontend';
+const ALLOWED_HTML_TAGS = ['div', 'section', 'article', 'main', 'header', 'footer'];
+function setCssVar(targetStyle, key, value) {
+  if (value === undefined || value === null) return;
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    targetStyle[key] = `${value}px`;
+    return;
+  }
+  if (typeof value !== 'string') return;
+  const trimmed = value.trim();
+  if (trimmed) targetStyle[key] = trimmed;
+}
+function toCssLength(value, unit = 'px') {
+  if (typeof value === 'number' && Number.isFinite(value)) return `${value}${unit || 'px'}`;
+  if (typeof value !== 'string') return undefined;
+  const trimmed = value.trim();
+  if (trimmed === '') return undefined;
+  if (/^-?\d+(?:\.\d+)?$/.test(trimmed)) return `${trimmed}${unit || 'px'}`;
+  if (/^-?\d+(?:\.\d+)?[a-z%]+$/i.test(trimmed)) return trimmed;
+  return undefined;
+}
+function setSpacingVars(targetStyle, prefix, spacing, breakpoint) {
+  if (!spacing || typeof spacing !== 'object') return;
+  const {
+    top,
+    right,
+    bottom,
+    left
+  } = spacing;
+  const hasAnyValue = [top, right, bottom, left].some(v => v !== undefined && v !== null && String(v).trim() !== '');
+  if (!hasAnyValue) return;
+  const fallback = v => v === undefined || v === null || String(v).trim() === '' ? '0px' : v;
+  setCssVar(targetStyle, `--${prefix}-top-${breakpoint}`, fallback(top));
+  setCssVar(targetStyle, `--${prefix}-right-${breakpoint}`, fallback(right));
+  setCssVar(targetStyle, `--${prefix}-bottom-${breakpoint}`, fallback(bottom));
+  setCssVar(targetStyle, `--${prefix}-left-${breakpoint}`, fallback(left));
+}
+function filterExtraClasses(className) {
+  if (typeof className !== 'string' || !className.trim()) return '';
+  return className.trim().split(/\s+/).filter(Boolean).filter(token => {
+    if (token === 'wp-block-madeit-block-content') return false;
+    if (token === 'container' || token === 'container-fluid') return false;
+    if (token === FRONTEND_WRAPPER_CLASS) return false;
+    if (token === 'has-text-color' || token === 'has-background') return false;
+    if (token.startsWith('are-vertically-aligned-')) return false;
+    if (token.startsWith('is-hidden-')) return false;
+    return true;
+  }).join(' ');
+}
+function buildBackgroundStyle(attributes) {
+  const {
+    backgroundType,
+    containerBackgroundColor,
+    customContainerBackgroundColor,
+    containerBackgroundImage,
+    containerBackgroundPosition,
+    containerBackgroundRepeat,
+    containerBackgroundSize,
+    containerBackgroundGradient
+  } = attributes;
+  const hasClassicBackground = !!(containerBackgroundImage?.url || containerBackgroundColor || customContainerBackgroundColor);
+  const computedBackgroundType = backgroundType || (hasClassicBackground ? 'classic' : undefined);
+  const containerBgClass = containerBackgroundColor ? (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.getColorClassName)('background-color', containerBackgroundColor) : undefined;
+  const style = {
+    backgroundColor: backgroundType === 'transparent' ? 'transparent' : containerBgClass ? undefined : customContainerBackgroundColor
+  };
+  if (computedBackgroundType === 'classic' && containerBackgroundImage?.url) {
+    style.backgroundImage = `url(${containerBackgroundImage.url})`;
+    if (containerBackgroundPosition) style.backgroundPosition = containerBackgroundPosition;
+    if (containerBackgroundRepeat) style.backgroundRepeat = containerBackgroundRepeat;
+    if (containerBackgroundSize) style.backgroundSize = containerBackgroundSize;
+  }
+  const gradientValue = typeof containerBackgroundGradient?.gradient === 'string' && containerBackgroundGradient.gradient.trim().length > 0 ? containerBackgroundGradient.gradient : undefined;
+  if (computedBackgroundType === 'gradient' && gradientValue) {
+    style.backgroundImage = gradientValue;
+  }
+  return style;
+}
+function save(props) {
+  const {
+    attributes,
+    className
+  } = props;
+  const containerBgClass = attributes.containerBackgroundColor ? (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.getColorClassName)('background-color', attributes.containerBackgroundColor) : undefined;
+  const rowTextClass = attributes.rowTextColor ? (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.getColorClassName)('color', attributes.rowTextColor) : undefined;
+  const customClassNames = [typeof attributes.className === 'string' && attributes.className.trim() ? attributes.className.trim() : '', typeof className === 'string' && className.trim() ? className.trim() : ''].filter(Boolean).join(' ');
+  const extraClass = filterExtraClasses(customClassNames);
+  const {
+    hideOnDesktop,
+    hideOnTablet,
+    hideOnMobile
+  } = attributes;
+  const wrapperClass = classnames__WEBPACK_IMPORTED_MODULE_1___default()('wp-block-madeit-block-content', 'container-fluid', FRONTEND_WRAPPER_CLASS, extraClass, {
+    'is-hidden-desktop': !!hideOnDesktop,
+    'is-hidden-tablet': !!hideOnTablet,
+    'is-hidden-mobile': !!hideOnMobile,
+    'has-text-color': !!rowTextClass,
+    [rowTextClass]: !!rowTextClass,
+    'has-background': !!containerBgClass,
+    [containerBgClass]: !!containerBgClass
+  });
+
+  // ── Stijl: achtergrond + volledige CSS-vars + inline margin/padding ────────
+  const backgroundStyle = buildBackgroundStyle(attributes);
+  const {
+    overflow,
+    minHeight,
+    minHeightUnit,
+    minHeightTablet,
+    minHeightUnitTablet,
+    minHeightMobile,
+    minHeightUnitMobile,
+    maxWidth,
+    maxWidthUnit,
+    maxWidthTablet,
+    maxWidthUnitTablet,
+    maxWidthMobile,
+    maxWidthUnitMobile,
+    rowGap,
+    rowGapUnit,
+    rowGapTablet,
+    rowGapUnitTablet,
+    rowGapMobile,
+    rowGapUnitMobile,
+    flexDirection,
+    flexDirectionTablet,
+    flexDirectionMobile,
+    alignItems,
+    alignItemsTablet,
+    alignItemsMobile,
+    justifyContent,
+    justifyContentTablet,
+    justifyContentMobile,
+    flexWrap,
+    flexWrapTablet,
+    flexWrapMobile,
+    containerMargin,
+    containerPadding,
+    containerPaddingOnRow
+  } = attributes;
+  const wrapperStyle = {
+    ...backgroundStyle
+  };
+  if (typeof overflow === 'string' && overflow.length > 0 && overflow !== 'visible') {
+    wrapperStyle.overflow = overflow;
+  }
+  const minHeightDesktopV = toCssLength(minHeight, minHeightUnit || 'px');
+  const minHeightTabletVV = toCssLength(minHeightTablet, minHeightUnitTablet || minHeightUnit || 'px');
+  const minHeightMobileVV = toCssLength(minHeightMobile, minHeightUnitMobile || minHeightUnitTablet || minHeightUnit || 'px');
+  if (minHeightDesktopV) setCssVar(wrapperStyle, '--madeit-min-height-desktop', minHeightDesktopV);
+  if (minHeightTabletVV) setCssVar(wrapperStyle, '--madeit-min-height-tablet', minHeightTabletVV);
+  if (minHeightMobileVV) setCssVar(wrapperStyle, '--madeit-min-height-mobile', minHeightMobileVV);
+  if (typeof maxWidth === 'number') setCssVar(wrapperStyle, '--madeit-max-width-desktop', `${maxWidth}${maxWidthUnit || 'px'}`);
+  if (typeof maxWidthTablet === 'number') setCssVar(wrapperStyle, '--madeit-max-width-tablet', `${maxWidthTablet}${maxWidthUnitTablet || 'px'}`);
+  if (typeof maxWidthMobile === 'number') setCssVar(wrapperStyle, '--madeit-max-width-mobile', `${maxWidthMobile}${maxWidthUnitMobile || 'px'}`);
+  if (typeof rowGap === 'number') {
+    setCssVar(wrapperStyle, '--madeit-row-gap-desktop', `${rowGap}${rowGapUnit || 'px'}`);
+    if (typeof rowGapTablet === 'number') setCssVar(wrapperStyle, '--madeit-row-gap-tablet', `${rowGapTablet}${rowGapUnitTablet || 'px'}`);
+    if (typeof rowGapMobile === 'number') setCssVar(wrapperStyle, '--madeit-row-gap-mobile', `${rowGapMobile}${rowGapUnitMobile || 'px'}`);
+  }
+  if (typeof flexDirection === 'string' && flexDirection.length > 0) setCssVar(wrapperStyle, '--madeit-flex-direction-desktop', flexDirection);
+  if (typeof flexDirectionTablet === 'string' && flexDirectionTablet.length > 0) setCssVar(wrapperStyle, '--madeit-flex-direction-tablet', flexDirectionTablet);
+  if (typeof flexDirectionMobile === 'string' && flexDirectionMobile.length > 0) setCssVar(wrapperStyle, '--madeit-flex-direction-mobile', flexDirectionMobile);
+  if (typeof alignItems === 'string' && alignItems.length > 0) setCssVar(wrapperStyle, '--madeit-align-items-desktop', alignItems);
+  if (typeof alignItemsTablet === 'string' && alignItemsTablet.length > 0) setCssVar(wrapperStyle, '--madeit-align-items-tablet', alignItemsTablet);
+  if (typeof alignItemsMobile === 'string' && alignItemsMobile.length > 0) setCssVar(wrapperStyle, '--madeit-align-items-mobile', alignItemsMobile);
+  if (typeof justifyContent === 'string' && justifyContent.length > 0) setCssVar(wrapperStyle, '--madeit-justify-content-desktop', justifyContent);
+  if (typeof justifyContentTablet === 'string' && justifyContentTablet.length > 0) setCssVar(wrapperStyle, '--madeit-justify-content-tablet', justifyContentTablet);
+  if (typeof justifyContentMobile === 'string' && justifyContentMobile.length > 0) setCssVar(wrapperStyle, '--madeit-justify-content-mobile', justifyContentMobile);
+  if (typeof flexWrap === 'string' && flexWrap.length > 0) setCssVar(wrapperStyle, '--madeit-flex-wrap-desktop', flexWrap);
+  if (typeof flexWrapTablet === 'string' && flexWrapTablet.length > 0) setCssVar(wrapperStyle, '--madeit-flex-wrap-tablet', flexWrapTablet);
+  if (typeof flexWrapMobile === 'string' && flexWrapMobile.length > 0) setCssVar(wrapperStyle, '--madeit-flex-wrap-mobile', flexWrapMobile);
+
+  // Margin: INLINE stijlen (oud formaat)
+  if (containerMargin && typeof containerMargin === 'object') {
+    if (containerMargin.top !== undefined) wrapperStyle.marginTop = containerMargin.top;
+    if (containerMargin.bottom !== undefined) wrapperStyle.marginBottom = containerMargin.bottom;
+  }
+
+  // Padding op wrapper: INLINE stijlen (oud formaat)
+  if (containerPaddingOnRow !== true && containerPadding && typeof containerPadding === 'object') {
+    if (containerPadding.top !== undefined) wrapperStyle.paddingTop = containerPadding.top;
+    if (containerPadding.right !== undefined) wrapperStyle.paddingRight = containerPadding.right;
+    if (containerPadding.bottom !== undefined) wrapperStyle.paddingBottom = containerPadding.bottom;
+    if (containerPadding.left !== undefined) wrapperStyle.paddingLeft = containerPadding.left;
+  }
+  const hasStyleProps = Object.keys(wrapperStyle).length > 0;
+  const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps.save({
+    className: wrapperClass,
+    style: hasStyleProps ? wrapperStyle : undefined
+  });
+  const HtmlTag = ALLOWED_HTML_TAGS.includes(attributes.htmlTag) ? attributes.htmlTag : 'div';
+  const {
+    columnsCount
+  } = attributes;
+  const dirDesktop = typeof flexDirection === 'string' && flexDirection.length > 0 ? flexDirection : 'row';
+  const dirTablet = typeof flexDirectionTablet === 'string' && flexDirectionTablet.length > 0 ? flexDirectionTablet : undefined;
+  const dirMobile = typeof flexDirectionMobile === 'string' && flexDirectionMobile.length > 0 ? flexDirectionMobile : undefined;
+  const hasEnhancedRowWrapper = Number.isFinite(columnsCount) || typeof flexDirection === 'string' && flexDirection.length > 0 || typeof flexDirectionTablet === 'string' && flexDirectionTablet.length > 0 || typeof flexDirectionMobile === 'string' && flexDirectionMobile.length > 0;
+  const rowsCount = Number.isFinite(columnsCount) ? columnsCount : 0;
+  const rowClassName = hasEnhancedRowWrapper ? `row madeit-container-row rows-${rowsCount}` : 'row';
+  const baseRowProps = hasEnhancedRowWrapper ? {
+    className: rowClassName,
+    'data-madeit-dir': dirDesktop,
+    'data-madeit-dir-tablet': dirTablet,
+    'data-madeit-dir-mobile': dirMobile
+  } : {
+    className: rowClassName
+  };
+
+  // Padding op row: INLINE stijlen (oud formaat)
+  const rowStyle = {};
+  if (containerPaddingOnRow === true && containerPadding && typeof containerPadding === 'object') {
+    if (containerPadding.top !== undefined) rowStyle.paddingTop = containerPadding.top;
+    if (containerPadding.right !== undefined) rowStyle.paddingRight = containerPadding.right;
+    if (containerPadding.bottom !== undefined) rowStyle.paddingBottom = containerPadding.bottom;
+    if (containerPadding.left !== undefined) rowStyle.paddingLeft = containerPadding.left;
+  }
+
+  // ── OUD: padding op row als CSS-vars (tussen inline en nieuwe save) ───────
+  if (containerPaddingOnRow === true && containerPadding && typeof containerPadding === 'object') {
+    const {
+      containerPaddingTablet,
+      containerPaddingMobile
+    } = attributes;
+    // Alleen als er GEEN inline waarden zijn, maar wel CSS-var waarden
+    if (Object.keys(rowStyle).length === 0) {
+      setSpacingVars(rowStyle, 'madeit-container-row-padding', containerPadding, 'desktop');
+      setSpacingVars(rowStyle, 'madeit-container-row-padding', containerPaddingTablet, 'tablet');
+      setSpacingVars(rowStyle, 'madeit-container-row-padding', containerPaddingMobile, 'mobile');
+    }
+  }
+  const hasRowStyleProps = Object.keys(rowStyle).length > 0;
+  const outerRowProps = hasRowStyleProps ? {
+    ...baseRowProps,
+    style: rowStyle
+  } : baseRowProps;
+
+  // GEEN inner container div — .row direct onder HtmlTag
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(HtmlTag, {
+    ...blockProps
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    ...outerRowProps
+  }, '\n\n', (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InnerBlocks.Content, null), '\n\n'));
+}
+
+/***/ },
+
+/***/ "./src/save-versions/savevpre0b.js"
+/*!*****************************************!*\
+  !*** ./src/save-versions/savevpre0b.js ***!
+  \*****************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ save)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/block-editor */ "@wordpress/block-editor");
+/* harmony import */ var _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__);
+
+/**
+ * saveVpre0b — Geen dubbele classes + inner container div + partial CSS-vars
+ *
+ * Kenmerken in opgeslagen markup:
+ * - Normale (niet dubbele) classes op wrapper
+ * - WEL inner <div class="container"> aanwezig
+ * - Slechts partial CSS-vars: alleen --madeit-align-items-desktop en/of
+ *   --madeit-justify-content-desktop, --madeit-min-height-*, --madeit-row-gap-desktop
+ *   (maar GEEN row-gap tablet/mobile, GEEN flex-direction vars, GEEN flex-wrap)
+ */
+
+
+
+const FRONTEND_WRAPPER_CLASS = 'madeit-block-content--frontend';
+const ALLOWED_HTML_TAGS = ['div', 'section', 'article', 'main', 'header', 'footer'];
+function setCssVar(targetStyle, key, value) {
+  if (value === undefined || value === null) return;
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    targetStyle[key] = `${value}px`;
+    return;
+  }
+  if (typeof value !== 'string') return;
+  const trimmed = value.trim();
+  if (trimmed) targetStyle[key] = trimmed;
+}
+function toCssLength(value, unit = 'px') {
+  if (typeof value === 'number' && Number.isFinite(value)) return `${value}${unit || 'px'}`;
+  if (typeof value !== 'string') return undefined;
+  const trimmed = value.trim();
+  if (trimmed === '') return undefined;
+  if (/^-?\d+(?:\.\d+)?$/.test(trimmed)) return `${trimmed}${unit || 'px'}`;
+  if (/^-?\d+(?:\.\d+)?[a-z%]+$/i.test(trimmed)) return trimmed;
+  return undefined;
+}
+function setSpacingVars(targetStyle, prefix, spacing, breakpoint) {
+  if (!spacing || typeof spacing !== 'object') return;
+  const {
+    top,
+    right,
+    bottom,
+    left
+  } = spacing;
+  const hasAnyValue = [top, right, bottom, left].some(v => v !== undefined && v !== null && String(v).trim() !== '');
+  if (!hasAnyValue) return;
+  const fallback = v => v === undefined || v === null || String(v).trim() === '' ? '0px' : v;
+  setCssVar(targetStyle, `--${prefix}-top-${breakpoint}`, fallback(top));
+  setCssVar(targetStyle, `--${prefix}-right-${breakpoint}`, fallback(right));
+  setCssVar(targetStyle, `--${prefix}-bottom-${breakpoint}`, fallback(bottom));
+  setCssVar(targetStyle, `--${prefix}-left-${breakpoint}`, fallback(left));
+}
+function filterExtraClasses(className) {
+  if (typeof className !== 'string' || !className.trim()) return '';
+  return className.trim().split(/\s+/).filter(Boolean).filter(token => {
+    if (token === 'wp-block-madeit-block-content') return false;
+    if (token === 'container' || token === 'container-fluid') return false;
+    if (token === FRONTEND_WRAPPER_CLASS) return false;
+    if (token === 'has-text-color' || token === 'has-background') return false;
+    if (token.startsWith('are-vertically-aligned-')) return false;
+    if (token.startsWith('is-hidden-')) return false;
+    return true;
+  }).join(' ');
+}
+function buildBackgroundStyle(attributes) {
+  const {
+    backgroundType,
+    containerBackgroundColor,
+    customContainerBackgroundColor,
+    containerBackgroundImage,
+    containerBackgroundPosition,
+    containerBackgroundRepeat,
+    containerBackgroundSize,
+    containerBackgroundGradient
+  } = attributes;
+  const hasClassicBackground = !!(containerBackgroundImage?.url || containerBackgroundColor || customContainerBackgroundColor);
+  const computedBackgroundType = backgroundType || (hasClassicBackground ? 'classic' : undefined);
+  const containerBgClass = containerBackgroundColor ? (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.getColorClassName)('background-color', containerBackgroundColor) : undefined;
+  const style = {
+    backgroundColor: backgroundType === 'transparent' ? 'transparent' : containerBgClass ? undefined : customContainerBackgroundColor
+  };
+  if (computedBackgroundType === 'classic' && containerBackgroundImage?.url) {
+    style.backgroundImage = `url(${containerBackgroundImage.url})`;
+    if (containerBackgroundPosition) style.backgroundPosition = containerBackgroundPosition;
+    if (containerBackgroundRepeat) style.backgroundRepeat = containerBackgroundRepeat;
+    if (containerBackgroundSize) style.backgroundSize = containerBackgroundSize;
+  }
+  const gradientValue = typeof containerBackgroundGradient?.gradient === 'string' && containerBackgroundGradient.gradient.trim().length > 0 ? containerBackgroundGradient.gradient : undefined;
+  if (computedBackgroundType === 'gradient' && gradientValue) {
+    style.backgroundImage = gradientValue;
+  }
+  return style;
+}
+function save(props) {
+  const {
+    attributes,
+    className
+  } = props;
+  const containerBgClass = attributes.containerBackgroundColor ? (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.getColorClassName)('background-color', attributes.containerBackgroundColor) : undefined;
+  const rowTextClass = attributes.rowTextColor ? (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.getColorClassName)('color', attributes.rowTextColor) : undefined;
+  const customClassNames = [typeof attributes.className === 'string' && attributes.className.trim() ? attributes.className.trim() : '', typeof className === 'string' && className.trim() ? className.trim() : ''].filter(Boolean).join(' ');
+  const extraClass = filterExtraClasses(customClassNames);
+  const {
+    hideOnDesktop,
+    hideOnTablet,
+    hideOnMobile
+  } = attributes;
+  const wrapperClass = classnames__WEBPACK_IMPORTED_MODULE_1___default()('wp-block-madeit-block-content', 'container-fluid', FRONTEND_WRAPPER_CLASS, extraClass, {
+    'is-hidden-desktop': !!hideOnDesktop,
+    'is-hidden-tablet': !!hideOnTablet,
+    'is-hidden-mobile': !!hideOnMobile,
+    'has-text-color': !!rowTextClass,
+    [rowTextClass]: !!rowTextClass,
+    'has-background': !!containerBgClass,
+    [containerBgClass]: !!containerBgClass
+  });
+
+  // ── Partial stijl: alleen de vars die in deze versie bestonden ─────────────
+  const backgroundStyle = buildBackgroundStyle(attributes);
+  const {
+    overflow,
+    minHeight,
+    minHeightUnit,
+    minHeightMobile,
+    minHeightUnitMobile,
+    maxWidth,
+    maxWidthUnit,
+    rowGap,
+    rowGapUnit,
+    alignItems,
+    justifyContent,
+    containerMargin,
+    containerMarginTablet,
+    containerMarginMobile,
+    containerPadding,
+    containerPaddingTablet,
+    containerPaddingMobile,
+    containerPaddingOnRow,
+    flexDirection,
+    flexDirectionTablet,
+    flexDirectionMobile,
+    columnsCount
+  } = attributes;
+  const wrapperStyle = {
+    ...backgroundStyle
+  };
+  if (typeof overflow === 'string' && overflow.length > 0 && overflow !== 'visible') {
+    wrapperStyle.overflow = overflow;
+  }
+  const minHeightDesktopV = toCssLength(minHeight, minHeightUnit || 'px');
+  const minHeightMobileVV = toCssLength(minHeightMobile, minHeightUnitMobile || minHeightUnit || 'px');
+  if (minHeightDesktopV) setCssVar(wrapperStyle, '--madeit-min-height-desktop', minHeightDesktopV);
+  if (minHeightMobileVV) setCssVar(wrapperStyle, '--madeit-min-height-mobile', minHeightMobileVV);
+  if (typeof maxWidth === 'number') setCssVar(wrapperStyle, '--madeit-max-width-desktop', `${maxWidth}${maxWidthUnit || 'px'}`);
+
+  // row-gap: alleen desktop in deze versie
+  if (typeof rowGap === 'number') setCssVar(wrapperStyle, '--madeit-row-gap-desktop', `${rowGap}${rowGapUnit || 'px'}`);
+
+  // align-items + justify-content: alleen desktop
+  if (typeof alignItems === 'string' && alignItems.length > 0) setCssVar(wrapperStyle, '--madeit-align-items-desktop', alignItems);
+  if (typeof justifyContent === 'string' && justifyContent.length > 0) setCssVar(wrapperStyle, '--madeit-justify-content-desktop', justifyContent);
+
+  // container margin als CSS-vars
+  if (containerMargin && typeof containerMargin === 'object') {
+    if (containerMargin.top !== undefined) setCssVar(wrapperStyle, '--madeit-container-margin-top-desktop', containerMargin.top);
+    if (containerMargin.bottom !== undefined) setCssVar(wrapperStyle, '--madeit-container-margin-bottom-desktop', containerMargin.bottom);
+  }
+  if (containerMarginTablet && typeof containerMarginTablet === 'object') {
+    setCssVar(wrapperStyle, '--madeit-container-margin-top-tablet', containerMarginTablet.top);
+    setCssVar(wrapperStyle, '--madeit-container-margin-bottom-tablet', containerMarginTablet.bottom);
+  }
+  if (containerMarginMobile && typeof containerMarginMobile === 'object') {
+    setCssVar(wrapperStyle, '--madeit-container-margin-top-mobile', containerMarginMobile.top);
+    setCssVar(wrapperStyle, '--madeit-container-margin-bottom-mobile', containerMarginMobile.bottom);
+  }
+  if (containerPaddingOnRow !== true) {
+    setSpacingVars(wrapperStyle, 'madeit-container-padding', containerPadding, 'desktop');
+  }
+  const hasStyleProps = Object.keys(wrapperStyle).length > 0;
+  const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps.save({
+    className: wrapperClass,
+    style: hasStyleProps ? wrapperStyle : undefined
+  });
+  const HtmlTag = ALLOWED_HTML_TAGS.includes(attributes.htmlTag) ? attributes.htmlTag : 'div';
+  const dirDesktop = typeof flexDirection === 'string' && flexDirection.length > 0 ? flexDirection : 'row';
+  const dirTablet = typeof flexDirectionTablet === 'string' && flexDirectionTablet.length > 0 ? flexDirectionTablet : undefined;
+  const dirMobile = typeof flexDirectionMobile === 'string' && flexDirectionMobile.length > 0 ? flexDirectionMobile : undefined;
+  const hasEnhancedRowWrapper = Number.isFinite(columnsCount) || typeof flexDirection === 'string' && flexDirection.length > 0 || typeof flexDirectionTablet === 'string' && flexDirectionTablet.length > 0 || typeof flexDirectionMobile === 'string' && flexDirectionMobile.length > 0;
+  const rowsCount = Number.isFinite(columnsCount) ? columnsCount : 0;
+  const rowClassName = hasEnhancedRowWrapper ? `row madeit-container-row rows-${rowsCount}` : 'row';
+  const baseRowProps = hasEnhancedRowWrapper ? {
+    className: rowClassName,
+    'data-madeit-dir': dirDesktop,
+    'data-madeit-dir-tablet': dirTablet,
+    'data-madeit-dir-mobile': dirMobile
+  } : {
+    className: rowClassName
+  };
+  const rowStyle = {};
+  if (containerPaddingOnRow === true) {
+    setSpacingVars(rowStyle, 'madeit-container-row-padding', containerPadding, 'desktop');
+    setSpacingVars(rowStyle, 'madeit-container-row-padding', containerPaddingTablet, 'tablet');
+    setSpacingVars(rowStyle, 'madeit-container-row-padding', containerPaddingMobile, 'mobile');
+  }
+  const hasRowStyleProps = Object.keys(rowStyle).length > 0;
+  const outerRowProps = hasRowStyleProps ? {
+    ...baseRowProps,
+    style: rowStyle
+  } : baseRowProps;
+
+  // In deze versie was de inner div altijd 'container', ongeacht de size-instelling.
+  // De size werd pas later doorvertaald naar de inner div class.
+  const innerDivClass = 'container';
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(HtmlTag, {
+    ...blockProps
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: innerDivClass
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    ...outerRowProps
+  }, '\n\n', (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InnerBlocks.Content, null), '\n\n')));
+}
+
+/***/ },
+
 /***/ "./src/save-versions/v1.js"
 /*!*********************************!*\
   !*** ./src/save-versions/v1.js ***!
@@ -7298,24 +8600,24 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * save.js — madeit-block-content
  *
- * De save()-functie bepaalt hoe de block-attributen worden omgezet naar HTML
- * die WordPress opslaat in de database (post_content).
+ * STRUCTUUR VAN DE OUTPUT
+ * ────────────────────────
+ * De HtmlTag is ALTIJD container-fluid (de outer wrapper).
+ * De size-instelling (container / container-fluid) bepaalt de INNER div, niet de outer.
  *
- * STRUCTUUR VAN DIT BESTAND
- * ─────────────────────────
- * 1. Imports
- * 2. Constanten (defaults, toegestane HTML-tags, …)
- * 3. Hulpfuncties  (CSS-lengte, CSS-variabelen, spacing, …)
- * 4. Legacy-detectie helpers
- * 5. Klasse-opbouw helpers (wrapper + child)
- * 6. Stijl-opbouw helpers (inline styles + CSS vars)
- * 7. Hoofd save()-functie
- *    └─ Rendert één van de vijf markup-varianten:
- *       A. container-content-boxed
- *       B. legacy boxed inner row
- *       C. legacy direct row (geen inner container)
- *       D. inner background wrapper
- *       E. standaard (content width wrap of gewoon row)
+ * <HtmlTag class="wp-block-madeit-block-content container-fluid madeit-block-content--frontend {color?}" style="{bg?}">
+ *   <div class="{container | container-fluid}">
+ *     <div class="row ...">
+ *       <InnerBlocks />
+ *     </div>
+ *   </div>
+ * </HtmlTag>
+ *
+ * MARKUP-VARIANTEN:
+ *   A. container-content-boxed  → inner div = container, met extra boxed child
+ *   B. Legacy boxed inner row   → row > col > container > row
+ *   C. Legacy direct row        → geen inner container div
+ *   D. Standaard                → inner div = container of container-fluid op basis van `size`
  */
 
 // ─── 1. Imports ──────────────────────────────────────────────────────────────
@@ -7328,19 +8630,6 @@ __webpack_require__.r(__webpack_exports__);
 /** CSS-klasse die alleen op de frontend-wrapper staat (niet in de editor). */
 const FRONTEND_WRAPPER_CLASS = 'madeit-block-content--frontend';
 
-/** Standaardwaarden uit de `madeit-default-responsive` variatie.
- *  Deze worden via CSS op `.madeit-block-content--frontend` geleverd,
- *  dus we schrijven ze NIET inline (dat zou validatieverschillen geven). */
-const DEFAULTS = {
-  rowGap: 20,
-  flexDirection: 'row',
-  flexDirTablet: 'column',
-  flexDirMobile: 'column',
-  alignItems: 'stretch',
-  justifyContent: 'flex-start',
-  flexWrap: 'nowrap'
-};
-
 /** HTML-tags die toegestaan zijn als wrapper-element. */
 const ALLOWED_HTML_TAGS = ['div', 'section', 'article', 'main', 'header', 'footer'];
 
@@ -7348,12 +8637,6 @@ const ALLOWED_HTML_TAGS = ['div', 'section', 'article', 'main', 'header', 'foote
 
 /**
  * Zet een numerieke of string-waarde om naar een geldige CSS-lengte.
- *
- * Voorbeelden:
- *   toCssLength(20)        → '20px'
- *   toCssLength(20, 'em')  → '20em'
- *   toCssLength('1.5rem')  → '1.5rem'  (al van eenheid voorzien)
- *   toCssLength('')        → undefined
  */
 function toCssLength(value, unit = 'px') {
   if (typeof value === 'number' && Number.isFinite(value)) {
@@ -7363,21 +8646,12 @@ function toCssLength(value, unit = 'px') {
   const trimmed = value.trim();
   if (trimmed === '') return undefined;
   if (/^-?\d+(?:\.\d+)?$/.test(trimmed)) return `${trimmed}${unit || 'px'}`;
-  if (/^-?\d+(?:\.\d+)?[a-z%]+$/i.test(trimmed)) return trimmed; // al van eenheid voorzien
+  if (/^-?\d+(?:\.\d+)?[a-z%]+$/i.test(trimmed)) return trimmed;
   return undefined;
 }
 
 /**
- * Hulpfunctie voor RegExp-escaping (gebruikt bij het doorzoeken van wrapperStyle).
- */
-function escapeRegExp(value) {
-  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-/**
  * Schrijft één CSS-variabele naar een stijl-object.
- * Accepteert getallen (→ 'Npx'), strings of undefined.
- * Lege strings / null / undefined worden overgeslagen.
  */
 function setCssVar(targetStyle, key, value) {
   if (value === undefined || value === null) return;
@@ -7389,113 +8663,6 @@ function setCssVar(targetStyle, key, value) {
   const trimmed = value.trim();
   if (trimmed) targetStyle[key] = trimmed;
 }
-
-// ─── 4. Legacy-detectie helpers ──────────────────────────────────────────────
-
-/**
- * Leest alle legacy-flags uit de block-attributen.
- * Dit zijn vlaggen die bepalen welke markup-variant we moeten renderen
- * zodat Gutenberg de opgeslagen HTML correct kan valideren.
- *
- * Gutenberg vergelijkt de opgeslagen HTML met wat save() nu genereert.
- * Als ze niet overeenkomen, toont de editor een "block recovery" melding.
- * Met deze flags zorgen we dat oude content exact hetzelfde HTML terugkrijgt.
- *
- * @param {object} attributes - De block-attributen van props.attributes
- * @returns {object} Een object met alle legacy-vlaggen
- */
-function detectLegacyFlags(attributes) {
-  const {
-    wrapperClassName,
-    wrapperStyle,
-    directRowClassName,
-    boxedInnerRowClassName,
-    madeitHasUserEdits
-  } = attributes;
-  const wrapperClassRaw = typeof wrapperClassName === 'string' ? wrapperClassName.trim() : '';
-  const wrapperTokens = wrapperClassRaw.length ? wrapperClassRaw.split(/\s+/) : [];
-  const hasWrapperClassFromMarkup = wrapperClassRaw.length > 0;
-  const wrapperHasFrontendClass = wrapperTokens.includes(FRONTEND_WRAPPER_CLASS);
-  const wrapperHasContainer = wrapperTokens.includes('container');
-  const wrapperHasContainerFluid = wrapperTokens.includes('container-fluid');
-
-  // Normaliseer de opgeslagen wrapperStyle (verwijder whitespace voor matching).
-  const wrapperStyleRaw = typeof wrapperStyle === 'string' ? wrapperStyle : '';
-  const wrapperStyleNormalized = wrapperStyleRaw.replace(/\s+/g, '');
-  const hasStoredStyle = wrapperStyleNormalized.length > 0;
-
-  // Detecteer of de opgeslagen markup legacy inline spacing gebruikte
-  // (margin-top/margin-bottom/padding-* als directe inline stijlen)
-  // in plaats van CSS-variabelen.
-  const hasLegacyInlineSpacing = hasStoredStyle && (wrapperStyleNormalized.includes('margin-top:') || wrapperStyleNormalized.includes('margin-bottom:') || wrapperStyleNormalized.includes('padding-top:') || wrapperStyleNormalized.includes('padding-right:') || wrapperStyleNormalized.includes('padding-bottom:') || wrapperStyleNormalized.includes('padding-left:'));
-
-  // Detecteer of de opgeslagen markup al container-spacing CSS-vars had.
-  const SPACING_VARS = ['--madeit-container-margin-top-desktop', '--madeit-container-margin-bottom-desktop', '--madeit-container-margin-top-tablet', '--madeit-container-margin-bottom-tablet', '--madeit-container-margin-top-mobile', '--madeit-container-margin-bottom-mobile', '--madeit-container-padding-top-desktop', '--madeit-container-padding-right-desktop', '--madeit-container-padding-bottom-desktop', '--madeit-container-padding-left-desktop', '--madeit-container-padding-top-tablet', '--madeit-container-padding-right-tablet', '--madeit-container-padding-bottom-tablet', '--madeit-container-padding-left-tablet', '--madeit-container-padding-top-mobile', '--madeit-container-padding-right-mobile', '--madeit-container-padding-bottom-mobile', '--madeit-container-padding-left-mobile'];
-  const hasContainerSpacingVars = hasStoredStyle && SPACING_VARS.some(v => wrapperStyleNormalized.includes(`${v}:`));
-  return {
-    wrapperStyleNormalized,
-    hasStoredStyle,
-    /** Oude content had geen FRONTEND_WRAPPER_CLASS en geen enhanced CSS-vars. */
-    shouldUseLegacyWrapperClasses: hasWrapperClassFromMarkup && !wrapperHasFrontendClass && !madeitHasUserEdits,
-    /** Kunnen we enhanced layout CSS-vars serialiseren? */
-    shouldSerializeEnhancedLayoutVars: !(hasWrapperClassFromMarkup && !wrapperHasFrontendClass && !madeitHasUserEdits),
-    /** Moeten we alleen de CSS-vars serialiseren die al in de markup stonden? */
-    shouldMatchWrapperStyleVars: hasStoredStyle && !madeitHasUserEdits,
-    /** Moet de spacing via old-school inline stijlen (marginTop, paddingTop, …)? */
-    shouldPreserveLegacyInlineSpacing: hasLegacyInlineSpacing && !hasContainerSpacingVars,
-    /** Had de wrapper `.container` of `.container-fluid`? */
-    wrapperHasContainer,
-    wrapperHasContainerFluid,
-    /** Directe `.row` onder de wrapper (geen inner container). */
-    hasDirectRowWrapper: typeof directRowClassName === 'string' && directRowClassName.trim().length > 0,
-    /** Legacy boxed inner row (row > col > container > row). */
-    hasLegacyBoxedInnerRowWrapper: typeof boxedInnerRowClassName === 'string' && boxedInnerRowClassName.trim().length > 0,
-    /** Ruwe string-waarden voor fallback-parsing. */
-    boxedInnerRowClassName: attributes.boxedInnerRowClassName,
-    boxedInnerContainerClassName: attributes.boxedInnerContainerClassName
-  };
-}
-
-/**
- * Berekent de genormaliseerde `size` op basis van attributen en legacy markup.
- *
- * Mogelijke waarden: 'container' | 'container-fluid' | 'container-content-boxed'
- *
- * LEGACY-CORRECTIE
- * ────────────────
- * De `wrapperClassName` is een source-attribuut dat Gutenberg vult vanuit de
- * opgeslagen HTML. Als de gebruiker de size heeft aangepast (madeitHasUserEdits)
- * of als er een expliciet `size` attribuut is, vertrouwen we daarop en passen
- * we de legacy-correctie NIET toe. Anders zou een block dat ooit als `container`
- * was opgeslagen maar daarna gewijzigd naar `container-fluid`, toch terug worden
- * geforceerd naar `container` door de oude markup in `wrapperClassName`.
- */
-function resolveSize(attributes, legacy) {
-  const {
-    size,
-    madeitHasUserEdits
-  } = attributes;
-  const {
-    wrapperHasContainer,
-    wrapperHasContainerFluid
-  } = legacy;
-  const hasExplicitSize = typeof size === 'string' && size.trim().length > 0;
-  let resolved = hasExplicitSize && ['container', 'container-fluid', 'container-content-boxed'].includes(size.trim()) ? size.trim() : undefined;
-
-  // Legacy-correctie: alleen toepassen als de gebruiker de size NIET expliciet
-  // heeft aangepast. Als madeitHasUserEdits gezet is, vertrouwen we volledig
-  // op het `size` attribuut en negeren we de wrapperClassName.
-  if (!madeitHasUserEdits) {
-    if (resolved === 'container-content-boxed') {
-      if (wrapperHasContainer && !wrapperHasContainerFluid) resolved = 'container';
-    } else {
-      if (wrapperHasContainerFluid && !wrapperHasContainer) resolved = 'container-fluid';else if (wrapperHasContainer && !wrapperHasContainerFluid) resolved = 'container';
-    }
-  }
-  return resolved || 'container'; // fallback
-}
-
-// ─── 5. Klasse-opbouw helpers ─────────────────────────────────────────────────
 
 /**
  * Filtert de `className`-prop van de block zodat klassen die door save()
@@ -7514,114 +8681,30 @@ function filterExtraClasses(className) {
   }).join(' ');
 }
 
-/**
- * Berekent de klassen voor de buitenste wrapper.
- *
- * @param {object} attributes  - Block-attributen
- * @param {string} extraClass  - Gefilterde extra className
- * @param {string} defaultSize - Opgeloste size ('container' | 'container-fluid' | 'container-content-boxed')
- * @param {object} legacy      - Legacy-vlaggen uit detectLegacyFlags()
- * @param {object} colorClasses - { containerBg, rowBg, rowText } color class strings
- * @param {boolean} applyBgToInner - Wordt de achtergrond op het inner element toegepast?
- * @returns {string}
- */
-function buildWrapperClasses(attributes, extraClass, defaultSize, legacy, colorClasses, applyBgToInner) {
-  const {
-    verticalAlignment,
-    hideOnDesktop,
-    hideOnTablet,
-    hideOnMobile
-  } = attributes;
-  const {
-    shouldUseLegacyWrapperClasses
-  } = legacy;
-  const {
-    containerBgClass,
-    rowTextClass
-  } = colorClasses;
-  let classes = classnames__WEBPACK_IMPORTED_MODULE_1___default()('wp-block-madeit-block-content', extraClass, {
-    'container': defaultSize === 'container',
-    'container-fluid': defaultSize === 'container-fluid' || defaultSize === 'container-content-boxed',
-    'is-hidden-desktop': !!hideOnDesktop,
-    'is-hidden-tablet': !!hideOnTablet,
-    'is-hidden-mobile': !!hideOnMobile,
-    [FRONTEND_WRAPPER_CLASS]: !shouldUseLegacyWrapperClasses
-  });
-
-  // Verticale uitlijning alleen op wrapper voor niet-boxed layouts.
-  if (defaultSize !== 'container-content-boxed') {
-    classes = classnames__WEBPACK_IMPORTED_MODULE_1___default()(classes, {
-      [`are-vertically-aligned-${verticalAlignment}`]: !!verticalAlignment
-    });
-  }
-
-  // Tekstkleur staat altijd op de wrapper (zodat hij overal erft).
-  classes = classnames__WEBPACK_IMPORTED_MODULE_1___default()(classes, {
-    'has-text-color': !!rowTextClass,
-    [rowTextClass]: !!rowTextClass
-  });
-
-  // Achtergrondkleur: op wrapper als de achtergrond NIET op het inner element staat.
-  if (!applyBgToInner) {
-    classes = classnames__WEBPACK_IMPORTED_MODULE_1___default()(classes, {
-      'has-background': !!containerBgClass,
-      [containerBgClass]: !!containerBgClass
-    });
-  }
-  return classes;
-}
+// ─── 4. Stijl-opbouw helpers ──────────────────────────────────────────────────
 
 /**
- * Berekent de klassen voor het inner child-element.
- *
- * @param {object} attributes
- * @param {string} defaultSize
- * @param {string} contentWidthNormalized - 'container' | 'container-fluid'
- * @param {object} colorClasses
- * @param {boolean} applyBgToInner
- * @returns {string}
+ * Voegt responsieve spacing (margin of padding) toe aan een stijl-object via CSS-vars.
  */
-function buildChildClasses(attributes, defaultSize, contentWidthNormalized, colorClasses, applyBgToInner) {
+function setSpacingVars(targetStyle, prefix, spacing, breakpoint) {
+  if (!spacing || typeof spacing !== 'object') return;
   const {
-    verticalAlignment,
-    rowBackgroundColor,
-    rowTextColor
-  } = attributes;
-  const {
-    containerBgClass,
-    rowBgClass,
-    rowTextClass
-  } = colorClasses;
-  let classesChild = classnames__WEBPACK_IMPORTED_MODULE_1___default()({
-    [`are-vertically-aligned-${verticalAlignment}`]: !!verticalAlignment && defaultSize === 'container-content-boxed',
-    'container': contentWidthNormalized === 'container',
-    'container-fluid': contentWidthNormalized === 'container-fluid'
-  });
-  if (applyBgToInner) {
-    classesChild = classnames__WEBPACK_IMPORTED_MODULE_1___default()(classesChild, {
-      'has-background': !!containerBgClass,
-      [containerBgClass]: !!containerBgClass
-    });
-  }
-  if (defaultSize === 'container-content-boxed') {
-    classesChild = classnames__WEBPACK_IMPORTED_MODULE_1___default()(classesChild, {
-      'has-text-color': rowTextColor !== undefined,
-      'has-background': rowBackgroundColor !== undefined,
-      [rowBgClass]: rowBackgroundColor !== undefined,
-      [rowTextClass]: rowTextColor !== undefined
-    });
-  }
-  return classesChild;
+    top,
+    right,
+    bottom,
+    left
+  } = spacing;
+  const hasAnyValue = [top, right, bottom, left].some(v => v !== undefined && v !== null && String(v).trim() !== '');
+  if (!hasAnyValue) return;
+  const fallback = v => v === undefined || v === null || String(v).trim() === '' ? '0px' : v;
+  setCssVar(targetStyle, `--${prefix}-top-${breakpoint}`, fallback(top));
+  setCssVar(targetStyle, `--${prefix}-right-${breakpoint}`, fallback(right));
+  setCssVar(targetStyle, `--${prefix}-bottom-${breakpoint}`, fallback(bottom));
+  setCssVar(targetStyle, `--${prefix}-left-${breakpoint}`, fallback(left));
 }
-
-// ─── 6. Stijl-opbouw helpers ──────────────────────────────────────────────────
 
 /**
  * Maakt het stijl-object voor de achtergrond (kleur, afbeelding, gradient).
- *
- * @param {object} attributes
- * @param {string} containerBgClass - Tailwind/theme color class name (of undefined)
- * @returns {object} React inline-style object
  */
 function buildBackgroundStyle(attributes) {
   const {
@@ -7654,123 +8737,13 @@ function buildBackgroundStyle(attributes) {
 }
 
 /**
- * Schrijft een CSS-variabele naar het stijl-object, maar enkel als:
- * - shouldMatchWrapperStyleVars = false  → altijd schrijven
- * - shouldMatchWrapperStyleVars = true   → alleen als de var al in de opgeslagen markup stond
- *
- * Gebruik dit voor alle layout CSS-vars (flex-direction, row-gap, …).
+ * Bouwt het volledige stijl-object voor de buitenste wrapper (HtmlTag).
+ * De HtmlTag is ALTIJD container-fluid — size heeft hier geen effect op de klasse.
+ * Stijlen: achtergrond, overflow, min-height, max-width, row-gap,
+ *          flex-direction, align-items, justify-content, flex-wrap,
+ *          container margin + padding (als niet op row).
  */
-function makeVarWriter(wrapperStyleNormalized, shouldMatchWrapperStyleVars) {
-  /** Geeft true als de variabele al in de opgeslagen wrapperStyle staat. */
-  const hadVar = varName => shouldMatchWrapperStyleVars && wrapperStyleNormalized.includes(`${varName}:`);
-
-  /** Lees de huidige waarde van een var uit de opgeslagen wrapperStyle. */
-  const getVarValue = varName => {
-    if (!shouldMatchWrapperStyleVars) return undefined;
-    const match = wrapperStyleNormalized.match(new RegExp(`${escapeRegExp(varName)}:([^;]+)`));
-    return match?.[1];
-  };
-
-  /**
-   * Schrijft de var naar targetStyle, rekening houdend met de matching-mode.
-   * @param {object} targetStyle
-   * @param {string} varName     - CSS-variabelenaam (bv. '--madeit-flex-direction-desktop')
-   * @param {*}      value       - Waarde om in te stellen (of undefined om over te slaan)
-   */
-  const maybeSetVar = (targetStyle, varName, value) => {
-    if (shouldMatchWrapperStyleVars && !hadVar(varName)) return;
-    setCssVar(targetStyle, varName, value);
-  };
-
-  /**
-   * Schrijft de var enkel als hij expliciet afwijkt van de standaardwaarde
-   * (of als hij al in de opgeslagen markup stond).
-   *
-   * @param {object}  targetStyle
-   * @param {string}  varName
-   * @param {*}       value        - Te serialiseren waarde
-   * @param {*}       defaultValue - Standaardwaarde (uit DEFAULTS)
-   * @param {boolean} hasValue     - Geeft aan of de waarde expliciet is ingesteld
-   */
-  const conditionalVar = (targetStyle, varName, value, defaultValue, hasValue) => {
-    const shouldEmit = shouldMatchWrapperStyleVars ? hadVar(varName) : hasValue && value !== defaultValue;
-    if (shouldEmit) maybeSetVar(targetStyle, varName, value);
-  };
-  return {
-    hadVar,
-    getVarValue,
-    maybeSetVar,
-    conditionalVar
-  };
-}
-
-/**
- * Voegt responsieve spacing (margin of padding) toe aan een stijl-object.
- *
- * In het nieuwe formaat: CSS-variabelen per breakpoint.
- * In het legacy formaat: directe inline stijlen (marginTop, paddingLeft, …).
- *
- * @param {object}  targetStyle
- * @param {string}  prefix       - CSS-var prefix (bv. 'madeit-container-padding')
- * @param {object}  spacing      - { top, right, bottom, left }
- * @param {string}  breakpoint   - 'desktop' | 'tablet' | 'mobile'
- */
-function setSpacingVars(targetStyle, prefix, spacing, breakpoint) {
-  if (!spacing || typeof spacing !== 'object') return;
-  const {
-    top,
-    right,
-    bottom,
-    left
-  } = spacing;
-  const hasAnyValue = [top, right, bottom, left].some(v => v !== undefined && v !== null && String(v).trim() !== '');
-  if (!hasAnyValue) return;
-  const fallback = v => v === undefined || v === null || String(v).trim() === '' ? '0px' : v;
-  setCssVar(targetStyle, `--${prefix}-top-${breakpoint}`, fallback(top));
-  setCssVar(targetStyle, `--${prefix}-right-${breakpoint}`, fallback(right));
-  setCssVar(targetStyle, `--${prefix}-bottom-${breakpoint}`, fallback(bottom));
-  setCssVar(targetStyle, `--${prefix}-left-${breakpoint}`, fallback(left));
-}
-
-/**
- * Past legacy inline spacing toe in dezelfde volgorde als de opgeslagen markup.
- * Dit is nodig om block-validatiefouten te vermijden.
- *
- * @param {object}  targetStyle
- * @param {object}  spacingEntries - Array van { cssProp, reactProp, value }
- * @param {string}  wrapperStyleNormalized
- * @param {boolean} shouldMatchWrapperStyleVars
- */
-function applyLegacyInlineSpacing(targetStyle, spacingEntries, wrapperStyleNormalized, shouldMatchWrapperStyleVars) {
-  if (!shouldMatchWrapperStyleVars) {
-    for (const {
-      reactProp,
-      value
-    } of spacingEntries) {
-      if (value !== undefined) targetStyle[reactProp] = value;
-    }
-    return;
-  }
-  const positioned = spacingEntries.map(entry => ({
-    ...entry,
-    pos: wrapperStyleNormalized.indexOf(`${entry.cssProp}:`)
-  })).filter(entry => entry.pos >= 0).sort((a, b) => a.pos - b.pos);
-  for (const {
-    reactProp,
-    value
-  } of positioned) {
-    if (value !== undefined) targetStyle[reactProp] = value;
-  }
-}
-
-/**
- * Bouwt het volledige stijl-object voor de buitenste wrapper.
- * Bevat: achtergrond, overflow, min-height, max-width, row-gap,
- *        flex-direction, align-items, justify-content, flex-wrap,
- *        en container margin + padding.
- */
-function buildWrapperStyle(attributes, legacy, applyBgToInner, backgroundStyle) {
-  var _toCssLength, _toCssLength2, _toCssLength3;
+function buildWrapperStyle(attributes, backgroundStyle) {
   const {
     overflow,
     minHeight,
@@ -7811,199 +8784,102 @@ function buildWrapperStyle(attributes, legacy, applyBgToInner, backgroundStyle) 
     containerPaddingMobile,
     containerPaddingOnRow
   } = attributes;
-  const {
-    wrapperStyleNormalized,
-    shouldMatchWrapperStyleVars,
-    shouldSerializeEnhancedLayoutVars,
-    shouldPreserveLegacyInlineSpacing
-  } = legacy;
-  const {
-    maybeSetVar,
-    conditionalVar,
-    getVarValue
-  } = makeVarWriter(wrapperStyleNormalized, shouldMatchWrapperStyleVars);
   const style = {};
 
-  // Achtergrond op wrapper (tenzij op inner element).
-  if (!applyBgToInner) Object.assign(style, backgroundStyle);
+  // Achtergrond altijd op de wrapper.
+  Object.assign(style, backgroundStyle);
 
   // Overflow (standaard 'visible' wordt niet geserialiseerd).
   if (typeof overflow === 'string' && overflow.length > 0 && overflow !== 'visible') {
     style.overflow = overflow;
   }
 
-  // ── Min-height (responsief via CSS-vars) ──────────────────────────────────
-  maybeSetVar(style, '--madeit-min-height-desktop', (_toCssLength = toCssLength(minHeight, minHeightUnit || 'px')) !== null && _toCssLength !== void 0 ? _toCssLength : getVarValue('--madeit-min-height-desktop'));
-  maybeSetVar(style, '--madeit-min-height-tablet', (_toCssLength2 = toCssLength(minHeightTablet, minHeightUnitTablet || minHeightUnit || 'px')) !== null && _toCssLength2 !== void 0 ? _toCssLength2 : getVarValue('--madeit-min-height-tablet'));
-  maybeSetVar(style, '--madeit-min-height-mobile', (_toCssLength3 = toCssLength(minHeightMobile, minHeightUnitMobile || minHeightUnitTablet || minHeightUnit || 'px')) !== null && _toCssLength3 !== void 0 ? _toCssLength3 : getVarValue('--madeit-min-height-mobile'));
+  // ── Min-height ────────────────────────────────────────────────────────────
+  const minHeightDesktop = toCssLength(minHeight, minHeightUnit || 'px');
+  const minHeightTabletV = toCssLength(minHeightTablet, minHeightUnitTablet || minHeightUnit || 'px');
+  const minHeightMobileV = toCssLength(minHeightMobile, minHeightUnitMobile || minHeightUnitTablet || minHeightUnit || 'px');
+  if (minHeightDesktop) setCssVar(style, '--madeit-min-height-desktop', minHeightDesktop);
+  if (minHeightTabletV) setCssVar(style, '--madeit-min-height-tablet', minHeightTabletV);
+  if (minHeightMobileV) setCssVar(style, '--madeit-min-height-mobile', minHeightMobileV);
 
-  // ── Max-width (responsief via CSS-vars) ───────────────────────────────────
-  maybeSetVar(style, '--madeit-max-width-desktop', typeof maxWidth === 'number' ? `${maxWidth}${maxWidthUnit || 'px'}` : getVarValue('--madeit-max-width-desktop'));
-  maybeSetVar(style, '--madeit-max-width-tablet', typeof maxWidthTablet === 'number' ? `${maxWidthTablet}${maxWidthUnitTablet || 'px'}` : getVarValue('--madeit-max-width-tablet'));
-  maybeSetVar(style, '--madeit-max-width-mobile', typeof maxWidthMobile === 'number' ? `${maxWidthMobile}${maxWidthUnitMobile || 'px'}` : getVarValue('--madeit-max-width-mobile'));
+  // ── Max-width ─────────────────────────────────────────────────────────────
+  if (typeof maxWidth === 'number') setCssVar(style, '--madeit-max-width-desktop', `${maxWidth}${maxWidthUnit || 'px'}`);
+  if (typeof maxWidthTablet === 'number') setCssVar(style, '--madeit-max-width-tablet', `${maxWidthTablet}${maxWidthUnitTablet || 'px'}`);
+  if (typeof maxWidthMobile === 'number') setCssVar(style, '--madeit-max-width-mobile', `${maxWidthMobile}${maxWidthUnitMobile || 'px'}`);
 
-  // ── Row-gap (responsief via CSS-vars) ─────────────────────────────────────
-  if (shouldSerializeEnhancedLayoutVars) {
-    const hasRowGapDesktop = typeof rowGap === 'number';
-    if (hasRowGapDesktop) {
-      conditionalVar(style, '--madeit-row-gap-desktop', `${rowGap}${rowGapUnit || 'px'}`, `${DEFAULTS.rowGap}px`, true);
-      conditionalVar(style, '--madeit-row-gap-tablet', `${rowGapTablet}${rowGapUnitTablet || 'px'}`, `${DEFAULTS.rowGap}px`, typeof rowGapTablet === 'number');
-      conditionalVar(style, '--madeit-row-gap-mobile', `${rowGapMobile}${rowGapUnitMobile || 'px'}`, `${DEFAULTS.rowGap}px`, typeof rowGapMobile === 'number');
-    } else if (shouldMatchWrapperStyleVars) {
-      // Herstel alleen de vars die al in de markup stonden.
-      maybeSetVar(style, '--madeit-row-gap-desktop', getVarValue('--madeit-row-gap-desktop'));
-      maybeSetVar(style, '--madeit-row-gap-tablet', getVarValue('--madeit-row-gap-tablet'));
-      maybeSetVar(style, '--madeit-row-gap-mobile', getVarValue('--madeit-row-gap-mobile'));
-    }
+  // ── Row-gap ───────────────────────────────────────────────────────────────
+  if (typeof rowGap === 'number') {
+    setCssVar(style, '--madeit-row-gap-desktop', `${rowGap}${rowGapUnit || 'px'}`);
+    if (typeof rowGapTablet === 'number') setCssVar(style, '--madeit-row-gap-tablet', `${rowGapTablet}${rowGapUnitTablet || 'px'}`);
+    if (typeof rowGapMobile === 'number') setCssVar(style, '--madeit-row-gap-mobile', `${rowGapMobile}${rowGapUnitMobile || 'px'}`);
   }
 
-  // ── Flex-direction (responsief via CSS-vars) ──────────────────────────────
-  if (shouldSerializeEnhancedLayoutVars) {
-    conditionalVar(style, '--madeit-flex-direction-desktop', flexDirection, DEFAULTS.flexDirection, typeof flexDirection === 'string' && flexDirection.length > 0);
-    conditionalVar(style, '--madeit-flex-direction-tablet', flexDirectionTablet, DEFAULTS.flexDirTablet, typeof flexDirectionTablet === 'string' && flexDirectionTablet.length > 0);
-    conditionalVar(style, '--madeit-flex-direction-mobile', flexDirectionMobile, DEFAULTS.flexDirMobile, typeof flexDirectionMobile === 'string' && flexDirectionMobile.length > 0);
-  }
+  // ── Flex-direction ────────────────────────────────────────────────────────
+  if (typeof flexDirection === 'string' && flexDirection.length > 0) setCssVar(style, '--madeit-flex-direction-desktop', flexDirection);
+  if (typeof flexDirectionTablet === 'string' && flexDirectionTablet.length > 0) setCssVar(style, '--madeit-flex-direction-tablet', flexDirectionTablet);
+  if (typeof flexDirectionMobile === 'string' && flexDirectionMobile.length > 0) setCssVar(style, '--madeit-flex-direction-mobile', flexDirectionMobile);
 
-  // ── Align-items (responsief via CSS-vars) ─────────────────────────────────
-  if (shouldSerializeEnhancedLayoutVars) {
-    conditionalVar(style, '--madeit-align-items-desktop', alignItems, DEFAULTS.alignItems, typeof alignItems === 'string' && alignItems.length > 0);
-    conditionalVar(style, '--madeit-align-items-tablet', alignItemsTablet, undefined, typeof alignItemsTablet === 'string' && alignItemsTablet.length > 0);
-    conditionalVar(style, '--madeit-align-items-mobile', alignItemsMobile, undefined, typeof alignItemsMobile === 'string' && alignItemsMobile.length > 0);
-  }
+  // ── Align-items ───────────────────────────────────────────────────────────
+  if (typeof alignItems === 'string' && alignItems.length > 0) setCssVar(style, '--madeit-align-items-desktop', alignItems);
+  if (typeof alignItemsTablet === 'string' && alignItemsTablet.length > 0) setCssVar(style, '--madeit-align-items-tablet', alignItemsTablet);
+  if (typeof alignItemsMobile === 'string' && alignItemsMobile.length > 0) setCssVar(style, '--madeit-align-items-mobile', alignItemsMobile);
 
-  // ── Justify-content (responsief via CSS-vars) ─────────────────────────────
-  if (shouldSerializeEnhancedLayoutVars) {
-    conditionalVar(style, '--madeit-justify-content-desktop', justifyContent, DEFAULTS.justifyContent, typeof justifyContent === 'string' && justifyContent.length > 0);
-    conditionalVar(style, '--madeit-justify-content-tablet', justifyContentTablet, undefined, typeof justifyContentTablet === 'string' && justifyContentTablet.length > 0);
-    conditionalVar(style, '--madeit-justify-content-mobile', justifyContentMobile, undefined, typeof justifyContentMobile === 'string' && justifyContentMobile.length > 0);
-  }
+  // ── Justify-content ───────────────────────────────────────────────────────
+  if (typeof justifyContent === 'string' && justifyContent.length > 0) setCssVar(style, '--madeit-justify-content-desktop', justifyContent);
+  if (typeof justifyContentTablet === 'string' && justifyContentTablet.length > 0) setCssVar(style, '--madeit-justify-content-tablet', justifyContentTablet);
+  if (typeof justifyContentMobile === 'string' && justifyContentMobile.length > 0) setCssVar(style, '--madeit-justify-content-mobile', justifyContentMobile);
 
-  // ── Flex-wrap (responsief via CSS-vars) ───────────────────────────────────
-  if (shouldSerializeEnhancedLayoutVars) {
-    conditionalVar(style, '--madeit-flex-wrap-desktop', flexWrap, DEFAULTS.flexWrap, typeof flexWrap === 'string' && flexWrap.length > 0);
-    conditionalVar(style, '--madeit-flex-wrap-tablet', flexWrapTablet, undefined, typeof flexWrapTablet === 'string' && flexWrapTablet.length > 0);
-    conditionalVar(style, '--madeit-flex-wrap-mobile', flexWrapMobile, undefined, typeof flexWrapMobile === 'string' && flexWrapMobile.length > 0);
-  }
+  // ── Flex-wrap ─────────────────────────────────────────────────────────────
+  if (typeof flexWrap === 'string' && flexWrap.length > 0) setCssVar(style, '--madeit-flex-wrap-desktop', flexWrap);
+  if (typeof flexWrapTablet === 'string' && flexWrapTablet.length > 0) setCssVar(style, '--madeit-flex-wrap-tablet', flexWrapTablet);
+  if (typeof flexWrapMobile === 'string' && flexWrapMobile.length > 0) setCssVar(style, '--madeit-flex-wrap-mobile', flexWrapMobile);
 
   // ── Container margin ──────────────────────────────────────────────────────
-  const shouldApplyPaddingOnRow = containerPaddingOnRow === true;
-  if (shouldPreserveLegacyInlineSpacing) {
-    // Oud formaat: directe marginTop / marginBottom inline.
-    if (containerMargin && typeof containerMargin === 'object') {
-      applyLegacyInlineSpacing(style, [{
-        cssProp: 'margin-top',
-        reactProp: 'marginTop',
-        value: containerMargin.top
-      }, {
-        cssProp: 'margin-bottom',
-        reactProp: 'marginBottom',
-        value: containerMargin.bottom
-      }], wrapperStyleNormalized, shouldMatchWrapperStyleVars);
-    }
+  if (containerMargin && typeof containerMargin === 'object') {
+    if (containerMargin.top !== undefined) setCssVar(style, '--madeit-container-margin-top-desktop', containerMargin.top);
+    if (containerMargin.bottom !== undefined) setCssVar(style, '--madeit-container-margin-bottom-desktop', containerMargin.bottom);
+  }
+  if (containerMarginTablet && typeof containerMarginTablet === 'object') {
+    setCssVar(style, '--madeit-container-margin-top-tablet', containerMarginTablet.top);
+    setCssVar(style, '--madeit-container-margin-bottom-tablet', containerMarginTablet.bottom);
+  }
+  if (containerMarginMobile && typeof containerMarginMobile === 'object') {
+    setCssVar(style, '--madeit-container-margin-top-mobile', containerMarginMobile.top);
+    setCssVar(style, '--madeit-container-margin-bottom-mobile', containerMarginMobile.bottom);
+  }
 
-    // Padding op de wrapper (niet op de row) — legacy formaat.
-    if (!shouldApplyPaddingOnRow && containerPadding && typeof containerPadding === 'object') {
-      applyLegacyInlineSpacing(style, [{
-        cssProp: 'padding-top',
-        reactProp: 'paddingTop',
-        value: containerPadding.top
-      }, {
-        cssProp: 'padding-right',
-        reactProp: 'paddingRight',
-        value: containerPadding.right
-      }, {
-        cssProp: 'padding-bottom',
-        reactProp: 'paddingBottom',
-        value: containerPadding.bottom
-      }, {
-        cssProp: 'padding-left',
-        reactProp: 'paddingLeft',
-        value: containerPadding.left
-      }], wrapperStyleNormalized, shouldMatchWrapperStyleVars);
-    }
-  } else {
-    // Nieuw formaat: CSS-variabelen.
-    // Gebruik setCssVar (altijd schrijven) — NIET maybeSetVar — zodat nieuwe
-    // blocks de vars ook krijgen (maybeSetVar slaat over als de var nog niet
-    // in de opgeslagen markup stond, wat voor nieuwe blocks altijd het geval is).
-    if (containerMargin && typeof containerMargin === 'object') {
-      if (containerMargin.top !== undefined) setCssVar(style, '--madeit-container-margin-top-desktop', containerMargin.top);
-      if (containerMargin.bottom !== undefined) setCssVar(style, '--madeit-container-margin-bottom-desktop', containerMargin.bottom);
-    }
-    if (containerMarginTablet && typeof containerMarginTablet === 'object') {
-      setCssVar(style, '--madeit-container-margin-top-tablet', containerMarginTablet.top);
-      setCssVar(style, '--madeit-container-margin-bottom-tablet', containerMarginTablet.bottom);
-    }
-    if (containerMarginMobile && typeof containerMarginMobile === 'object') {
-      setCssVar(style, '--madeit-container-margin-top-mobile', containerMarginMobile.top);
-      setCssVar(style, '--madeit-container-margin-bottom-mobile', containerMarginMobile.bottom);
-    }
-
-    // Padding op de wrapper (niet op de row) — nieuw CSS-var formaat.
-    // Inline paddingTop/Right/Bottom/Left worden niet meer geserialiseerd:
-    // de SCSS leest uitsluitend de CSS-vars. Dit vermijdt ook conflicten
-    // met Bootstrap container padding.
-    if (!shouldApplyPaddingOnRow) {
-      setSpacingVars(style, 'madeit-container-padding', containerPadding, 'desktop');
-      setSpacingVars(style, 'madeit-container-padding', containerPaddingTablet, 'tablet');
-      setSpacingVars(style, 'madeit-container-padding', containerPaddingMobile, 'mobile');
-    }
+  // ── Container padding (op wrapper, niet op row) ───────────────────────────
+  if (containerPaddingOnRow !== true) {
+    setSpacingVars(style, 'madeit-container-padding', containerPadding, 'desktop');
+    setSpacingVars(style, 'madeit-container-padding', containerPaddingTablet, 'tablet');
+    setSpacingVars(style, 'madeit-container-padding', containerPaddingMobile, 'mobile');
   }
   return style;
 }
 
 /**
  * Bouwt het stijl-object voor de `.row`-div.
- * Bevat padding wanneer `containerPaddingOnRow` is ingeschakeld.
  */
-function buildRowStyle(attributes, legacy) {
+function buildRowStyle(attributes) {
   const {
     containerPadding,
     containerPaddingTablet,
     containerPaddingMobile,
     containerPaddingOnRow
   } = attributes;
-  const {
-    shouldPreserveLegacyInlineSpacing,
-    wrapperStyleNormalized,
-    shouldMatchWrapperStyleVars
-  } = legacy;
   if (containerPaddingOnRow !== true) return {};
   const rowStyle = {};
-  if (shouldPreserveLegacyInlineSpacing) {
-    if (containerPadding && typeof containerPadding === 'object') {
-      applyLegacyInlineSpacing(rowStyle, [{
-        cssProp: 'padding-top',
-        reactProp: 'paddingTop',
-        value: containerPadding.top
-      }, {
-        cssProp: 'padding-right',
-        reactProp: 'paddingRight',
-        value: containerPadding.right
-      }, {
-        cssProp: 'padding-bottom',
-        reactProp: 'paddingBottom',
-        value: containerPadding.bottom
-      }, {
-        cssProp: 'padding-left',
-        reactProp: 'paddingLeft',
-        value: containerPadding.left
-      }], wrapperStyleNormalized, shouldMatchWrapperStyleVars);
-    }
-  } else {
-    // Nieuw formaat: alleen CSS-vars, geen inline padding.
-    // De SCSS op .madeit-container-row leest uitsluitend de vars.
-    setSpacingVars(rowStyle, 'madeit-container-row-padding', containerPadding, 'desktop');
-    setSpacingVars(rowStyle, 'madeit-container-row-padding', containerPaddingTablet, 'tablet');
-    setSpacingVars(rowStyle, 'madeit-container-row-padding', containerPaddingMobile, 'mobile');
-  }
+  setSpacingVars(rowStyle, 'madeit-container-row-padding', containerPadding, 'desktop');
+  setSpacingVars(rowStyle, 'madeit-container-row-padding', containerPaddingTablet, 'tablet');
+  setSpacingVars(rowStyle, 'madeit-container-row-padding', containerPaddingMobile, 'mobile');
   return rowStyle;
 }
 
 /**
- * Bouwt het stijl-object voor het inner child-element (boxed layout).
+ * Bouwt het stijl-object voor het boxed child-element (alleen container-content-boxed).
  */
-function buildChildStyle(attributes, defaultSize, backgroundStyle, applyBgToInner) {
+function buildChildStyle(attributes, defaultSize) {
+  if (defaultSize !== 'container-content-boxed') return {};
   const {
     rowBackgroundColor,
     rowTextColor,
@@ -8011,62 +8887,41 @@ function buildChildStyle(attributes, defaultSize, backgroundStyle, applyBgToInne
     rowPadding
   } = attributes;
   const styleChild = {};
-  if (applyBgToInner) {
-    Object.assign(styleChild, backgroundStyle);
-  }
-  if (defaultSize === 'container-content-boxed') {
-    const rowBgClass = rowBackgroundColor ? (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.getColorClassName)('background-color', rowBackgroundColor) : undefined;
-    const rowTextClass = rowTextColor ? (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.getColorClassName)('color', rowTextColor) : undefined;
-    if (!rowBgClass) styleChild.backgroundColor = rowBackgroundColor;
-    if (!rowTextClass) styleChild.color = rowTextColor;
-
-    // Row margin + padding (alleen voor boxed layouts).
-    const spacingProps = [[rowMargin, 'margin'], [rowPadding, 'padding']];
-    for (const [spacing, prop] of spacingProps) {
-      if (spacing && typeof spacing === 'object') {
-        if (spacing.top !== undefined) styleChild[`${prop}Top`] = spacing.top;
-        if (spacing.right !== undefined) styleChild[`${prop}Right`] = spacing.right;
-        if (spacing.bottom !== undefined) styleChild[`${prop}Bottom`] = spacing.bottom;
-        if (spacing.left !== undefined) styleChild[`${prop}Left`] = spacing.left;
-      }
+  const rowBgClass = rowBackgroundColor ? (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.getColorClassName)('background-color', rowBackgroundColor) : undefined;
+  const rowTextClass = rowTextColor ? (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.getColorClassName)('color', rowTextColor) : undefined;
+  if (!rowBgClass) styleChild.backgroundColor = rowBackgroundColor;
+  if (!rowTextClass) styleChild.color = rowTextColor;
+  const spacingProps = [[rowMargin, 'margin'], [rowPadding, 'padding']];
+  for (const [spacing, prop] of spacingProps) {
+    if (spacing && typeof spacing === 'object') {
+      if (spacing.top !== undefined) styleChild[`${prop}Top`] = spacing.top;
+      if (spacing.right !== undefined) styleChild[`${prop}Right`] = spacing.right;
+      if (spacing.bottom !== undefined) styleChild[`${prop}Bottom`] = spacing.bottom;
+      if (spacing.left !== undefined) styleChild[`${prop}Left`] = spacing.left;
     }
   }
   return styleChild;
 }
 
-// ─── 7. Hoofdfunctie save() ──────────────────────────────────────────────────
+// ─── 5. Hoofd save()-functie ──────────────────────────────────────────────────
 
 /**
  * Genereert de opgeslagen HTML voor het madeit-block-content block.
  *
- * MARKUP-VARIANTEN (in volgorde van controlestroom):
+ * STRUCTUUR (altijd):
  *
- *   A. container-content-boxed
- *      <HtmlTag>
- *        <div.row> <div.col> <div.classesChild> <div.row> <InnerBlocks /> </div> </div> </div> </div>
- *      </HtmlTag>
+ *   <HtmlTag class="wp-block-madeit-block-content container-fluid madeit-block-content--frontend ..." style="...">
+ *     <div class="{container | container-fluid}">      ← bepaald door `size`
+ *       <div class="row ...">
+ *         <InnerBlocks />
+ *       </div>
+ *     </div>
+ *   </HtmlTag>
  *
- *   B. Legacy boxed inner row  (row > col > container > row)
- *      <HtmlTag>
- *        <div.row> <div.col> <div.container> <div.row> <InnerBlocks /> </div> </div> </div> </div>
- *      </HtmlTag>
- *
- *   C. Legacy direct row  (geen inner container)
- *      <HtmlTag>
- *        <div.row> <InnerBlocks /> </div>
- *      </HtmlTag>
- *
- *   D. Inner background wrapper
- *      <HtmlTag>
- *        <div.classesChild> <div.row> <InnerBlocks /> </div> </div>
- *      </HtmlTag>
- *
- *   E. Standaard (met of zonder content-width wrapper)
- *      <HtmlTag>
- *        [<div.container>]  ← alleen als shouldWrapContent
- *          <div.row> <InnerBlocks /> </div>
- *        [</div>]
- *      </HtmlTag>
+ * Uitzonderingen:
+ *   A. container-content-boxed → inner div = container, met extra boxed wrapper
+ *   B. Legacy boxed inner row  → row > col > container > row
+ *   C. Legacy direct row       → geen inner div
  */
 function save(props) {
   const {
@@ -8074,70 +8929,65 @@ function save(props) {
     className
   } = props;
 
-  // ── Kleur-classes ──────────────────────────────────────────────────────
+  // ── Kleur-classes ──────────────────────────────────────────────────────────
   const containerBgClass = attributes.containerBackgroundColor ? (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.getColorClassName)('background-color', attributes.containerBackgroundColor) : undefined;
   const rowBgClass = attributes.rowBackgroundColor ? (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.getColorClassName)('background-color', attributes.rowBackgroundColor) : undefined;
   const rowTextClass = attributes.rowTextColor ? (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.getColorClassName)('color', attributes.rowTextColor) : undefined;
-  const colorClasses = {
-    containerBgClass,
-    rowBgClass,
-    rowTextClass
-  };
 
-  // ── Legacy-detectie ────────────────────────────────────────────────────
-  const legacy = detectLegacyFlags(attributes);
+  // ── Size bepalen ───────────────────────────────────────────────────────────
+  // `size` bepaalt de INNER div, NIET de outer HtmlTag.
+  // De outer HtmlTag is altijd container-fluid.
+  const rawSize = typeof attributes.size === 'string' ? attributes.size.trim() : '';
+  const innerSize = ['container', 'container-fluid', 'container-content-boxed'].includes(rawSize) ? rawSize : 'container'; // fallback
 
-  // ── Grootte / layout berekening ────────────────────────────────────────
-  const defaultSize = resolveSize(attributes, legacy);
-  const outerSizeNormalized = defaultSize === 'container' ? 'container' : 'container-fluid';
+  // De klasse voor de inner div (tweede niveau):
+  //   - container-content-boxed → inner div = 'container'
+  //   - container               → inner div = 'container'
+  //   - container-fluid         → inner div = 'container-fluid'
+  const innerDivClass = innerSize === 'container-fluid' ? 'container-fluid' : 'container';
 
-  // Content-breedte (voor boxed outer containers met fluid inner content).
-  const hasContentWidth = typeof attributes.contentWidth === 'string' && attributes.contentWidth.length > 0;
-  const contentWidthResolvedRaw = hasContentWidth ? attributes.contentWidth : defaultSize === 'container-content-boxed' ? 'container' : outerSizeNormalized;
-
-  // Als de outer container al boxed is, kan de content niet full-width zijn.
-  const contentWidthNormalized = outerSizeNormalized === 'container' || contentWidthResolvedRaw !== 'container-fluid' ? 'container' : 'container-fluid';
-
-  // De achtergrond staat op het inner element als de layout boxed is
-  // (zodat padding/margin van de wrapper de achtergrond niet beïnvloedt).
-  const applyBgToInner = defaultSize === 'container' && !legacy.shouldUseLegacyBoxedMarkup && !legacy.hasDirectRowWrapper;
-
-  // ── Stijlen bouwen ─────────────────────────────────────────────────────
+  // ── Stijlen bouwen ─────────────────────────────────────────────────────────
   const backgroundStyle = buildBackgroundStyle(attributes);
-  const wrapperStyle = buildWrapperStyle(attributes, legacy, applyBgToInner, backgroundStyle);
-  const rowStyle = buildRowStyle(attributes, legacy);
-  const childStyle = buildChildStyle(attributes, defaultSize, backgroundStyle, applyBgToInner);
+  const wrapperStyle = buildWrapperStyle(attributes, backgroundStyle);
+  const rowStyle = buildRowStyle(attributes);
+  const childStyle = buildChildStyle(attributes, innerSize);
 
-  // ── Klassen bouwen ─────────────────────────────────────────────────────
-  // Merge custom classes from both attributes (stored) and props (Gutenberg default)
+  // ── Klassen bouwen voor de outer HtmlTag ───────────────────────────────────
   const customClassNames = [typeof attributes.className === 'string' && attributes.className.trim() ? attributes.className.trim() : '', typeof className === 'string' && className.trim() ? className.trim() : ''].filter(Boolean).join(' ');
   const extraClass = filterExtraClasses(customClassNames);
-  const wrapperClass = buildWrapperClasses(attributes, extraClass, defaultSize, legacy, colorClasses, applyBgToInner);
-  const childClass = buildChildClasses(attributes, defaultSize, contentWidthNormalized, colorClasses, applyBgToInner);
+  const {
+    hideOnDesktop,
+    hideOnTablet,
+    hideOnMobile,
+    verticalAlignment
+  } = attributes;
 
-  // ── Block props (Gutenberg wrapper) ────────────────────────────────────
-  //
-  // BELANGRIJK: useBlockProps.save() merget de meegegeven className met de
-  // opgeslagen className uit de database. Die opgeslagen className kan nog
-  // oude klassen bevatten (bv. `container` terwijl de block nu `container-fluid`
-  // is). Daarom mergen we blockProps.className met onze zorgvuldig opgebouwde
-  // wrapperClass, waarbij onze managed classes prioriteit hebben maar we ook
-  // alle extra classes die Gutenberg toevoegt behouden.
+  // De outer wrapper is ALTIJD container-fluid.
+  // Tekstkleur erft overal via de wrapper.
+  const wrapperClass = classnames__WEBPACK_IMPORTED_MODULE_1___default()('wp-block-madeit-block-content', 'container-fluid', FRONTEND_WRAPPER_CLASS, extraClass, {
+    'is-hidden-desktop': !!hideOnDesktop,
+    'is-hidden-tablet': !!hideOnTablet,
+    'is-hidden-mobile': !!hideOnMobile,
+    'has-text-color': !!rowTextClass,
+    [rowTextClass]: !!rowTextClass,
+    'has-background': !!containerBgClass,
+    [containerBgClass]: !!containerBgClass
+  });
+
+  // ── Block props ────────────────────────────────────────────────────────────
   const hasStyleProps = Object.keys(wrapperStyle).length > 0;
   const blockProps = _wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.useBlockProps.save({
     className: wrapperClass,
     style: hasStyleProps ? wrapperStyle : undefined
   });
 
-  // Merge onze classes met eventuele extra classes van Gutenberg
-  // (bijv. alignment classes of andere door plugins toegevoegde classes).
-  // Classnames() zorgt dat dubbelen eruit gefilterd worden.
-  blockProps.className = classnames__WEBPACK_IMPORTED_MODULE_1___default()(wrapperClass, blockProps.className);
+  // Zorg dat onze wrapperClass altijd de basis vormt (geen dubbelen).
+  // blockProps.className = classnames( wrapperClass, blockProps.className );
 
-  // ── HTML-tag ───────────────────────────────────────────────────────────
+  // ── HTML-tag ───────────────────────────────────────────────────────────────
   const HtmlTag = ALLOWED_HTML_TAGS.includes(attributes.htmlTag) ? attributes.htmlTag : 'div';
 
-  // ── Row props (flex-richting data-attributen) ──────────────────────────
+  // ── Row props ──────────────────────────────────────────────────────────────
   const {
     flexDirection,
     flexDirectionTablet,
@@ -8163,32 +9013,44 @@ function save(props) {
     ...baseRowProps,
     style: rowStyle
   } : baseRowProps;
-  const innerRowProps = baseRowProps;
 
-  // ── JSX renderen ───────────────────────────────────────────────────────
+  // ── JSX renderen ───────────────────────────────────────────────────────────
 
   // VARIANT A: container-content-boxed
-  if (defaultSize === 'container-content-boxed') {
+  // Inner div = 'container', plus extra boxed child wrapper.
+  if (innerSize === 'container-content-boxed') {
+    const childBgClass = rowBgClass;
+    const childClassNames = classnames__WEBPACK_IMPORTED_MODULE_1___default()({
+      [`are-vertically-aligned-${verticalAlignment}`]: !!verticalAlignment,
+      'has-background': !!childBgClass || !!attributes.rowBackgroundColor,
+      [childBgClass]: !!childBgClass,
+      'has-text-color': !!rowTextClass,
+      [rowTextClass]: !!rowTextClass
+    });
     return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(HtmlTag, {
       ...blockProps
+    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "container"
     }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       ...outerRowProps
     }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: "col"
     }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: childClass,
+      className: childClassNames,
       style: childStyle
     }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      ...innerRowProps
-    }, '\n\n', (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InnerBlocks.Content, null), '\n\n')))));
+      className: rowClassName
+    }, '\n\n', (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InnerBlocks.Content, null), '\n\n'))))));
   }
 
   // VARIANT B: legacy boxed inner row (row > col > container > row)
-  if (legacy.hasLegacyBoxedInnerRowWrapper) {
+  if (typeof attributes.boxedInnerRowClassName === 'string' && attributes.boxedInnerRowClassName.trim().length > 0) {
     const innerContainerClass = typeof attributes.boxedInnerContainerClassName === 'string' && attributes.boxedInnerContainerClassName.trim().length > 0 ? attributes.boxedInnerContainerClassName.trim() : 'container';
-    const innerRowClass = typeof attributes.boxedInnerRowClassName === 'string' && attributes.boxedInnerRowClassName.trim().length > 0 ? attributes.boxedInnerRowClassName.trim() : innerRowProps.className;
+    const innerRowClass = attributes.boxedInnerRowClassName.trim() || rowClassName;
     return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(HtmlTag, {
       ...blockProps
+    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: innerDivClass
     }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       ...outerRowProps
     }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
@@ -8196,51 +9058,31 @@ function save(props) {
     }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       className: innerContainerClass
     }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      ...innerRowProps,
       className: innerRowClass
-    }, '\n\n', (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InnerBlocks.Content, null), '\n\n')))));
+    }, '\n\n', (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InnerBlocks.Content, null), '\n\n'))))));
   }
 
-  // VARIANT C: legacy direct row (geen inner container)
-  if (legacy.hasDirectRowWrapper) {
+  // VARIANT C: legacy direct row (geen inner container div)
+  if (typeof attributes.directRowClassName === 'string' && attributes.directRowClassName.trim().length > 0) {
     return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(HtmlTag, {
       ...blockProps
     }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      ...outerRowProps
-    }, '\n\n', (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InnerBlocks.Content, null), '\n\n'));
-  }
-
-  // VARIANT D: inner background wrapper (achtergrond op inner element)
-  if (applyBgToInner) {
-    return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(HtmlTag, {
-      ...blockProps
-    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: childClass,
-      style: childStyle
+      className: innerDivClass
     }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
       ...outerRowProps
     }, '\n\n', (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InnerBlocks.Content, null), '\n\n')));
   }
 
-  // VARIANT E: standaard — met optionele content-width wrapper
-  const shouldWrapContent = outerSizeNormalized !== 'container' && hasContentWidth && contentWidthNormalized !== outerSizeNormalized;
-  if (shouldWrapContent) {
-    return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(HtmlTag, {
-      ...blockProps
-    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      className: classnames__WEBPACK_IMPORTED_MODULE_1___default()({
-        'container': contentWidthNormalized === 'container',
-        'container-fluid': contentWidthNormalized === 'container-fluid'
-      })
-    }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-      ...outerRowProps
-    }, '\n\n', (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InnerBlocks.Content, null), '\n\n')));
-  }
+  // VARIANT D: standaard
+  // HtmlTag = altijd container-fluid
+  // Inner div = container of container-fluid op basis van `size`
   return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(HtmlTag, {
     ...blockProps
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: innerDivClass
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     ...outerRowProps
-  }, '\n\n', (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InnerBlocks.Content, null), '\n\n'));
+  }, '\n\n', (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_2__.InnerBlocks.Content, null), '\n\n')));
 }
 
 /***/ },
@@ -8268,7 +9110,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash */ "lodash");
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_1__);
 /**
- * External dependencies
+ * utils.js — madeit-block-content
+ *
  */
 
 
@@ -8432,7 +9275,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__);
 
 /**
- * WordPress dependencies
+ * variations.js — madeit-block-content
+ *
  */
 
 
@@ -9011,7 +9855,7 @@ function memize(fn, options) {
 (module) {
 
 "use strict";
-module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"madeit/block-content","version":"2.0.0","title":"Made I.T. Container","category":"madeit","icon":"<svg xmlns=\\"http://www.w3.org/2000/svg\\" xmlns:xlink=\\"http://www.w3.org/1999/xlink\\" xmlns:serif=\\"http://www.serif.com/\\" width=\\"30\\" height=\\"30\\" viewBox=\\"0 0 135 135\\" version=\\"1.1\\" xml:space=\\"preserve\\" style=\\"fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;\\"><g transform=\\"matrix(1,0,0,1,-282.404386,-214.957044)\\"><g id=\\"SVGRepo_iconCarrier\\" transform=\\"matrix(7.458333,0,0,7.458333,260.029386,192.582044)\\"><path id=\\"形状\\" d=\\"M3,5C3,3.895 3.895,3 5,3L19,3C20.105,3 21,3.895 21,5L21,19C21,20.105 20.105,21 19,21L5,21C3.895,21 3,20.105 3,19L3,5ZM14,5L10,5L10,19L14,19L14,5ZM16,5L19,5L19,19L16,19L16,5ZM8,19L8,5L5,5L5,19L8,19Z\\" style=\\"fill:rgb(71,106,138);\\"/></g></g></svg>","description":"A container block with multiple options for styling and layout.","keywords":["content","columns","madeit"],"supports":{"html":false},"textdomain":"content-container","editorScript":"file:./build/index.js","editorStyle":"file:./build/index.css","style":"file:./build/style-index.css","attributes":{"wrapperClassName":{"type":"string","source":"attribute","selector":".wp-block-madeit-block-content","attribute":"class"},"wrapperStyle":{"type":"string","source":"attribute","selector":".wp-block-madeit-block-content","attribute":"style"},"directRowClassName":{"type":"string","source":"attribute","selector":".wp-block-madeit-block-content > .row","attribute":"class"},"boxedInnerContainerClassName":{"type":"string","source":"attribute","selector":".wp-block-madeit-block-content > .row > .col > .container","attribute":"class"},"boxedInnerRowClassName":{"type":"string","source":"attribute","selector":".wp-block-madeit-block-content > .row > .col > .container > .row","attribute":"class"},"verticalAlignment":{"type":"string"},"backgroundType":{"type":"string"},"containerBackgroundColor":{"type":"string"},"customContainerBackgroundColor":{"type":"string"},"containerBackgroundImage":{"type":"object"},"containerBackgroundPosition":{"type":"string"},"containerBackgroundRepeat":{"type":"string"},"containerBackgroundSize":{"type":"string"},"containerBackgroundGradient":{"type":"object"},"size":{"type":"string","default":"container"},"contentWidth":{"type":"string"},"containerMargin":{"type":"object"},"containerMarginTablet":{"type":"object"},"containerMarginMobile":{"type":"object"},"containerPadding":{"type":"object"},"containerPaddingTablet":{"type":"object"},"containerPaddingMobile":{"type":"object"},"containerPaddingOnRow":{"type":"boolean"},"rowBackgroundColor":{"type":"string"},"customRowBackgroundColor":{"type":"string"},"rowTextColor":{"type":"string"},"customRowTextColor":{"type":"string"},"rowMargin":{"type":"object"},"rowPadding":{"type":"object"},"overflow":{"type":"string"},"htmlTag":{"type":"string","default":"div"},"flexDirection":{"type":"string"},"flexDirectionTablet":{"type":"string"},"flexDirectionMobile":{"type":"string"},"alignItems":{"type":"string"},"alignItemsTablet":{"type":"string"},"alignItemsMobile":{"type":"string"},"justifyContent":{"type":"string"},"justifyContentTablet":{"type":"string"},"justifyContentMobile":{"type":"string"},"minHeight":{"type":"number"},"minHeightUnit":{"type":"string","default":"px"},"minHeightTablet":{"type":"number"},"minHeightUnitTablet":{"type":"string","default":"px"},"minHeightMobile":{"type":"number"},"minHeightUnitMobile":{"type":"string","default":"px"},"maxWidth":{"type":"number"},"maxWidthUnit":{"type":"string","default":"px"},"maxWidthTablet":{"type":"number"},"maxWidthUnitTablet":{"type":"string","default":"px"},"maxWidthMobile":{"type":"number"},"maxWidthUnitMobile":{"type":"string","default":"px"},"rowGap":{"type":"number"},"rowGapUnit":{"type":"string","default":"px"},"rowGapTablet":{"type":"number"},"rowGapUnitTablet":{"type":"string","default":"px"},"rowGapMobile":{"type":"number"},"rowGapUnitMobile":{"type":"string","default":"px"},"columnsCount":{"type":"number"},"flexWrap":{"type":"string"},"flexWrapTablet":{"type":"string"},"flexWrapMobile":{"type":"string"},"hideOnDesktop":{"type":"boolean"},"hideOnTablet":{"type":"boolean"},"hideOnMobile":{"type":"boolean"},"madeitHasUserEdits":{"type":"boolean","default":false},"className":{"type":"string"}}}');
+module.exports = /*#__PURE__*/JSON.parse('{"$schema":"https://schemas.wp.org/trunk/block.json","apiVersion":3,"name":"madeit/block-content","version":"2.0.0","title":"Made I.T. Container","category":"madeit","icon":"<svg xmlns=\\"http://www.w3.org/2000/svg\\" xmlns:xlink=\\"http://www.w3.org/1999/xlink\\" xmlns:serif=\\"http://www.serif.com/\\" width=\\"30\\" height=\\"30\\" viewBox=\\"0 0 135 135\\" version=\\"1.1\\" xml:space=\\"preserve\\" style=\\"fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;\\"><g transform=\\"matrix(1,0,0,1,-282.404386,-214.957044)\\"><g id=\\"SVGRepo_iconCarrier\\" transform=\\"matrix(7.458333,0,0,7.458333,260.029386,192.582044)\\"><path id=\\"形状\\" d=\\"M3,5C3,3.895 3.895,3 5,3L19,3C20.105,3 21,3.895 21,5L21,19C21,20.105 20.105,21 19,21L5,21C3.895,21 3,20.105 3,19L3,5ZM14,5L10,5L10,19L14,19L14,5ZM16,5L19,5L19,19L16,19L16,5ZM8,19L8,5L5,5L5,19L8,19Z\\" style=\\"fill:rgb(71,106,138);\\"/></g></g></svg>","description":"A container block with multiple options for styling and layout.","keywords":["content","columns","madeit"],"supports":{"html":false},"textdomain":"content-container","editorScript":"file:./build/index.js","editorStyle":"file:./build/index.css","style":"file:./build/style-index.css","attributes":{"wrapperClassName":{"type":"string","source":"attribute","selector":".wp-block-madeit-block-content","attribute":"class"},"wrapperStyle":{"type":"string","source":"attribute","selector":".wp-block-madeit-block-content","attribute":"style"},"directRowClassName":{"type":"string","source":"attribute","selector":".wp-block-madeit-block-content > .row","attribute":"class"},"boxedInnerContainerClassName":{"type":"string","source":"attribute","selector":".wp-block-madeit-block-content > .row > .col > .container","attribute":"class"},"boxedInnerRowClassName":{"type":"string","source":"attribute","selector":".wp-block-madeit-block-content > .row > .col > .container > .row","attribute":"class"},"verticalAlignment":{"type":"string"},"backgroundType":{"type":"string"},"containerBackgroundColor":{"type":"string"},"customContainerBackgroundColor":{"type":"string"},"containerBackgroundImage":{"type":"object"},"containerBackgroundPosition":{"type":"string"},"containerBackgroundRepeat":{"type":"string"},"containerBackgroundSize":{"type":"string"},"containerBackgroundGradient":{"type":"object"},"size":{"type":"string","default":"container"},"contentWidth":{"type":"string"},"containerMargin":{"type":"object"},"containerMarginTablet":{"type":"object"},"containerMarginMobile":{"type":"object"},"marginUnit":{"type":"string","default":"px"},"containerPadding":{"type":"object"},"containerPaddingTablet":{"type":"object"},"containerPaddingMobile":{"type":"object"},"containerPaddingOnRow":{"type":"boolean"},"paddingUnit":{"type":"string","default":"px"},"rowBackgroundColor":{"type":"string"},"customRowBackgroundColor":{"type":"string"},"rowTextColor":{"type":"string"},"customRowTextColor":{"type":"string"},"rowMargin":{"type":"object"},"rowPadding":{"type":"object"},"overflow":{"type":"string"},"htmlTag":{"type":"string","default":"div"},"flexDirection":{"type":"string"},"flexDirectionTablet":{"type":"string"},"flexDirectionMobile":{"type":"string"},"alignItems":{"type":"string"},"alignItemsTablet":{"type":"string"},"alignItemsMobile":{"type":"string"},"justifyContent":{"type":"string"},"justifyContentTablet":{"type":"string"},"justifyContentMobile":{"type":"string"},"minHeight":{"type":"number"},"minHeightUnit":{"type":"string","default":"px"},"minHeightTablet":{"type":"number"},"minHeightUnitTablet":{"type":"string","default":"px"},"minHeightMobile":{"type":"number"},"minHeightUnitMobile":{"type":"string","default":"px"},"maxWidth":{"type":"number"},"maxWidthUnit":{"type":"string","default":"px"},"maxWidthTablet":{"type":"number"},"maxWidthUnitTablet":{"type":"string","default":"px"},"maxWidthMobile":{"type":"number"},"maxWidthUnitMobile":{"type":"string","default":"px"},"rowGap":{"type":"number"},"rowGapUnit":{"type":"string","default":"px"},"rowGapTablet":{"type":"number"},"rowGapUnitTablet":{"type":"string","default":"px"},"rowGapMobile":{"type":"number"},"rowGapUnitMobile":{"type":"string","default":"px"},"columnsCount":{"type":"number"},"flexWrap":{"type":"string"},"flexWrapTablet":{"type":"string"},"flexWrapMobile":{"type":"string"},"hideOnDesktop":{"type":"boolean"},"hideOnTablet":{"type":"boolean"},"hideOnMobile":{"type":"boolean"},"madeitHasUserEdits":{"type":"boolean","default":false},"className":{"type":"string"}}}');
 
 /***/ }
 

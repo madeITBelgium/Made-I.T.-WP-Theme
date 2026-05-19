@@ -19,81 +19,130 @@ wp.blocks.registerBlockStyle('core/image', {
  * Adds tablet/mobile column controls and exposes CSS variables.
  */
 ( function ( wp ) {
-    if ( ! wp || ! wp.hooks || ! wp.compose || ! wp.element ) return;
+    if ( ! wp || ! wp.hooks || ! wp.compose || ! wp.element ) {
+        return;
+    }
 
     var addFilter = wp.hooks.addFilter;
     var createHigherOrderComponent = wp.compose.createHigherOrderComponent;
     var Fragment = wp.element.Fragment;
 
-    // WP changed the package name from `wp.editor` to `wp.blockEditor`.
     var blockEditor = wp.blockEditor || wp.editor;
-    if ( ! blockEditor || ! wp.components || ! wp.i18n ) return;
+    if ( ! blockEditor || ! wp.components || ! wp.i18n ) {
+        return;
+    }
 
     var InspectorControls = blockEditor.InspectorControls;
     var PanelBody = wp.components.PanelBody;
     var RangeControl = wp.components.RangeControl;
     var __ = wp.i18n.__;
 
-    var BLOCK_NAME = ['core/post-template', 'core/group'];
+    var BLOCK_NAMES = [ 'core/post-template', 'core/group' ];
 
-    var getLayoutType = function ( attrs ) {
-        return attrs && attrs.layout && attrs.layout.type ? attrs.layout.type : undefined;
-    };
+    /**
+     * ---------------------------------------------------------
+     * Helpers
+     * ---------------------------------------------------------
+     */
 
-    var getDisplayLayoutType = function ( ctx ) {
-        return ctx && ctx.displayLayout && ctx.displayLayout.type
-            ? ctx.displayLayout.type
-            : undefined;
-    };
+    function isSupportedBlock( name ) {
+        return BLOCK_NAMES.includes( name );
+    }
 
-    var getDisplayLayoutColumns = function ( ctx ) {
-        var cols = ctx && ctx.displayLayout ? ctx.displayLayout.columns : undefined;
+    function getLayoutType( attrs ) {
+        return attrs?.layout?.type;
+    }
+
+    function getDisplayLayoutType( ctx ) {
+        return ctx?.displayLayout?.type;
+    }
+
+    function getDisplayLayoutColumns( ctx ) {
+        var cols = ctx?.displayLayout?.columns;
         return typeof cols === 'number' ? cols : undefined;
-    };
+    }
 
-    var getDesktopColumns = function ( attrs ) {
-        var count = attrs && attrs.layout ? attrs.layout.columnCount : undefined;
-        return typeof count === 'number' ? count : undefined;
-    };
+    function getDesktopColumns( attrs ) {
+        var val = attrs?.layout?.columnCount;
+        return typeof val === 'number' ? val : undefined;
+    }
+
+    function hasResponsiveSettings( attrs ) {
+        return (
+            typeof attrs?.madeitColumnsTablet === 'number' ||
+            typeof attrs?.madeitColumnsMobile === 'number'
+        );
+    }
+
+    function isGridLayout( props ) {
+        if ( ! props ) return false;
+
+        var layoutType = getLayoutType( props.attributes );
+        var displayLayoutType = getDisplayLayoutType( props.context );
+
+        if ( props.name === 'core/group' ) {
+            return layoutType === 'grid';
+        }
+
+        if ( props.name === 'core/post-template' ) {
+            return layoutType === 'grid' || displayLayoutType === 'flex';
+        }
+
+        return false;
+    }
+
+    /**
+     * ---------------------------------------------------------
+     * Attributes
+     * ---------------------------------------------------------
+     */
 
     addFilter(
         'blocks.registerBlockType',
-        'madeit/post-template-responsive-columns/attributes',
+        'madeit/responsive-columns/attributes',
         function ( settings, name ) {
-            if ( !BLOCK_NAME.includes(name) ) return settings;
 
-            settings.attributes = Object.assign( {}, settings.attributes, {
-                madeitColumnsTablet: { type: 'number' },
-                madeitColumnsMobile: { type: 'number' },
-            } );
+            if ( ! isSupportedBlock( name ) ) {
+                return settings;
+            }
+
+            settings.attributes = Object.assign(
+                {},
+                settings.attributes,
+                {
+                    madeitColumnsTablet: { type: 'number' },
+                    madeitColumnsMobile: { type: 'number' },
+                }
+            );
 
             return settings;
         }
     );
 
-    var withResponsiveColumnsControls = createHigherOrderComponent( function ( BlockEdit ) {
+    /**
+     * ---------------------------------------------------------
+     * Inspector controls
+     * ---------------------------------------------------------
+     */
+
+    var withControls = createHigherOrderComponent( function ( BlockEdit ) {
         return function ( props ) {
-            if ( !BLOCK_NAME.includes(props.name) ) {
+
+            if ( ! isSupportedBlock( props.name ) || ! isGridLayout( props ) ) {
                 return wp.element.createElement( BlockEdit, props );
             }
 
-            var layoutType = getLayoutType( props.attributes );
-            var displayLayoutType = getDisplayLayoutType( props.context );
+            var desktopCols = getDesktopColumns( props.attributes );
 
-            console.log( 'layoutType', layoutType, 'displayLayoutType', displayLayoutType );
-
-            // Support both true grid layout and the flex-based grid (Query displayLayout).
-            if ( layoutType !== 'grid' && displayLayoutType !== 'flex' ) {
-                return wp.element.createElement( BlockEdit, props );
+            if ( typeof desktopCols !== 'number' ) {
+                desktopCols = getDisplayLayoutColumns( props.context );
             }
-
-            var desktopCols =
-                getDesktopColumns( props.attributes ) || getDisplayLayoutColumns( props.context );
 
             var tabletCols =
                 typeof props.attributes.madeitColumnsTablet === 'number'
                     ? props.attributes.madeitColumnsTablet
                     : desktopCols;
+
             var mobileCols =
                 typeof props.attributes.madeitColumnsMobile === 'number'
                     ? props.attributes.madeitColumnsMobile
@@ -102,116 +151,115 @@ wp.blocks.registerBlockStyle('core/image', {
             return wp.element.createElement(
                 Fragment,
                 null,
+
                 wp.element.createElement( BlockEdit, props ),
+
                 wp.element.createElement(
                     InspectorControls,
                     null,
+
                     wp.element.createElement(
                         PanelBody,
                         {
                             title: __( 'Raster – responsive kolommen', 'madeit' ),
                             initialOpen: false,
                         },
+
                         wp.element.createElement( RangeControl, {
                             label: __( 'Kolommen (tablet)', 'madeit' ),
                             value: typeof tabletCols === 'number' ? tabletCols : 1,
                             onChange: function ( value ) {
-                                props.setAttributes( {
+                                props.setAttributes({
                                     madeitColumnsTablet:
                                         typeof value === 'number' ? value : undefined,
-                                } );
+                                });
                             },
                             min: 1,
                             max: 6,
-                        } ),
+                        }),
+
                         wp.element.createElement( RangeControl, {
                             label: __( 'Kolommen (mobiel)', 'madeit' ),
                             value: typeof mobileCols === 'number' ? mobileCols : 1,
                             onChange: function ( value ) {
-                                props.setAttributes( {
+                                props.setAttributes({
                                     madeitColumnsMobile:
                                         typeof value === 'number' ? value : undefined,
-                                } );
+                                });
                             },
                             min: 1,
                             max: 6,
-                        } )
+                        })
                     )
                 )
             );
         };
-    }, 'withResponsiveColumnsControls' );
+    }, 'withControls' );
 
     addFilter(
         'editor.BlockEdit',
-        'madeit/post-template-responsive-columns/controls',
-        withResponsiveColumnsControls
+        'madeit/responsive-columns/controls',
+        withControls
     );
 
-    var addStyleVars = function ( style, attrs ) {
-        var desktopCols = getDesktopColumns( attrs );
-        var tabletCols =
-            typeof attrs.madeitColumnsTablet === 'number'
-                ? attrs.madeitColumnsTablet
-                : undefined;
-        var mobileCols =
-            typeof attrs.madeitColumnsMobile === 'number'
-                ? attrs.madeitColumnsMobile
-                : undefined;
+    /**
+     * ---------------------------------------------------------
+     * Style vars
+     * ---------------------------------------------------------
+     */
 
-        if (
-            typeof desktopCols !== 'number' &&
-            typeof tabletCols !== 'number' &&
-            typeof mobileCols !== 'number'
-        ) {
+    function addStyleVars( style, attrs ) {
+        if ( ! hasResponsiveSettings( attrs ) ) {
             return style;
         }
 
-        var nextStyle = Object.assign( {}, style );
-        if ( typeof desktopCols === 'number' ) {
-            nextStyle['--madeit-pt-cols-desktop'] = String( desktopCols );
-        }
-        if ( typeof tabletCols === 'number' ) {
-            nextStyle['--madeit-pt-cols-tablet'] = String( tabletCols );
-        }
-        if ( typeof mobileCols === 'number' ) {
-            nextStyle['--madeit-pt-cols-mobile'] = String( mobileCols );
-        }
-        return nextStyle;
-    };
+        var next = Object.assign( {}, style );
 
-    addFilter(
-        'editor.BlockListBlock',
-        'madeit/post-template-responsive-columns/editor-wrapper-props',
-        function ( BlockListBlock ) {
-            return function ( props ) {
-                if ( !BLOCK_NAME.includes(props.name) ) {
-                    return wp.element.createElement( BlockListBlock, props );
-                }
+        var desktop = getDesktopColumns( attrs );
 
-                var nextWrapperProps = Object.assign( {}, props.wrapperProps );
-                nextWrapperProps.style = addStyleVars( nextWrapperProps.style, props.attributes );
-
-                return wp.element.createElement(
-                    BlockListBlock,
-                    Object.assign( {}, props, { wrapperProps: nextWrapperProps } )
-                );
-            };
+        if ( typeof desktop === 'number' ) {
+            next['--madeit-cols-desktop'] = String( desktop );
         }
-    );
+
+        if ( typeof attrs.madeitColumnsTablet === 'number' ) {
+            next['--madeit-cols-tablet'] = String( attrs.madeitColumnsTablet );
+        }
+
+        if ( typeof attrs.madeitColumnsMobile === 'number' ) {
+            next['--madeit-cols-mobile'] = String( attrs.madeitColumnsMobile );
+        }
+
+        return next;
+    }
+
+    /**
+     * ---------------------------------------------------------
+     * Editor + frontend safe styling
+     * (NO BlockListBlock override anymore)
+     * ---------------------------------------------------------
+     */
 
     addFilter(
         'blocks.getSaveContent.extraProps',
-        'madeit/post-template-responsive-columns/save-style-props',
+        'madeit/responsive-columns/save',
         function ( extraProps, blockType, attributes ) {
-            if ( blockType && !BLOCK_NAME.includes(blockType.name) ) return extraProps;
-            if ( ! attributes ) return extraProps;
 
-            var nextExtraProps = Object.assign( {}, extraProps );
-            nextExtraProps.style = addStyleVars( nextExtraProps.style, attributes );
-            return nextExtraProps;
+            if ( ! blockType || ! isSupportedBlock( blockType.name ) ) {
+                return extraProps;
+            }
+
+            if ( ! isGridLayout( { name: blockType.name, attributes } ) ) {
+                return extraProps;
+            }
+
+            var next = Object.assign( {}, extraProps );
+
+            next.style = addStyleVars( next.style, attributes );
+
+            return next;
         }
     );
+
 } )( window.wp );
 
 /**
@@ -425,3 +473,56 @@ wp.blocks.registerBlockStyle('core/image', {
         bootPreviewDeviceSync();
     }
 } )( window.wp );
+
+
+
+// POPUP
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Alle subtab knoppen
+    const subtabs = document.querySelectorAll('.m-popup-subtab');
+    // Alle field groups van display
+    const groups = {
+        preset: document.querySelector('.acf-field-group[data-name="display_preset_group"]'),
+        style: document.querySelector('.acf-field-group[data-name="display_style_group"]'),
+        size: document.querySelector('.acf-field-group[data-name="display_size_group"]'),
+        animation: document.querySelector('.acf-field-group[data-name="display_animation_group"]'),
+        position: document.querySelector('.acf-field-group[data-name="display_position_group"]'),
+    };
+
+    console.log(groups);
+    // Functie om groepen te toggelen
+    function showGroup(tab) {
+        for (let key in groups) {
+            if (!groups[key]) continue;
+            groups[key].style.display = (key === tab) ? 'block' : 'none';
+        }
+
+        console.log('function showGroup called with tab: ' + tab);
+    }
+
+    // Voeg click event toe aan elke subtab
+    subtabs.forEach(function(tabBtn){
+        tabBtn.addEventListener('click', function(){
+            // active class
+            subtabs.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+
+            // toon juiste groep
+            const tabName = this.getAttribute('data-tab');
+            showGroup(tabName);
+        });
+
+        console.log('clickEvent' + tabBtn.getAttribute('data-tab'));
+    });
+
+    // Init: toon preset groep standaard
+    showGroup('preset');
+    const firstTab = document.querySelector('.m-popup-subtab[data-tab="preset"]');
+    const fieldGroep = document.querySelector('.acf-field-group[name="group_display_preset"]');
+    if (firstTab) firstTab.classList.add('active');
+    if (fieldGroep) fieldGroep.style.display = 'block';
+    
+
+
+});

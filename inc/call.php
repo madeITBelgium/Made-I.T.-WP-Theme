@@ -25,13 +25,34 @@ function madeit_cron_daily()
     //get name and version of plugins
     $plugins = get_option('active_plugins');
     $plugins_data = [];
+
+    // Ensure we have fresh update data before inspecting the transient
+    if (!function_exists('wp_update_plugins')) {
+        require_once ABSPATH.'wp-admin/includes/update.php';
+    }
+    wp_update_plugins();
+    $updates = get_site_transient('update_plugins');
+
     foreach ($plugins as $plugin) {
         $plugin_data = get_plugin_data(WP_PLUGIN_DIR.'/'.$plugin);
+        $installed_version = $plugin_data['Version'] ?? '';
+
+        // Determine latest available version from update transient
+        $latest_version = $installed_version;
+        if (is_object($updates)) {
+            $entry = $updates->response[$plugin] ?? ($updates->no_update[$plugin] ?? null);
+            if (is_object($entry) && !empty($entry->new_version)) {
+                $latest_version = $entry->new_version;
+            } elseif (is_array($entry) && !empty($entry['new_version'])) {
+                $latest_version = $entry['new_version'];
+            }
+        }
+
         $plugins_data[$plugin] = [
             'name'       => $plugin_data['Name'],
-            'version'    => $plugin_data['Version'],
-            'latest'     => get_site_transient('update_plugins')->checked[$plugin] ?? '',
-            'has_update' => (get_site_transient('update_plugins')->checked[$plugin] ?? '') != $plugin_data['Version'],
+            'version'    => $installed_version,
+            'latest'     => $latest_version,
+            'has_update' => (is_string($latest_version) && is_string($installed_version)) ? version_compare($latest_version, $installed_version, '>') : false,
         ];
     }
 
@@ -211,6 +232,60 @@ function madeit_cron_daily()
             }
         }
     }
+}
+
+function madeit_check_queued_updates(): void
+{
+    $portal_url = 'https://portal.madeit.be/api/wordpress/queued-actions';
+
+    $response = wp_remote_get(add_query_arg([
+        'website' => get_site_url(),
+    ], $portal_url));
+
+    if (is_wp_error($response)) {
+        return;
+    }
+
+    $data = json_decode(wp_remote_retrieve_body($response), true);
+
+    if (empty($data['success']) || empty($data['actions'])) {
+        return;
+    }
+
+    print_r($data);
+    $completed = [];
+
+    foreach ($data['actions'] as $action) {
+        if ($action['action'] !== 'update_plugin') {
+            continue;
+        }
+
+        $plugin = $action['plugin'];
+
+        // Gebruik de WordPress upgrade API
+        require_once ABSPATH.'wp-admin/includes/class-wp-upgrader.php';
+        require_once ABSPATH.'wp-admin/includes/plugin.php';
+
+        $upgrader = new Plugin_Upgrader(new Automatic_Upgrader_Skin());
+        $result = $upgrader->upgrade($plugin);
+
+        if ($result !== false) {
+            $completed[] = $plugin;
+        }
+    }
+
+    if (!empty($completed)) {
+        wp_remote_post('https://portal.madeit.be/api/wordpress/queued-actions/complete', [
+            'body' => [
+                'website'   => get_site_url(),
+                'completed' => $completed,
+            ],
+        ]);
+    }
+}
+//wp cli command
+if (defined('WP_CLI') && WP_CLI) {
+    WP_CLI::add_command('madeit_update_daily', 'madeit_check_queued_updates');
 }
 
 //wp cli command

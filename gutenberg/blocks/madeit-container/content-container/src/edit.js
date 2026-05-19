@@ -1,3 +1,7 @@
+/**
+ * edit.js — madeit-block-content
+*
+*/
 import classnames from 'classnames';
 import { dropRight, get, map, times } from 'lodash';
 import { __ } from '@wordpress/i18n';
@@ -13,7 +17,7 @@ import {
     MediaUploadCheck,
     withColors,
 } from '@wordpress/block-editor';
-import { createBlock } from '@wordpress/blocks';
+import { createBlock, store as blocksStore } from '@wordpress/blocks';
 import { useState, useEffect, useRef } from "@wordpress/element";
 import { compose } from "@wordpress/compose";
 import { withDispatch, useDispatch, useSelect } from "@wordpress/data";
@@ -28,7 +32,8 @@ import { PanelBody, RangeControl, SVG, Path, SelectControl,
     GradientPicker as GradientControl,
     __experimentalBoxControl as BoxControl,
     __experimentalToolsPanel as ToolsPanel,
-	__experimentalToolsPanelItem as ToolsPanelItem} from "@wordpress/components";
+	__experimentalToolsPanelItem as ToolsPanelItem,
+} from "@wordpress/components";
 import {
     getColumnsTemplate,
     hasExplicitColumnWidths,
@@ -36,9 +41,10 @@ import {
     getRedistributedColumnWidths,
     toWidthPrecision,
 } from './utils.js';
-import { ControlHeader, ResponsiveBoxControl, ResponsiveVisibilityPanel } from '../../../../shared';
+import { ControlHeader, ResponsiveBoxControl, ResponsiveVisibilityPanel, UnitSelect, AdvancedUnitSelect } from '../../../../shared';
 import containerVariations from './variations';
 import './editor.scss';
+
 
 const ALLOWED_BLOCKS = [ 'madeit/block-content-column' ];
 
@@ -84,7 +90,9 @@ export function ColumnsEditContainer( props ) {
 
         // ─── Row attributes (only for "container-content-boxed" size) ─────────────────
         rowMargin,
+        marginUnit,
         rowPadding,
+        paddingUnit,
 
         // ─── Background attributes ─────────────────
         containerBackgroundImage,
@@ -224,6 +232,42 @@ export function ColumnsEditContainer( props ) {
 
 
 
+
+
+    // In ColumnsEditContainer, naast je andere hooks:
+    const blockStyles = useSelect((select) =>
+        select(blocksStore).getBlockStyles('madeit/block-content'), // jouw block name
+        []
+    );
+
+    const { updateBlockAttributes } = useDispatch('core/block-editor');
+
+    const currentClassName = useSelect((select) =>
+        select('core/block-editor').getBlockAttributes(clientId)?.className ?? '',
+        [clientId]
+    );
+
+    const applyBlockStyle = (styleName) => {
+        const withoutStyles = currentClassName
+            .split(' ')
+            .filter(cls => !cls.startsWith('is-style-'))
+            .join(' ')
+            .trim();
+
+        // Is deze stijl al actief? Dan uitzetten
+        const isActive = currentClassName.includes(`is-style-${styleName}`);
+        
+        const newClass = isActive
+            ? withoutStyles                                          // uitzetten
+            : `${withoutStyles} is-style-${styleName}`.trim();      // aanzetten
+
+        updateBlockAttributes(clientId, { className: newClass });
+    };
+
+    
+
+
+
     const computedContainerBackgroundPosition =
         typeof containerBackgroundPosition === 'string' && containerBackgroundPosition.length > 0
             ? containerBackgroundPosition
@@ -273,14 +317,10 @@ export function ColumnsEditContainer( props ) {
     // This keeps existing blocks stable, while making the controls truly independent.
     
     
-    
-
-    const computedContentWidth =
-        size === 'container'
-            ? 'container'
-            : contentWidth === 'container-fluid'
+    // Als we in "container" zitten, is contentWidth altijd "container". Anders is het "container-fluid" tenzij het al een andere waarde had (omdat de gebruiker die heeft aangepast).
+    const computedContentWidth = size === 'container' ? 'container' : contentWidth === 'container-fluid'
                 ? 'container-fluid'
-                : 'container';
+                : 'container-fluid';
 
     const canChooseContentWidth = size !== 'container';
     
@@ -288,6 +328,9 @@ export function ColumnsEditContainer( props ) {
         [ `container` ]: computedContentWidth === 'container',
         [ `container-fluid` ]: computedContentWidth === 'container-fluid',
     });
+
+
+
 
     const setContainerPadding = ( containerPadding ) => {
         setAttributes( { containerPadding } );
@@ -392,7 +435,8 @@ export function ColumnsEditContainer( props ) {
     const allowedHtmlTags = [ 'div', 'section', 'article', 'main', 'header', 'footer' ];
     const HtmlTag = allowedHtmlTags.includes( computedHtmlTag ) ? computedHtmlTag : 'div';
 
-    const applyContainerBackgroundToChild = size === 'container';
+    // background-image always on the outher container, never on the inner row, because that's more intuitive for users and works better with the way the block is structured (the inner row can be toggled between "container" and "container-fluid" widths, which would be weird if it also had the background image). The "container-content-boxed" size is a special case where we want the background color on the inner row but the background image on the outer container, so we also apply the background image styles to the inner row in that case.
+    const applyContainerBackgroundToChild = size === 'container-fluid' || size === 'container-content-boxed';
 
     const containerBackgroundStyle = {
         backgroundColor:
@@ -973,28 +1017,62 @@ export function ColumnsEditContainer( props ) {
         }
     }, [ activeTab, isBlockSelected ] );
 
+    // 1. Body-class: enkel afhankelijk van isBlockSelected
+    useEffect(() => {
+        const bodyClass = 'madeit-content-container-advanced-tabs';
+        if (isBlockSelected) {
+            document.body.classList.add(bodyClass);
+        } else {
+            document.body.classList.remove(bodyClass);
+        }
+        return () => {
+            document.body.classList.remove(bodyClass);
+        };
+    }, [isBlockSelected]);
+
+    // 2. Stijlen panel klasse: ook direct bij selectie toevoegen, niet bij tab-wissel
+    useEffect(() => {
+        if (!isBlockSelected) return;
+
+        const stylesPanel = document.querySelector(
+            '.block-editor-block-styles'
+        )?.closest('.components-panel__body');
+
+        if (!stylesPanel) return;
+
+        stylesPanel.classList.add('madeit-gutenberg-styles-panel');
+
+        return () => {
+            stylesPanel.classList.remove('madeit-gutenberg-styles-panel');
+        };
+    }, [isBlockSelected]);
+
 
     return [
             <InspectorControls>
                 {/* Tab buttons */}
-                <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+                <div 
+                    style={{ display: 'flex', justifyContent: 'space-evenly' }}
+                    className={'TabContents'}
+                >
                     <Button 
                         isPrimary={activeTab === 'layout'} 
                         onClick={() => setActiveTab('layout')}
-                        style={{ marginRight: '5px' }}
+                        style={{ flex: '1', justifyContent: 'center' }}
                     >
                         Layout
                     </Button>
                     <Button 
                         isPrimary={activeTab === 'style'} 
                         onClick={() => setActiveTab('style')}
-                        style={{ marginRight: '5px' }}
+                        style={{ flex: '1', justifyContent: 'center' }}
                     >
                         Style
                     </Button>
                     <Button 
                         isPrimary={activeTab === 'advanced'} 
                         onClick={() => setActiveTab('advanced')}
+                        style={{ flex: '1', justifyContent: 'center' }}
                     >
                         Advanced
                     </Button>
@@ -1004,10 +1082,10 @@ export function ColumnsEditContainer( props ) {
                 {activeTab === 'layout' && (
                     <>
                     {/* Algemene instellingen */}
-                    <PanelBody title="Algemeen" initialOpen={true}>
+                    <PanelBody title="Container" initialOpen={true}>
                         {/* Kolommen wijzigen */}
                         <RangeControl
-                            label={ __( 'Wijzig kolommen' ) }
+                            label={ __( 'Aantal kolommen' ) }
                             value={ count }
                             onChange={ ( value ) => updateColumns( count, value ) }
                             min={ 1 }
@@ -1015,22 +1093,18 @@ export function ColumnsEditContainer( props ) {
                         />
 
                         {/* Container breedte */}
-                        <ControlHeader
-                            title={ __( 'Container breedte' ) }
+                        <SelectControl
+                            label={ __( 'Inhoud breedte' ) }
+                            labelPosition='left'
+                            value={ size }
+                            options={ [
+                                { value: 'container', label: __( 'Boxed' ) },
+                                { value: 'container-fluid', label: __( 'Full width' ) },
+                            ] }
+                            onChange={ ( newSize ) => setAttributes( { size: newSize, madeitHasUserEdits: true } ) }
                         />
-                        <ButtonGroup>
-                            {containerSizes.map( ( { value, label } ) => (
-                                <Button
-                                    key={ value }
-                                    isPrimary={ size === value }
-                                    onClick={ () => setAttributes( { size: value, madeitHasUserEdits: true } ) }
-                                >
-                                    { label }
-                                </Button>
-                            ) )}
-                        </ButtonGroup>
-                        <br /><br />
-                        { canChooseContentWidth && (
+                        <hr></hr>
+                        {/* { canChooseContentWidth && (
                             <SelectControl
                                 label={ __( 'Content breedte' ) }
                                 value={ computedContentWidth }
@@ -1039,123 +1113,116 @@ export function ColumnsEditContainer( props ) {
                                 }
                                 options={ contentBoxedSizes }
                             />
-                        ) }
+                        ) } */}
                         
 
 
                         {/* Max width */}
-                        <div className="madeit-control">
+                        <div
+                            className="madeit-control"
+                            style={
+                                currentMaxWidthUnit == '__custom__'
+                                    ? { marginBottom: '52px' }
+                                    : {}
+                            }
+                        >
                             <ControlHeader
                                 title={ __( 'max breedte' ) }
                                 breakpoint={ activeMaxWidthBreakpoint }
                                 onBreakpointChange={ setActiveMaxWidthBreakpoint }
                                 afterBreakpoint={
-                                    <ButtonGroup className="madeit-control-units">
-                                        <Button
-                                            isPressed={ currentMaxWidthUnit === 'px' }
-                                            onClick={ () =>
-                                                setAttributes( {
-                                                    [ maxWidthUnitKey ]: 'px',
-                                                    madeitHasUserEdits: true,
-                                                } )
-                                            }
-                                        >
-                                            px
-                                        </Button>
-
-                                        <Button
-                                            isPressed={ currentMaxWidthUnit === '%' }
-                                            onClick={ () =>
-                                                setAttributes( {
-                                                    [ maxWidthUnitKey ]: '%',
-                                                    madeitHasUserEdits: true,
-                                                } )
-                                            }
-                                        >
-                                            %
-                                        </Button>
-
-                                        <Button
-                                            isPressed={ currentMaxWidthUnit === 'vh' }
-                                            onClick={ () =>
-                                                setAttributes( {
-                                                    [ maxWidthUnitKey ]: 'vh',
-                                                    madeitHasUserEdits: true,
-                                                } )
-                                            }
-                                        >
-                                            vh
-                                        </Button>
-                                    </ButtonGroup>
+                                    <AdvancedUnitSelect
+                                        value={ currentMaxWidthUnit }
+                                        units={ ['px', '%', 'em', 'rem', 'vw'] }
+                                        onChange={ (unit) => setAttributes({ [maxWidthUnitKey]: unit, madeitHasUserEdits: true }) }
+                                    />
+                                    
                                 }
                                 
                             />
+                            {/* If maxWidthUnitKey value = __custom__, doon't show the madeit-control-rangeRow */}
+                            { currentMaxWidthUnit !== '__custom__' && (
+                                <div className="madeit-control-rangeRow">
+                                    <RangeControl
+                                        label=""
+                                        value={
+                                            typeof currentMaxWidthValue === 'number'
+                                                ? currentMaxWidthValue
+                                                : 0
+                                        }
+                                        onChange={ ( value ) =>
+                                            setAttributes( {
+                                                [ maxWidthValueKey ]: value,
+                                                madeitHasUserEdits: true,
+                                            } )
+                                        }
+                                        min={ 0 }
+                                        max={ currentMaxWidthUnit === 'vh' || currentMaxWidthUnit === '%' ? 100 : 1000 }
+                                    />
 
-                            <div className="madeit-control-rangeRow">
-                                <RangeControl
-                                    label=""
-                                    value={
-                                        typeof currentMaxWidthValue === 'number'
-                                            ? currentMaxWidthValue
-                                            : 0
-                                    }
-                                    onChange={ ( value ) =>
-                                        setAttributes( {
-                                            [ maxWidthValueKey ]: value,
-                                            madeitHasUserEdits: true,
-                                        } )
-                                    }
-                                    min={ 0 }
-                                    max={ currentMaxWidthUnit === 'vh' || currentMaxWidthUnit === '%' ? 100 : 1000 }
-                                />
-
-                                <Button
-                                    className="madeit-control-rangeRow__reset"
-                                    icon="undo"
-                                    variant="tertiary"
-                                    onClick={ resetMaxWidth }
-                                    showTooltip
-                                    label={ __( 'Reset max breedte' ) }
-                                />
-                            </div>
+                                    <Button
+                                        className="madeit-control-rangeRow__reset"
+                                        icon="undo"
+                                        variant="tertiary"
+                                        onClick={ resetMaxWidth }
+                                        showTooltip
+                                        label={ __( 'Reset max breedte' ) }
+                                    />
+                                </div>
+                            )}
                         </div>
 
                         {/* Container hoogte (min-height) */}
-                        <div className="madeit-control">
+                        <div
+                            className="madeit-control"
+                            style={
+                                currentMinHeightUnit == '__custom__'
+                                    ? { marginBottom: '52px' }
+                                    : {}
+                            }
+                        >
                             <ControlHeader
                                 title={ __( 'Min hoogte' ) }
                                 breakpoint={ activeMinHeightBreakpoint }
                                 onBreakpointChange={ setActiveMinHeightBreakpoint }
                                 afterBreakpoint={
-                                    <ButtonGroup className="madeit-control-units">
-                                        <Button
-                                            isPressed={ minHeightUnitForUi === 'px' }
-                                            onClick={ () =>
-                                                setAttributes( {
-                                                    [ minHeightUnitKey ]: 'px',
-                                                    madeitHasUserEdits: true,
-                                                } )
-                                            }
-                                        >
-                                            px
-                                        </Button>
+                                    <AdvancedUnitSelect
+                                        value={ currentMinHeightUnit }
+                                        units={ ['px', '%', 'em', 'rem', 'vh'] }
+                                        onChange={ (unit) => setAttributes({ [minHeightUnitKey]: unit, madeitHasUserEdits: true }) }
+                                    />
+                                    // <ButtonGroup className="madeit-control-units">
+                                    //     <Button
+                                    //         isPressed={ minHeightUnitForUi === 'px' }
+                                    //         onClick={ () =>
+                                    //             setAttributes( {
+                                    //                 [ minHeightUnitKey ]: 'px',
+                                    //                 madeitHasUserEdits: true,
+                                    //             } )
+                                    //         }
+                                    //     >
+                                    //         px
+                                    //     </Button>
 
-                                        <Button
-                                            isPressed={ minHeightUnitForUi === 'vh' }
-                                            onClick={ () =>
-                                                setAttributes( {
-                                                    [ minHeightUnitKey ]: 'vh',
-                                                    madeitHasUserEdits: true,
-                                                } )
-                                            }
-                                        >
-                                            vh
-                                        </Button>
-                                    </ButtonGroup>
+                                    //     <Button
+                                    //         isPressed={ minHeightUnitForUi === 'vh' }
+                                    //         onClick={ () =>
+                                    //             setAttributes( {
+                                    //                 [ minHeightUnitKey ]: 'vh',
+                                    //                 madeitHasUserEdits: true,
+                                    //             } )
+                                    //         }
+                                    //     >
+                                    //         vh
+                                    //     </Button>
+                                    // </ButtonGroup>
                                 }
                                 
                             />
 
+                            
+                            {/* If maxWidthUnitKey value = __custom__, doon't show the madeit-control-rangeRow */}
+                            { currentMinHeightUnit !== '__custom__' && (
                             <div className="madeit-control-rangeRow">
                                 <RangeControl
                                     label=""
@@ -1168,6 +1235,7 @@ export function ColumnsEditContainer( props ) {
                                     }
                                     min={ 0 }
                                     max={ minHeightUnitForUi === 'vh' ? 100 : 1000 }
+                                    description={ __( 'Gebruik 100vh om de container op volledige hoogte te bereiken' ) }
                                 />
 
                                 <Button
@@ -1179,44 +1247,23 @@ export function ColumnsEditContainer( props ) {
                                     label={ __( 'Reset min hoogte' ) }
                                 />
                             </div>
+                            )}
+                            
+                            <p 
+                                className='description'
+                                style={
+                                    currentMinHeightUnit == '__custom__'
+                                    ? { marginTop: '49px', marginBottom: '-51px' }
+                                    : {}   
+                                } 
+                            >
+                            Gebruik 100vh om de container op volledige hoogte te bereiken</p>
                         </div>
 
-
-                        {/* Overflow */}
-                        <SelectControl
-                            label={ __( 'Overflow' ) }
-                            value={ computedOverflow }
-                            options={ [
-                                { value: 'visible', label: __( 'Visible' ) },
-                                { value: 'hidden', label: __( 'Hidden' ) },
-                                { value: 'scroll', label: __( 'Scroll' ) },
-                                { value: 'auto', label: __( 'Auto' ) },
-                            ] }
-                            onChange={ ( newOverflow ) =>
-                                setAttributes( { overflow: newOverflow } )
-                            }
+                        <hr></hr>
+                        <ControlHeader
+                            title={ __( 'Items' ) }
                         />
-
-                        {/* HTML tag */}
-                        <SelectControl
-                            label={ __( 'HTML tag' ) }
-                            value={ computedHtmlTag }
-                            options={ [
-                                { value: 'div', label: __( 'div' ) },
-                                { value: 'section', label: __( 'section' ) },
-                                { value: 'article', label: __( 'article' ) },
-                                { value: 'main', label: __( 'main' ) },
-                                { value: 'header', label: __( 'header' ) },
-                                { value: 'footer', label: __( 'footer' ) },
-                            ] }
-                            onChange={ ( newHtmlTag ) =>
-                                setAttributes( { htmlTag: newHtmlTag } )
-                            }
-                        />
-                    </PanelBody>
-
-                    {/* Flex instellingen */}
-                    <PanelBody title="Flex" initialOpen={false}>
                         {/* Direction */}
                         <div className="madeit-control">
                             <ControlHeader
@@ -1561,17 +1608,67 @@ export function ColumnsEditContainer( props ) {
                             </ButtonGroup>
                         </div>
                     </PanelBody>
+
+                    <PanelBody title="Extra opties" initialOpen={false}>
+                        {/* Overflow */}
+                        <SelectControl
+                            label={ __( 'Overflow' ) }
+                            labelPosition='left'
+                            value={ computedOverflow }
+                            options={ [
+                                { value: 'visible', label: __( 'Visible' ) },
+                                { value: 'hidden', label: __( 'Hidden' ) },
+                                { value: 'scroll', label: __( 'Scroll' ) },
+                                { value: 'auto', label: __( 'Auto' ) },
+                            ] }
+                            onChange={ ( newOverflow ) =>
+                                setAttributes( { overflow: newOverflow } )
+                            }
+                        />
+
+                        {/* HTML tag */}
+                        <SelectControl
+                            label={ __( 'HTML tag' ) }
+                            labelPosition='left'
+                            value={ computedHtmlTag }
+                            options={ [
+                                { value: 'div', label: __( 'Standaard' ) },
+                                { value: 'div', label: __( 'div' ) },
+                                { value: 'section', label: __( 'section' ) },
+                                { value: 'article', label: __( 'article' ) },
+                                { value: 'main', label: __( 'main' ) },
+                                { value: 'header', label: __( 'header' ) },
+                                { value: 'footer', label: __( 'footer' ) },
+                            ] }
+                            onChange={ ( newHtmlTag ) =>
+                                setAttributes( { htmlTag: newHtmlTag } )
+                            }
+                        />
+                    </PanelBody>
                     </>
                 )}
 
                 {activeTab === 'style' && (
                     <>
+                        {/* Style blocks from gutenberg self */}
+                        {blockStyles?.length > 0 && (
+                            <PanelBody title="Stijlen" initialOpen={false}>
+                                <ButtonGroup className="madeit-block-styles-picker">
+                                    {blockStyles.map((style) => (
+                                        <Button
+                                            key={style.name}
+                                            isPressed={currentClassName.includes(`is-style-${style.name}`)}
+                                            onClick={() => applyBlockStyle(style.name)}
+                                            variant="secondary"
+                                        >
+                                            {style.label}
+                                        </Button>
+                                    ))}
+                                </ButtonGroup>
+                            </PanelBody>
+                        )}
+
                         <PanelBody title="Achtergrond" initialOpen={true}>
-                            {/* Achtergrond type
-                                - Transparant
-                                - classic (kleur of afbeelding)
-                                - gradient
-                            */}
                             <ControlHeader
                                 title={ __( 'Achtergrond type' ) }
                                 onReset={ resetBackgroundType }
@@ -1799,7 +1896,7 @@ export function ColumnsEditContainer( props ) {
 
 
                             {/* Padding */}
-                            <ResponsiveBoxControl
+                            {/* <ResponsiveBoxControl
                                 __next40pxDefaultSize
                                 title={ __( 'Padding' ) }
                                 breakpoint={ activePaddingBreakpoint }
@@ -1811,10 +1908,237 @@ export function ColumnsEditContainer( props ) {
                                 onReset={ () => setAttributes( { [ paddingValueKey ]: undefined } ) }
                                 resetLabel={ __( 'Reset padding' ) }
                                 // allowReset={ true }
-                            />
+                            /> */}
+
+                            {/* Padding als één geheel */}
+                            <div className='madeit-control' style={{ display: 'flex', flexWrap: 'wrap', gap: '6px'}}>
+                                <ControlHeader
+                                    title={ __( 'Padding', 'madeit' ) }
+                                    breakpoint={ activePaddingBreakpoint }
+                                    onBreakpointChange={ setActivePaddingBreakpoint }
+                                    afterBreakpoint={
+                                        <UnitSelect
+                                            value={ paddingUnit }
+                                            units={ [ 'px', '%', 'em', 'rem', 'vw', 'vh' ] }
+                                            onChange={ ( unit ) => {
+
+                                                const currentPadding =
+                                                    attributes?.[ paddingValueKey ] || {};
+
+                                                const nextPadding = {};
+
+                                                [ 'top', 'right', 'bottom', 'left' ].forEach(
+                                                    ( key ) => {
+
+                                                        const raw = currentPadding?.[ key ];
+
+                                                        if ( ! raw ) {
+                                                            return;
+                                                        }
+
+                                                        const numeric = parseFloat( raw );
+
+                                                        if ( ! Number.isFinite( numeric ) ) {
+                                                            return;
+                                                        }
+
+                                                        nextPadding[ key ] =
+                                                            `${ numeric }${ unit }`;
+
+                                                    }
+                                                );
+
+                                                setAttributes( {
+                                                    [ paddingValueKey ]: nextPadding,
+                                                    paddingUnit: unit,
+                                                    madeitHasUserEdits: true,
+                                                } );
+
+                                            } }
+                                        />
+                                    }
+                                />
+
+                                <div
+                                    className="madeit-controls"
+                                    style={ {
+                                        display: 'flex',
+                                        alignItems: 'flex-start',
+                                        maxWidth: 'calc(100% - 35px)',
+                                    } }
+                                >
+                                    { [
+                                        { label: 'Bovenaan', key: 'top', status: 'default' },
+                                        { label: 'Rechts', key: 'right', status: 'default' },
+                                        { label: 'Onderaan', key: 'bottom', status: 'default' },
+                                        { label: 'Links', key: 'left', status: 'default' },
+                                    ].map( ( item ) => {
+
+                                        const currentPadding =
+                                            attributes?.[ paddingValueKey ] || {};
+
+                                        const rawValue = currentPadding?.[ item.key ];
+
+                                        const numericValue = parseFloat( rawValue );
+
+                                        const displayValue = Number.isFinite( numericValue )
+                                            ? numericValue
+                                            : '';
+
+                                        return (
+                                            <div
+                                                key={ item.key }
+                                                style={ {
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    alignItems: 'center',
+                                                    flex: 1,
+                                                } }
+                                                className="control-item"
+                                            >
+                                                <input
+                                                    type="number"
+                                                    value={ displayValue }
+                                                    min={ -9999 }
+                                                    disabled={ item.status === 'disabled' }
+                                                    onChange={ ( e ) => {
+
+                                                        const val = e.target.value;
+
+                                                        const currentPadding =
+                                                            attributes?.[ paddingValueKey ] || {};
+
+                                                        setAttributes( {
+                                                            [ paddingValueKey ]: {
+                                                                ...currentPadding,
+                                                                [ item.key ]:
+                                                                    val === ''
+                                                                        ? undefined
+                                                                        : `${ val }${ paddingUnit || 'px' }`,
+                                                            },
+                                                        } );
+
+                                                    } }
+                                                    style={ {
+                                                        width: '100%',
+                                                        height: '27px',
+                                                        fontSize: '.85em',
+                                                        textAlign: 'center',
+                                                    } }
+                                                />
+
+                                                <span
+                                                    style={ {
+                                                        fontSize: '9px',
+                                                        marginTop: '4px',
+                                                    } }
+                                                >
+                                                    { __( item.label, 'madeit' ) }
+                                                </span>
+                                            </div>
+                                        );
+
+                                    } ) }
+                                </div>
+
+                                <Button
+                                    title="Waarden koppelen"
+                                    variant="tertiary"
+                                    onClick={ () => {
+
+                                        const currentPadding =
+                                            attributes?.[ paddingValueKey ] || {};
+
+                                        const values = [
+                                            currentPadding.top,
+                                            currentPadding.right,
+                                            currentPadding.bottom,
+                                            currentPadding.left,
+                                        ];
+
+                                        const allEqual = values.every(
+                                            ( val ) => val === values[ 0 ]
+                                        );
+
+                                        if ( allEqual ) {
+
+                                            setAttributes( {
+                                                [ paddingValueKey ]: {
+                                                    top: undefined,
+                                                    right: undefined,
+                                                    bottom: undefined,
+                                                    left: undefined,
+                                                },
+                                            } );
+
+                                        } else {
+
+                                            const firstValue =
+                                                values.find( ( val ) => val ) || '';
+
+                                            setAttributes( {
+                                                [ paddingValueKey ]: {
+                                                    top: firstValue,
+                                                    right: firstValue,
+                                                    bottom: firstValue,
+                                                    left: firstValue,
+                                                },
+                                            } );
+
+                                        }
+
+                                    } }
+                                    style={ {
+                                        height: 'fit-content',
+                                        marginLeft: '10px',
+                                        marginTop: '9px',
+                                        padding: '0',
+                                    } }
+                                    showTooltip
+                                >
+                                    { (() => {
+
+                                        const currentPadding =
+                                            attributes?.[ paddingValueKey ] || {};
+
+                                        const values = [
+                                            currentPadding.top,
+                                            currentPadding.right,
+                                            currentPadding.bottom,
+                                            currentPadding.left,
+                                        ];
+
+                                        const allEqual = values.every(
+                                            ( val ) =>
+                                                val === values[ 0 ] &&
+                                                val !== undefined
+                                        );
+
+                                        return allEqual ? (
+                                            <span
+                                                className="dashicons dashicons-editor-unlink"
+                                                style={ {
+                                                    fontSize: '15px',
+                                                    width: 'min-content',
+                                                } }
+                                            />
+                                        ) : (
+                                            <span
+                                                className="dashicons dashicons-admin-links"
+                                                style={ {
+                                                    fontSize: '15px',
+                                                    width: 'min-content',
+                                                } }
+                                            />
+                                        );
+
+                                    } )()}
+                                </Button>
+                            </div>
 
                             {/* Margin */}
-                            <ResponsiveBoxControl
+                            
+                            {/* <ResponsiveBoxControl
                                 __next40pxDefaultSize
                                 title={ __( 'Margin' ) }
                                 breakpoint={ activeMarginBreakpoint }
@@ -1828,7 +2152,234 @@ export function ColumnsEditContainer( props ) {
                                 // allowReset={ true }
                                 inputProps={ { min: -1000, max: 1000 } }
                                 sides={ [ 'top', 'bottom' ] }
-                            />
+                            /> */}
+
+                            {/* Margin als één geheel */}
+                            <div className='madeit-control' style={{ display: 'flex', flexWrap: 'wrap', gap: '6px'}}>
+                                <ControlHeader
+                                    title={ __( 'Margin', 'madeit' ) }
+                                    breakpoint={ activeMarginBreakpoint }
+                                    onBreakpointChange={ setActiveMarginBreakpoint }
+                                    afterBreakpoint={
+                                        <UnitSelect
+                                            value={ marginUnit }
+                                            units={ [ 'px', '%', 'em', 'rem', 'vw', 'vh' ] }
+                                            onChange={ ( unit ) => {
+
+                                                const currentMargin =
+                                                    attributes?.[ marginValueKey ] || {};
+
+                                                const nextMargin = {};
+
+                                                [ 'top', 'right', 'bottom', 'left' ].forEach(
+                                                    ( key ) => {
+
+                                                        const raw = currentMargin?.[ key ];
+
+                                                        if ( ! raw ) {
+                                                            return;
+                                                        }
+
+                                                        const numeric = parseFloat( raw );
+
+                                                        if ( ! Number.isFinite( numeric ) ) {
+                                                            return;
+                                                        }
+
+                                                        nextMargin[ key ] =
+                                                            `${ numeric }${ unit }`;
+
+                                                    }
+                                                );
+
+                                                setAttributes( {
+                                                    [ marginValueKey ]: nextMargin,
+                                                    marginUnit: unit,
+                                                    madeitHasUserEdits: true,
+                                                } );
+
+                                            } }
+                                        />
+                                    }
+                                />
+
+                                <div
+                                    className="madeit-controls"
+                                    style={ {
+                                        display: 'flex',
+                                        alignItems: 'flex-start',
+                                        maxWidth: 'calc(100% - 35px)',
+                                    } }
+                                >
+                                    { [
+                                        { label: 'Bovenaan', key: 'top', status: 'default' },
+                                        { label: 'Rechts', key: 'right', status: 'disabled' },
+                                        { label: 'Onderaan', key: 'bottom', status: 'default' },
+                                        { label: 'Links', key: 'left', status: 'disabled' },
+                                    ].map( ( item ) => {
+
+                                        const currentMargin =
+                                            attributes?.[ marginValueKey ] || {};
+
+                                        const rawValue = currentMargin?.[ item.key ];
+
+                                        const numericValue = parseFloat( rawValue );
+
+                                        const displayValue = Number.isFinite( numericValue )
+                                            ? numericValue
+                                            : '';
+
+                                        return (
+                                            <div
+                                                key={ item.key }
+                                                style={ {
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    alignItems: 'center',
+                                                    flex: 1,
+                                                } }
+                                                className="control-item"
+                                            >
+                                                <input
+                                                    type="number"
+                                                    value={ displayValue }
+                                                    min={ -9999 }
+                                                    disabled={ item.status === 'disabled' }
+                                                    onChange={ ( e ) => {
+
+                                                        const val = e.target.value;
+
+                                                        const currentMargin =
+                                                            attributes?.[ marginValueKey ] || {};
+
+                                                        setAttributes( {
+                                                            [ marginValueKey ]: {
+                                                                ...currentMargin,
+                                                                [ item.key ]:
+                                                                    val === ''
+                                                                        ? undefined
+                                                                        : `${ val }${ marginUnit || 'px' }`,
+                                                            },
+                                                        } );
+
+                                                    } }
+                                                    style={ {
+                                                        width: '100%',
+                                                        height: '27px',
+                                                        fontSize: '.85em',
+                                                        textAlign: 'center',
+                                                    } }
+                                                />
+
+                                                <span
+                                                    style={ {
+                                                        fontSize: '9px',
+                                                        marginTop: '4px',
+                                                    } }
+                                                >
+                                                    { __( item.label, 'madeit' ) }
+                                                </span>
+                                            </div>
+                                        );
+
+                                    } ) }
+                                </div>
+
+                                <Button
+                                    title="Waarden koppelen"
+                                    variant="tertiary"
+                                    onClick={ () => {
+
+                                        const currentMargin =
+                                            attributes?.[ marginValueKey ] || {};
+
+                                        const values = [
+                                            currentMargin.top,
+                                            currentMargin.right,
+                                            currentMargin.bottom,
+                                            currentMargin.left,
+                                        ];
+
+                                        const allEqual = values.every(
+                                            ( val ) => val === values[ 0 ]
+                                        );
+
+                                        if ( allEqual ) {
+
+                                            setAttributes( {
+                                                [ marginValueKey ]: {
+                                                    top: undefined,
+                                                    right: undefined,
+                                                    bottom: undefined,
+                                                    left: undefined,
+                                                },
+                                            } );
+
+                                        } else {
+
+                                            const firstValue =
+                                                values.find( ( val ) => val ) || '';
+
+                                            setAttributes( {
+                                                [ marginValueKey ]: {
+                                                    top: firstValue,
+                                                    right: firstValue,
+                                                    bottom: firstValue,
+                                                    left: firstValue,
+                                                },
+                                            } );
+
+                                        }
+
+                                    } }
+                                    style={ {
+                                        height: 'fit-content',
+                                        marginLeft: '10px',
+                                        marginTop: '9px',
+                                        padding: '0',
+                                    } }
+                                    showTooltip
+                                >
+                                    { (() => {
+
+                                        const currentMargin =
+                                            attributes?.[ marginValueKey ] || {};
+
+                                        const values = [
+                                            currentMargin.top,
+                                            currentMargin.right,
+                                            currentMargin.bottom,
+                                            currentMargin.left,
+                                        ];
+
+                                        const allEqual = values.every(
+                                            ( val ) =>
+                                                val === values[ 0 ] &&
+                                                val !== undefined
+                                        );
+
+                                        return allEqual ? (
+                                            <span
+                                                className="dashicons dashicons-editor-unlink"
+                                                style={ {
+                                                    fontSize: '15px',
+                                                    width: 'min-content',
+                                                } }
+                                            />
+                                        ) : (
+                                            <span
+                                                className="dashicons dashicons-admin-links"
+                                                style={ {
+                                                    fontSize: '15px',
+                                                    width: 'min-content',
+                                                } }
+                                            />
+                                        );
+
+                                    } )()}
+                                </Button>
+                            </div>
+
                         </PanelBody>
                     </>
                 )}
@@ -2162,7 +2713,7 @@ const ColumnsEdit = ( props ) => {
         didInitNewResponsiveDefaults.current = true;
 
         // Only apply defaults for truly new blocks (placeholder state).
-        if ( hasInnerBlocks ) return;
+        // if ( hasInnerBlocks ) return;
 
         // If the block already has a layout chosen at least once, don't override.
         if ( columnsCount !== undefined && columnsCount !== null ) return;

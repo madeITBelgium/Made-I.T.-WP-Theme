@@ -2161,14 +2161,14 @@ const SIDEBAR_MODULES = {
         key: "languageCheck",
         label: __("Taalcheck", "madeit"),
         description: __(
-            "Plak tekst en ontvang AI-voorstellen voor spelling, grammatica en leesbaarheid.",
+            "Ontvang AI-voorstellen voor spelling, grammatica en leesbaarheid.",
             "madeit"
         ),
     },
     chat: {
         key: "chat",
         label: __("Chat", "madeit"),
-        description: __("Vraag AI om contentblokken te genereren voor je pagina.", "madeit"),
+        description: __("Chat met de AI assistant", "madeit"),
     },
     altTags: {
         key: "altTags",
@@ -4903,47 +4903,131 @@ registerPlugin("madeit-chatbot-sidebar", {
             error,
         });
     },
-    icon: React.createElement(
-        "svg",
-        {
-            xmlns: "http://www.w3.org/2000/svg",
-            viewBox: "0 0 64 64",
-            fill: "none",
-        },
-        React.createElement("circle", {
-            cx: "32",
-            cy: "32",
-            r: "30",
-            fill: "white",
-        }),
-        React.createElement("path", {
-            d: "M12 20l1.5 3 3 1.5-3 1.5-1.5 3-1.5-3-3-1.5 3-1.5 1.5-3z",
-            fill: "black",
-            opacity: "0.8",
-        }),
-        React.createElement("path", {
-            d: "M50 14l1 2 2 1-2 1-1 2-1-2-2-1 2-1 1-2z",
-            fill: "black",
-            opacity: "0.6",
-        }),
-        React.createElement("path", {
-            d: "M52 46l1.5 3 3 1.5-3 1.5-1.5 3-1.5-3-3-1.5 3-1.5 1.5-3z",
-            fill: "black",
-            opacity: "0.7",
-        }),
-        React.createElement("path", {
-            d: "M10 48l1 2 2 1-2 1-1 2-1-2-2-1 2-1 1-2z",
-            fill: "black",
-            opacity: "0.5",
-        }),
-        React.createElement("text", {
-            x: "32",
-            y: "38",
-            textAnchor: "middle",
-            fontFamily: "system-ui, -apple-system, sans-serif",
-            fontSize: "20",
-            fontWeight: "700",
-            fill: "black",
-        }, "AI")
-    ),
+    icon: React.createElement("svg", {
+        xmlns: "http://www.w3.org/2000/svg",
+        xmlnsXlink: "http://www.w3.org/1999/xlink",
+        width: "16",
+        height: "18",
+        version: "1.1",
+        viewBox: "0 0 16 18",
+        dangerouslySetInnerHTML: {
+            __html: `
+            <g transform="matrix(1,0,0,1,-489.795198,-500.018928)">
+                <g transform="matrix(0.036138,0,0,0.036138,479.171495,485.104251)">
+
+                    <g transform="matrix(0.84855,0,0,1.122274,87.836822,-73.730951)">
+                        <path d="M303.386,829.993L418.602,603.155L461.373,603.155L584.161,829.993L538.934,829.993L503.94,761.292L378.491,761.292L345.543,829.993L303.386,829.993ZM389.952,736.844L491.661,736.844L460.35,674.022C450.8,654.939 443.705,639.259 439.067,626.984C435.247,641.529 429.858,655.97 422.9,670.309L389.952,736.844Z"
+                        style="fill:url(#_Radial1);fill-rule:nonzero;" />
+                    </g>
+
+                    <g transform="matrix(0.84855,0,0,1.122274,87.836822,-73.730951)">
+                        <rect x="622.635" y="603.155" width="39.701" height="226.839"
+                        style="fill:url(#_Radial2);fill-rule:nonzero;" />
+                    </g>
+
+                    <g transform="matrix(-2.99104,1.350153,-1.350153,-2.99104,1075.434692,584.891493)">
+                        <clipPath id="_clip3">
+                            <path d="M125.298,75.699C132.6,82.513 140.542,82.348 134.352,85.142C116.769,93.076 122.855,100.289 118.47,101.427C115.184,102.28 115.855,91.92 104.545,86.406C100.336,84.354 99.833,84.651 99.75,83.468C99.565,80.834 110.088,80.372 115.113,69.319C115.548,68.362 115.889,67.364 116.316,66.403C118.641,61.162 118.402,68.059 125.298,75.699Z"/>
+                        </clipPath>
+                        <g clip-path="url(#_clip3)">
+                            <g transform="matrix(-7.685439,-3.469199,3.469199,-7.685439,195.456135,145.794416)">
+                                <use xlink:href="#_Image4" x="9.401" y="1.003" width="4px" height="4px"/>
+                            </g>
+                        </g>
+                    </g>
+
+                    <g transform="matrix(-2.99104,1.350153,-1.350153,-2.99104,1076.702122,600.677009)">
+                        <clipPath id="_clip5">
+                            <path d="M142.705,101.29C136.312,96.307 135.469,97.244 135.344,96.556C135.046,94.925 138.696,94.126 140.231,93.093C146.723,88.722 146.504,79.258 149.838,86.339C154.179,95.557 163.47,95.018 160.07,97.026C154.085,100.562 153.018,99.694 149.264,107.383C147.198,111.614 147.339,106.173 142.705,101.29Z"/>
+                        </clipPath>
+                        <g clip-path="url(#_clip5)">
+                            <g transform="matrix(-7.685439,-3.469199,3.469199,-7.685439,193.8291,150.337574)">
+                                <use xlink:href="#_Image6" x="6.205" y="2.239" width="3px" height="3px"/>
+                            </g>
+                        </g>
+                    </g>
+
+                    <g transform="matrix(-2.99104,1.350153,-1.350153,-2.99104,1056.450051,598.471654)">
+                        <clipPath id="_clip7">
+                            <path d="M142.332,61.667C145.512,64.556 149.562,64.992 145.707,66.862C138.955,70.135 139.755,76.009 137.883,74.09C137.132,73.321 137.193,69.782 131.331,66.783C126.039,64.076 134.114,64.619 137.165,58.308C139.019,54.473 139.464,58.483 142.332,61.667Z"/>
+                        </clipPath>
+                        <g clip-path="url(#_clip7)">
+                            <g transform="matrix(-7.685439,-3.469199,3.469199,-7.685439,188.480791,147.186033)">
+                                <use xlink:href="#_Image8" x="8.433" y="5.418" width="2px" height="2px"/>
+                            </g>
+                        </g>
+                    </g>
+
+                    <g transform="matrix(-1.433073,-0.86407,0.86407,-1.433073,819.389464,763.493468)">
+                        <clipPath id="_clip9">
+                            <path d="M142.332,61.667C145.512,64.556 149.562,64.992 145.707,66.862C138.955,70.135 139.755,76.009 137.883,74.09C137.132,73.321 137.193,69.782 131.331,66.783C126.039,64.076 134.114,64.619 137.165,58.308C139.019,54.473 139.464,58.483 142.332,61.667Z"/>
+                        </clipPath>
+                        <g clip-path="url(#_clip9)">
+                            <g transform="matrix(-14.160955,8.538339,-8.538339,-14.160955,377.122471,17.391306)">
+                                <use xlink:href="#_Image10" x="13.4" y="4.491" width="1px" height="1px"/>
+                            </g>
+                        </g>
+                    </g>
+
+                    <g transform="matrix(-1.961197,-1.182503,1.182503,-1.961197,730.87198,732.913892)">
+                        <clipPath id="_clip11">
+                            <path d="M142.332,61.667C145.512,64.556 149.562,64.992 145.707,66.862C138.955,70.135 139.755,76.009 137.883,74.09C137.132,73.321 137.193,69.782 131.331,66.783C126.039,64.076 134.114,64.619 137.165,58.308C139.019,54.473 139.464,58.483 142.332,61.667Z"/>
+                        </clipPath>
+                        <g clip-path="url(#_clip11)">
+                            <g transform="matrix(-10.347599,6.239078,-6.239078,-10.347599,235.572921,21.23102)">
+                                <use xlink:href="#_Image12" x="8.143" y="0.369" width="2px" height="2px"/>
+                            </g>
+                        </g>
+                    </g>
+
+                    <g transform="matrix(1.097499,0,0,1.097499,71.419099,-105.855606)">
+                        <path d="M384.438,481.807L384.438,509.749L248.416,509.749C238.652,509.749 230.725,517.676 230.725,527.44L230.725,839.584C230.725,849.348 238.652,857.275 248.416,857.275L560.56,857.275C570.324,857.275 578.251,849.348 578.251,839.584L578.251,527.44C578.251,517.676 570.324,509.749 560.56,509.749L535.717,509.749L535.717,481.807L555.767,481.807C583.501,481.807 606.193,504.499 606.193,532.233L606.193,834.791C606.193,862.526 583.501,885.217 555.767,885.217L253.209,885.217C225.474,885.217 202.783,862.526 202.783,834.791L202.783,532.233C202.783,504.499 225.474,481.807 253.209,481.807L384.438,481.807Z"
+                        style="fill:url(#_Linear13);" />
+                    </g>
+
+                </g>
+            </g>
+
+            <defs>
+                <radialGradient id="_Radial1" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+                    gradientTransform="matrix(443.566861,0,0,496.491771,293.560604,617.836169)">
+                    <stop offset="0" style="stop-color:rgb(71,106,138);stop-opacity:1"/>
+                    <stop offset="0.43" style="stop-color:rgb(49,73,95);stop-opacity:1"/>
+                    <stop offset="1" style="stop-color:currentColor;stop-opacity:1"/>
+                </radialGradient>
+
+                <radialGradient id="_Radial2" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+                    gradientTransform="matrix(443.566861,0,0,496.491771,293.560604,617.836169)">
+                    <stop offset="0" style="stop-color:rgb(71,106,138);stop-opacity:1"/>
+                    <stop offset="0.43" style="stop-color:rgb(49,73,95);stop-opacity:1"/>
+                    <stop offset="1" style="stop-color:currentColor;stop-opacity:1"/>
+                </radialGradient>
+
+                <image id="_Image4" width="4px" height="4px" xlink:href="data:image/png;base64,..."/>
+                <image id="_Image6" width="3px" height="3px" xlink:href="data:image/png;base64,..."/>
+                <image id="_Image8" width="2px" height="2px" xlink:href="data:image/png;base64,..."/>
+                <image id="_Image10" width="1px" height="1px" xlink:href="data:image/png;base64,..."/>
+                <image id="_Image12" width="2px" height="2px" xlink:href="data:image/png;base64,..."/>
+
+                <linearGradient id="_Linear13" x1="0" y1="0" x2="1" y2="0"
+                    gradientUnits="userSpaceOnUse"
+                    gradientTransform="matrix(215.212562,0,0,215.212562,404.487696,683.512304)">
+                    <stop offset="0" style="stop-color:rgb(71,106,138);stop-opacity:1"/>
+                    <stop offset="0.44" style="stop-color:rgb(50,74,97);stop-opacity:1"/>
+                    <stop offset="1" style="stop-color:currentColor;stop-opacity:1"/>
+                </linearGradient>
+            </defs>
+
+            <style>
+                [aria-controls="madeit-chatbot-sidebar:madeit"].is-pressed {
+                    stop-color: white;
+                }
+                [aria-controls="madeit-chatbot-sidebar:madeit"] svg {
+                    max-height: 20px !important;
+                    max-width: 20px !important;
+                }
+            </style>
+            `
+        }
+    }),
 });

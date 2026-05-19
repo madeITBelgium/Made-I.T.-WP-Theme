@@ -1,3 +1,8 @@
+/**
+ * breakpoint-context.js — Shared context for managing responsive breakpoints in Gutenberg blocks.
+ *
+ */
+
 import { createContext, useContext, useState } from '@wordpress/element';
 
 export const BreakpointContext = createContext({

@@ -65,66 +65,88 @@ $break-medium: 782px;
     // Specificiteitstruc: de [style*="..."] selector wint van een class-only
     // selector, zodat de var ook daadwerkelijk wordt toegepast als hij aanwezig is.
     // Zonder deze truc overschrijft Bootstrap of een theme de waarde.
-	&[style*="--madeit-container-margin-top-desktop:"] {
-        margin-top: var(--madeit-container-margin-top-desktop, 0) !important;
-    }
-	&[style*="--madeit-container-margin-bottom-desktop:"] {
-		margin-bottom: var(--madeit-container-margin-bottom-desktop, 0) !important;
-	}
-    &[style*="--madeit-container-margin-top-tablet:"] {
-        @include tablet {
-            margin-top: var(
-                --madeit-container-margin-top-tablet,
-                var(--madeit-container-margin-top-desktop, 0)
-            ) !important;
+
+    &:not(.wp-block-madeit-block-content .wp-block-madeit-block-content) {
+
+        &[style*="--madeit-container-margin-top-desktop:"] {
+            margin-top: var(--madeit-container-margin-top-desktop, 0) !important;
         }
-    }
-    &[style*="--madeit-container-margin-bottom-tablet:"] {
-        @include tablet {
-            margin-bottom: var(
-                --madeit-container-margin-bottom-tablet,
-                var(--madeit-container-margin-bottom-desktop, 0)
-            ) !important;
+
+        &[style*="--madeit-container-margin-bottom-desktop:"] {
+            margin-bottom: var(--madeit-container-margin-bottom-desktop, 0) !important;
         }
+
+        &[style*="--madeit-container-margin-top-tablet:"] {
+            @include tablet {
+                margin-top: var(
+                    --madeit-container-margin-top-tablet,
+                    var(--madeit-container-margin-top-desktop, 0)
+                ) !important;
+            }
+        }
+        &[style*="--madeit-container-margin-bottom-tablet:"] {
+            @include tablet {
+                margin-bottom: var(
+                    --madeit-container-margin-bottom-tablet,
+                    var(--madeit-container-margin-bottom-desktop, 0)
+                ) !important;
+            }
+        }
+
+        &[style*="--madeit-container-margin-top-mobile:"],
+        &[style*="--madeit-container-margin-bottom-mobile:"] {
+            @include mobile {
+                margin-top: var(
+                    --madeit-container-margin-top-mobile,
+                    var(--madeit-container-margin-top-tablet, var(--madeit-container-margin-top-desktop, 0))
+                ) !important;
+                margin-bottom: var(
+                    --madeit-container-margin-bottom-mobile,
+                    var(--madeit-container-margin-bottom-tablet, var(--madeit-container-margin-bottom-desktop, 0))
+                ) !important;
+            }
+        }
+
     }
+
 
     // Fallback tablet (altijd, zonder specificiteitstruc): erft van desktop.
-    @include tablet {
-        margin-top: var(
-            --madeit-container-margin-top-tablet,
-            var(--madeit-container-margin-top-desktop, 0)
-        );
-        margin-bottom: var(
-            --madeit-container-margin-bottom-tablet,
-            var(--madeit-container-margin-bottom-desktop, 0)
-        );
-    }
+    // @include tablet {
+    //     margin-top: var(
+    //         --madeit-container-margin-top-tablet,
+    //         var(--madeit-container-margin-top-desktop, 0)
+    //     );
+    //     margin-bottom: var(
+    //         --madeit-container-margin-bottom-tablet,
+    //         var(--madeit-container-margin-bottom-desktop, 0)
+    //     );
+    // }
 
-    &[style*="--madeit-container-margin-top-mobile:"],
-    &[style*="--madeit-container-margin-bottom-mobile:"] {
-        @include mobile {
-            margin-top: var(
-                --madeit-container-margin-top-mobile,
-                var(--madeit-container-margin-top-tablet, var(--madeit-container-margin-top-desktop, 0))
-            ) !important;
-            margin-bottom: var(
-                --madeit-container-margin-bottom-mobile,
-                var(--madeit-container-margin-bottom-tablet, var(--madeit-container-margin-bottom-desktop, 0))
-            ) !important;
-        }
-    }
+    // &[style*="--madeit-container-margin-top-mobile:"],
+    // &[style*="--madeit-container-margin-bottom-mobile:"] {
+    //     @include mobile {
+    //         margin-top: var(
+    //             --madeit-container-margin-top-mobile,
+    //             var(--madeit-container-margin-top-tablet, var(--madeit-container-margin-top-desktop, 0))
+    //         ) !important;
+    //         margin-bottom: var(
+    //             --madeit-container-margin-bottom-mobile,
+    //             var(--madeit-container-margin-bottom-tablet, var(--madeit-container-margin-bottom-desktop, 0))
+    //         ) !important;
+    //     }
+    // }
 
     // Fallback mobile (altijd): erft van tablet → desktop.
-    @include mobile {
-        margin-top: var(
-            --madeit-container-margin-top-mobile,
-            var(--madeit-container-margin-top-tablet, var(--madeit-container-margin-top-desktop, 0))
-        );
-        margin-bottom: var(
-            --madeit-container-margin-bottom-mobile,
-            var(--madeit-container-margin-bottom-tablet, var(--madeit-container-margin-bottom-desktop, 0))
-        );
-    }
+    // @include mobile {
+    //     margin-top: var(
+    //         --madeit-container-margin-top-mobile,
+    //         var(--madeit-container-margin-top-tablet, var(--madeit-container-margin-top-desktop, 0))
+    //     );
+    //     margin-bottom: var(
+    //         --madeit-container-margin-bottom-mobile,
+    //         var(--madeit-container-margin-bottom-tablet, var(--madeit-container-margin-bottom-desktop, 0))
+    //     );
+    // }
 
 
     // ─── 3. Wrapper: padding (responsief via CSS-vars) ────────────────────────
@@ -205,7 +227,8 @@ $break-medium: 782px;
     // We neutraliseren dat hier en vervangen het door onze eigen CSS-vars.
 
     &.container,
-    &.container-fluid {
+    &.container-fluid,
+    > .container-fluid {
         // Neutraliseer Bootstrap padding; onze vars nemen het over.
         padding-right: var(--madeit-container-padding-right-desktop, 0px);
         padding-left:  var(--madeit-container-padding-left-desktop,  0px);
@@ -227,29 +250,44 @@ $break-medium: 782px;
         }
 
         // Geneste container: geen extra padding.
-        .container {
-            padding: 0;
+        // .container {
+        //     padding: 0;
+        // }
+    }
+
+    > .container {
+        display: flex;
+        justify-content: var(--madeit-justify-content-desktop, flex-start);
+        margin-left: auto;
+        margin-right: auto;
+
+        @media(max-width: 991px) {
+            justify-content: var(--madeit-justify-content-tablet, var(--madeit-justify-content-desktop, flex-start));
+        }
+
+        @media(max-width: 767px) {
+            justify-content: var(--madeit-justify-content-mobile, var(--madeit-justify-content-tablet, var(--madeit-justify-content-desktop, flex-start)));
         }
     }
 
 
     // ─── 6. `.madeit-container-row` — flex layout + responsieve padding ───────
 
-    .madeit-container-row {
+    .madeit-container-row[style*="--madeit-container-row-padding-"] {
         // Padding via CSS-vars (geserialiseerd door save.js als containerPaddingOnRow = true).
         padding-top:    var(--madeit-container-row-padding-top-desktop);
         padding-right:  var(--madeit-container-row-padding-right-desktop);
         padding-bottom: var(--madeit-container-row-padding-bottom-desktop);
         padding-left:   var(--madeit-container-row-padding-left-desktop);
 
-        @include tablet {
+        @media (max-width: 991px) {
             padding-top:    var(--madeit-container-row-padding-top-tablet,    var(--madeit-container-row-padding-top-desktop)) !important;
             padding-right:  var(--madeit-container-row-padding-right-tablet,  var(--madeit-container-row-padding-right-desktop)) !important;
             padding-bottom: var(--madeit-container-row-padding-bottom-tablet, var(--madeit-container-row-padding-bottom-desktop)) !important;
             padding-left:   var(--madeit-container-row-padding-left-tablet,   var(--madeit-container-row-padding-left-desktop)) !important;
         }
 
-        @include mobile {
+        @media (max-width: 767px) {
             padding-top:    var(--madeit-container-row-padding-top-mobile,    var(--madeit-container-row-padding-top-tablet,    var(--madeit-container-row-padding-top-desktop))) !important;
             padding-right:  var(--madeit-container-row-padding-right-mobile,  var(--madeit-container-row-padding-right-tablet,  var(--madeit-container-row-padding-right-desktop))) !important;
             padding-bottom: var(--madeit-container-row-padding-bottom-mobile, var(--madeit-container-row-padding-bottom-tablet, var(--madeit-container-row-padding-bottom-desktop))) !important;
@@ -260,7 +298,7 @@ $break-medium: 782px;
     // Flex layout voor de row — alleen actief op specifieke breakpoints
     // zodat mobiel standaard stapelt.
 
-    @include desktop {
+    @media (min-width: 992px) {
         .madeit-container-row {
             display:         flex;
             flex-wrap:       var(--madeit-flex-wrap-desktop, nowrap);
@@ -280,20 +318,24 @@ $break-medium: 782px;
                 max-width: var(--madeit-max-width-desktop, 100%);
             }
 
+        }
+        
+        &[style*="--madeit-min-height-"] > div > .madeit-container-row {
             // Kolomhoogte en uitlijning.
-            .wp-block-madeit-block-content-column {
+            > .wp-block-madeit-block-content-column {
                 min-height:    var(--madeit-min-height-desktop, auto);
                 align-content: var(--madeit-align-items-desktop, stretch);
             }
-
-            .madeit-content-column__inner {
+    
+            > .madeit-content-column__inner {
                 min-height:  var(--madeit-min-height-desktop, auto);
                 align-items: var(--madeit-align-items-desktop, stretch);
             }
+            
         }
     }
 
-    @include tablet {
+    @media (max-width: 991px) {
         .madeit-container-row {
             flex-wrap:       var(--madeit-flex-wrap-tablet,       var(--madeit-flex-wrap-desktop, wrap));
             align-items:     var(--madeit-align-items-tablet,     var(--madeit-align-items-desktop, stretch));
@@ -305,18 +347,23 @@ $break-medium: 782px;
                 flex-direction: var(--madeit-flex-direction-tablet, var(--madeit-flex-direction-desktop, row));
             }
 
-            .wp-block-madeit-block-content-column {
-                min-height:    var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto));
-                align-content: var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch));
-            }
+            
 
             .madeit-content-column__inner {
                 align-items: var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch));
             }
         }
+
+        &[style*="--madeit-min-height-"] > div > .madeit-container-row {
+            > .wp-block-madeit-block-content-column {
+                min-height:    var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto));
+                align-content: var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch));
+            }
+        }
+
     }
 
-    @include mobile {
+    @media (max-width: 599px) {
         .madeit-container-row {
             flex-wrap:       var(--madeit-flex-wrap-mobile,       var(--madeit-flex-wrap-tablet,       var(--madeit-flex-wrap-desktop, wrap)));
             align-content:   var(--madeit-align-items-mobile,     var(--madeit-align-items-tablet,     var(--madeit-align-items-desktop, stretch)));
@@ -329,13 +376,17 @@ $break-medium: 782px;
                 flex-direction: var(--madeit-flex-direction-mobile, var(--madeit-flex-direction-tablet, var(--madeit-flex-direction-desktop, column)));
             }
 
-            .wp-block-madeit-block-content-column {
-                min-height:    var(--madeit-min-height-mobile, var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto)));
-                align-content: var(--madeit-align-items-mobile, var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch)));
-            }
+            
 
             .madeit-content-column__inner {
                 align-items: var(--madeit-align-items-mobile, var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch)));
+            }
+        }
+
+        &[style*="--madeit-min-height-"] > div > .madeit-container-row {
+            > .wp-block-madeit-block-content-column {
+                min-height:    var(--madeit-min-height-mobile, var(--madeit-min-height-tablet, var(--madeit-min-height-desktop, auto)));
+                align-content: var(--madeit-align-items-mobile, var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch)));
             }
         }
     }
@@ -377,7 +428,7 @@ $break-medium: 782px;
         }
         .madeit-container-row > .col.col-lg-12,
         .madeit-container-row > .wp-block-madeit-block-content-column.col-lg-12 {
-            flex:  0 0 auto;
+            flex: 0 0 auto;
             width: percentage(12 / 12); 
         }
     }
@@ -396,35 +447,35 @@ $break-medium: 782px;
         }
     }
 
-    @include desktop {
-        .madeit-container-row[data-madeit-dir="column"],
-        .madeit-container-row[data-madeit-dir="column-reverse"] {
-            > .wp-block-madeit-block-content-column {
-                width: 100% !important;
-                flex:  0 0 100% !important;
-            }
-        }
-    }
+    // @include desktop {
+    //     .madeit-container-row[data-madeit-dir="column"],
+    //     .madeit-container-row[data-madeit-dir="column-reverse"] {
+    //         > .wp-block-madeit-block-content-column {
+    //             width: 100% !important;
+    //             flex:  0 0 100% !important;
+    //         }
+    //     }
+    // }
 
-    @include tablet {
-        .madeit-container-row[data-madeit-dir-tablet="column"],
-        .madeit-container-row[data-madeit-dir-tablet="column-reverse"] {
-            > .wp-block-madeit-block-content-column {
-                width: calc(100% - var(--bs-gutter-x, 0px)) !important;
-                flex:  0 0 auto !important;
-            }
-        }
-    }
+    // @include tablet {
+    //     .madeit-container-row[data-madeit-dir-tablet="column"],
+    //     .madeit-container-row[data-madeit-dir-tablet="column-reverse"] {
+    //         > .wp-block-madeit-block-content-column {
+    //             width: calc(100% - var(--bs-gutter-x, 0px)) !important;
+    //             flex:  0 0 auto !important;
+    //         }
+    //     }
+    // }
 
-    @include mobile {
-        .madeit-container-row[data-madeit-dir-mobile="column"],
-        .madeit-container-row[data-madeit-dir-mobile="column-reverse"] {
-            > .wp-block-madeit-block-content-column {
-                width: calc(100% - var(--bs-gutter-x, 0px)) !important;
-                flex:  0 0 auto !important;
-            }
-        }
-    }
+    // @include mobile {
+    //     .madeit-container-row[data-madeit-dir-mobile="column"],
+    //     .madeit-container-row[data-madeit-dir-mobile="column-reverse"] {
+    //         > .wp-block-madeit-block-content-column {
+    //             width: calc(100% - var(--bs-gutter-x, 0px)) !important;
+    //             flex:  0 0 auto !important;
+    //         }
+    //     }
+    // }
 
 
     // ─── 9. Verticale uitlijning helpers ──────────────────────────────────────
@@ -461,9 +512,9 @@ $break-medium: 782px;
             [data-madeit-dir="row-reverse"] .madeit-container-row.rows-#{$rows} {
                 @for $i from 1 through 12 {
                     .wp-block-madeit-block-content-column.col-lg-#{$i} {
-                        max-width: calc(
-                            (var(--madeit-max-width-desktop) / #{12 / $i})
-                            - (var(--madeit-row-gap-desktop, 20px) * #{$rows - 1}) / #{$rows}
+                         flex: 0 0 calc(
+                            (100% / (12 / #{$i}))
+                            - ((var(--madeit-row-gap-desktop, 20px) * (#{$rows - 1})) / #{$rows})
                         ) !important;
                     }
                 }
@@ -515,13 +566,14 @@ $break-medium: 782px;
 // =============================================================================
 
 .wp-block-madeit-block-content-column {
-    flex: auto !important;
+    // flex: auto 1 !important;
 
     &.is-vertically-aligned-top    { align-self: flex-start; }
     &.is-vertically-aligned-center { align-self: center; }
     &.is-vertically-aligned-bottom { align-self: flex-end; }
 
     .madeit-content-column__inner {
+        height: 100%;
         padding-right: calc(var(--bs-gutter-x) * 0.5);
         padding-left:  calc(var(--bs-gutter-x) * 0.5);
     }
@@ -534,10 +586,13 @@ $break-medium: 782px;
 
 // Bootstrap `.row > *` heeft standaard padding; wij beheren dat zelf.
 .row > * {
-    padding-right: 0;
-    padding-left:  0;
+    padding-right: calc(var(--bs-gutter-x) * 0.5);
+    padding-left: calc(var(--bs-gutter-x) * 0.5);
 }
-
+.row.madeit-container-row > * {
+    padding-left: 0;
+    padding-right: 0;
+}
 .justify-content-center > .row {
     justify-content: center !important;
 }

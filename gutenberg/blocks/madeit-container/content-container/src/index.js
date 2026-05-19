@@ -1,19 +1,12 @@
 /**
  * index.js — madeit/block-content
  *
- * Registreert het block type en definieert:
- * - Variaties (layout presets)
- * - Edit & save functies
- * - Deprecated versies (voor backward compatibility met bestaande content)
+ * DEPRECATED VOLGORDE (meest recent bovenaan):
  *
- * DEPRECATED VOLGORDE
- * ───────────────────
- * Gutenberg doorloopt de deprecated array van boven naar onder.
- * De meest recente deprecated versie staat bovenaan (saveV1),
- * de oudste versie staat onderaan (saveV13).
- *
- * ⚠️  BELANGRIJK: Verwijder nooit een deprecated versie tenzij je 100% zeker
- * bent dat er geen live content meer bestaat die met die versie werd opgeslagen.
+ * Vpre0b: geen dubbele classes + inner container div + partial CSS-vars
+ * Vpre0:  dubbele classes + inner container div + partial CSS-vars
+ * V0:     geen inner div + inline margin + volledige CSS-vars
+ * V1–V15: alle vorige deprecated versies
  */
 
 import { registerBlockType } from '@wordpress/blocks';
@@ -25,6 +18,9 @@ import metadata from './../block.json';
 import icon from './icon';
 
 import {
+    saveVpre0b,
+    saveVpre0,
+    saveV0,
     saveV1, saveV2, saveV3, saveV4, saveV5, saveV6,
     saveV7, saveV8, saveV9, saveV10, saveV11, saveV12,
     saveV13, saveV14, saveV15,
@@ -33,43 +29,26 @@ import {
 
 // ─── Hulpfuncties voor migrate() ──────────────────────────────────────────────
 
-/**
- * Normaliseert een CSS-lengtewaarde naar een string met eenheid.
- * - Getal:             20       → '20px'
- * - Getal met eenheid: '1.5rem' → '1.5rem'
- * - Leeg / undefined:           → undefined
- */
 const normalizeCssLength = ( value, defaultUnit = 'px' ) => {
     if ( value === undefined || value === null ) return undefined;
-
     if ( typeof value === 'number' && Number.isFinite( value ) ) {
         return `${ value }${ defaultUnit || 'px' }`;
     }
-
     if ( typeof value !== 'string' ) return undefined;
-
     const trimmed = value.trim();
     if ( trimmed === '' ) return undefined;
     if ( /^-?\d+(?:\.\d+)?$/.test( trimmed ) ) return `${ trimmed }${ defaultUnit || 'px' }`;
     if ( /^-?\d+(?:\.\d+)?[a-z%]+$/i.test( trimmed ) ) return trimmed;
-
     return undefined;
 };
 
-/**
- * Normaliseert een spacing-object { top, right, bottom, left }.
- * Zorgt ervoor dat alle 4 zijden aanwezig zijn als minstens één zijde een waarde heeft.
- * Dit voorkomt ongeldige CSS-var-kortschriften in responsieve stijlen.
- */
 const normalizeSpacingObject = ( spacing ) => {
     if ( ! spacing || typeof spacing !== 'object' ) return undefined;
-
     const { top, right, bottom, left } = spacing;
     const hasAnyValue = [ top, right, bottom, left ].some(
         ( v ) => v !== undefined && v !== null && String( v ).trim() !== ''
     );
     if ( ! hasAnyValue ) return undefined;
-
     return {
         top:    normalizeCssLength( top )    ?? '0px',
         right:  normalizeCssLength( right )  ?? '0px',
@@ -78,13 +57,8 @@ const normalizeSpacingObject = ( spacing ) => {
     };
 };
 
-/**
- * Normaliseert alle spacing-attributen van een block (margin + padding).
- * Gebruik dit in migrate()-functies om verouderde waarden op te schonen.
- */
 const normalizeSpacingAttributes = ( attributes ) => {
     const next = { ...( attributes || {} ) };
-
     next.containerMargin        = normalizeSpacingObject( next.containerMargin );
     next.containerMarginTablet  = normalizeSpacingObject( next.containerMarginTablet );
     next.containerMarginMobile  = normalizeSpacingObject( next.containerMarginMobile );
@@ -93,8 +67,25 @@ const normalizeSpacingAttributes = ( attributes ) => {
     next.containerPaddingMobile = normalizeSpacingObject( next.containerPaddingMobile );
     next.rowMargin              = normalizeSpacingObject( next.rowMargin );
     next.rowPadding             = normalizeSpacingObject( next.rowPadding );
-
     return next;
+};
+
+/**
+ * Detecteert of de opgeslagen wrapperStyle de partial vars heeft:
+ * - Geen --madeit-row-gap-tablet (tablet/mobile row-gap ontbreekt)
+ * - Geen --madeit-flex-direction-* vars
+ * - Geen --madeit-flex-wrap-* vars
+ */
+const isPartialVarsStyle = ( wrapperStyle ) => {
+    if ( typeof wrapperStyle !== 'string' ) return false;
+    const s = wrapperStyle.replace( /\s+/g, '' );
+    if ( ! s.length ) return false;
+    const hasRowGapTablet     = s.includes( '--madeit-row-gap-tablet:' );
+    const hasFlexDirection    = s.includes( '--madeit-flex-direction-desktop:' ) ||
+                                s.includes( '--madeit-flex-direction-tablet:' )  ||
+                                s.includes( '--madeit-flex-direction-mobile:' );
+    const hasFlexWrap         = s.includes( '--madeit-flex-wrap-desktop:' );
+    return ! hasRowGapTablet && ! hasFlexDirection && ! hasFlexWrap;
 };
 
 
@@ -104,12 +95,6 @@ registerBlockType( metadata.name, {
     ...metadata,
     icon,
 
-    /**
-     * Variaties / Layout presets
-     *
-     * Deze waarden worden automatisch als attributen ingesteld wanneer iemand
-     * het block toevoegt via de inserter. Ze wijzigen bestaande blocks NIET.
-     */
     variations: [
         {
             name:      'madeit-default-responsive',
@@ -136,10 +121,6 @@ registerBlockType( metadata.name, {
         },
     ],
 
-    /**
-     * Bepaalt de breedte van het block in de editor.
-     * Full-width voor fluid containers, normale breedte voor boxed.
-     */
     getEditWrapperProps( attributes ) {
         const { size } = attributes;
         if ( size === 'container-fluid' || size === 'container-content-boxed' ) {
@@ -151,13 +132,68 @@ registerBlockType( metadata.name, {
     edit,
     save,
 
-
-    // ─── Deprecated versies ────────────────────────────────────────────────────
-    //
-    // Volgorde: meest recent bovenaan (V1), oudste onderaan (V13).
-    // Gutenberg probeert ze van boven naar onder totdat er een match is.
-
     deprecated: [
+
+        // ── Vpre0b: Geen dubbele classes + inner container div + partial vars ──
+        //
+        // Meest recente tussenfase vóór de huidige save:
+        // - Classes zijn normaal (niet verdubbeld)
+        // - Inner <div class="container"> altijd aanwezig (size werd nog niet
+        //   doorvertaald naar de inner div class)
+        // - Slechts partial CSS-vars (geen row-gap tablet/mobile,
+        //   geen flex-direction, geen flex-wrap)
+        // - Geen madeitHasUserEdits → dit block werd nog niet gemigreerd
+        {
+            attributes: metadata.attributes,
+            isEligible( attributes ) {
+                // Sla over als al gemigreerd
+                if ( attributes?.madeitHasUserEdits ) return false;
+
+                const wrapperClassName = typeof attributes?.wrapperClassName === 'string'
+                    ? attributes.wrapperClassName : '';
+                const tokens = wrapperClassName.trim().split( /\s+/ ).filter( Boolean );
+
+                // Niet matchen als classes verdubbeld zijn (dat is Vpre0)
+                const isDoubled = tokens.filter( t => t === 'wp-block-madeit-block-content' ).length >= 2;
+                if ( isDoubled ) return false;
+
+                // Moet madeit-block-content--frontend hebben (recente versie)
+                // of geen wrapperClassName (nieuwe blocks die nog niet zijn opgeslagen)
+                return tokens.includes( 'madeit-block-content--frontend' ) ||
+                       tokens.length === 0;
+            },
+            save: saveVpre0b,
+            migrate( attributes ) {
+                return { ...normalizeSpacingAttributes( attributes ), madeitHasUserEdits: true };
+            },
+        },
+
+        // ── Vpre0: Dubbele classes + inner container div + partial vars ────────
+        //
+        // Veroorzaakt door bug: blockProps.className = classnames( wrapperClass, blockProps.className )
+        // gecombineerd met partial CSS-vars.
+        {
+            attributes: metadata.attributes,
+            isEligible( attributes ) {
+                const wrapperClassName = typeof attributes?.wrapperClassName === 'string'
+                    ? attributes.wrapperClassName : '';
+                const tokens = wrapperClassName.trim().split( /\s+/ ).filter( Boolean );
+                return tokens.filter( t => t === 'wp-block-madeit-block-content' ).length >= 2;
+            },
+            save: saveVpre0,
+            migrate( attributes ) {
+                return { ...normalizeSpacingAttributes( attributes ), madeitHasUserEdits: true };
+            },
+        },
+
+        // ── V0: Geen inner div + inline margin + volledige CSS-vars ───────────
+        {
+            attributes: metadata.attributes,
+            save: saveV0,
+            migrate( attributes ) {
+                return { ...normalizeSpacingAttributes( attributes ), madeitHasUserEdits: true };
+            },
+        },
 
         // ── V1: Size default veranderd van 'container' naar 'container-content-boxed' (2026-04-17) ──
         {
@@ -171,14 +207,8 @@ registerBlockType( metadata.name, {
 
                 const wrapperHasContainer      = wrapperTokens.includes( 'container' );
                 const wrapperHasContainerFluid = wrapperTokens.includes( 'container-fluid' );
+                const isLegacyDefaultContainer = wrapperHasContainer && ! wrapperHasContainerFluid;
 
-                const isLegacyDefaultContainer =
-                    wrapperHasContainer && ! wrapperHasContainerFluid;
-
-                // Bepaal de correcte size op basis van de opgeslagen markup.
-                // Na migratie zetten we madeitHasUserEdits zodat resolveSize()
-                // in save.js het size-attribuut vertrouwt en wrapperClassName
-                // niet meer als override gebruikt.
                 const correctedSize =
                     ( typeof attributes?.size === 'string' &&
                       attributes.size.length > 0 &&
@@ -251,11 +281,9 @@ registerBlockType( metadata.name, {
         {
             isEligible( attributes ) {
                 if ( attributes?.size && attributes.size !== 'container-content-boxed' ) return false;
-
                 const wrapperClassName = typeof attributes?.wrapperClassName === 'string'
                     ? attributes.wrapperClassName : '';
                 if ( wrapperClassName.trim().length === 0 ) return true;
-
                 const tokens = wrapperClassName.trim().split( /\s+/ );
                 return (
                     tokens.includes( 'container' ) &&
@@ -271,12 +299,10 @@ registerBlockType( metadata.name, {
         {
             isEligible( attributes ) {
                 if ( attributes?.size && attributes.size !== 'container-content-boxed' ) return false;
-
                 const wrapperClassName = typeof attributes?.wrapperClassName === 'string'
                     ? attributes.wrapperClassName : '';
                 const tokens = wrapperClassName.trim().length
                     ? wrapperClassName.trim().split( /\s+/ ) : [];
-
                 return (
                     tokens.includes( 'container' ) &&
                     ! tokens.includes( 'container-fluid' ) &&
@@ -297,12 +323,9 @@ registerBlockType( metadata.name, {
         { save: saveV11 },
 
         // ── V12 ⭐ LIVE OP WEBSITES ────────────────────────────────────────────
-        // Object-gebaseerde spacing, `<div class="row">` typo,
-        // geen madeit-block-content--frontend klasse, geen flex CSS vars.
         { save: saveV12 },
 
         // ── V13 ⭐ LIVE OP WEBSITES (alleroudste versie) ──────────────────────
-        // Afzonderlijke numerieke attributen (containerPaddingTop, etc.)
         {
             supports: { html: false },
 
@@ -340,12 +363,8 @@ registerBlockType( metadata.name, {
 
             migrate( attributes ) {
                 const toPx = ( value ) =>
-                    value !== null && value !== undefined
-                        ? value + 'px'
-                        : undefined;
+                    value !== null && value !== undefined ? value + 'px' : undefined;
 
-                // Leid de correcte size af uit de opgeslagen markup zodat
-                // resolveSize() in save.js het size-attribuut kan vertrouwen.
                 const wrapperClassName = typeof attributes?.wrapperClassName === 'string'
                     ? attributes.wrapperClassName : '';
                 const wrapperTokens = wrapperClassName.trim().split( /\s+/ );

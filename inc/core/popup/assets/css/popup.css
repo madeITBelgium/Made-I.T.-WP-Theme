@@ -1,0 +1,7 @@
+.m-popup--dark .modal-content { background:#111;color:#fff; }
+.m-popup--light .modal-content { background:#fff;color:#000; }
+.m-popup--christmas .modal-header { background:#b30000;color:#fff; }
+
+.editor-styles-wrapper {
+    padding: 0 50px;
+}

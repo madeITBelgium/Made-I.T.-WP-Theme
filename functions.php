@@ -2622,7 +2622,9 @@ if (defined('MADEIT_REVIEWS') && MADEIT_REVIEWS && class_exists('ACF')) {
 
 if (defined('MADEIT_POPUPS') && MADEIT_POPUPS) {
     if (class_exists('ACF')) {
-        require get_parent_theme_file_path('/inc/popup.php');
+        // require get_parent_theme_file_path('/inc/popup.php');
+
+        require get_parent_theme_file_path('/inc/core/popup/popup.php');
     }
 
     add_action('wp_enqueue_scripts', static function (): void {
