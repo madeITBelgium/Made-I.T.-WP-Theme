@@ -11,6 +11,18 @@ function madeit_megamenu_menuitems($items, $args)
     }
     do_action('qm/start', 'madeit:megamenu_menuitems');
 
+    $wpmlCurLanguage = apply_filters('wpml_current_language', null);
+    if (!is_string($wpmlCurLanguage) || $wpmlCurLanguage === '') {
+        $wpmlCurLanguage = 'default';
+    }
+
+    $cache_key = 'madeit_megamenu_menuitems_' . sanitize_key($args->theme_location ?: 'default') . '_' . sanitize_key($wpmlCurLanguage);
+    $cache = wp_cache_get($cache_key, 'madeit_megamenu');
+    if ($cache !== false) {
+        do_action('qm/stop', 'madeit:megamenu_menuitems');
+        return $cache;
+    }
+
     static $product_categories_by_parent = null;
 
     if ($product_categories_by_parent === null) {
@@ -91,6 +103,8 @@ function madeit_megamenu_menuitems($items, $args)
             }
         }
     }
+
+    wp_cache_set($cache_key, $items, 'madeit_megamenu', 3600);
 
     do_action('qm/stop', 'madeit:megamenu_menuitems');
 
