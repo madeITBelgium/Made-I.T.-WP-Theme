@@ -49,4 +49,5 @@ registerBlockType( metadata.name, {
 	supports: metadata.supports || {},
 	edit: Edit,
 	save,
+    deprecated,
 } );

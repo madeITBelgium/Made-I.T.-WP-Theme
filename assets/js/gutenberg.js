@@ -525,4 +525,12 @@ document.addEventListener('DOMContentLoaded', function () {
     
 
 
+
+    // get is-root-container length
+
+    var rootLength = document.querySelector('.is-root-container');
+
+    rootLength.length();
+    console.log(rootLength.length());
+
 });

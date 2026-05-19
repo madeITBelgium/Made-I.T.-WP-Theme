@@ -1,4 +1,6 @@
+
 (function () {
+    
     var activeModal = null;
     var activeBackdrop = null;
 
@@ -80,8 +82,10 @@
             }
 
             var trigger = target.closest('[data-madeit-popup-id]');
+            console.log('[POPUP] trigger:', trigger);
             var popupId = trigger ? trigger.getAttribute('data-madeit-popup-id') : null;
-
+            console.log('[POPUP] popupId:', popupId);
+            
             if (!popupId) {
                 var link = target.closest('a');
                 if (link) {

@@ -1,20 +1,33 @@
-// var React = window.React || (window.wp && window.wp.element);
-const { addFilter } = wp.hooks;
-const { createHigherOrderComponent } = wp.compose;
-const apiFetch = wp.apiFetch;
-// const { Fragment } = wp.element;
+(() => {
 
-//const blockEditor = wp.blockEditor || wp.editor;
-const { InspectorControls } = wp.blockEditor; //= blockEditor;
+    const React = MADEIT.wp.React;
 
-const {
-    TextControl,
-    // Button,
-    Spinner,
-    Notice,
-    FormFileUpload,
-    __experimentalToolsPanelItem,
-} = wp.components;
+    const {
+        hooks,
+        compose,
+        apiFetch,
+        element,
+        blockEditor,
+        components,
+    } = MADEIT.wp;
+
+    const { addFilter } = hooks;
+    const { createHigherOrderComponent } = compose;
+    const { Fragment } = element;
+
+    const {
+        InspectorControls
+    } = blockEditor;
+
+    const {
+        TextControl,
+        Spinner,
+        Notice,
+        FormFileUpload,
+        __experimentalToolsPanelItem,
+    } = components;
+
+
 
 const TARGET_BLOCKS = [
     'core/paragraph',
@@ -334,3 +347,4 @@ addFilter(
     'madeit/fontstyles/upload-font-family',
     withFontUploadInspector
 );
+})();

@@ -331,22 +331,18 @@ body.madeit-content-container-advanced-tabs
         }
     }
 
-    &[style*="--madeit-min-height-"] > .container {
+    &[style*="--madeit-min-height-"] > div {
         min-height: var(--madeit-min-height-desktop);
     }
 
-    // Gedeelde flex-layout voor zowel .container als .container-fluid.
+    &[style*="--madeit-min-height-"] > div > .madeit-container-row > .block-editor-inner-blocks {
+        min-height: var(--madeit-min-height-desktop);
+    }
+
     //
     // RESPONSIVE PREVIEW
     // ──────────────────
-    // Gutenberg voegt een klasse toe aan <body> bij het wisselen van preview-modus:
-    //   (geen klasse)                        = desktop
-    //   .is-root-container.is-tablet-preview = tablet
-    //   .is-root-container.is-mobile-preview = mobiel
-    //
-    // We gebruiken deze klassen om de juiste CSS-vars te activeren in de editor,
-    // zodat de flex-richting, gap, uitlijning etc. de frontend accuraat nabootsen.
-    // Selectors starten met `body.is-*-preview` voor hogere specificiteit.
+    // TODO: Fixen 100vw werkt enkel in iFrames, dit is niog niet overal zo toegepast.
 
     > .container,
     > .container-fluid {
@@ -383,9 +379,7 @@ body.madeit-content-container-advanced-tabs
         }
     }
 
-    &[style*="--madeit-min-height-"] > div > .madeit-container-row > .block-editor-inner-blocks {
-        min-height: var(--madeit-min-height-desktop);
-    }
+    
 
 
     // ─── 5b. Responsive preview — tablet & mobiel ─────────────────────────────
@@ -408,8 +402,13 @@ body.madeit-content-container-advanced-tabs
     // ── Tablet preview ──────────────────────────────────────────────────────
 
     @media (max-width: 991px) {
-        > .container,
-        > .container-fluid {
+        // Only with specific style on container
+        &[style*="--madeit-min-height-"] > div > .madeit-container-row > .block-editor-inner-blocks {
+            min-height: var(--madeit-min-height-tablet, var(--madeit-min-height-desktop));
+        }
+
+
+        > div {
             > .madeit-container-row {
                 > .block-editor-inner-blocks {
                     align-items: var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch));
@@ -426,10 +425,6 @@ body.madeit-content-container-advanced-tabs
             }
         }
 
-        &[style*="--madeit-min-height-"] > div > .madeit-container-row > .block-editor-inner-blocks {
-            min-height: var(--madeit-min-height-tablet, var(--madeit-min-height-desktop));
-        }
-
         // Kolommen op volle breedte bij column-richting op tablet.
         .madeit-container-row[data-madeit-dir-tablet="column"],
         .madeit-container-row[data-madeit-dir-tablet="column-reverse"] {
@@ -444,8 +439,12 @@ body.madeit-content-container-advanced-tabs
     // ── Mobiel preview ──────────────────────────────────────────────────────
 
     @media (max-width: 767px) {
-        > .container,
-        > .container-fluid {
+        // Only with specific style on container
+        &[style*="--madeit-min-height-"] > div > .madeit-container-row > .block-editor-inner-blocks {
+            min-height: var(--madeit-min-height-mobile, var(--madeit-min-height-tablet, var(--madeit-min-height-desktop)));
+        }
+
+        > div {
             > .madeit-container-row {
                 > .block-editor-inner-blocks {
                     // min-height: var(--madeit-min-height-mobile, var(--madeit-min-height-tablet, var(--madeit-min-height-desktop)));
@@ -463,9 +462,6 @@ body.madeit-content-container-advanced-tabs
             }
         }
 
-        &[style*="--madeit-min-height-"] > div > .madeit-container-row > .block-editor-inner-blocks {
-            min-height: var(--madeit-min-height-mobile, var(--madeit-min-height-tablet, var(--madeit-min-height-desktop)));
-        }
 
         // Kolommen op volle breedte bij column-richting op mobiel. 
         .madeit-container-row[data-madeit-dir-mobile="column"], 
@@ -479,8 +475,7 @@ body.madeit-content-container-advanced-tabs
 
         // Op mobiel altijd alle kolommen op volle breedte (ongeacht richting), 
         // tenzij er een expliciete mobiele richting is ingesteld die rijen toelaat. 
-        > .container, 
-        > .container-fluid { 
+        > div { 
             > .madeit-container-row:not([data-madeit-dir-mobile="row"]):not([data-madeit-dir-mobile="row-reverse"]) { 
                 > .block-editor-inner-blocks > .block-editor-block-list__layout { 
                     > [data-type="madeit/block-content-column"] { 
@@ -533,6 +528,8 @@ body.madeit-content-container-advanced-tabs
             overflow-wrap: break-word;
             flex: 1 0 0%;
             max-width: 100%;
+            margin-top: 0;
+            margin-bottom: 0;
 
             // Vaste breedte-klassen blijven hun breedte behouden.
             &[class*="is-width-"] {
@@ -544,9 +541,6 @@ body.madeit-content-container-advanced-tabs
                 flex-basis: 100% !important;
                 max-width: 100% !important;
             }
-
-            margin-top: 0;
-            margin-bottom: 0;
 
             > .editor-block-list__block-edit {
                 margin-top: 0;

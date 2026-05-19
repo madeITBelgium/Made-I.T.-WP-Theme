@@ -3,16 +3,35 @@
 
 if (!defined('ABSPATH')) exit;
 
+function madeit_popup_collect_and_decorate_button_block($block_content, $block)
+{
+    $attrs = $block['attrs'] ?? [];
+
+    if (empty($attrs['hasPopup']) || empty($attrs['popupId'])) {
+        return $block_content;
+    }
+
+    $popupId = (int) $attrs['popupId'];
+
+    if ($popupId <= 0) {
+        return $block_content;
+    }
+
+    // simpel injecteren zonder WP_HTML_Tag_Processor
+    $block_content = str_replace(
+        '<a',
+        '<a data-madeit-popup-id="' . $popupId . '"',
+        $block_content
+    );
+
+    return $block_content;
+}
+add_filter('render_block_core/button', 'madeit_popup_collect_and_decorate_button_block', 20, 2);
+
+
 function mp_render_popups() {
     echo '<!-- mp_render_popups CALLED -->';
     if (is_admin()) return;
-
-    $template_file = get_post_meta($template_id, 'template_file', true);
-
-    if (file_exists($template_file)) {
-        include $template_file;
-    }
-
 
     $pageId = get_queried_object_id();
 
@@ -20,16 +39,26 @@ function mp_render_popups() {
         'post_type'      => 'popup',
         'post_status'    => 'publish',
         'posts_per_page' => -1,
-        // 'meta_query'     => [
-        //     [
-        //         'key'     => 'popup_pages',
-        //         'value'   => '"' . $pageId . '"',
-        //         'compare' => 'LIKE',
-        //     ]
-        // ]
     ]);
 
     if (!$popups) return;
+
+    // 🔥 FILTER HIER (voor loop)
+    $popups = array_filter($popups, function ($popup) use ($pageId) {
+
+        $action = get_field('popup_action', $popup->ID);
+
+        // Click popups altijd tonen
+        if ($action !== 'specific_pages') {
+            return true;
+        }
+
+        $pages = get_field('popup_pages', $popup->ID);
+
+        if (!$pages) return false;
+
+        return in_array($pageId, (array) $pages);
+    });
 
     foreach ($popups as $popup) {
 
@@ -38,26 +67,33 @@ function mp_render_popups() {
         }
 
         $style    = get_field('popup_style', $popup->ID) ?: 'default';
-        $delay    = (int) (get_field('popup_delay', $popup->ID) ?: 0);
-        $sessions = get_field('popup_sessions', $popup->ID) ?: 'once_per_visit';
+        $delay    = (int) get_field('popup_delay', $popup->ID);
+        $sessions = get_field('popup_sessions', $popup->ID);
+        $action   = get_field('popup_action', $popup->ID);
         ?>
 
-        <div class="modal fade m-popup m-popup--<?= esc_attr($style); ?>"
-             id="m-popup-<?= $popup->ID; ?>"
-             tabindex="-1"
+        <div class="modal fade madeit-popup popup-<?= esc_attr($style); ?> <?= ($action !== 'specific_pages') ? '' : 'show'; ?>" 
+             id="popup-<?= $popup->ID; ?>"
+             data-id="<?= $popup->ID; ?>"
+             data-action="<?= esc_attr($action); ?>"
              data-delay="<?= esc_attr($delay); ?>"
-             data-sessions="<?= esc_attr($sessions); ?>"
-             aria-hidden="true">
+             data-sessies="<?= esc_attr($sessions); ?>"
+             <?= ($action !== 'specific_pages') ? '' : 'style="display:block;"'; ?>
+             >
+
 
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
+
                     <div class="modal-header">
                         <h5 class="modal-title"><?= esc_html($popup->post_title); ?></h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
+
                     <div class="modal-body">
                         <?= apply_filters('the_content', $popup->post_content); ?>
                     </div>
+
                 </div>
             </div>
         </div>

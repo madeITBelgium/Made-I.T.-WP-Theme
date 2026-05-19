@@ -17,8 +17,10 @@ function mp_register_post_type()
         'name'          => __('Popup', 'madeit'),
         'singular_name' => __('popup', 'madeit'),
         'add_new'       => __('Voeg nieuwe toe', 'madeit'),
+        'add_new_item'  => esc_html__('Nieuwe popup', 'madeit'),
         'edit_item'     => __('Wijzig Popup', 'madeit'),
         'all_items'     => __('Alle Popups', 'madeit'),
+        'new_item'      => esc_html__('Nieuwe Popup', 'madeit'),
     ];
 
     $args = [
@@ -34,14 +36,14 @@ function mp_register_post_type()
 
     register_post_type('popup', $args);
 
-    register_post_type('popup_template', [
-        'label' => 'Popup Templates',
-        'public' => false,
-        'show_ui' => true,
-        'show_in_menu' => 'edit.php?post_type=popup', // sub menu!
-        'supports' => ['title'],
-        'menu_icon' => 'dashicons-layout',
-    ]);
+    // register_post_type('popup_template', [
+    //     'label' => 'Popup Templates',
+    //     'public' => false,
+    //     'show_ui' => true,
+    //     'show_in_menu' => 'edit.php?post_type=popup', // sub menu!
+    //     'supports' => ['title'],
+    //     'menu_icon' => 'dashicons-layout',
+    // ]);
 }
 add_action('init', 'mp_register_post_type');
 

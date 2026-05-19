@@ -1,13 +1,34 @@
-// Use var so this script can be loaded multiple times without redeclare errors.
-// var React = window.React || (window.wp && window.wp.element);
-const { ToolbarButton, ToolbarGroup, Modal } = wp.components;
-// delectcontrol
-const { SelectControl } = wp.components;
-// const { useState, useEffect, Fragment } = wp.element;
-// const { Spinner } = wp.components;
-// const { Notice } = wp.components;
-// const apiFetch = wp.apiFetch;
-const { BlockControls } = wp.blockEditor;
+(() => {
+
+    const {
+        hooks,
+        compose,
+        apiFetch,
+        element,
+        blockEditor,
+        components,
+    } = MADEIT.wp;
+
+    const {
+        ToolbarButton,
+        ToolbarGroup,
+        Modal,
+        SelectControl,
+        Spinner,
+        Notice
+    } = components;
+
+    const {
+        useState,
+        useEffect,
+        Fragment
+    } = element;
+
+    const {
+        BlockControls
+    } = blockEditor;
+
+
 
 const TARGET_BLOCK = 'core/button';
 
@@ -327,3 +348,5 @@ style.innerHTML = `
     }
 `;
 document.head.appendChild(style);
+
+})();

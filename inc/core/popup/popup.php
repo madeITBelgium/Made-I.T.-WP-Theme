@@ -24,4 +24,5 @@ require_once MPOPUP_PATH.'/inc/core/popup/includes/frontend.php';
 add_action('wp_enqueue_scripts', function () {
     wp_enqueue_style('popup-css', MPOPUP_URL.'/inc/core/popup/assets/css/popup.css', [], MPOPUP_VERSION);
     wp_enqueue_script('popup-js', MPOPUP_URL.'/inc/core/popup/assets/js/popup.js', ['jquery', 'bootstrap'], MPOPUP_VERSION, true);
+    // wp_enqueue_script('popup-js-old', MPOPUP_URL.'/inc/core/popup/frontend.js', ['jquery', 'bootstrap'], MPOPUP_VERSION, true);
 });
