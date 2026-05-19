@@ -75,5 +75,3 @@ add_action('manage_popup_posts_custom_column', function ($column, $post_id) {
         echo $time['label'];
     }
 }, 10, 2);
-
-
