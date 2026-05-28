@@ -1,12 +1,23 @@
+// Save V7
+
 /**
- * saveVpre0b — Geen dubbele classes + inner container div + partial CSS-vars
+ * MET inner container div + partial CSS-vars
  *
- * Kenmerken in opgeslagen markup:
- * - Normale (niet dubbele) classes op wrapper
- * - WEL inner <div class="container"> aanwezig
- * - Slechts partial CSS-vars: alleen --madeit-align-items-desktop en/of
- *   --madeit-justify-content-desktop, --madeit-min-height-*, --madeit-row-gap-desktop
- *   (maar GEEN row-gap tablet/mobile, GEEN flex-direction vars, GEEN flex-wrap)
+ * Dit matcht de eerste versie NADAT de inner container div werd toegevoegd,
+ * maar VOORDAT de volledige set CSS-vars (row-gap tablet/mobile,
+ * flex-direction desktop/tablet/mobile, flex-wrap) werd uitgebreid.
+ *
+ * Patroon in opgeslagen markup (inner div aanwezig, partial vars):
+ *   <div class="wp-block-madeit-block-content container-fluid madeit-block-content--frontend" style="...;--madeit-align-items-desktop:center">
+ *     <div class="container">
+ *       <div class="row ...">
+ *
+ * Vars die ONTBRAKEN in deze versie (t.o.v. huidige save):
+ * - --madeit-row-gap-tablet, --madeit-row-gap-mobile
+ * - --madeit-flex-direction-desktop, tablet, mobile
+ * - --madeit-flex-wrap-desktop, tablet, mobile
+ * - --madeit-justify-content-tablet, mobile
+ * - --madeit-align-items-tablet, mobile
  */
 
 import classnames from 'classnames';
@@ -137,15 +148,20 @@ export default function save( props ) {
         }
     );
 
-    // ── Partial stijl: alleen de vars die in deze versie bestonden ─────────────
+    // ── PARTIAL stijl: alleen de vars die in deze versie bestonden ─────────────
     const backgroundStyle = buildBackgroundStyle( attributes );
     const {
         overflow,
         minHeight, minHeightUnit, minHeightMobile, minHeightUnitMobile,
         maxWidth, maxWidthUnit,
         rowGap, rowGapUnit,
+        // alignItems desktop was aanwezig, tablet/mobile niet
         alignItems,
+        // justifyContent desktop was aanwezig, tablet/mobile niet
         justifyContent,
+        // flex-direction bestond NIET in deze versie
+        // flex-wrap bestond NIET in deze versie
+        // row-gap tablet/mobile bestonden NIET in deze versie
         containerMargin, containerMarginTablet, containerMarginMobile,
         containerPadding, containerPaddingTablet, containerPaddingMobile,
         containerPaddingOnRow,
@@ -167,17 +183,19 @@ export default function save( props ) {
     if ( typeof maxWidth === 'number' )
         setCssVar( wrapperStyle, '--madeit-max-width-desktop', `${ maxWidth }${ maxWidthUnit || 'px' }` );
 
-    // row-gap: alleen desktop in deze versie
+    // Row-gap: alleen desktop in deze versie
     if ( typeof rowGap === 'number' )
         setCssVar( wrapperStyle, '--madeit-row-gap-desktop', `${ rowGap }${ rowGapUnit || 'px' }` );
 
-    // align-items + justify-content: alleen desktop
+    // Align-items: alleen desktop in deze versie
     if ( typeof alignItems === 'string' && alignItems.length > 0 )
         setCssVar( wrapperStyle, '--madeit-align-items-desktop', alignItems );
+
+    // Justify-content: alleen desktop in deze versie
     if ( typeof justifyContent === 'string' && justifyContent.length > 0 )
         setCssVar( wrapperStyle, '--madeit-justify-content-desktop', justifyContent );
 
-    // container margin als CSS-vars
+    // Container margin als CSS-vars
     if ( containerMargin && typeof containerMargin === 'object' ) {
         if ( containerMargin.top !== undefined )
             setCssVar( wrapperStyle, '--madeit-container-margin-top-desktop', containerMargin.top );
@@ -232,9 +250,8 @@ export default function save( props ) {
     const hasRowStyleProps = Object.keys( rowStyle ).length > 0;
     const outerRowProps = hasRowStyleProps ? { ...baseRowProps, style: rowStyle } : baseRowProps;
 
-    // In deze versie was de inner div altijd 'container', ongeacht de size-instelling.
-    // De size werd pas later doorvertaald naar de inner div class.
-    const innerDivClass = 'container';
+    const rawSize = typeof attributes.size === 'string' ? attributes.size.trim() : '';
+    const innerDivClass = rawSize === 'container-fluid' ? 'container-fluid' : 'container';
 
     return (
         <HtmlTag { ...blockProps }>

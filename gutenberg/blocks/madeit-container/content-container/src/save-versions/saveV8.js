@@ -1,18 +1,14 @@
+// Save V8
+
 /**
- * saveV0 — Geen inner container div + inline margin/padding
+ * Geen dubbele classes + inner container div + partial CSS-vars
  *
- * Structuur:
- *   <HtmlTag class="wp-block-madeit-block-content container-fluid madeit-block-content--frontend ...">
- *     <div class="row ...">          ← GEEN inner container div
- *       <InnerBlocks />
- *     </div>
- *   </HtmlTag>
- *
- * Verschil met huidige save:
- * - Geen <div class="container|container-fluid"> tussen HtmlTag en .row
- * - margin/padding als directe inline stijlen (marginTop, paddingTop, ...)
- *   in plaats van CSS-variabelen
- * - Alle CSS-vars aanwezig (row-gap desktop+tablet+mobile, flex-direction, etc.)
+ * Kenmerken in opgeslagen markup:
+ * - Normale (niet dubbele) classes op wrapper
+ * - WEL inner <div class="container"> aanwezig
+ * - Slechts partial CSS-vars: alleen --madeit-align-items-desktop en/of
+ *   --madeit-justify-content-desktop, --madeit-min-height-*, --madeit-row-gap-desktop
+ *   (maar GEEN row-gap tablet/mobile, GEEN flex-direction vars, GEEN flex-wrap)
  */
 
 import classnames from 'classnames';
@@ -143,18 +139,20 @@ export default function save( props ) {
         }
     );
 
-    // ── Stijl: achtergrond + volledige CSS-vars + inline margin/padding ────────
+    // ── Partial stijl: alleen de vars die in deze versie bestonden ─────────────
     const backgroundStyle = buildBackgroundStyle( attributes );
     const {
         overflow,
-        minHeight, minHeightUnit, minHeightTablet, minHeightUnitTablet, minHeightMobile, minHeightUnitMobile,
-        maxWidth, maxWidthUnit, maxWidthTablet, maxWidthUnitTablet, maxWidthMobile, maxWidthUnitMobile,
-        rowGap, rowGapUnit, rowGapTablet, rowGapUnitTablet, rowGapMobile, rowGapUnitMobile,
+        minHeight, minHeightUnit, minHeightMobile, minHeightUnitMobile,
+        maxWidth, maxWidthUnit,
+        rowGap, rowGapUnit,
+        alignItems,
+        justifyContent,
+        containerMargin, containerMarginTablet, containerMarginMobile,
+        containerPadding, containerPaddingTablet, containerPaddingMobile,
+        containerPaddingOnRow,
         flexDirection, flexDirectionTablet, flexDirectionMobile,
-        alignItems, alignItemsTablet, alignItemsMobile,
-        justifyContent, justifyContentTablet, justifyContentMobile,
-        flexWrap, flexWrapTablet, flexWrapMobile,
-        containerMargin, containerPadding, containerPaddingOnRow,
+        columnsCount,
     } = attributes;
 
     const wrapperStyle = { ...backgroundStyle };
@@ -164,67 +162,41 @@ export default function save( props ) {
     }
 
     const minHeightDesktopV = toCssLength( minHeight, minHeightUnit || 'px' );
-    const minHeightTabletVV = toCssLength( minHeightTablet, minHeightUnitTablet || minHeightUnit || 'px' );
-    const minHeightMobileVV = toCssLength( minHeightMobile, minHeightUnitMobile || minHeightUnitTablet || minHeightUnit || 'px' );
+    const minHeightMobileVV = toCssLength( minHeightMobile, minHeightUnitMobile || minHeightUnit || 'px' );
     if ( minHeightDesktopV ) setCssVar( wrapperStyle, '--madeit-min-height-desktop', minHeightDesktopV );
-    if ( minHeightTabletVV ) setCssVar( wrapperStyle, '--madeit-min-height-tablet',  minHeightTabletVV );
     if ( minHeightMobileVV ) setCssVar( wrapperStyle, '--madeit-min-height-mobile',  minHeightMobileVV );
 
     if ( typeof maxWidth === 'number' )
         setCssVar( wrapperStyle, '--madeit-max-width-desktop', `${ maxWidth }${ maxWidthUnit || 'px' }` );
-    if ( typeof maxWidthTablet === 'number' )
-        setCssVar( wrapperStyle, '--madeit-max-width-tablet', `${ maxWidthTablet }${ maxWidthUnitTablet || 'px' }` );
-    if ( typeof maxWidthMobile === 'number' )
-        setCssVar( wrapperStyle, '--madeit-max-width-mobile', `${ maxWidthMobile }${ maxWidthUnitMobile || 'px' }` );
 
-    if ( typeof rowGap === 'number' ) {
+    // row-gap: alleen desktop in deze versie
+    if ( typeof rowGap === 'number' )
         setCssVar( wrapperStyle, '--madeit-row-gap-desktop', `${ rowGap }${ rowGapUnit || 'px' }` );
-        if ( typeof rowGapTablet === 'number' )
-            setCssVar( wrapperStyle, '--madeit-row-gap-tablet', `${ rowGapTablet }${ rowGapUnitTablet || 'px' }` );
-        if ( typeof rowGapMobile === 'number' )
-            setCssVar( wrapperStyle, '--madeit-row-gap-mobile', `${ rowGapMobile }${ rowGapUnitMobile || 'px' }` );
-    }
 
-    if ( typeof flexDirection === 'string' && flexDirection.length > 0 )
-        setCssVar( wrapperStyle, '--madeit-flex-direction-desktop', flexDirection );
-    if ( typeof flexDirectionTablet === 'string' && flexDirectionTablet.length > 0 )
-        setCssVar( wrapperStyle, '--madeit-flex-direction-tablet', flexDirectionTablet );
-    if ( typeof flexDirectionMobile === 'string' && flexDirectionMobile.length > 0 )
-        setCssVar( wrapperStyle, '--madeit-flex-direction-mobile', flexDirectionMobile );
-
+    // align-items + justify-content: alleen desktop
     if ( typeof alignItems === 'string' && alignItems.length > 0 )
         setCssVar( wrapperStyle, '--madeit-align-items-desktop', alignItems );
-    if ( typeof alignItemsTablet === 'string' && alignItemsTablet.length > 0 )
-        setCssVar( wrapperStyle, '--madeit-align-items-tablet', alignItemsTablet );
-    if ( typeof alignItemsMobile === 'string' && alignItemsMobile.length > 0 )
-        setCssVar( wrapperStyle, '--madeit-align-items-mobile', alignItemsMobile );
-
     if ( typeof justifyContent === 'string' && justifyContent.length > 0 )
         setCssVar( wrapperStyle, '--madeit-justify-content-desktop', justifyContent );
-    if ( typeof justifyContentTablet === 'string' && justifyContentTablet.length > 0 )
-        setCssVar( wrapperStyle, '--madeit-justify-content-tablet', justifyContentTablet );
-    if ( typeof justifyContentMobile === 'string' && justifyContentMobile.length > 0 )
-        setCssVar( wrapperStyle, '--madeit-justify-content-mobile', justifyContentMobile );
 
-    if ( typeof flexWrap === 'string' && flexWrap.length > 0 )
-        setCssVar( wrapperStyle, '--madeit-flex-wrap-desktop', flexWrap );
-    if ( typeof flexWrapTablet === 'string' && flexWrapTablet.length > 0 )
-        setCssVar( wrapperStyle, '--madeit-flex-wrap-tablet', flexWrapTablet );
-    if ( typeof flexWrapMobile === 'string' && flexWrapMobile.length > 0 )
-        setCssVar( wrapperStyle, '--madeit-flex-wrap-mobile', flexWrapMobile );
-
-    // Margin: INLINE stijlen (oud formaat)
+    // container margin als CSS-vars
     if ( containerMargin && typeof containerMargin === 'object' ) {
-        if ( containerMargin.top    !== undefined ) wrapperStyle.marginTop    = containerMargin.top;
-        if ( containerMargin.bottom !== undefined ) wrapperStyle.marginBottom = containerMargin.bottom;
+        if ( containerMargin.top !== undefined )
+            setCssVar( wrapperStyle, '--madeit-container-margin-top-desktop', containerMargin.top );
+        if ( containerMargin.bottom !== undefined )
+            setCssVar( wrapperStyle, '--madeit-container-margin-bottom-desktop', containerMargin.bottom );
+    }
+    if ( containerMarginTablet && typeof containerMarginTablet === 'object' ) {
+        setCssVar( wrapperStyle, '--madeit-container-margin-top-tablet',    containerMarginTablet.top );
+        setCssVar( wrapperStyle, '--madeit-container-margin-bottom-tablet', containerMarginTablet.bottom );
+    }
+    if ( containerMarginMobile && typeof containerMarginMobile === 'object' ) {
+        setCssVar( wrapperStyle, '--madeit-container-margin-top-mobile',    containerMarginMobile.top );
+        setCssVar( wrapperStyle, '--madeit-container-margin-bottom-mobile', containerMarginMobile.bottom );
     }
 
-    // Padding op wrapper: INLINE stijlen (oud formaat)
-    if ( containerPaddingOnRow !== true && containerPadding && typeof containerPadding === 'object' ) {
-        if ( containerPadding.top    !== undefined ) wrapperStyle.paddingTop    = containerPadding.top;
-        if ( containerPadding.right  !== undefined ) wrapperStyle.paddingRight  = containerPadding.right;
-        if ( containerPadding.bottom !== undefined ) wrapperStyle.paddingBottom = containerPadding.bottom;
-        if ( containerPadding.left   !== undefined ) wrapperStyle.paddingLeft   = containerPadding.left;
+    if ( containerPaddingOnRow !== true ) {
+        setSpacingVars( wrapperStyle, 'madeit-container-padding', containerPadding, 'desktop' );
     }
 
     const hasStyleProps = Object.keys( wrapperStyle ).length > 0;
@@ -235,7 +207,6 @@ export default function save( props ) {
 
     const HtmlTag = ALLOWED_HTML_TAGS.includes( attributes.htmlTag ) ? attributes.htmlTag : 'div';
 
-    const { columnsCount } = attributes;
     const dirDesktop = typeof flexDirection      === 'string' && flexDirection.length      > 0 ? flexDirection      : 'row';
     const dirTablet  = typeof flexDirectionTablet === 'string' && flexDirectionTablet.length > 0 ? flexDirectionTablet : undefined;
     const dirMobile  = typeof flexDirectionMobile === 'string' && flexDirectionMobile.length > 0 ? flexDirectionMobile : undefined;
@@ -253,36 +224,28 @@ export default function save( props ) {
         ? { className: rowClassName, 'data-madeit-dir': dirDesktop, 'data-madeit-dir-tablet': dirTablet, 'data-madeit-dir-mobile': dirMobile }
         : { className: rowClassName };
 
-    // Padding op row: INLINE stijlen (oud formaat)
     const rowStyle = {};
-    if ( containerPaddingOnRow === true && containerPadding && typeof containerPadding === 'object' ) {
-        if ( containerPadding.top    !== undefined ) rowStyle.paddingTop    = containerPadding.top;
-        if ( containerPadding.right  !== undefined ) rowStyle.paddingRight  = containerPadding.right;
-        if ( containerPadding.bottom !== undefined ) rowStyle.paddingBottom = containerPadding.bottom;
-        if ( containerPadding.left   !== undefined ) rowStyle.paddingLeft   = containerPadding.left;
-    }
-
-    // ── OUD: padding op row als CSS-vars (tussen inline en nieuwe save) ───────
-    if ( containerPaddingOnRow === true && containerPadding && typeof containerPadding === 'object' ) {
-        const { containerPaddingTablet, containerPaddingMobile } = attributes;
-        // Alleen als er GEEN inline waarden zijn, maar wel CSS-var waarden
-        if ( Object.keys( rowStyle ).length === 0 ) {
-            setSpacingVars( rowStyle, 'madeit-container-row-padding', containerPadding,       'desktop' );
-            setSpacingVars( rowStyle, 'madeit-container-row-padding', containerPaddingTablet, 'tablet' );
-            setSpacingVars( rowStyle, 'madeit-container-row-padding', containerPaddingMobile, 'mobile' );
-        }
+    if ( containerPaddingOnRow === true ) {
+        setSpacingVars( rowStyle, 'madeit-container-row-padding', containerPadding,       'desktop' );
+        setSpacingVars( rowStyle, 'madeit-container-row-padding', containerPaddingTablet, 'tablet' );
+        setSpacingVars( rowStyle, 'madeit-container-row-padding', containerPaddingMobile, 'mobile' );
     }
 
     const hasRowStyleProps = Object.keys( rowStyle ).length > 0;
     const outerRowProps = hasRowStyleProps ? { ...baseRowProps, style: rowStyle } : baseRowProps;
 
-    // GEEN inner container div — .row direct onder HtmlTag
+    // In deze versie was de inner div altijd 'container', ongeacht de size-instelling.
+    // De size werd pas later doorvertaald naar de inner div class.
+    const innerDivClass = 'container';
+
     return (
         <HtmlTag { ...blockProps }>
-            <div { ...outerRowProps }>
-                { '\n\n' }
-                <InnerBlocks.Content />
-                { '\n\n' }
+            <div className={ innerDivClass }>
+                <div { ...outerRowProps }>
+                    { '\n\n' }
+                    <InnerBlocks.Content />
+                    { '\n\n' }
+                </div>
             </div>
         </HtmlTag>
     );

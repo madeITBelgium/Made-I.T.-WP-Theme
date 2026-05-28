@@ -30,7 +30,8 @@ import {
     getAdjacentBlocks,
     getRedistributedColumnWidths,
 } from '../../content-container/src/utils';
-import { Button, ButtonGroup } from '@wordpress/components';
+import { Button, ButtonGroup, __experimentalToggleGroupControl as ToggleGroupControl,
+    __experimentalToggleGroupControlOption as ToggleGroupControlOption, } from '@wordpress/components';
 import { ControlHeader } from '../../../../shared';
 
 const stripBackgroundClasses = ( className = '' ) =>
@@ -186,6 +187,7 @@ function ColumnEdit( props ) {
             <InspectorControls>
                 <PanelBody title={ __( 'Column Settings' ) }>
                     <RangeControl
+                        __next40pxDefaultSize
                         label={ __( 'Percentage width' ) }
                         value={ effectiveWidth || '' }
                         onChange={ updateWidth }
@@ -242,48 +244,45 @@ function ColumnEdit( props ) {
                             <ControlHeader
                                 title={ __( 'Padding', 'madeit' ) }
                                 afterBreakpoint={
-                                    <ButtonGroup className="madeit-control-units">
-                                        {['px', '%', 'em', 'rem', 'vw', 'vh'].map((unit) => (
-                                            <Button
-                                            
-                                            key={unit}
-                                            isPressed={ paddingUnit === unit }
-                                            onClick={() => {
+                                    <ToggleGroupControl
+                                        className="madeit-control-units"
+                                        value={ paddingUnit }
+                                        onChange={ ( unit ) => {
 
-                                                const nextPadding = {
-                                                    ...(padding || {}),
-                                                };
-                                                const PADDING_KEYS = [ 'top', 'right', 'bottom', 'left' ];
+                                            const nextPadding = { ...( padding || {} ) };
+                                            const PADDING_KEYS = [ 'top', 'right', 'bottom', 'left' ];
 
-                                                PADDING_KEYS.forEach((key) => {
+                                            PADDING_KEYS.forEach( ( key ) => {
 
-                                                    const raw = padding?.[key];
+                                                const raw = padding?.[ key ];
 
-                                                    if (!raw) {
-                                                        return;
-                                                    }
+                                                if ( raw === undefined || raw === null || raw === '' ) {
+                                                    return;
+                                                }
 
-                                                    const numeric = parseFloat(raw);
+                                                const numeric = parseFloat( raw );
 
-                                                    if (!Number.isFinite(numeric)) {
-                                                        return;
-                                                    }
+                                                if ( ! Number.isFinite( numeric ) ) {
+                                                    return;
+                                                }
 
-                                                    nextPadding[key] = `${numeric}${unit}`;
+                                                nextPadding[ key ] = `${ numeric }${ unit }`;
+                                            } );
 
-                                                });
-
-                                                setAttributes({
-                                                    padding: nextPadding,
-                                                    paddingUnit: unit,
-                                                });
-
-                                            }}
-                                        >
-                                            {unit}
-                                        </Button>
-                                        ))}
-                                    </ButtonGroup>
+                                            setAttributes( {
+                                                padding: nextPadding,
+                                                paddingUnit: unit,
+                                            } );
+                                        } }
+                                    >
+                                        { [ 'px', '%', 'em', 'rem', 'vw', 'vh' ].map( ( unit ) => (
+                                            <ToggleGroupControlOption
+                                                key={ unit }
+                                                value={ unit }
+                                                label={ unit }
+                                            />
+                                        ) ) }
+                                    </ToggleGroupControl>
                                 }
                             />
                         <div
@@ -465,48 +464,45 @@ function ColumnEdit( props ) {
                             <ControlHeader
                                 title={ __( 'Margin', 'madeit' ) }
                                 afterBreakpoint={
-                                    <ButtonGroup className="madeit-control-units">
-                                        {['px', '%', 'em', 'rem', 'vw', 'vh'].map((unit) => (
-                                            <Button
-                                            
-                                            key={unit}
-                                            isPressed={ marginUnit === unit }
-                                            onClick={() => {
+                                   <ToggleGroupControl
+                                        className="madeit-control-units"
+                                        value={ marginUnit }
+                                        onChange={ ( unit ) => {
 
-                                                const nextMargin = {
-                                                    ...(margin || {}),
-                                                };
-                                                const MARGIN_KEYS = [ 'top', 'right', 'bottom', 'left' ];
+                                            const nextMargin = { ...( margin || {} ) };
+                                            const MARGIN_KEYS = [ 'top', 'right', 'bottom', 'left' ];
 
-                                                MARGIN_KEYS.forEach((key) => {
+                                            MARGIN_KEYS.forEach( ( key ) => {
 
-                                                    const raw = margin?.[key];
+                                                const raw = margin?.[ key ];
 
-                                                    if (!raw) {
-                                                        return;
-                                                    }
+                                                if ( raw === undefined || raw === null || raw === '' ) {
+                                                    return;
+                                                }
 
-                                                    const numeric = parseFloat(raw);
+                                                const numeric = parseFloat( raw );
 
-                                                    if (!Number.isFinite(numeric)) {
-                                                        return;
-                                                    }
+                                                if ( ! Number.isFinite( numeric ) ) {
+                                                    return;
+                                                }
 
-                                                    nextMargin[key] = `${numeric}${unit}`;
+                                                nextMargin[ key ] = `${ numeric }${ unit }`;
+                                            } );
 
-                                                });
-
-                                                setAttributes({
-                                                    margin: nextMargin,
-                                                    marginUnit: unit,
-                                                });
-
-                                            }}
-                                        >
-                                            {unit}
-                                        </Button>
-                                        ))}
-                                    </ButtonGroup>
+                                            setAttributes( {
+                                                margin: nextMargin,
+                                                marginUnit: unit,
+                                            } );
+                                        } }
+                                    >
+                                        { [ 'px', '%', 'em', 'rem', 'vw', 'vh' ].map( ( unit ) => (
+                                            <ToggleGroupControlOption
+                                                key={ unit }
+                                                value={ unit }
+                                                label={ unit }
+                                            />
+                                        ) ) }
+                                    </ToggleGroupControl>
                                 }
                             />
                         <div

@@ -11,14 +11,30 @@
   "version": "1.3.0",
   "madeit": {
     "changelog": {
-      "1.3.0": [
-        "✨ Nieuwe functies:",
-        "- Padding opties toegevoegd",
-        "- Titel toegevoegd",
-        "- Kopniveau toegevoegd"
+      "3.0.0": [
+        {
+          "type": "info",
+          "label": "Release",
+          "text": "Het Card block werd opnieuw opgebouwd voor de nieuwe 3.0.0 generatie van het thema."
+        },
+        {
+          "type": "feature",
+          "label": "Nieuw",
+          "text": "Zelf padding kiezen"
+        }
       ],
-      "1.2.0": [
-        "✨ Nieuwe block toegevoegd"
+      "1.3.0": [
+        {
+          "type": "feature",
+          "label": "Nieuw",
+          "intro": "Nieuwe functies:",
+          "items": [
+            "Padding opties toegevoegd",
+            "Titel toegevoegd",
+            "Titel toegevoegd",
+            "Kopniveau toegevoegd"
+          ]
+        }
       ]
     }
   },
@@ -63,6 +79,11 @@
         "bottom": "1.25rem",
         "left": "1.25rem"
       }
+    },
+
+    "paddingUnit": {
+      "type": "string",
+      "default": "px"
     },
     "mediaBleed": {
       "type": "boolean",

@@ -42,6 +42,7 @@ export default function Edit( { attributes, setAttributes } ) {
         <Fragment>
             <InspectorControls>
                 <RangeControl
+                    __next40pxDefaultSize
                     label={ __( 'Top' ) }
                     value={ top }
                     min={ -100 }
@@ -49,6 +50,7 @@ export default function Edit( { attributes, setAttributes } ) {
                     onChange={ ( value ) => setAttributes( { top: parseInt( value, 10 ) } ) }
                 />
                 <RangeControl
+                    __next40pxDefaultSize
                     label={ __( 'Right' ) }
                     value={ right }
                     min={ -100 }
@@ -56,6 +58,7 @@ export default function Edit( { attributes, setAttributes } ) {
                     onChange={ ( value ) => setAttributes( { right: parseInt( value, 10 ) } ) }
                 />
                 <RangeControl
+                    __next40pxDefaultSize
                     label={ __( 'Bottom' ) }
                     value={ bottom }
                     min={ -100 }
@@ -63,6 +66,7 @@ export default function Edit( { attributes, setAttributes } ) {
                     onChange={ ( value ) => setAttributes( { bottom: parseInt( value, 10 ) } ) }
                 />
                 <RangeControl
+                    __next40pxDefaultSize
                     label={ __( 'Left' ) }
                     value={ left }
                     min={ -100 }

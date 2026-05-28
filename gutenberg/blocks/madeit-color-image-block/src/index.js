@@ -4,6 +4,7 @@ import metadata from '../block.json';
 
 import Edit from './edit';
 import save from './save';
+import deprecated from './deprecated';
 
 // These generate build/style-index.css and build/index.css via @wordpress/scripts.
 import './style.scss';

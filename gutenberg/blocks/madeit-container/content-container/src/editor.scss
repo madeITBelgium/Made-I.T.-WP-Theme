@@ -46,6 +46,11 @@ $default-block-margin:  28px;
 }
 
 // ─── 1.1. Components ──────────────────────────────────────────────────────────
+.madeit-inside-container .block-editor-block-inspector__tabs [role="tablist"],
+.madeit-inside-container .block-editor-block-inspector__tabs [role="tablist"]
+ {
+    display: none !important;
+}
 .TabContents {
     button {
         border-bottom: 2px solid transparent;
@@ -77,6 +82,52 @@ $default-block-margin:  28px;
     }
 }
 
+.flex1 [data-wp-component="InputBase"] > * {
+    flex: 1;
+}
+// .block-editor-block-inspector .components-base-control:where(:not(:last-child)) {
+//     margin-bottom: 0 !important;
+// }
+.block-editor-block-inspector .madeit-control-header__tools .components-base-control:where(:not(:last-child)) {
+    margin-bottom: 0 !important;
+}
+
+[data-wp-component="ToggleGroupControl"] {
+    height: auto !important;
+
+    &:hover {
+        border-color: transparent !important;
+    }
+
+    &:focus-within {
+        outline: none !important;
+        outline-offset: 1px;
+    }
+
+    &.madeit-block-styles-picker {
+        gap: 10px;
+
+        > div {
+            flex: auto;
+        }
+    }
+
+    > div {
+        height: max-content;
+
+        button {
+
+            &.madeit-block-styles-picker-button {
+                padding: 15px 10px;
+            }
+
+            > div {
+                min-width: 16px;
+                width: max-content;
+            }
+        }
+    }
+}
 .madeit-unit-select {
 
     .components-select-control {
@@ -344,8 +395,7 @@ body.madeit-content-container-advanced-tabs
     // ──────────────────
     // TODO: Fixen 100vw werkt enkel in iFrames, dit is niog niet overal zo toegepast.
 
-    > .container,
-    > .container-fluid {
+    > div {
         > .madeit-container-row {
             > .block-editor-inner-blocks {
                 // min-height: var(--madeit-min-height-desktop);
@@ -402,36 +452,55 @@ body.madeit-content-container-advanced-tabs
     // ── Tablet preview ──────────────────────────────────────────────────────
 
     @media (max-width: 991px) {
-        // Only with specific style on container
-        &[style*="--madeit-min-height-"] > div > .madeit-container-row > .block-editor-inner-blocks {
-            min-height: var(--madeit-min-height-tablet, var(--madeit-min-height-desktop));
-        }
+        @each $rows in 2, 3, 4 {
+            // Only with specific style on container
+            &[style*="--madeit-min-height-"] > div > .madeit-container-row > .block-editor-inner-blocks {
+                min-height: var(--madeit-min-height-tablet, var(--madeit-min-height-desktop));
+            }
 
 
-        > div {
-            > .madeit-container-row {
-                > .block-editor-inner-blocks {
-                    align-items: var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch));
-                    justify-content: var(--madeit-justify-content-tablet, var(--madeit-justify-content-desktop, flex-start));
-
-                    > .block-editor-block-list__layout {
-                        flex-direction: var(--madeit-flex-direction-tablet, var(--madeit-flex-direction-desktop, row));
-                        justify-content: var(--madeit-justify-content-tablet, var(--madeit-justify-content-desktop, flex-start));
+            > div {
+                > .madeit-container-row {
+                    > .block-editor-inner-blocks {
                         align-items: var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch));
-                        gap: var(--madeit-row-gap-tablet, var(--madeit-row-gap-desktop, 20px));
-                        flex-wrap: var(--madeit-flex-wrap-tablet, var(--madeit-flex-wrap-desktop, nowrap));
+                        justify-content: var(--madeit-justify-content-tablet, var(--madeit-justify-content-desktop, flex-start));
+
+                        > .block-editor-block-list__layout {
+                            flex-direction: var(--madeit-flex-direction-tablet, var(--madeit-flex-direction-desktop, row));
+                            justify-content: var(--madeit-justify-content-tablet, var(--madeit-justify-content-desktop, flex-start));
+                            align-items: var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch));
+                            gap: var(--madeit-row-gap-tablet, var(--madeit-row-gap-desktop, 20px));
+                            flex-wrap: var(--madeit-flex-wrap-tablet, var(--madeit-flex-wrap-desktop, nowrap));
+                        }
                     }
                 }
             }
-        }
 
-        // Kolommen op volle breedte bij column-richting op tablet.
-        .madeit-container-row[data-madeit-dir-tablet="column"],
-        .madeit-container-row[data-madeit-dir-tablet="column-reverse"] {
-            > [data-type="madeit/block-content-column"] {
-                width: 100% !important;
-                flex: 0 0 100% !important;
-                max-width: 100% !important;
+            // Kolommen op volle breedte bij column-richting op tablet.
+            .madeit-container-row[data-madeit-dir-tablet="column"],
+            .madeit-container-row[data-madeit-dir-tablet="column-reverse"] {
+                > [data-type="madeit/block-content-column"] {
+                    width: 100% !important;
+                    flex: 0 0 100% !important;
+                    max-width: 100% !important;
+                }
+            }
+
+            // Bij rij op volledig breedte (col-12 staad standaard ingeschakeld) behalve als de flex-warp op nowarp staat!
+            &[data-madeit-dir="row"],
+            &[data-madeit-dir="row-reverse"] {
+
+                &[style*='--madeit-flex-wrap-tablet: nowrap;'] {
+                    @for $i from 1 through 12 {
+                        .block-editor-block-list__layout > [data-type="madeit/block-content-column"].col-lg-#{$i},
+                        .block-editor-block-list__layout > .wp-block-madeit-block-content-column.col-lg-#{$i} {
+                            flex: 0 0 calc(
+                                (100% / (12 / #{$i}))
+                                - ((var(--madeit-row-gap-desktop, 20px) * (#{$rows - 1})) / #{$rows})
+                            ) !important;
+                        }
+                    }
+                }
             }
         }
     }
@@ -439,53 +508,73 @@ body.madeit-content-container-advanced-tabs
     // ── Mobiel preview ──────────────────────────────────────────────────────
 
     @media (max-width: 767px) {
-        // Only with specific style on container
-        &[style*="--madeit-min-height-"] > div > .madeit-container-row > .block-editor-inner-blocks {
-            min-height: var(--madeit-min-height-mobile, var(--madeit-min-height-tablet, var(--madeit-min-height-desktop)));
-        }
+        @each $rows in 2, 3, 4 {
+            // Only with specific style on container
+            &[style*="--madeit-min-height-"] > div > .madeit-container-row > .block-editor-inner-blocks {
+                min-height: var(--madeit-min-height-mobile, var(--madeit-min-height-tablet, var(--madeit-min-height-desktop)));
+            }
 
-        > div {
-            > .madeit-container-row {
-                > .block-editor-inner-blocks {
-                    // min-height: var(--madeit-min-height-mobile, var(--madeit-min-height-tablet, var(--madeit-min-height-desktop)));
-                    align-items: var(--madeit-align-items-mobile, var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch)));
-                    justify-content: var(--madeit-justify-content-mobile, var(--madeit-justify-content-tablet, var(--madeit-justify-content-desktop, flex-start)));
-
-                    > .block-editor-block-list__layout {
-                        flex-direction: var(--madeit-flex-direction-mobile, var(--madeit-flex-direction-tablet, var(--madeit-flex-direction-desktop, column)));
-                        justify-content: var(--madeit-justify-content-mobile, var(--madeit-justify-content-tablet, var(--madeit-justify-content-desktop, flex-start)));
+            > div {
+                > .madeit-container-row {
+                    > .block-editor-inner-blocks {
+                        // min-height: var(--madeit-min-height-mobile, var(--madeit-min-height-tablet, var(--madeit-min-height-desktop)));
                         align-items: var(--madeit-align-items-mobile, var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch)));
-                        gap: var(--madeit-row-gap-mobile, var(--madeit-row-gap-tablet, var(--madeit-row-gap-desktop, 20px)));
-                        flex-wrap: var(--madeit-flex-wrap-mobile, var(--madeit-flex-wrap-tablet, var(--madeit-flex-wrap-desktop, nowrap)));
+                        justify-content: var(--madeit-justify-content-mobile, var(--madeit-justify-content-tablet, var(--madeit-justify-content-desktop, flex-start)));
+
+                        > .block-editor-block-list__layout {
+                            flex-direction: var(--madeit-flex-direction-mobile, var(--madeit-flex-direction-tablet, var(--madeit-flex-direction-desktop, column)));
+                            justify-content: var(--madeit-justify-content-mobile, var(--madeit-justify-content-tablet, var(--madeit-justify-content-desktop, flex-start)));
+                            align-items: var(--madeit-align-items-mobile, var(--madeit-align-items-tablet, var(--madeit-align-items-desktop, stretch)));
+                            gap: var(--madeit-row-gap-mobile, var(--madeit-row-gap-tablet, var(--madeit-row-gap-desktop, 20px)));
+                            flex-wrap: var(--madeit-flex-wrap-mobile, var(--madeit-flex-wrap-tablet, var(--madeit-flex-wrap-desktop, nowrap)));
+                        }
                     }
                 }
             }
-        }
 
-
-        // Kolommen op volle breedte bij column-richting op mobiel. 
-        .madeit-container-row[data-madeit-dir-mobile="column"], 
-        .madeit-container-row[data-madeit-dir-mobile="column-reverse"] { 
-            > [data-type="madeit/block-content-column"] { 
-                width: 100% !important; 
-                flex: 0 0 auto !important; 
-                max-width: 100% !important; 
+            // Kolommen op volle breedte bij column-richting op mobiel. 
+            .madeit-container-row[data-madeit-dir-mobile="column"], 
+            .madeit-container-row[data-madeit-dir-mobile="column-reverse"] { 
+                > [data-type="madeit/block-content-column"] { 
+                    width: 100% !important; 
+                    flex: 0 0 auto !important; 
+                    max-width: 100% !important; 
+                }
             }
-        }
 
-        // Op mobiel altijd alle kolommen op volle breedte (ongeacht richting), 
-        // tenzij er een expliciete mobiele richting is ingesteld die rijen toelaat. 
-        > div { 
-            > .madeit-container-row:not([data-madeit-dir-mobile="row"]):not([data-madeit-dir-mobile="row-reverse"]) { 
-                > .block-editor-inner-blocks > .block-editor-block-list__layout { 
-                    > [data-type="madeit/block-content-column"] { 
-                        width: 100% !important; 
-                        flex: 0 0 auto !important;
-                        max-width: 100% !important; 
+            // Bij rij op volledig breedte (col-12 staad standaard ingeschakeld) behalve als de flex-warp op nowarp staat!
+            &[data-madeit-dir="row"],
+            &[data-madeit-dir="row-reverse"] {
+
+                &[style*='--madeit-flex-wrap-mobile: nowrap;'] {
+                    @for $i from 1 through 12 {
+                        .block-editor-block-list__layout > [data-type="madeit/block-content-column"].col-lg-#{$i},
+                        .block-editor-block-list__layout > .wp-block-madeit-block-content-column.col-lg-#{$i} {
+                            flex: 0 0 calc(
+                                (100% / (12 / #{$i}))
+                                - ((var(--madeit-row-gap-desktop, 20px) * (#{$rows - 1})) / #{$rows})
+                            ) !important;
+                        }
                     }
                 }
             }
+
+            // Op mobiel altijd alle kolommen op volle breedte (ongeacht richting), 
+            // tenzij er een expliciete mobiele richting is ingesteld die rijen toelaat. 
+            // > div { 
+            //     > .madeit-container-row:not([data-madeit-dir-mobile="row"]):not([data-madeit-dir-mobile="row-reverse"]) { 
+            //         > .block-editor-inner-blocks > .block-editor-block-list__layout { 
+            //             > [data-type="madeit/block-content-column"] { 
+            //                 width: 100% !important; 
+            //                 flex: 0 0 auto !important;
+            //                 max-width: 100% !important; 
+            //             }
+            //         }
+            //     }
+            // }
+
         }
+        
     }
 
 

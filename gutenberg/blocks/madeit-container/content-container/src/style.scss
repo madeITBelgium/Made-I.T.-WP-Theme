@@ -66,48 +66,46 @@ $break-medium: 782px;
     // selector, zodat de var ook daadwerkelijk wordt toegepast als hij aanwezig is.
     // Zonder deze truc overschrijft Bootstrap of een theme de waarde.
 
-    &:not(.wp-block-madeit-block-content .wp-block-madeit-block-content) {
 
-        &[style*="--madeit-container-margin-top-desktop:"] {
-            margin-top: var(--madeit-container-margin-top-desktop, 0) !important;
-        }
-
-        &[style*="--madeit-container-margin-bottom-desktop:"] {
-            margin-bottom: var(--madeit-container-margin-bottom-desktop, 0) !important;
-        }
-
-        &[style*="--madeit-container-margin-top-tablet:"] {
-            @include tablet {
-                margin-top: var(
-                    --madeit-container-margin-top-tablet,
-                    var(--madeit-container-margin-top-desktop, 0)
-                ) !important;
-            }
-        }
-        &[style*="--madeit-container-margin-bottom-tablet:"] {
-            @include tablet {
-                margin-bottom: var(
-                    --madeit-container-margin-bottom-tablet,
-                    var(--madeit-container-margin-bottom-desktop, 0)
-                ) !important;
-            }
-        }
-
-        &[style*="--madeit-container-margin-top-mobile:"],
-        &[style*="--madeit-container-margin-bottom-mobile:"] {
-            @include mobile {
-                margin-top: var(
-                    --madeit-container-margin-top-mobile,
-                    var(--madeit-container-margin-top-tablet, var(--madeit-container-margin-top-desktop, 0))
-                ) !important;
-                margin-bottom: var(
-                    --madeit-container-margin-bottom-mobile,
-                    var(--madeit-container-margin-bottom-tablet, var(--madeit-container-margin-bottom-desktop, 0))
-                ) !important;
-            }
-        }
-
+    &[style*="--madeit-container-margin-top-desktop:"] {
+        margin-top: var(--madeit-container-margin-top-desktop, 0) !important;
     }
+
+    &[style*="--madeit-container-margin-bottom-desktop:"] {
+        margin-bottom: var(--madeit-container-margin-bottom-desktop, 0) !important;
+    }
+
+    &[style*="--madeit-container-margin-top-tablet:"] {
+        @include tablet {
+            margin-top: var(
+                --madeit-container-margin-top-tablet,
+                var(--madeit-container-margin-top-desktop, 0)
+            ) !important;
+        }
+    }
+    &[style*="--madeit-container-margin-bottom-tablet:"] {
+        @include tablet {
+            margin-bottom: var(
+                --madeit-container-margin-bottom-tablet,
+                var(--madeit-container-margin-bottom-desktop, 0)
+            ) !important;
+        }
+    }
+
+    &[style*="--madeit-container-margin-top-mobile:"],
+    &[style*="--madeit-container-margin-bottom-mobile:"] {
+        @include mobile {
+            margin-top: var(
+                --madeit-container-margin-top-mobile,
+                var(--madeit-container-margin-top-tablet, var(--madeit-container-margin-top-desktop, 0))
+            ) !important;
+            margin-bottom: var(
+                --madeit-container-margin-bottom-mobile,
+                var(--madeit-container-margin-bottom-tablet, var(--madeit-container-margin-bottom-desktop, 0))
+            ) !important;
+        }
+    }
+
 
 
     // Fallback tablet (altijd, zonder specificiteitstruc): erft van desktop.
@@ -493,16 +491,22 @@ $break-medium: 782px;
 
     // ─── 11. Zichtbaarheid (is-hidden-*) ──────────────────────────────────────
 
-    @include mobile {
-        &.is-hidden-mobile { display: none !important; }
+    @media(max-width: 766.99px) {
+        &.is-hidden-mobile { 
+            display: none !important; 
+        }
     }
 
-    @include tablet {
-        &.is-hidden-tablet { display: none !important; }
+    @media(min-width: 767px) AND (max-width: 991.99px) {
+        &.is-hidden-tablet { 
+            display: none !important; 
+        }
     }
 
-    @include desktop {
-        &.madeit-block-content--frontend .is-hidden-desktop { display: none !important; }
+    @media(min-width: 992px) {
+        &.is-hidden-desktop { 
+            display: none !important; 
+        }
     }
 
 
@@ -542,26 +546,70 @@ $break-medium: 782px;
         }
     }
 
-    @media (max-width: #{$break-medium}) {
-        &[data-madeit-dir-tablet="column"],
-        &[data-madeit-dir-tablet="column-reverse"] {
-            .block-editor-block-list__layout > [data-type="madeit/block-content-column"],
-            .block-editor-block-list__layout > .wp-block-madeit-block-content-column {
-                width: calc(100% - var(--bs-gutter-x, 0px)) !important;
-                margin: auto;
+    @media (max-width: 991px) {
+        @each $rows in 2, 3, 4 {
+            &[data-madeit-dir-tablet="column"],
+            &[data-madeit-dir-tablet="column-reverse"] {
+                .block-editor-block-list__layout > [data-type="madeit/block-content-column"],
+                .block-editor-block-list__layout > .wp-block-madeit-block-content-column {
+                    width: calc(100% - var(--bs-gutter-x, 0px)) !important;
+                    margin: auto;
+                }
+            }
+
+            &[style*='--madeit-flex-wrap-tablet:nowrap'] {
+                > div {
+                    > [data-madeit-dir-tablet="row"],
+                    > [data-madeit-dir-tablet="row-reverse"] {
+
+                        @for $i from 1 through 12 {
+                            .wp-block-madeit-block-content-column.col-lg-#{$i} {
+                                flex: 0 0 calc(
+                                    (100% / (12 / #{$i}))
+                                    - ((var(--madeit-row-gap-desktop, 20px) * (#{$rows - 1})) / #{$rows})
+                                ) !important;
+                            }
+                        }
+                        
+                    }
+                }
             }
         }
     }
+ 
+    @media (max-width: 767px) {
+        @each $rows in 2, 3, 4 {
+            &[data-madeit-dir-mobile="column"],
+            &[data-madeit-dir-mobile="column-reverse"] {
+                .block-editor-block-list__layout > [data-type="madeit/block-content-column"],
+                .block-editor-block-list__layout > .wp-block-madeit-block-content-column {
+                    width: calc(100% - var(--bs-gutter-x, 0px)) !important;
+                    margin: auto;
+                }
 
-    @media (max-width: #{$mobile}) {
-        &[data-madeit-dir-mobile="column"],
-        &[data-madeit-dir-mobile="column-reverse"] {
-            .block-editor-block-list__layout > [data-type="madeit/block-content-column"],
-            .block-editor-block-list__layout > .wp-block-madeit-block-content-column {
-                width: calc(100% - var(--bs-gutter-x, 0px)) !important;
-                margin: auto;
+                
+            }
+
+            &[style*='--madeit-flex-wrap-mobile:nowrap'] {
+                > div {
+                    > [data-madeit-dir-tablet="row"],
+                    > [data-madeit-dir-tablet="row-reverse"] {
+
+                        @for $i from 1 through 12 {
+                            .wp-block-madeit-block-content-column.col-lg-#{$i} {
+                                flex: 0 0 calc(
+                                    (100% / (12 / #{$i}))
+                                    - ((var(--madeit-row-gap-desktop, 20px) * (#{$rows - 1})) / #{$rows})
+                                ) !important;
+                            } 
+                        }
+                        
+                    }
+                }
             }
         }
+
+
     }
 
 } // einde .wp-block-madeit-block-content

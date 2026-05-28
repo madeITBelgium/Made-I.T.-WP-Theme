@@ -1,6 +1,80 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "../../../shared/AdvancedUnitSelect.js"
+/*!*********************************************!*\
+  !*** ../../../shared/AdvancedUnitSelect.js ***!
+  \*********************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ UnitSelect)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__);
+
+
+
+
+const PRESET_UNITS = ['px', '%', 'vh', 'vw', 'em', 'rem'];
+function UnitSelect({
+  value = 'px',
+  onChange,
+  units = ['px', '%', 'vh']
+}) {
+  const isCustom = value && !PRESET_UNITS.includes(value);
+  const [showCustom, setShowCustom] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(isCustom);
+  const options = [...units.map(u => ({
+    value: u,
+    label: u
+  })), {
+    value: '__custom__',
+    label: '✎'
+  }];
+  const selectValue = showCustom ? '__custom__' : value || 'px';
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "madeit-unit-select"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+    value: selectValue,
+    options: options,
+    onChange: next => {
+      if (next === '__custom__') {
+        setShowCustom(true);
+        onChange('__custom__'); // ← sla '__custom__' op als tijdelijke waarde
+      } else {
+        setShowCustom(false);
+        onChange(next);
+      }
+    },
+    __nextHasNoMarginBottom: true
+  }), showCustom && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+    style: {
+      width: '100%',
+      position: 'absolute',
+      right: 0,
+      left: '-3px',
+      maxWidth: '251px',
+      margin: 'auto',
+      transform: 'translateY(8px)'
+    },
+    placeholder: "calc(100% - 2rem)",
+    value: value === '__custom__' ? '' : value,
+    onChange: val => onChange(val || '__custom__') // ← val leeg? blijf '__custom__'
+    ,
+    __nextHasNoMarginBottom: true
+  }));
+}
+
+/***/ },
+
 /***/ "../../../shared/BreakpointSwitcher.js"
 /*!*********************************************!*\
   !*** ../../../shared/BreakpointSwitcher.js ***!
@@ -14,65 +88,55 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _breakpoint_context__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./breakpoint-context */ "../../../shared/breakpoint-context.js");
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_2__);
 
-// import { createElement } from '@wordpress/element';
-// import { Button, ButtonGroup } from '@wordpress/components';
-
-// export default function BreakpointSwitcher(props) {
-//     var active = props && props.active ? props.active : 'desktop';
-//     var onChange = props && props.onChange ? props.onChange : null;
-
-//     return createElement(
-//         ButtonGroup,
-//         { className: 'madeit-control-breakpoints' },
-//         createElement(Button, {
-//             icon: 'desktop',
-//             isPressed: active === 'desktop',
-//             onClick: function () {
-//                 if (onChange) onChange('desktop');
-//             },
-//         }),
-//         createElement(Button, {
-//             icon: 'tablet',
-//             isPressed: active === 'tablet',
-//             onClick: function () {
-//                 if (onChange) onChange('tablet');
-//             },
-//         }),
-//         createElement(Button, {
-//             icon: 'smartphone',
-//             isPressed: active === 'mobile',
-//             onClick: function () {
-//                 if (onChange) onChange('mobile');
-//             },
-//         })
-//     );
-// }
+/**
+ * BreakpointSwitcher.js
+ *
+ */
 
 
 
-function BreakpointSwitcher() {
+const DEVICE_MAP = {
+  desktop: 'Desktop',
+  tablet: 'Tablet',
+  mobile: 'Mobile'
+};
+
+// Omgekeerde mapping voor uitlezen
+const REVERSE_DEVICE_MAP = Object.fromEntries(Object.entries(DEVICE_MAP).map(([k, v]) => [v, k]));
+function BreakpointSwitcher({
+  onChange
+}) {
+  var _REVERSE_DEVICE_MAP$g;
   const {
-    breakpoint,
-    setBreakpoint
-  } = (0,_breakpoint_context__WEBPACK_IMPORTED_MODULE_1__.useBreakpoint)();
-  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ButtonGroup, {
+    setDeviceType
+  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useDispatch)('core/editor');
+  const gutenbergDevice = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_2__.useSelect)(select => select('core/editor').getDeviceType());
+
+  // Sync met Gutenberg, fallback naar 'desktop'
+  const active = (_REVERSE_DEVICE_MAP$g = REVERSE_DEVICE_MAP[gutenbergDevice]) !== null && _REVERSE_DEVICE_MAP$g !== void 0 ? _REVERSE_DEVICE_MAP$g : 'desktop';
+  const handleChange = breakpoint => {
+    setDeviceType(DEVICE_MAP[breakpoint]);
+    onChange?.(breakpoint);
+  };
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.ButtonGroup, {
     className: "madeit-control-breakpoints"
-  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
     icon: "desktop",
-    isPressed: breakpoint === 'desktop',
-    onClick: () => setBreakpoint('desktop')
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+    isPressed: active === 'desktop',
+    onClick: () => handleChange('desktop')
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
     icon: "tablet",
-    isPressed: breakpoint === 'tablet',
-    onClick: () => setBreakpoint('tablet')
-  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+    isPressed: active === 'tablet',
+    onClick: () => handleChange('tablet')
+  }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.Button, {
     icon: "smartphone",
-    isPressed: breakpoint === 'mobile',
-    onClick: () => setBreakpoint('mobile')
+    isPressed: active === 'mobile',
+    onClick: () => handleChange('mobile')
   }));
 }
 
@@ -89,44 +153,50 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ ControlHeader)
 /* harmony export */ });
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
 /* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _BreakpointSwitcher__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./BreakpointSwitcher */ "../../../shared/BreakpointSwitcher.js");
 
+/**
+ * ControlHeader.js — Shared component for managing control headers in Gutenberg blocks.
+ *
+ */
 
 
 
-function ControlHeader(props) {
-  var title = props && typeof props.title !== 'undefined' ? props.title : '';
-  var breakpoint = props && props.breakpoint ? props.breakpoint : null;
-  var onBreakpointChange = props && props.onBreakpointChange ? props.onBreakpointChange : null;
-  var afterBreakpoint = props && props.afterBreakpoint ? props.afterBreakpoint : null;
-  var onReset = props && props.onReset ? props.onReset : null;
-  var resetLabel = props && props.resetLabel ? props.resetLabel : null;
-  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)('div', {
-    className: 'madeit-control-header',
+
+function ControlHeader({
+  title = '',
+  breakpoint = null,
+  onBreakpointChange = null,
+  afterBreakpoint = null,
+  onReset = null,
+  resetLabel = null
+}) {
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "madeit-control-header",
     style: {
       width: '100%'
     }
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)('span', {
-    className: 'madeit-control-header__title'
-  }, title), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)('div', {
-    className: 'madeit-control-header__tools'
-  }, breakpoint && onBreakpointChange ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_BreakpointSwitcher__WEBPACK_IMPORTED_MODULE_3__["default"], {
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("span", {
+    className: "madeit-control-header__title"
+  }, title), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "madeit-control-header__tools"
+  }, breakpoint && onBreakpointChange && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_BreakpointSwitcher__WEBPACK_IMPORTED_MODULE_3__["default"], {
     active: breakpoint,
     onChange: onBreakpointChange
-  }) : null, afterBreakpoint, onReset ? (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
-    className: 'madeit-control-header__reset',
-    icon: 'undo',
-    variant: 'tertiary',
+  }), afterBreakpoint, onReset && (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+    className: "madeit-control-header__reset",
+    icon: "undo",
+    variant: "tertiary",
     onClick: onReset,
     showTooltip: true,
     label: resetLabel || (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__.__)('Reset')
-  }) : null));
+  })));
 }
 
 /***/ },
@@ -149,6 +219,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _ControlHeader__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ControlHeader */ "../../../shared/ControlHeader.js");
+/**
+ * ResponsiveBoxControl.js — Shared component for managing responsive box controls in Gutenberg blocks.
+ *
+ */
+
 
 
 
@@ -260,6 +335,45 @@ function ResponsiveVisibilityPanel(props) {
 
 /***/ },
 
+/***/ "../../../shared/UnitSelect.js"
+/*!*************************************!*\
+  !*** ../../../shared/UnitSelect.js ***!
+  \*************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ UnitSelect)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__);
+
+
+const PRESET_UNITS = ['px', '%', 'vh', 'vw', 'em', 'rem'];
+function UnitSelect({
+  value = 'px',
+  onChange,
+  units = PRESET_UNITS
+}) {
+  const options = units.map(unit => ({
+    value: unit,
+    label: unit
+  }));
+  return (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    className: "madeit-unit-select"
+  }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_1__.SelectControl, {
+    value: value,
+    options: options,
+    onChange: onChange,
+    __nextHasNoMarginBottom: true
+  }));
+}
+
+/***/ },
+
 /***/ "../../../shared/breakpoint-context.js"
 /*!*********************************************!*\
   !*** ../../../shared/breakpoint-context.js ***!
@@ -278,6 +392,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
+
+/**
+ * breakpoint-context.js — Shared context for managing responsive breakpoints in Gutenberg blocks.
+ *
+ */
 
 
 const BreakpointContext = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.createContext)({
@@ -317,11 +436,13 @@ function getBreakpointKey(baseKey, breakpoint) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   AdvancedUnitSelect: () => (/* reexport safe */ _AdvancedUnitSelect__WEBPACK_IMPORTED_MODULE_6__["default"]),
 /* harmony export */   BreakpointProvider: () => (/* reexport safe */ _breakpoint_context__WEBPACK_IMPORTED_MODULE_1__.BreakpointProvider),
 /* harmony export */   BreakpointSwitcher: () => (/* reexport safe */ _BreakpointSwitcher__WEBPACK_IMPORTED_MODULE_0__["default"]),
 /* harmony export */   ControlHeader: () => (/* reexport safe */ _ControlHeader__WEBPACK_IMPORTED_MODULE_2__["default"]),
 /* harmony export */   ResponsiveBoxControl: () => (/* reexport safe */ _ResponsiveBoxControl__WEBPACK_IMPORTED_MODULE_3__["default"]),
 /* harmony export */   ResponsiveVisibilityPanel: () => (/* reexport safe */ _ResponsiveVisibilityPanel__WEBPACK_IMPORTED_MODULE_4__["default"]),
+/* harmony export */   UnitSelect: () => (/* reexport safe */ _UnitSelect__WEBPACK_IMPORTED_MODULE_5__["default"]),
 /* harmony export */   getBreakpointKey: () => (/* reexport safe */ _breakpoint_context__WEBPACK_IMPORTED_MODULE_1__.getBreakpointKey),
 /* harmony export */   useBreakpoint: () => (/* reexport safe */ _breakpoint_context__WEBPACK_IMPORTED_MODULE_1__.useBreakpoint)
 /* harmony export */ });
@@ -330,6 +451,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ControlHeader__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ControlHeader */ "../../../shared/ControlHeader.js");
 /* harmony import */ var _ResponsiveBoxControl__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ResponsiveBoxControl */ "../../../shared/ResponsiveBoxControl.js");
 /* harmony import */ var _ResponsiveVisibilityPanel__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./ResponsiveVisibilityPanel */ "../../../shared/ResponsiveVisibilityPanel.js");
+/* harmony import */ var _UnitSelect__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./UnitSelect */ "../../../shared/UnitSelect.js");
+/* harmony import */ var _AdvancedUnitSelect__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./AdvancedUnitSelect */ "../../../shared/AdvancedUnitSelect.js");
+
+
 
 
 
@@ -361,7 +486,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash */ "lodash");
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_1__);
 /**
- * External dependencies
+ * utils.js — madeit-block-content
+ *
  */
 
 
@@ -680,6 +806,7 @@ function ColumnEdit(props) {
   })), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_3__.InspectorControls, null, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.PanelBody, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_8__.__)('Column Settings')
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.RangeControl, {
+    __next40pxDefaultSize: true,
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_8__.__)('Percentage width'),
     value: effectiveWidth || '',
     onChange: updateWidth,
@@ -719,19 +846,17 @@ function ColumnEdit(props) {
     onDeselect: () => setPadding(undefined)
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_shared__WEBPACK_IMPORTED_MODULE_10__.ControlHeader, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_8__.__)('Padding', 'madeit'),
-    afterBreakpoint: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ButtonGroup, {
-      className: "madeit-control-units"
-    }, ['px', '%', 'em', 'rem', 'vw', 'vh'].map(unit => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.Button, {
-      key: unit,
-      isPressed: paddingUnit === unit,
-      onClick: () => {
+    afterBreakpoint: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.__experimentalToggleGroupControl, {
+      className: "madeit-control-units",
+      value: paddingUnit,
+      onChange: unit => {
         const nextPadding = {
           ...(padding || {})
         };
         const PADDING_KEYS = ['top', 'right', 'bottom', 'left'];
         PADDING_KEYS.forEach(key => {
           const raw = padding?.[key];
-          if (!raw) {
+          if (raw === undefined || raw === null || raw === '') {
             return;
           }
           const numeric = parseFloat(raw);
@@ -745,7 +870,11 @@ function ColumnEdit(props) {
           paddingUnit: unit
         });
       }
-    }, unit)))
+    }, ['px', '%', 'em', 'rem', 'vw', 'vh'].map(unit => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.__experimentalToggleGroupControlOption, {
+      key: unit,
+      value: unit,
+      label: unit
+    })))
   }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "madeit-controls",
     style: {
@@ -859,19 +988,17 @@ function ColumnEdit(props) {
     onDeselect: () => setMargin(undefined)
   }, (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_shared__WEBPACK_IMPORTED_MODULE_10__.ControlHeader, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_8__.__)('Margin', 'madeit'),
-    afterBreakpoint: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.ButtonGroup, {
-      className: "madeit-control-units"
-    }, ['px', '%', 'em', 'rem', 'vw', 'vh'].map(unit => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.Button, {
-      key: unit,
-      isPressed: marginUnit === unit,
-      onClick: () => {
+    afterBreakpoint: (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.__experimentalToggleGroupControl, {
+      className: "madeit-control-units",
+      value: marginUnit,
+      onChange: unit => {
         const nextMargin = {
           ...(margin || {})
         };
         const MARGIN_KEYS = ['top', 'right', 'bottom', 'left'];
         MARGIN_KEYS.forEach(key => {
           const raw = margin?.[key];
-          if (!raw) {
+          if (raw === undefined || raw === null || raw === '') {
             return;
           }
           const numeric = parseFloat(raw);
@@ -885,7 +1012,11 @@ function ColumnEdit(props) {
           marginUnit: unit
         });
       }
-    }, unit)))
+    }, ['px', '%', 'em', 'rem', 'vw', 'vh'].map(unit => (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__.__experimentalToggleGroupControlOption, {
+      key: unit,
+      value: unit,
+      label: unit
+    })))
   }), (0,react__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: "madeit-controls",
     style: {

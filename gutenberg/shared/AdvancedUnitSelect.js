@@ -33,6 +33,7 @@ export default function UnitSelect({ value = 'px', onChange, units = ['px', '%',
             />
             { showCustom && (
                 <TextControl
+                    __next40pxDefaultSize
                     style={{ width: '100%', position: 'absolute', right: 0, left: '-3px', maxWidth: '251px', margin: 'auto', transform: 'translateY(8px)'}}
                     placeholder="calc(100% - 2rem)"
                     value={ value === '__custom__' ? '' : value }

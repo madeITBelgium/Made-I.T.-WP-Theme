@@ -12,8 +12,12 @@
 	"version": "1.0.0",
 	"madeit": {
 		"changelog": {
-		"1.0.0": [
-			"Eerste versie van de reviews block"
+			"3.0.0": [
+			{
+			"type": "info",
+			"label": "Release",
+			"text": "Volledig nieuwe block voor het Made I.T. thema"
+			}
 		]
 		}
 	},

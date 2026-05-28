@@ -1,18 +1,7 @@
 /**
- * save.js — madeit-block-content
+ * saveVlegacy-boxed-inner-row.js — madeit-block-content
  *
- * OUTPUT STRUCTUUR (altijd):
- *
- *   <HtmlTag class="wp-block-madeit-block-content container-fluid madeit-block-content--frontend ...">
- *     <div class="container | container-fluid">   ← bepaald door `size`
- *       <div class="row madeit-container-row rows-N" data-madeit-dir="...">
- *         <InnerBlocks />
- *       </div>
- *     </div>
- *   </HtmlTag>
- *
- * De outer HtmlTag is ALTIJD container-fluid.
- * De inner div = container of container-fluid op basis van het `size` attribuut.
+ * Legacy boxed markup with extra .col wrapper and inner row without data attrs.
  */
 
 import classnames from 'classnames';
@@ -26,7 +15,7 @@ function toCssLength( value, unit = 'px' ) {
     if ( typeof value !== 'string' ) return undefined;
     const t = value.trim();
     if ( ! t ) return undefined;
-    if ( /^-?\d+(?:\.\d+)?$/.test( t ) )         return `${ t }${ unit || 'px' }`;
+    if ( /^-?\d+(?:\.\d+)?$/.test( t ) ) return `${ t }${ unit || 'px' }`;
     if ( /^-?\d+(?:\.\d+)?[a-z%]+$/i.test( t ) ) return t;
     return undefined;
 }
@@ -56,8 +45,6 @@ function filterExtraClasses( className ) {
         if ( t === 'wp-block-madeit-block-content' ) return false;
         if ( t === 'container' || t === 'container-fluid' ) return false;
         if ( t === FRONTEND_WRAPPER_CLASS ) return false;
-        // has-text-color en has-background worden verderop via wrapperClass
-        // opnieuw correct gezet op basis van kleur-attributen — hier NIET filteren.
         if ( t.startsWith( 'are-vertically-aligned-' ) ) return false;
         if ( t.startsWith( 'is-hidden-' ) ) return false;
         return true;
@@ -98,21 +85,14 @@ function buildBackgroundStyle( attributes ) {
     return style;
 }
 
-export default function save( props ) {
+export default function saveVlegacyBoxedInnerRow( props ) {
     const { attributes, className } = props;
 
-    // Kleur classes
     const containerBgClass = attributes.containerBackgroundColor
         ? getColorClassName( 'background-color', attributes.containerBackgroundColor ) : undefined;
     const rowTextClass = attributes.rowTextColor
         ? getColorClassName( 'color', attributes.rowTextColor ) : undefined;
 
-    // Size → inner div klasse (outer is altijd container-fluid)
-    const rawSize = typeof attributes.size === 'string' ? attributes.size.trim() : '';
-    const size = rawSize === 'container-fluid' ? 'container-fluid' : 'container';
-    const innerDivClass = size === 'container-fluid' ? 'container-fluid' : 'container';
-
-    // Outer wrapper klassen
     const extraClass = filterExtraClasses( [
         typeof attributes.className === 'string' ? attributes.className : '',
         typeof className === 'string' ? className : '',
@@ -133,7 +113,6 @@ export default function save( props ) {
         }
     );
 
-    // Wrapper stijl
     const bgStyle = buildBackgroundStyle( attributes );
     const {
         overflow,
@@ -147,6 +126,7 @@ export default function save( props ) {
         containerMargin, containerMarginTablet, containerMarginMobile,
         containerPadding, containerPaddingTablet, containerPaddingMobile,
         containerPaddingOnRow, columnsCount, htmlTag,
+        rowMargin, rowPadding,
     } = attributes;
 
     const ws = { ...bgStyle };
@@ -197,7 +177,6 @@ export default function save( props ) {
         setSpacingVars( ws, 'madeit-container-padding', containerPaddingMobile, 'mobile' );
     }
 
-    // Row stijl
     const rs = {};
     if ( containerPaddingOnRow === true ) {
         setSpacingVars( rs, 'madeit-container-row-padding', containerPadding,       'desktop' );
@@ -205,7 +184,6 @@ export default function save( props ) {
         setSpacingVars( rs, 'madeit-container-row-padding', containerPaddingMobile, 'mobile' );
     }
 
-    // Block props — forceer onze className zodat Gutenberg geen stale klassen injecteert
     const blockProps = useBlockProps.save( {
         className: wrapperClass,
         style: Object.keys( ws ).length > 0 ? ws : undefined,
@@ -214,7 +192,7 @@ export default function save( props ) {
 
     const HtmlTag   = ALLOWED_HTML_TAGS.includes( htmlTag ) ? htmlTag : 'div';
     const rowsCount = Number.isFinite( columnsCount ) ? columnsCount : 0;
-    const dirD = str( flexDirection      ) ? flexDirection      : 'row';
+    const dirD = str( flexDirection ) ? flexDirection : 'row';
     const dirT = str( flexDirectionTablet ) ? flexDirectionTablet : undefined;
     const dirM = str( flexDirectionMobile ) ? flexDirectionMobile : undefined;
 
@@ -226,14 +204,29 @@ export default function save( props ) {
         ...( Object.keys( rs ).length > 0 ? { style: rs } : {} ),
     };
 
-    // Standaard: container of container-fluid inner div
+    const childStyle = {};
+    if ( rowMargin?.top    !== undefined ) childStyle.marginTop    = rowMargin.top;
+    if ( rowMargin?.right  !== undefined ) childStyle.marginRight  = rowMargin.right;
+    if ( rowMargin?.bottom !== undefined ) childStyle.marginBottom = rowMargin.bottom;
+    if ( rowMargin?.left   !== undefined ) childStyle.marginLeft   = rowMargin.left;
+    if ( rowPadding?.top    !== undefined ) childStyle.paddingTop    = rowPadding.top;
+    if ( rowPadding?.right  !== undefined ) childStyle.paddingRight  = rowPadding.right;
+    if ( rowPadding?.bottom !== undefined ) childStyle.paddingBottom = rowPadding.bottom;
+    if ( rowPadding?.left   !== undefined ) childStyle.paddingLeft   = rowPadding.left;
+
     return (
         <HtmlTag { ...blockProps }>
-            <div className={ innerDivClass }>
+            <div className="container">
                 <div { ...rowProps }>
-                    { '\n\n' }
-                    <InnerBlocks.Content />
-                    { '\n\n' }
+                    <div className="col">
+                        <div className="" style={ childStyle }>
+                            <div className={ `row madeit-container-row rows-${ rowsCount }` }>
+                                { '\n\n' }
+                                <InnerBlocks.Content />
+                                { '\n\n' }
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </HtmlTag>

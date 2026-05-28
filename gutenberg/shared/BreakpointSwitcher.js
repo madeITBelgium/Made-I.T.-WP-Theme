@@ -1,4 +1,9 @@
-import { Button, ButtonGroup } from '@wordpress/components';
+/**
+ * BreakpointSwitcher.js
+ *
+ */
+
+import { Button, ButtonGroup, Icon, __experimentalToggleGroupControl as ToggleGroupControl, __experimentalToggleGroupControlOption as ToggleGroupControlOption, } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
 
 const DEVICE_MAP = {
@@ -13,37 +18,43 @@ const REVERSE_DEVICE_MAP = Object.fromEntries(
 );
 
 export default function BreakpointSwitcher({ onChange }) {
-    const { __experimentalSetPreviewDeviceType } = useDispatch('core/edit-post');
+    const { setDeviceType } = useDispatch('core/editor');
 
     const gutenbergDevice = useSelect((select) =>
-        select('core/edit-post').__experimentalGetPreviewDeviceType()
+        select('core/editor').getDeviceType()
     );
 
     // Sync met Gutenberg, fallback naar 'desktop'
     const active = REVERSE_DEVICE_MAP[gutenbergDevice] ?? 'desktop';
 
     const handleChange = (breakpoint) => {
-        __experimentalSetPreviewDeviceType(DEVICE_MAP[breakpoint]);
+        setDeviceType(DEVICE_MAP[breakpoint]);
         onChange?.(breakpoint);
     };
 
     return (
-        <ButtonGroup className="madeit-control-breakpoints">
-            <Button
-                icon="desktop"
-                isPressed={active === 'desktop'}
-                onClick={() => handleChange('desktop')}
+        <ToggleGroupControl 
+            className="madeit-control-breakpoints"
+            value={ active }
+            onChange={ ( value ) => handleChange( value ) }
+        >
+            <ToggleGroupControlOption
+                value="desktop"
+                label={ <Icon icon="desktop" /> }
+                aria-label="Desktop"
             />
-            <Button
-                icon="tablet"
-                isPressed={active === 'tablet'}
-                onClick={() => handleChange('tablet')}
+
+            <ToggleGroupControlOption
+                value="tablet"
+                label={ <Icon icon="tablet" /> }
+                aria-label="Tablet"
             />
-            <Button
-                icon="smartphone"
-                isPressed={active === 'mobile'}
-                onClick={() => handleChange('mobile')}
+
+            <ToggleGroupControlOption
+                value="mobile"
+                label={ <Icon icon="smartphone" /> }
+                aria-label="Mobile"
             />
-        </ButtonGroup>
+        </ToggleGroupControl>
     );
 }

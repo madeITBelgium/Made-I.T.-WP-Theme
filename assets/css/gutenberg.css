@@ -231,3 +231,7 @@ p.block-editor-rich-text__editable[aria-label="Leeg blok; begin met schrijven of
     .acf-field-group.active {
         display: block;
     }
+
+    .theme-browser .theme .theme-name { 
+        height: auto;
+    }

@@ -247,6 +247,7 @@ const madeitAdvancedControls = wp.compose.createHigherOrderComponent((BlockEdit)
                             />
                         }
                         <SelectControl
+                            __next40pxDefaultSize
                             label={ wp.i18n.__( 'Animation', 'madeit' ) }
                             value={ attributes.aosFade }
                             options={ animationOptions }

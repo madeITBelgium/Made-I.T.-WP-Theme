@@ -27,6 +27,7 @@ import {
     ColorPalette,
     Popover,
     __experimentalToggleGroupControl as ToggleGroupControl,
+    __experimentalToggleGroupControlOption as ToggleGroupControlOption,
 } from '@wordpress/components';
 
 import { ControlHeader } from '../../../shared';
@@ -532,30 +533,20 @@ export default function Edit({ clientId, attributes, setAttributes }) {
                 >
                     <div style={{ marginBottom: '16px' }}>
                         <TextControl
+                            __next40pxDefaultSize
                             placeholder="Search icons..."
                             value={search}
                             onChange={setSearch}
                         />
-                        <ButtonGroup style={{ marginTop: '8px' }}>
-                            <Button
-                                variant={styleFilter === 'solid' ? 'primary' : 'secondary'}
-                                onClick={() => setStyleFilter('solid')}
-                            >
-                                Solid
-                            </Button>
-                            <Button
-                                variant={styleFilter === 'regular' ? 'primary' : 'secondary'}
-                                onClick={() => setStyleFilter('regular')}
-                            >
-                                Regular
-                            </Button>
-                            <Button
-                                variant={styleFilter === 'brands' ? 'primary' : 'secondary'}
-                                onClick={() => setStyleFilter('brands')}
-                            >
-                                Brands
-                            </Button>
-                        </ButtonGroup>
+                        <ToggleGroupControl
+                            style={{ marginTop: '8px' }}
+                            value={ styleFilter }
+                            onChange={ ( value ) => setStyleFilter( value ) }
+                        >
+                            <ToggleGroupControlOption value="solid" label="Solid" />
+                            <ToggleGroupControlOption value="regular" label="Regular" />
+                            <ToggleGroupControlOption value="brands" label="Brands" />
+                        </ToggleGroupControl>
                     </div>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
                         {icons.map(([name, data]) => (
@@ -885,6 +876,7 @@ export default function Edit({ clientId, attributes, setAttributes }) {
                                                 <>
                                                     <hr></hr>
                                                     <TextControl
+                                                        __next40pxDefaultSize
                                                         label={`Tab title`}
                                                         value={tab.attributes?.title || ''}
                                                         onChange={(value) =>
@@ -912,30 +904,29 @@ export default function Edit({ clientId, attributes, setAttributes }) {
                                                     {tab.attributes?.showIcon === true && (
                                                         <>
                                                             {/* Icon type */}
-                                                            <ButtonGroup>
-                                                                <Button
-                                                                    variant={tab.attributes?.iconType === 'fontawesome' ? 'primary' : 'secondary'}
-                                                                    onClick={() =>
-                                                                        updateBlockAttributes(tab.clientId, {
+                                                            <ToggleGroupControl>
+                                                                <ToggleGroupControlOption
+                                                                    value="fontawesome"
+                                                                    label="FontAwesome"
+                                                                    onChange={ () =>
+                                                                        updateBlockAttributes( tab.clientId, {
                                                                             iconType: 'fontawesome',
                                                                             icon: tab.attributes?.fontawesome || '',
-                                                                        })
+                                                                        } )
                                                                     }
-                                                                >
-                                                                    FontAwesome
-                                                                </Button>
-                                                                <Button
-                                                                    variant={tab.attributes?.iconType === 'custom' ? 'primary' : 'secondary'}
-                                                                    onClick={() =>
-                                                                        updateBlockAttributes(tab.clientId, {
+                                                                />
+
+                                                                <ToggleGroupControlOption
+                                                                    value="custom"
+                                                                    label="Custom SVG"
+                                                                    onChange={ () =>
+                                                                        updateBlockAttributes( tab.clientId, {
                                                                             iconType: 'custom',
                                                                             icon: tab.attributes?.customSvg || '',
-                                                                        })
+                                                                        } )
                                                                     }
-                                                                >
-                                                                    Custom SVG
-                                                                </Button>
-                                                            </ButtonGroup>
+                                                                />
+                                                            </ToggleGroupControl>
 
                                                             <br/> <br/>
                                                             {/* If custom SVG is selected */}
@@ -1021,44 +1012,33 @@ export default function Edit({ clientId, attributes, setAttributes }) {
                                     onReset={ resetJustifyContent }
                                     resetLabel={ __( 'Reset justify items' ) }
                                 />
-                                <ButtonGroup className="madeit-control-buttonGroup">
-                                    <Button
-                                        icon={<JustifyStartIcon />}
-                                        variant={currentJustifyContent === 'flex-start' ? 'primary' : 'secondary'}
-                                        onClick={() =>
-                                            setAttributes({
-                                                [justifyContentValueKey]: 'flex-start',
-                                            })
-                                        }
+                                <ToggleGroupControl
+                                    className="madeit-control-buttonGroup"
+                                    value={ currentJustifyContent }
+                                    onChange={ ( value ) =>
+                                        setAttributes( {
+                                            [ justifyContentValueKey ]: value,
+                                        } )
+                                    }
+                                >
+                                    <ToggleGroupControlOption
+                                        value="flex-start"
+                                        label={ <JustifyStartIcon /> }
                                         aria-label={ __( 'Justify start' ) }
-                                    >
-                                        
-                                    </Button>
-                                    <Button
-                                        icon={<JustifyCenterIcon />}
-                                        variant={currentJustifyContent === 'center' ? 'primary' : 'secondary'}
-                                        onClick={() =>
-                                            setAttributes({
-                                                [justifyContentValueKey]: 'center',
-                                            })
-                                        }
+                                    />
+
+                                    <ToggleGroupControlOption
+                                        value="center"
+                                        label={ <JustifyCenterIcon /> }
                                         aria-label={ __( 'Justify center' ) }
-                                    >
-                                        
-                                    </Button>
-                                    <Button
-                                        icon={<JustifyEndIcon />}
-                                        variant={currentJustifyContent === 'flex-end' ? 'primary' : 'secondary'}
-                                        onClick={() =>
-                                            setAttributes({
-                                                [justifyContentValueKey]: 'flex-end',
-                                            })
-                                        }
+                                    />
+
+                                    <ToggleGroupControlOption
+                                        value="flex-end"
+                                        label={ <JustifyEndIcon /> }
                                         aria-label={ __( 'Justify end' ) }
-                                    >
-                                        
-                                    </Button>
-                                </ButtonGroup>
+                                    />
+                                </ToggleGroupControl>
                             </div>
 
                             {/* Tab display: default(top), left, right */}
@@ -1071,38 +1051,30 @@ export default function Edit({ clientId, attributes, setAttributes }) {
                                     resetLabel={ __( 'Reset tab position' ) }
                                 />
 
-                                <ButtonGroup className="madeit-control-buttonGroup">
-                                    <Button
-                                        icon={<TabTopIcon />}
-                                        variant={currentTabPosition === 'top' ? 'primary' : 'secondary'}
-                                        onClick={() =>
-                                            setAttributes({
-                                                [tabPositionValueKey]: 'top',
-                                            })
-                                        }
-                                    >
-                                    </Button>
-                                    <Button
-                                        icon={<TabLeftIcon />}
-                                        variant={currentTabPosition === 'left' ? 'primary' : 'secondary'}
-                                        onClick={() =>
-                                            setAttributes({
-                                                [tabPositionValueKey]: 'left',
-                                            })
-                                        }
-                                    >
-                                    </Button>
-                                    <Button
-                                        icon={<TabRightIcon />} 
-                                        variant={currentTabPosition === 'right' ? 'primary' : 'secondary'}
-                                        onClick={() =>
-                                            setAttributes({
-                                                [tabPositionValueKey]: 'right',
-                                            })
-                                        }
-                                    >
-                                    </Button>
-                                </ButtonGroup>
+                                <ToggleGroupControl
+                                    className="madeit-control-buttonGroup"
+                                    value={ currentTabPosition }
+                                    onChange={ ( value ) =>
+                                        setAttributes( {
+                                            [ tabPositionValueKey ]: value,
+                                        } )
+                                    }
+                                >
+                                    <ToggleGroupControlOption
+                                        value="top"
+                                        label={ <TabTopIcon /> }
+                                    />
+
+                                    <ToggleGroupControlOption
+                                        value="left"
+                                        label={ <TabLeftIcon /> }
+                                    />
+
+                                    <ToggleGroupControlOption
+                                        value="right"
+                                        label={ <TabRightIcon /> }
+                                    />
+                                </ToggleGroupControl>
                             </div>
                         </PanelBody>
                     </>
@@ -1121,6 +1093,7 @@ export default function Edit({ clientId, attributes, setAttributes }) {
                                 <>
                                 <FlexItem>
                                     <SelectControl
+                                        __next40pxDefaultSize
                                         value={attributes?.titleFontSize || ''}
                                         options={[
                                             // add the options of H1 - H6 as font size options set as class on the frontend, plus a default option that resets to the default font size
@@ -1141,32 +1114,37 @@ export default function Edit({ clientId, attributes, setAttributes }) {
                                 </FlexItem>
 
                                 <FlexItem>
-                                    <ButtonGroup aria-label={ __( 'Title emphasis' ) }>
+                                    <div className="madeit-control-buttonGroup">
                                         <Button
                                             icon="editor-bold"
                                             variant={ attributes?.titleBold ? 'primary' : 'secondary' }
-                                            aria-label={ __( 'Bold' ) }
                                             onClick={ () =>
-                                                setAttributes( { titleBold: ! attributes?.titleBold } )
+                                                setAttributes( {
+                                                    titleBold: ! attributes?.titleBold,
+                                                } )
                                             }
                                         />
+
                                         <Button
                                             icon="editor-italic"
                                             variant={ attributes?.titleItalic ? 'primary' : 'secondary' }
-                                            aria-label={ __( 'Italic' ) }
                                             onClick={ () =>
-                                                setAttributes( { titleItalic: ! attributes?.titleItalic } )
+                                                setAttributes( {
+                                                    titleItalic: ! attributes?.titleItalic,
+                                                } )
                                             }
                                         />
+
                                         <Button
                                             icon="editor-underline"
                                             variant={ attributes?.titleUnderline ? 'primary' : 'secondary' }
-                                            aria-label={ __( 'Underline' ) }
                                             onClick={ () =>
-                                                setAttributes( { titleUnderline: ! attributes?.titleUnderline } )
+                                                setAttributes( {
+                                                    titleUnderline: ! attributes?.titleUnderline,
+                                                } )
                                             }
                                         />
-                                    </ButtonGroup>
+                                    </div>
                                 </FlexItem>
                                 </>
                             </Flex>
@@ -1177,6 +1155,7 @@ export default function Edit({ clientId, attributes, setAttributes }) {
                         
                         <div className="madeit-control" style={{ marginTop: '16px' }}>
                             <RangeControl
+                                __next40pxDefaultSize
                                 label="Spacing between titles (px)"
                                 value={Number.isFinite(attributes?.titleGap) ? attributes.titleGap : 4}
                                 onChange={(value) => setAttributes({ titleGap: value })}
@@ -1187,6 +1166,7 @@ export default function Edit({ clientId, attributes, setAttributes }) {
                         
                         <div className="madeit-control" style={{ marginTop: '16px' }}>
                             <RangeControl
+                                __next40pxDefaultSize
                                 label="Spacing between content (px)"
                                 value={Number.isFinite(attributes?.contentGap) ? attributes.contentGap : 4}
                                 onChange={(value) => setAttributes({ contentGap: value })}
@@ -1302,6 +1282,7 @@ export default function Edit({ clientId, attributes, setAttributes }) {
 
                         <div className="madeit-control" style={{ marginTop: '16px' }}>
                             <SelectControl
+                                __next40pxDefaultSize
                                 label="Title border"
                                 value={titleBorderStyle}
                                 options={[
@@ -1335,6 +1316,7 @@ export default function Edit({ clientId, attributes, setAttributes }) {
 
                         <div className="madeit-control" style={{ marginTop: '16px' }}>
                             <RangeControl
+                                __next40pxDefaultSize
                                 label="Title border width (px)"
                                 value={Number.isFinite(attributes?.titleBorderWidth) ? attributes.titleBorderWidth : 1}
                                 onChange={(value) => setAttributes({ titleBorderWidth: value })}
@@ -1362,6 +1344,7 @@ export default function Edit({ clientId, attributes, setAttributes }) {
 
                         <div className="madeit-control" style={{ marginTop: '16px' }}>
                             <RangeControl
+                                __next40pxDefaultSize
                                 label="Content border width (px)"
                                 value={Number.isFinite(attributes?.contentBorderWidth) ? attributes.contentBorderWidth : 1}
                                 onChange={(value) => setAttributes({ contentBorderWidth: value })}
@@ -1372,6 +1355,7 @@ export default function Edit({ clientId, attributes, setAttributes }) {
 
                         <div className="madeit-control" style={{ marginTop: '16px' }}>
                             <RangeControl
+                                __next40pxDefaultSize
                                 label="Border radius (px)"
                                 value={Number.isFinite(attributes?.borderRadius) ? attributes.borderRadius : 1}
                                 onChange={(value) => setAttributes({ borderRadius: value })}

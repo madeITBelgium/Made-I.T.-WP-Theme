@@ -100,13 +100,11 @@ wp.domReady(function () {
 
             wp.data.dispatch('core/block-editor').insertBlocks(
                 wp.blocks.parse(`
-                <!-- wp:madeit/block-content {"containerPaddingOnRow":true,"overflow":"visible","flexDirection":"row","flexDirectionTablet":"column","flexDirectionMobile":"column","alignItems":"stretch","justifyContent":"flex-start","rowGap":20,"rowGapTablet":20,"rowGapMobile":20,"columnsCount":0,"flexWrap":"nowrap"} -->
-                <div class="wp-block-madeit-block-content container madeit-block-content--frontend">
+                <!-- wp:madeit/block-content {"flexDirectionTablet":"column","flexDirectionMobile":"column"} -->
+                <div class="wp-block-madeit-block-content container-fluid madeit-block-content--frontend" style="--madeit-flex-direction-tablet:column;--madeit-flex-direction-mobile:column">
                     <div class="container">
-                        <div class="row madeit-container-row rows-0"
-                            data-madeit-dir="row"
-                            data-madeit-dir-tablet="column"
-                            data-madeit-dir-mobile="column">
+                        <div class="row madeit-container-row rows-0" data-madeit-dir="row" data-madeit-dir-tablet="column" data-madeit-dir-mobile="column">
+
                         </div>
                     </div>
                 </div>
@@ -126,12 +124,14 @@ wp.domReady(function () {
     let isFixingOutsideBlocks = false;
     let hasRunInitialFix = false;
     let isEditorReady = false;
+    
 
     const allowedOutsideRootBlocks = [
         'madeit/block-content',
         'madeit/block-content-column',
         'core/cover',
-        'core/spacer'
+        'core/spacer',
+        'core/block'
     ];
 
     // Warning block
@@ -211,7 +211,7 @@ wp.domReady(function () {
 
         // Als er geen outside blocks zijn, hoeven we niets te doen. Belangrijk: dit moet na de initiële fix check komen, anders krijgen we een loop.
         if (!outsideBlocks.length) {
-            // Geen outside blocks
+            hasRunInitialFix = true;
             return;
         }
         // Er zijn outside blocks, dus we moeten ingrijpen
@@ -272,8 +272,8 @@ wp.domReady(function () {
 
         if (hasAutoOpenedInserter) return;
 
-        const editPostSelect = wp.data.select('core/edit-post');
-        const editPostDispatch = wp.data.dispatch('core/edit-post');
+        const editPostSelect = wp.data.select('core/editor');
+        const editPostDispatch = wp.data.dispatch('core/editor');
 
         if (!editPostSelect || !editPostDispatch || typeof editPostSelect.isInserterOpened !== 'function') {
             return;

@@ -314,6 +314,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 
                         <div style={{ width: '70%' }}>
                             <SelectControl
+                                __next40pxDefaultSize
                                 label={__('Afbeelding weergave', 'slider')}
                                 value={objectFit || 'cover'}
                                 onChange={(val) => setAttributes({ objectFit: val })}
@@ -339,6 +340,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
     
                                 <div className="madeit-control-rangeRow">
                                     <RangeControl
+                                        __next40pxDefaultSize
                                         value={valueMap[activeSlidesPerViewBreakpoint]}
                                         onChange={(val) => {
                                             if (activeSlidesPerViewBreakpoint === 'desktop') setAttributes({ slidesDesktop: val });
@@ -375,6 +377,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
                                         <>
                                         {/* Pictogramstijl kiezen */}
                                             <SelectControl
+                                                __next40pxDefaultSize
                                                 label={__('Navigatiepositie', 'slider')}
                                                 value={attributes.navigationPosition || 'outside'}
                                                 onChange={(val) => setAttributes({ navigationPosition: val })}
@@ -411,6 +414,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
                                             </div>
                                             
                                             <RangeControl
+                                                __next40pxDefaultSize
                                                 label={__('Grootte (px)', 'slider')}
                                                 value={attributes.navigationIconSize || 24}
                                                 onChange={(val) => setAttributes({ navigationIconSize: val })}
@@ -421,6 +425,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
                                                 navigationBorder = '1px solid #ccc', */}
 
                                             <RangeControl
+                                                __next40pxDefaultSize
                                                 label={__('Border radius (px)', 'slider')}
                                                 value={navigationBorderRadius || 50}
                                                 onChange={(val) => setAttributes({ navigationBorderRadius: val })}
@@ -437,6 +442,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
                                                     units={['px']}
                                                 />
                                                 <SelectControl
+                                                    __next40pxDefaultSize
                                                     label={__('Border stijl', 'slider')}
                                                     value={navigationBorderStyle || 'solid'}
                                                     onChange={(val) => setAttributes({ navigationBorderStyle: val })}
@@ -492,6 +498,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
                                     {pagination && (
                                         <>
                                         <SelectControl
+                                            __next40pxDefaultSize
                                             label={__('Paginatie type', 'slider')}
                                             value={paginationType}
                                             onChange={(val) => setAttributes({ paginationType: val })}
@@ -511,6 +518,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
                                                 />
                                                 {attributes.paginationDynamic && (
                                                     <TextControl
+                                                        __next40pxDefaultSize
                                                         label={__('Max aantal bullets', 'slider')}
                                                         value={attributes.paginationMaxBullets || ''}
                                                         onChange={(val) => setAttributes({ paginationMaxBullets: val })}
@@ -566,6 +574,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
                     {effect === 'logo' ? (
                         <>
                             <RangeControl
+                                __next40pxDefaultSize
                                 label={__('Ticker snelheid (ms)', 'slider')}
                                 help={__('Hogere waarde = trager doorschuiven. In logo-mode staat autoplay/loop altijd aan.', 'slider')}
                                 value={speed}
@@ -592,6 +601,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
                             {autoplay && (
                                 <>
                                     <RangeControl
+                                        __next40pxDefaultSize
                                         label={__('Autoplay snelheid (ms)', 'slider')}
                                         value={speed}
                                         onChange={(val) => setAttributes({ speed: val })}

@@ -22,6 +22,15 @@ registerBlockType('madeit/slider-image', {
         focalPoint: {
             type: 'object',
             default: { x: 0.5, y: 0.5 }
+        },
+
+        showCaption: { 
+            type: 'boolean', 
+            default: false 
+        },
+        captionHeight: {
+            type: 'number',
+            default: 0
         }
     },
     edit: Edit,

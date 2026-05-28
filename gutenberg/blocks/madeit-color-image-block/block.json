@@ -11,9 +11,24 @@
   "version": "1.2.0",
   "madeit": {
     "changelog": {
-      "1.2.0": [
-        "✨ Nieuwe block toegevoegd: Made I.T. Color Image",
-        "Deze block biedt de mogelijkheid om een afbeelding toe te voegen met een achtergrondkleur en configureerbare offsets."
+      "3.0.1": [
+        {
+          "type": "fix",
+          "label": "Version fix",
+          "text": "Warning meldingen gefixt en geüpdate."
+        }
+      ],
+      "3.0.0": [
+        {
+          "type": "info",
+          "label": "Release",
+          "text": "De Made I.T. color image block werd opnieuw opgebouwd voor de nieuwe 3.0.0 generatie van het thema."
+        },
+        {
+          "type": "fix",
+          "label": "Bug-fix",
+          "text": "kleur achter afbeelding"
+        }
       ]
     }
   },

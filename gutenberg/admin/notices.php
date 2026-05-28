@@ -121,24 +121,197 @@ function madeit_get_changelog_updates() {
     return $updates;
 }
 function madeit_updates_widget_content() {
+    $updates = madeit_get_changelog_updates();
+
     ?>
-    <h2>Nieuwe functies en verbeteringen</h2>
-    <!-- dynamic implementation of the updates -->
-    <ul>
-        <?php
-        $updates = madeit_get_changelog_updates();
-        if (empty($updates)) {
-            echo '<li>Geen recente updates gevonden.</li>';
+    <div class="madeit-updates-widget">
+
+        <?php if (empty($updates)) : ?>
+
+            <p>Geen recente updates gevonden.</p>
+
+        <?php else : ?>
+
+            <div class="madeit-updates-accordion">
+
+                <?php foreach ($updates as $index => $update) : ?>
+
+                    <details class="madeit-update-group" <?php echo $index === 0 ? 'open' : ''; ?>>
+
+                        <summary class="madeit-update-summary">
+
+                            <div class="madeit-update-summary-left">
+                                <span class="madeit-update-block">
+                                    <?php echo esc_html($update['title']); ?>
+                                </span>
+                            </div>
+
+                            <span class="madeit-update-version">
+                                v<?php echo esc_html($update['version']); ?>
+                            </span>
+
+                        </summary>
+
+                        <div class="madeit-update-content">
+
+                            <?php if (!empty($update['items'])) : ?>
+
+                                <ul class="madeit-update-list">
+
+                                    <?php foreach ($update['items'] as $item) : ?>
+
+                                        <li class="madeit-update-list-item">
+
+                                            <?php
+                                            // Structured item
+                                            if (is_array($item)) {
+
+                                                $type  = $item['type'] ?? 'info';
+                                                $label = $item['label'] ?? ucfirst($type);
+                                                $text  = $item['text'] ?? '';
+
+                                                ?>
+
+                                                <span class="madeit-update-badge madeit-update-<?php echo esc_attr($type); ?>">
+                                                    <?php echo esc_html($label); ?>
+                                                </span>
+
+                                                <span class="madeit-update-text">
+                                                    <?php echo esc_html($text); ?>
+                                                </span>
+
+                                                <?php
+
+                                            } else {
+
+                                                // Old string format
+                                                echo wp_kses($item, [
+                                                    'b' => [],
+                                                    'strong' => [],
+                                                    'em' => [],
+                                                    'br' => [],
+                                                ]);
+                                            }
+                                            ?>
+
+                                        </li>
+
+                                    <?php endforeach; ?>
+
+                                </ul>
+
+                            <?php endif; ?>
+
+                        </div>
+
+                    </details>
+
+                <?php endforeach; ?>
+
+            </div>
+
+        <?php endif; ?>
+
+    </div>
+
+    <style>
+        
+        .madeit-updates-widget {
+            padding: 4px;
         }
 
-        foreach ($updates as $update) {
-            echo '<li><strong>' . esc_html($update['title']) . ' v' . esc_html($update['version']) . ':</strong> ' . esc_html($update['description']) . '</li>';
+        .madeit-updates-title {
+            margin-bottom: 16px;
         }
-        ?>
-    </ul>
 
+        .madeit-updates-accordion {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
 
+        .madeit-update-group {
+            border: 1px solid #dcdcde;
+            border-radius: 10px;
+            background: #fff;
+            overflow: hidden;
+        }
 
+        .madeit-update-summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            cursor: pointer;
+            list-style: none;
+            user-select: none;
+        }
+
+        .madeit-update-summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .madeit-update-summary:hover {
+            background: #f6f7f7;
+        }
+
+        .madeit-update-block {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .madeit-update-version {
+            background: #2271b1;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 999px;
+        }
+
+        .madeit-update-content {
+            padding: 16px 16px;
+        }
+
+        .madeit-update-list {
+            margin: 0;
+        }
+
+        .madeit-update-list-item {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .madeit-update-badge {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 999px;
+            margin-right: 8px;
+            text-transform: uppercase;
+        }
+
+        .madeit-update-fix {
+            background: #ffeaea;
+            color: #c0392b;
+        }
+
+        .madeit-update-feature {
+            background: #eafaf1;
+            color: #1e8449;
+        }
+
+        .madeit-update-improvement {
+            background: #ebf5ff;
+            color: #21618c;
+        }
+
+        .madeit-update-info {
+            background: #f1f1f1;
+            color: #555;
+        }
+        </style>
     <?php
 }
 add_action('wp_dashboard_setup', 'madeit_dashboard_widgets');

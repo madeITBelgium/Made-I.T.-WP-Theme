@@ -1,18 +1,9 @@
 /**
- * save.js — madeit-block-content
+ * saveVno-responsive-dir.js — madeit-block-content
  *
- * OUTPUT STRUCTUUR (altijd):
- *
- *   <HtmlTag class="wp-block-madeit-block-content container-fluid madeit-block-content--frontend ...">
- *     <div class="container | container-fluid">   ← bepaald door `size`
- *       <div class="row madeit-container-row rows-N" data-madeit-dir="...">
- *         <InnerBlocks />
- *       </div>
- *     </div>
- *   </HtmlTag>
- *
- * De outer HtmlTag is ALTIJD container-fluid.
- * De inner div = container of container-fluid op basis van het `size` attribuut.
+ * Legacy markup variant:
+ * - Standard wrapper + inner container markup
+ * - Row has only data-madeit-dir (no tablet/mobile data attrs)
  */
 
 import classnames from 'classnames';
@@ -26,7 +17,7 @@ function toCssLength( value, unit = 'px' ) {
     if ( typeof value !== 'string' ) return undefined;
     const t = value.trim();
     if ( ! t ) return undefined;
-    if ( /^-?\d+(?:\.\d+)?$/.test( t ) )         return `${ t }${ unit || 'px' }`;
+    if ( /^-?\d+(?:\.\d+)?$/.test( t ) ) return `${ t }${ unit || 'px' }`;
     if ( /^-?\d+(?:\.\d+)?[a-z%]+$/i.test( t ) ) return t;
     return undefined;
 }
@@ -56,8 +47,6 @@ function filterExtraClasses( className ) {
         if ( t === 'wp-block-madeit-block-content' ) return false;
         if ( t === 'container' || t === 'container-fluid' ) return false;
         if ( t === FRONTEND_WRAPPER_CLASS ) return false;
-        // has-text-color en has-background worden verderop via wrapperClass
-        // opnieuw correct gezet op basis van kleur-attributen — hier NIET filteren.
         if ( t.startsWith( 'are-vertically-aligned-' ) ) return false;
         if ( t.startsWith( 'is-hidden-' ) ) return false;
         return true;
@@ -98,21 +87,18 @@ function buildBackgroundStyle( attributes ) {
     return style;
 }
 
-export default function save( props ) {
+export default function saveVnoResponsiveDir( props ) {
     const { attributes, className } = props;
 
-    // Kleur classes
     const containerBgClass = attributes.containerBackgroundColor
         ? getColorClassName( 'background-color', attributes.containerBackgroundColor ) : undefined;
     const rowTextClass = attributes.rowTextColor
         ? getColorClassName( 'color', attributes.rowTextColor ) : undefined;
 
-    // Size → inner div klasse (outer is altijd container-fluid)
     const rawSize = typeof attributes.size === 'string' ? attributes.size.trim() : '';
     const size = rawSize === 'container-fluid' ? 'container-fluid' : 'container';
     const innerDivClass = size === 'container-fluid' ? 'container-fluid' : 'container';
 
-    // Outer wrapper klassen
     const extraClass = filterExtraClasses( [
         typeof attributes.className === 'string' ? attributes.className : '',
         typeof className === 'string' ? className : '',
@@ -133,7 +119,6 @@ export default function save( props ) {
         }
     );
 
-    // Wrapper stijl
     const bgStyle = buildBackgroundStyle( attributes );
     const {
         overflow,
@@ -197,7 +182,6 @@ export default function save( props ) {
         setSpacingVars( ws, 'madeit-container-padding', containerPaddingMobile, 'mobile' );
     }
 
-    // Row stijl
     const rs = {};
     if ( containerPaddingOnRow === true ) {
         setSpacingVars( rs, 'madeit-container-row-padding', containerPadding,       'desktop' );
@@ -205,7 +189,6 @@ export default function save( props ) {
         setSpacingVars( rs, 'madeit-container-row-padding', containerPaddingMobile, 'mobile' );
     }
 
-    // Block props — forceer onze className zodat Gutenberg geen stale klassen injecteert
     const blockProps = useBlockProps.save( {
         className: wrapperClass,
         style: Object.keys( ws ).length > 0 ? ws : undefined,
@@ -214,19 +197,14 @@ export default function save( props ) {
 
     const HtmlTag   = ALLOWED_HTML_TAGS.includes( htmlTag ) ? htmlTag : 'div';
     const rowsCount = Number.isFinite( columnsCount ) ? columnsCount : 0;
-    const dirD = str( flexDirection      ) ? flexDirection      : 'row';
-    const dirT = str( flexDirectionTablet ) ? flexDirectionTablet : undefined;
-    const dirM = str( flexDirectionMobile ) ? flexDirectionMobile : undefined;
+    const dirD = str( flexDirection ) ? flexDirection : 'row';
 
     const rowProps = {
-        className:                `row madeit-container-row rows-${ rowsCount }`,
-        'data-madeit-dir':        dirD,
-        'data-madeit-dir-tablet': dirT,
-        'data-madeit-dir-mobile': dirM,
+        className:         `row madeit-container-row rows-${ rowsCount }`,
+        'data-madeit-dir': dirD,
         ...( Object.keys( rs ).length > 0 ? { style: rs } : {} ),
     };
 
-    // Standaard: container of container-fluid inner div
     return (
         <HtmlTag { ...blockProps }>
             <div className={ innerDivClass }>

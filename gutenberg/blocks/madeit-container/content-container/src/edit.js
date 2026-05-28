@@ -21,9 +21,15 @@ import { createBlock, store as blocksStore } from '@wordpress/blocks';
 import { useState, useEffect, useRef } from "@wordpress/element";
 import { compose } from "@wordpress/compose";
 import { withDispatch, useDispatch, useSelect } from "@wordpress/data";
-import { PanelBody, RangeControl, SVG, Path, SelectControl,
-    Button,
-    ButtonGroup,
+import { 
+    PanelBody, 
+    RangeControl, 
+    SVG, 
+    Path, 
+    Icon,
+    SelectControl,
+    __experimentalToggleGroupControl as ToggleGroupControl,
+    __experimentalToggleGroupControlOption as ToggleGroupControlOption,
     ToggleControl,
     Card,
     CardBody,
@@ -142,14 +148,23 @@ export function ColumnsEditContainer( props ) {
     } = attributes;
 
     
+    // ── Eén globale breakpoint state ───────────────────────────────────────
+    const [ activeBreakpoint, setActiveBreakpoint ] = useState( 'desktop' );
+
+    const activeMaxWidthBreakpoint     = activeBreakpoint;
+    const activeMinHeightBreakpoint    = activeBreakpoint;
+    const activeRowGapBreakpoint       = activeBreakpoint;
+    const activePaddingBreakpoint      = activeBreakpoint;
+    const activeMarginBreakpoint       = activeBreakpoint;
+    const activeDirectionBreakpoint    = activeBreakpoint;
     
     // ── Huidige breakpunt voor elke aanpasbare CSS-eigenschap ──────────────
-    const [ activeMaxWidthBreakpoint, setActiveMaxWidthBreakpoint ] = useState( 'desktop' );
-    const [ activeMinHeightBreakpoint, setActiveMinHeightBreakpoint ] = useState( 'desktop' );
-    const [ activeRowGapBreakpoint, setActiveRowGapBreakpoint ] = useState( 'desktop' );
-    const [ activePaddingBreakpoint, setActivePaddingBreakpoint ] = useState( 'desktop' );
-    const [ activeMarginBreakpoint, setActiveMarginBreakpoint ] = useState( 'desktop' );
-    const [ activeDirectionBreakpoint, setActiveDirectionBreakpoint ] = useState( 'desktop' );
+    // const [ activeMaxWidthBreakpoint, setActiveMaxWidthBreakpoint ] = useState( 'desktop' );
+    // const [ activeMinHeightBreakpoint, setActiveMinHeightBreakpoint ] = useState( 'desktop' );
+    // const [ activeRowGapBreakpoint, setActiveRowGapBreakpoint ] = useState( 'desktop' );
+    // const [ activePaddingBreakpoint, setActivePaddingBreakpoint ] = useState( 'desktop' );
+    // const [ activeMarginBreakpoint, setActiveMarginBreakpoint ] = useState( 'desktop' );
+    // const [ activeDirectionBreakpoint, setActiveDirectionBreakpoint ] = useState( 'desktop' );
     
 
     // ── Afgeleide keys — allemaal gestuurd door activeBreakpoint ───────────
@@ -927,13 +942,13 @@ export function ColumnsEditContainer( props ) {
         <svg style={{ transform: 'rotate(90deg)' }} version="1.1" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><title>justify-space-evenly</title><path d="M30.656 0c0.704 0 1.28 0.512 1.344 1.184v29.472c0 0.736-0.608 1.344-1.344 1.344-0.672 0-1.248-0.512-1.312-1.184v-29.472c0-0.736 0.576-1.344 1.312-1.344zM1.344 0c0.672 0 1.248 0.512 1.312 1.184v29.472c0 0.736-0.576 1.344-1.312 1.344-0.704 0-1.248-0.512-1.344-1.184v-29.472c0-0.736 0.608-1.344 1.344-1.344zM22.144 5.344c1.024 0 1.856 0.832 1.856 1.856v17.6c0 1.024-0.832 1.856-1.856 1.856h-1.6c-1.024 0-1.888-0.832-1.888-1.856v-17.6c0-1.024 0.864-1.856 1.888-1.856h1.6zM11.456 5.344c1.024 0 1.888 0.832 1.888 1.856v17.6c0 1.024-0.864 1.856-1.888 1.856h-1.6c-1.024 0-1.856-0.832-1.856-1.856v-17.6c0-1.024 0.832-1.856 1.856-1.856h1.6z"></path></svg>
     );
 
-    const styleTransparentIcon = () => (
+    const StyleTransparentIcon = () => (
         <svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M7.49991 0.877075C3.84222 0.877075 0.877075 3.84222 0.877075 7.49991C0.877075 11.1576 3.84222 14.1227 7.49991 14.1227C11.1576 14.1227 14.1227 11.1576 14.1227 7.49991C14.1227 3.84222 11.1576 0.877075 7.49991 0.877075ZM3.85768 3.15057C4.84311 2.32448 6.11342 1.82708 7.49991 1.82708C10.6329 1.82708 13.1727 4.36689 13.1727 7.49991C13.1727 8.88638 12.6753 10.1567 11.8492 11.1421L3.85768 3.15057ZM3.15057 3.85768C2.32448 4.84311 1.82708 6.11342 1.82708 7.49991C1.82708 10.6329 4.36689 13.1727 7.49991 13.1727C8.88638 13.1727 10.1567 12.6753 11.1421 11.8492L3.15057 3.85768Z" fill="#000000"></path> </g></svg>
     );
-    const styleClassicIcon = () => (
+    const StyleClassicIcon = () => (
         <svg viewBox="0 -2 32 32" fill="#000000"> <g strokeWidth="0"></g><g strokeLinecap="round" strokeLinejoin="round"></g><g><g fill="none" fillRule="evenodd"><g transform="translate(-101.000000, -156.000000)" fill="#000000"><path d="M132.132,156.827 C130.975,155.685 129.099,155.685 127.942,156.827 L115.336,169.277 L119.499,173.44 L132.132,160.964 C133.289,159.821 133.289,157.969 132.132,156.827 Z M112.461,180.385 C111.477,181.298 107.08,183.333 104.491,181.36 C104.491,181.36 105.392,180.657 106.074,179.246 C107.703,174.919 111.763,175.56 111.763,175.56 L113.159,176.938 C113.173,176.952 114.202,178.771 112.461,180.385 Z M113.913,170.683 L110.764,173.788 C108.661,173.74 105.748,174.485 104.491,178.603 C103.53,180.781 101,180.671 101,180.671 C106.253,186.498 112.444,183.196 113.857,181.764 C115.1,180.506 115.279,178.966 115.146,177.734 L118.076,174.846 L113.913,170.683 Z" /></g></g></g></svg>
     );
-    const styleGradientIcon = () => (
+    const StyleGradientIcon = () => (
         <svg fill="#000000" viewBox="0 0 32 32" id="icon" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <defs> </defs> <path d="M26,4H6A2.0023,2.0023,0,0,0,4,6V26a2.0023,2.0023,0,0,0,2,2H26a2.0023,2.0023,0,0,0,2-2V6A2.0023,2.0023,0,0,0,26,4ZM22,26V22H18v4H14V22H10V18h4V14H10V10h4V6h4v4h4V6h4V26Z"></path> <rect x="14" y="10" width="4" height="4"></rect> <rect x="14" y="18" width="4" height="4"></rect> <rect x="18" y="14" width="4" height="4"></rect> <rect id="_Transparent_Rectangle_" data-name="&lt;Transparent Rectangle&gt;" className="cls-1" width="32" height="32" fill="none"></rect> </g></svg>
     );
 
@@ -966,24 +981,66 @@ export function ColumnsEditContainer( props ) {
     };
 
     const StyleSwitcher = ( { active, onChange } ) => (
-        <ButtonGroup className="madeit-control-styleSwitcher">
-            <Button
-                icon={ styleTransparentIcon }
-                isPressed={ active === 'transparent' }
-                onClick={ () => onChange( 'transparent' ) }
+        <ToggleGroupControl
+            __next40pxDefaultSize
+            className="madeit-control-styleSwitcher"
+            value={ active }
+            onChange={ onChange }
+        >
+            <ToggleGroupControlOption
+                value="transparent"
+                label={ <StyleTransparentIcon /> }
             />
-            <Button
-                icon={ styleClassicIcon }
-                isPressed={ active === 'classic' }
-                onClick={ () => onChange( 'classic' ) }
+
+            <ToggleGroupControlOption
+                value="classic"
+                label={ <StyleClassicIcon /> }
             />
-            <Button
-                icon={ styleGradientIcon }
-                isPressed={ active === 'gradient' }
-                onClick={ () => onChange( 'gradient' ) }
+
+            <ToggleGroupControlOption
+                value="gradient"
+                label={ <StyleGradientIcon /> }
             />
-        </ButtonGroup>
+        </ToggleGroupControl>
     );
+
+
+    const previewBlockStyle = ( styleName ) => {
+    const block = document.querySelector(
+        `.block-editor-block-list__block[data-block="${ clientId }"]`
+    );
+
+    if ( ! block ) {
+        return;
+    }
+
+    // verwijder vorige previews
+    block.classList.forEach( ( className ) => {
+        if ( className.startsWith( 'is-style-preview-' ) ) {
+            block.classList.remove( className );
+        }
+    } );
+
+    if ( styleName ) {
+        block.classList.add( `is-style-preview-${ styleName }` );
+    }
+};
+
+const clearPreviewBlockStyle = () => {
+    const block = document.querySelector(
+        `.block-editor-block-list__block[data-block="${ clientId }"]`
+    );
+
+    if ( ! block ) {
+        return;
+    }
+
+    block.classList.forEach( ( className ) => {
+        if ( className.startsWith( 'is-style-preview-' ) ) {
+            block.classList.remove( className );
+        }
+    } );
+};
 
     useEffect( () => {
         const bodyClass = 'madeit-content-container-advanced-tabs';
@@ -1085,6 +1142,7 @@ export function ColumnsEditContainer( props ) {
                     <PanelBody title="Container" initialOpen={true}>
                         {/* Kolommen wijzigen */}
                         <RangeControl
+                            __next40pxDefaultSize
                             label={ __( 'Aantal kolommen' ) }
                             value={ count }
                             onChange={ ( value ) => updateColumns( count, value ) }
@@ -1094,6 +1152,7 @@ export function ColumnsEditContainer( props ) {
 
                         {/* Container breedte */}
                         <SelectControl
+                            __next40pxDefaultSize
                             label={ __( 'Inhoud breedte' ) }
                             labelPosition='left'
                             value={ size }
@@ -1128,8 +1187,8 @@ export function ColumnsEditContainer( props ) {
                         >
                             <ControlHeader
                                 title={ __( 'max breedte' ) }
-                                breakpoint={ activeMaxWidthBreakpoint }
-                                onBreakpointChange={ setActiveMaxWidthBreakpoint }
+                                breakpoint={ activeBreakpoint }
+                                onBreakpointChange={ setActiveBreakpoint }
                                 afterBreakpoint={
                                     <AdvancedUnitSelect
                                         value={ currentMaxWidthUnit }
@@ -1144,6 +1203,7 @@ export function ColumnsEditContainer( props ) {
                             { currentMaxWidthUnit !== '__custom__' && (
                                 <div className="madeit-control-rangeRow">
                                     <RangeControl
+                                        __next40pxDefaultSize
                                         label=""
                                         value={
                                             typeof currentMaxWidthValue === 'number'
@@ -1183,39 +1243,14 @@ export function ColumnsEditContainer( props ) {
                         >
                             <ControlHeader
                                 title={ __( 'Min hoogte' ) }
-                                breakpoint={ activeMinHeightBreakpoint }
-                                onBreakpointChange={ setActiveMinHeightBreakpoint }
+                                breakpoint={ activeBreakpoint }
+                                onBreakpointChange={ setActiveBreakpoint }
                                 afterBreakpoint={
                                     <AdvancedUnitSelect
                                         value={ currentMinHeightUnit }
                                         units={ ['px', '%', 'em', 'rem', 'vh'] }
                                         onChange={ (unit) => setAttributes({ [minHeightUnitKey]: unit, madeitHasUserEdits: true }) }
                                     />
-                                    // <ButtonGroup className="madeit-control-units">
-                                    //     <Button
-                                    //         isPressed={ minHeightUnitForUi === 'px' }
-                                    //         onClick={ () =>
-                                    //             setAttributes( {
-                                    //                 [ minHeightUnitKey ]: 'px',
-                                    //                 madeitHasUserEdits: true,
-                                    //             } )
-                                    //         }
-                                    //     >
-                                    //         px
-                                    //     </Button>
-
-                                    //     <Button
-                                    //         isPressed={ minHeightUnitForUi === 'vh' }
-                                    //         onClick={ () =>
-                                    //             setAttributes( {
-                                    //                 [ minHeightUnitKey ]: 'vh',
-                                    //                 madeitHasUserEdits: true,
-                                    //             } )
-                                    //         }
-                                    //     >
-                                    //         vh
-                                    //     </Button>
-                                    // </ButtonGroup>
                                 }
                                 
                             />
@@ -1225,6 +1260,7 @@ export function ColumnsEditContainer( props ) {
                             { currentMinHeightUnit !== '__custom__' && (
                             <div className="madeit-control-rangeRow">
                                 <RangeControl
+                                    __next40pxDefaultSize
                                     label=""
                                     value={ minHeightValueForUi }
                                     onChange={ ( value ) =>
@@ -1268,103 +1304,86 @@ export function ColumnsEditContainer( props ) {
                         <div className="madeit-control">
                             <ControlHeader
                                 title={ __( 'Direction' ) }
-                                breakpoint={ activeDirectionBreakpoint }
-                                onBreakpointChange={ setActiveDirectionBreakpoint }
+                                breakpoint={ activeBreakpoint }
+                                onBreakpointChange={ setActiveBreakpoint }
                             />
 
-                            <ButtonGroup className="madeit-control-buttonGroup">
-                                <Button
-                                    icon="arrow-right-alt2"
-                                    isPressed={ currentDirection === 'row' }
-                                    onClick={ () =>
-                                        setAttributes( { [ directionValueKey ]: 'row' } )
-                                    }
+                           <ToggleGroupControl
+                                __next40pxDefaultSize
+                                className="madeit-control-buttonGroup"
+                                value={ currentDirection }
+                                onChange={ ( value ) =>
+                                    setAttributes( { [ directionValueKey ]: value } )
+                                }
+                            >
+                                <ToggleGroupControlOption
+                                    value="row"
+                                    label={ <Icon icon="arrow-right-alt2" /> }
                                     aria-label={ __( 'Row' ) }
                                 />
-                                <Button
-                                    icon="arrow-down-alt2"
-                                    isPressed={ currentDirection === 'column' }
-                                    onClick={ () =>
-                                        setAttributes( { [ directionValueKey ]: 'column' } )
-                                    }
+
+                                <ToggleGroupControlOption
+                                    value="column"
+                                    label={ <Icon icon="arrow-down-alt2" /> }
                                     aria-label={ __( 'Column' ) }
                                 />
-                                <Button
-                                    icon="arrow-left-alt2"
-                                    isPressed={ currentDirection === 'row-reverse' }
-                                    onClick={ () =>
-                                        setAttributes( { [ directionValueKey ]: 'row-reverse' } )
-                                    }
+
+                                <ToggleGroupControlOption
+                                    value="row-reverse"
+                                    label={ <Icon icon="arrow-left-alt2" /> }
                                     aria-label={ __( 'Row reverse' ) }
                                 />
-                                <Button
-                                    icon="arrow-up-alt2"
-                                    isPressed={ currentDirection === 'column-reverse' }
-                                    onClick={ () =>
-                                        setAttributes( {
-                                            [ directionValueKey ]: 'column-reverse',
-                                        } )
-                                    }
+
+                                <ToggleGroupControlOption
+                                    value="column-reverse"
+                                    label={ <Icon icon="arrow-up-alt2" /> }
                                     aria-label={ __( 'Column reverse' ) }
                                 />
-                            </ButtonGroup>
+                            </ToggleGroupControl>
                         </div>
 
                         {/* Align items */}
                         <div className="madeit-control">
                             <ControlHeader
                                 title={ __( 'Align items' ) }
-                                breakpoint={ activeDirectionBreakpoint }
-                                onBreakpointChange={ setActiveDirectionBreakpoint }
+                                breakpoint={ activeBreakpoint }
+                                onBreakpointChange={ setActiveBreakpoint }
                                 onReset={ resetAlignItems }
                                 resetLabel={ __( 'Reset align items' ) }
                             />
 
-                            <ButtonGroup className="madeit-control-buttonGroup">
+                            <ToggleGroupControl 
+                                __next40pxDefaultSize
+                                className="madeit-control-buttonGroup"
+                                value={ currentAlignItems }
+                                onChange={ ( value ) =>
+                                    setAttributes( { [ alignItemsValueKey ]: value } )
+                                }
+                            >
 
                                 { isRowDirection && (
                                     <>
-                                        <Button
-                                            icon={ <FlexStartIconRotate /> }
-                                            isPressed={ currentAlignItems === 'flex-start' }
-                                            onClick={ () =>
-                                                setAttributes( {
-                                                    [ alignItemsValueKey ]: 'flex-start',
-                                                } )
-                                            }
+                                        <ToggleGroupControlOption
+                                            value="flex-start"
+                                            label={ < FlexStartIconRotate /> }
                                             aria-label={ __( 'Top' ) }
                                         />
 
-                                        <Button
-                                            icon={ <CenterIconRotate /> }
-                                            isPressed={ currentAlignItems === 'center' }
-                                            onClick={ () =>
-                                                setAttributes( {
-                                                    [ alignItemsValueKey ]: 'center',
-                                                } )
-                                            }
+                                        <ToggleGroupControlOption
+                                            value="center"
+                                            label={ < CenterIconRotate /> }
                                             aria-label={ __( 'Center' ) }
                                         />
 
-                                        <Button
-                                            icon={ <FlexEndIconRotate /> }
-                                            isPressed={ currentAlignItems === 'flex-end' }
-                                            onClick={ () =>
-                                                setAttributes( {
-                                                    [ alignItemsValueKey ]: 'flex-end',
-                                                } )
-                                            }
+                                        <ToggleGroupControlOption
+                                            value="flex-end"
+                                            label={ < FlexEndIconRotate /> }
                                             aria-label={ __( 'Bottom' ) }
                                         />
 
-                                        <Button
-                                            icon={ <StretchIconRotate /> }
-                                            isPressed={ currentAlignItems === 'stretch' }
-                                            onClick={ () =>
-                                                setAttributes( {
-                                                    [ alignItemsValueKey ]: 'stretch',
-                                                } )
-                                            }
+                                        <ToggleGroupControlOption
+                                            value="stretch"
+                                            label={ < StretchIconRotate /> }
                                             aria-label={ __( 'Stretch' ) }
                                         />
                                     </>
@@ -1372,53 +1391,33 @@ export function ColumnsEditContainer( props ) {
 
                                 { isColumnDirection && (
                                     <>
-                                        <Button
-                                            icon={ <FlexStartIcon /> }
-                                            isPressed={ currentAlignItems === 'flex-start' }
-                                            onClick={ () =>
-                                                setAttributes( {
-                                                    [ alignItemsValueKey ]: 'flex-start',
-                                                } )
-                                            }
+                                        <ToggleGroupControlOption
+                                            value="flex-start"
+                                            label={ < FlexStartIcon /> }
                                             aria-label={ __( 'Left' ) }
                                         />
 
-                                        <Button
-                                            icon={ <CenterIcon /> }
-                                            isPressed={ currentAlignItems === 'center' }
-                                            onClick={ () =>
-                                                setAttributes( {
-                                                    [ alignItemsValueKey ]: 'center',
-                                                } )
-                                            }
+                                        <ToggleGroupControlOption
+                                            value="center"
+                                            label={ < CenterIcon /> }
                                             aria-label={ __( 'Center' ) }
                                         />
 
-                                        <Button
-                                            icon={ <FlexEndIcon /> }
-                                            isPressed={ currentAlignItems === 'flex-end' }
-                                            onClick={ () =>
-                                                setAttributes( {
-                                                    [ alignItemsValueKey ]: 'flex-end',
-                                                } )
-                                            }
+                                        <ToggleGroupControlOption
+                                            value="flex-end"
+                                            label={ < FlexEndIcon /> }
                                             aria-label={ __( 'Right' ) }
                                         />
 
-                                        <Button
-                                            icon={ <StretchIcon /> }
-                                            isPressed={ currentAlignItems === 'stretch' }
-                                            onClick={ () =>
-                                                setAttributes( {
-                                                    [ alignItemsValueKey ]: 'stretch',
-                                                } )
-                                            }
+                                        <ToggleGroupControlOption
+                                            value="stretch"
+                                            label={ < StretchIcon /> }
                                             aria-label={ __( 'Stretch' ) }
                                         />
                                     </>
                                 )}
 
-                            </ButtonGroup>
+                            </ToggleGroupControl>
                         </div>
 
 
@@ -1426,79 +1425,56 @@ export function ColumnsEditContainer( props ) {
                         <div className="madeit-control">
                             <ControlHeader
                                 title={ __( 'Justify items' ) }
-                                breakpoint={ activeDirectionBreakpoint }
-                                onBreakpointChange={ setActiveDirectionBreakpoint }
+                                breakpoint={ activeBreakpoint }
+                                onBreakpointChange={ setActiveBreakpoint }
                                 onReset={ resetJustifyContent }
                                 resetLabel={ __( 'Reset justify items' ) }
                             />
 
-                            <ButtonGroup className="madeit-control-buttonGroup">
+                            <ToggleGroupControl 
+                                __next40pxDefaultSize
+                                className="madeit-control-buttonGroup"
+                                value={ currentJustifyContent }
+                                onChange={ ( value ) =>
+                                    setAttributes( { [ justifyContentValueKey ]: value } )
+                                }
+                            >
 
                                 { isRowDirection && (
                                     <>
-                                        <Button
-                                            icon={ <JustifyStartIcon /> }
-                                            isPressed={ currentJustifyContent === 'flex-start' }
-                                            onClick={ () =>
-                                                setAttributes( {
-                                                    [ justifyContentValueKey ]: 'flex-start',
-                                                } )
-                                            }
+                                        <ToggleGroupControlOption
+                                            value="flex-start"
+                                            label={ < JustifyStartIcon /> }
                                             aria-label={ __( 'Justify start' ) }
                                         />
 
-                                        <Button
-                                            icon={ <JustifyCenterIcon /> }
-                                            isPressed={ currentJustifyContent === 'center' }
-                                            onClick={ () =>
-                                                setAttributes( {
-                                                    [ justifyContentValueKey ]: 'center',
-                                                } )
-                                            }
+                                        <ToggleGroupControlOption
+                                            value="center"
+                                            label={ < JustifyCenterIcon /> }
                                             aria-label={ __( 'Justify center' ) }
                                         />
 
-                                        <Button
-                                            icon={ <JustifyEndIcon /> }
-                                            isPressed={ currentJustifyContent === 'flex-end' }
-                                            onClick={ () =>
-                                                setAttributes( {
-                                                    [ justifyContentValueKey ]: 'flex-end',
-                                                } )
-                                            }
+                                        <ToggleGroupControlOption
+                                            value="flex-end"
+                                            label={ < JustifyEndIcon /> }
                                             aria-label={ __( 'Justify end' ) }
                                         />
 
-                                        <Button
-                                            icon={ <JustifyBetweenIcon /> }
-                                            isPressed={ currentJustifyContent === 'space-between' }
-                                            onClick={ () =>
-                                                setAttributes( {
-                                                    [ justifyContentValueKey ]: 'space-between',
-                                                } )
-                                            }
+                                        <ToggleGroupControlOption
+                                            value="space-between"
+                                            label={ < JustifyBetweenIcon /> }
                                             aria-label={ __( 'Justify between' ) }
                                         />
 
-                                        <Button
-                                            icon={ <JustifySpaceAroundIcon /> }
-                                            isPressed={ currentJustifyContent === 'space-around' }
-                                            onClick={ () =>
-                                                setAttributes( {
-                                                    [ justifyContentValueKey ]: 'space-around',
-                                                } )
-                                            }
+                                        <ToggleGroupControlOption
+                                            value="space-around"
+                                            label={ < JustifySpaceAroundIcon /> }
                                             aria-label={ __( 'Justify space around' ) }
                                         />
 
-                                        <Button
-                                            icon={ <JustifySpaceEvenlyIcon /> }
-                                            isPressed={ currentJustifyContent === 'space-evenly' }
-                                            onClick={ () =>
-                                                setAttributes( {
-                                                    [ justifyContentValueKey ]: 'space-evenly',
-                                                } )
-                                            }
+                                        <ToggleGroupControlOption
+                                            value="space-evenly"
+                                            label={ < JustifySpaceEvenlyIcon /> }
                                             aria-label={ __( 'Justify space evenly' ) }
                                         />
                                     </>
@@ -1506,112 +1482,85 @@ export function ColumnsEditContainer( props ) {
 
                                 { isColumnDirection && (
                                     <>
-                                        <Button
-                                            icon={ <JustifyStartIconRotate /> }
-                                            isPressed={ currentJustifyContent === 'flex-start' }
-                                            onClick={ () =>
-                                                setAttributes( {
-                                                    [ justifyContentValueKey ]: 'flex-start',
-                                                } )
-                                            }
+                                        <ToggleGroupControlOption
+                                            value="flex-start"
+                                            label={ < JustifyStartIconRotate /> }
                                             aria-label={ __( 'Justify start' ) }
                                         />
 
-                                        <Button
-                                            icon={ <JustifyCenterIconRotate /> }
-                                            isPressed={ currentJustifyContent === 'center' }
-                                            onClick={ () =>
-                                                setAttributes( {
-                                                    [ justifyContentValueKey ]: 'center',
-                                                } )
-                                            }
+                                        <ToggleGroupControlOption
+                                            value="center"
+                                            label={ < JustifyCenterIconRotate /> }
                                             aria-label={ __( 'Justify center' ) }
                                         />
 
-                                        <Button
-                                            icon={ <JustifyEndIconRotate /> }
-                                            isPressed={ currentJustifyContent === 'flex-end' }
-                                            onClick={ () =>
-                                                setAttributes( {
-                                                    [ justifyContentValueKey ]: 'flex-end',
-                                                } )
-                                            }
+                                        <ToggleGroupControlOption
+                                            value="flex-end"
+                                            label={ < JustifyEndIconRotate /> }
                                             aria-label={ __( 'Justify end' ) }
                                         />
 
-                                        <Button
-                                            icon={ <JustifyBetweenIconRotate /> }
-                                            isPressed={ currentJustifyContent === 'space-between' }
-                                            onClick={ () =>
-                                                setAttributes( {
-                                                    [ justifyContentValueKey ]: 'space-between',
-                                                } )
-                                            }
+                                        <ToggleGroupControlOption
+                                            value="space-between"
+                                            label={ < JustifyBetweenIconRotate /> }
                                             aria-label={ __( 'Justify between' ) }
                                         />
 
-                                        <Button
-                                            icon={ <JustifySpaceAroundIconRotate /> }
-                                            isPressed={ currentJustifyContent === 'space-around' }
-                                            onClick={ () =>
-                                                setAttributes( {
-                                                    [ justifyContentValueKey ]: 'space-around',
-                                                } )
-                                            }
+                                        <ToggleGroupControlOption
+                                            value="space-around"
+                                            label={ < JustifySpaceAroundIconRotate /> }
                                             aria-label={ __( 'Justify space around' ) }
                                         />
 
-                                        <Button
-                                            icon={ <JustifySpaceEvenlyIconRotate /> }
-                                            isPressed={ currentJustifyContent === 'space-evenly' }
-                                            onClick={ () =>
-                                                setAttributes( {
-                                                    [ justifyContentValueKey ]: 'space-evenly',
-                                                } )
-                                            }
+                                        <ToggleGroupControlOption
+                                            value="space-evenly"
+                                            label={ < JustifySpaceEvenlyIconRotate /> }
                                             aria-label={ __( 'Justify space evenly' ) }
                                         />
                                     </>
                                 )}
 
-                            </ButtonGroup>
+                            </ToggleGroupControl>
                         </div>
 
                         {/* Wrap items */}
                         <div className="madeit-control">
                             <ControlHeader
                                 title={ __( 'Wrap' ) }
-                                breakpoint={ activeDirectionBreakpoint }
-                                onBreakpointChange={ setActiveDirectionBreakpoint }
+                                breakpoint={ activeBreakpoint }
+                                onBreakpointChange={ setActiveBreakpoint }
                                 onReset={ resetFlexWrap }
                                 resetLabel={ __( 'Reset wrap' ) }
                             />
-                            <ButtonGroup className="madeit-control-buttonGroup">
-                                <Button
-                                    isPressed={ currentFlexWrap === 'wrap' }
-                                    onClick={ () =>
-                                        setAttributes( { [ flexWrapValueKey ]: 'wrap' } )
-                                    }
+
+                            <ToggleGroupControl 
+                                __next40pxDefaultSize
+                                className="madeit-control-buttonGroup"
+                                value={ currentFlexWrap }
+                                onChange={ ( value ) =>
+                                    setAttributes( { [ flexWrapValueKey ]: value } )
+                                }
+                            >
+                                <ToggleGroupControlOption
+                                    value="wrap"
+                                    label={ __( 'Wrap' ) }
                                     aria-label={ __( 'Wrap' ) }
-                                >
-                                    { __( 'Wrap' ) }
-                                </Button>
-                                <Button
-                                    isPressed={ currentFlexWrap === 'nowrap' }
-                                    onClick={ () =>
-                                        setAttributes( { [ flexWrapValueKey ]: 'nowrap' } )
-                                    }
+                                />
+
+                                <ToggleGroupControlOption
+                                    value="nowrap"
+                                    label={ __( 'No wrap' ) }
                                     aria-label={ __( 'No wrap' ) }
-                                >
-                                    { __( 'No wrap' ) }
-                                </Button>
-                            </ButtonGroup>
-                        </div>
+                                />
+                            </ToggleGroupControl>
+                        </div> 
                     </PanelBody>
 
                     <PanelBody title="Extra opties" initialOpen={false}>
                         {/* Overflow */}
                         <SelectControl
+                            __next40pxDefaultSize
+                            className="flex1"
                             label={ __( 'Overflow' ) }
                             labelPosition='left'
                             value={ computedOverflow }
@@ -1628,6 +1577,8 @@ export function ColumnsEditContainer( props ) {
 
                         {/* HTML tag */}
                         <SelectControl
+                            __next40pxDefaultSize
+                            className="flex1"
                             label={ __( 'HTML tag' ) }
                             labelPosition='left'
                             value={ computedHtmlTag }
@@ -1653,18 +1604,43 @@ export function ColumnsEditContainer( props ) {
                         {/* Style blocks from gutenberg self */}
                         {blockStyles?.length > 0 && (
                             <PanelBody title="Stijlen" initialOpen={false}>
-                                <ButtonGroup className="madeit-block-styles-picker">
-                                    {blockStyles.map((style) => (
-                                        <Button
-                                            key={style.name}
-                                            isPressed={currentClassName.includes(`is-style-${style.name}`)}
-                                            onClick={() => applyBlockStyle(style.name)}
-                                            variant="secondary"
-                                        >
-                                            {style.label}
-                                        </Button>
-                                    ))}
-                                </ButtonGroup>
+                                <ToggleGroupControl
+                                    __next40pxDefaultSize
+                                    className="madeit-block-styles-picker"
+                                    value={
+                                        blockStyles.find( ( style ) =>
+                                            ( currentClassName || '' ).includes( `is-style-${ style.name }` )
+                                        )?.name || 'default'
+                                    }
+                                    onChange={ ( value ) => {
+
+                                        if ( value === 'default' ) {
+                                            applyBlockStyle( '' );
+                                            return;
+                                        }
+
+                                        applyBlockStyle( value );
+                                    } }
+                                >
+
+                                    <ToggleGroupControlOption
+                                        className='madeit-block-styles-picker-button'
+                                        value="default"
+                                        label={ __( 'Default' ) }
+                                    />
+
+                                    { blockStyles.map( ( style ) => (
+                                        <ToggleGroupControlOption
+                                            className='madeit-block-styles-picker-button'
+                                            key={ style.name }
+                                            value={ style.name }
+                                            label={ style.label }
+                                            onMouseEnter={ () => previewBlockStyle( style.name ) }
+                                            onMouseLeave={ clearPreviewBlockStyle }
+                                        />
+                                    ) ) }
+
+                                </ToggleGroupControl>
                             </PanelBody>
                         )}
 
@@ -1736,6 +1712,7 @@ export function ColumnsEditContainer( props ) {
                                         <>
                                             <div className="madeit-control">
                                                 <SelectControl
+                                                    __next40pxDefaultSize
                                                     label={ __( 'Achtergrond positie' ) }
                                                     value={ computedContainerBackgroundPosition }
                                                     options={ [
@@ -1759,6 +1736,7 @@ export function ColumnsEditContainer( props ) {
                                     {  containerBackgroundImage && (
                                         <div className="madeit-control">
                                             <SelectControl
+                                                __next40pxDefaultSize
                                                 label={ __( 'Achtergrond herhaling' ) }
                                                 value={ computedContainerBackgroundRepeat }
                                                 options={ [
@@ -1776,6 +1754,7 @@ export function ColumnsEditContainer( props ) {
                                     {  containerBackgroundImage && (
                                         <div className="madeit-control">
                                             <SelectControl
+                                                __next40pxDefaultSize
                                                 label={ __( 'Achtergrond grootte' ) }
                                                 value={ computedContainerBackgroundSize }
                                                 options={ [
@@ -1821,52 +1800,49 @@ export function ColumnsEditContainer( props ) {
                             <div className="madeit-control">
                                 <ControlHeader
                                     title={ __( 'row gap' ) }
-                                    breakpoint={ activeRowGapBreakpoint }
-                                    onBreakpointChange={ setActiveRowGapBreakpoint }
+                                    breakpoint={ activeBreakpoint }
+                                    onBreakpointChange={ setActiveBreakpoint }
                                     afterBreakpoint={
-                                        <ButtonGroup className="madeit-control-units">
-                                            <Button
-                                                isPressed={ currentRowGapUnit === 'px' }
-                                                onClick={ () =>
-                                                    setAttributes( {
-                                                        [ rowGapUnitKey ]: 'px',
-                                                        madeitHasUserEdits: true,
-                                                    } )
-                                                }
-                                            >
-                                                px
-                                            </Button>
+                                        <UnitSelect
+                                            value={ currentRowGapUnit }
+                                            units={ [ 'px', 'em', 'rem' ] }
+                                            onChange={ ( unit ) => {
 
-                                            <Button
-                                                isPressed={ currentRowGapUnit === 'em' }
-                                                onClick={ () =>
-                                                    setAttributes( {
-                                                        [ rowGapUnitKey ]: 'em',
-                                                        madeitHasUserEdits: true,
-                                                    } )
-                                                }
-                                            >
-                                                em
-                                            </Button>
+                                                const currentRowGap = attributes?.[ rowGapValueKey ] || {};
 
-                                            <Button
-                                                isPressed={ currentRowGapUnit === 'rem' }
-                                                onClick={ () =>
-                                                    setAttributes( {
-                                                        [ rowGapUnitKey ]: 'rem',
-                                                        madeitHasUserEdits: true,
-                                                    } )
-                                                }
-                                            >
-                                                rem
-                                            </Button>
-                                        </ButtonGroup>
+                                                const nextRowGap = {};
+
+                                                Object.keys( currentRowGap ).forEach( ( key ) => {
+
+                                                    const raw = currentRowGap[ key ];
+
+                                                    if ( raw === undefined || raw === null || raw === '' ) {
+                                                        return;
+                                                    }
+
+                                                    const numeric = parseFloat( raw );
+
+                                                    if ( ! Number.isFinite( numeric ) ) {
+                                                        return;
+                                                    }
+
+                                                    nextRowGap[ key ] = `${ numeric }${ unit }`;
+                                                } );
+
+                                                setAttributes( {
+                                                    [ rowGapValueKey ]: nextRowGap,
+                                                    [ rowGapUnitKey ]: unit,
+                                                    madeitHasUserEdits: true,
+                                                } );
+                                            } }
+                                        />
                                     }
                                     
                                 />
 
                                 <div className="madeit-control-rangeRow">
                                     <RangeControl
+                                        __next40pxDefaultSize
                                         label=""
                                         value={
                                             typeof currentRowGapValue === 'number'
@@ -1914,8 +1890,8 @@ export function ColumnsEditContainer( props ) {
                             <div className='madeit-control' style={{ display: 'flex', flexWrap: 'wrap', gap: '6px'}}>
                                 <ControlHeader
                                     title={ __( 'Padding', 'madeit' ) }
-                                    breakpoint={ activePaddingBreakpoint }
-                                    onBreakpointChange={ setActivePaddingBreakpoint }
+                                    breakpoint={ activeBreakpoint }
+                                    onBreakpointChange={ setActiveBreakpoint }
                                     afterBreakpoint={
                                         <UnitSelect
                                             value={ paddingUnit }
@@ -2022,6 +1998,7 @@ export function ColumnsEditContainer( props ) {
                                                     style={ {
                                                         width: '100%',
                                                         height: '27px',
+                                                        minHeight: '27px',
                                                         fontSize: '.85em',
                                                         textAlign: 'center',
                                                     } }
@@ -2158,8 +2135,8 @@ export function ColumnsEditContainer( props ) {
                             <div className='madeit-control' style={{ display: 'flex', flexWrap: 'wrap', gap: '6px'}}>
                                 <ControlHeader
                                     title={ __( 'Margin', 'madeit' ) }
-                                    breakpoint={ activeMarginBreakpoint }
-                                    onBreakpointChange={ setActiveMarginBreakpoint }
+                                    breakpoint={ activeBreakpoint }
+                                    onBreakpointChange={ setActiveBreakpoint }
                                     afterBreakpoint={
                                         <UnitSelect
                                             value={ marginUnit }
@@ -2266,6 +2243,7 @@ export function ColumnsEditContainer( props ) {
                                                     style={ {
                                                         width: '100%',
                                                         height: '27px',
+                                                        minHeight: '27px',
                                                         fontSize: '.85em',
                                                         textAlign: 'center',
                                                     } }

@@ -295,20 +295,12 @@ wp.blocks.registerBlockStyle('core/image', {
 
     function getPreviewDeviceType() {
         try {
-            // Post editor.
-            var editPost = wp.data.select( 'core/edit-post' );
-            if ( editPost && typeof editPost.__experimentalGetPreviewDeviceType === 'function' ) {
-                return normalizePreviewDeviceType( editPost.__experimentalGetPreviewDeviceType() );
+            var editor = wp.data.select( 'core/editor' );
+
+            if ( editor && typeof editor.getDeviceType === 'function' ) {
+                return normalizePreviewDeviceType( editor.getDeviceType() );
             }
         } catch ( e ) {}
-
-        try {
-            // Site editor.
-            var editSite = wp.data.select( 'core/edit-site' );
-            if ( editSite && typeof editSite.__experimentalGetPreviewDeviceType === 'function' ) {
-                return normalizePreviewDeviceType( editSite.__experimentalGetPreviewDeviceType() );
-            }
-        } catch ( e2 ) {}
 
         return 'desktop';
     }
@@ -490,7 +482,6 @@ document.addEventListener('DOMContentLoaded', function () {
         position: document.querySelector('.acf-field-group[data-name="display_position_group"]'),
     };
 
-    console.log(groups);
     // Functie om groepen te toggelen
     function showGroup(tab) {
         for (let key in groups) {
@@ -498,7 +489,6 @@ document.addEventListener('DOMContentLoaded', function () {
             groups[key].style.display = (key === tab) ? 'block' : 'none';
         }
 
-        console.log('function showGroup called with tab: ' + tab);
     }
 
     // Voeg click event toe aan elke subtab
@@ -513,7 +503,6 @@ document.addEventListener('DOMContentLoaded', function () {
             showGroup(tabName);
         });
 
-        console.log('clickEvent' + tabBtn.getAttribute('data-tab'));
     });
 
     // Init: toon preset groep standaard

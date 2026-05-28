@@ -27,6 +27,26 @@ registerBlockType(metadata.name, {
             paddingRight: { type: 'string', default: '1.25rem' },
             paddingBottom: { type: 'string', default: '1.25rem' },
             paddingLeft: { type: 'string', default: '1.25rem' },
+
+            paddingUnit: {
+	type: 'string',
+	default: 'px',
+},
+
+contentPadding: {
+	type: 'object',
+	default: {},
+},
+
+contentPaddingTablet: {
+	type: 'object',
+	default: {},
+},
+
+contentPaddingMobile: {
+	type: 'object',
+	default: {},
+},
         },
         save: ( props ) => {
             // oude save functie die alleen de basisstructuur van de card rendert zonder de nieuwe attributen

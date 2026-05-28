@@ -15,7 +15,7 @@ const { store: noticesStore } = wp.notices;
 const { __ } = wp.i18n;
 const { createBlock, serialize } = wp.blocks;
 const { Button, PanelBody } = wp.components;
-const { PluginSidebar } = wp.editPost;
+const { PluginSidebar } = wp.editor;
 
 const ALLOWED_BLOCKS = [
     "core/heading",

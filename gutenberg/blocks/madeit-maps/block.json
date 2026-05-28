@@ -10,11 +10,12 @@
     "status": "new",
     "madeit": {
         "changelog": {
-            "1.0.0": [
-                "Nieuw toegevoegd: eerste versie van de maps block met Leaflet.js integratie.",
-                "Ondersteuning voor OpenStreetMap en Mapbox kaarten.",
-                "Aanpasbare marker opties, inclusief kleur en SVG iconen.",
-                "Instellingen voor kaarttype, kleur, zoomniveau en meer."
+            "3.0.0": [
+                {
+                "type": "info",
+                "label": "Release",
+                "text": "Een volledige nieuwe block gemaakt voor het Made I.T. thema"
+                }
             ]
         }
     },

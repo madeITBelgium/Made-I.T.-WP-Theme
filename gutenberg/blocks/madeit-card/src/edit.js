@@ -16,6 +16,7 @@ import { withSelect } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
 import { __ } from '@wordpress/i18n';
 import classnames from 'classnames';
+import { ControlHeader, UnitSelect } from '../../../shared';
 
 const paddingToVars = (padding) => {
 	if (!padding) return {};
@@ -70,6 +71,10 @@ function CardEdit(props) {
 		setAttributes({ contentPadding: newPadding });
 	};
 
+	
+	const currentPadding = contentPadding || {};
+	const paddingUnit = attributes?.paddingUnit || 'px';
+
 	return (
 		<div {...blockProps}>
 			<InspectorControls>
@@ -80,6 +85,7 @@ function CardEdit(props) {
 						onChange={(state) => setAttributes({ hasTitle: state })}
 					/>
 				</PanelBody>
+
 				<PanelColorSettings
 					title={__('Color Settings')}
 					initialOpen={false}
@@ -107,7 +113,7 @@ function CardEdit(props) {
 				</PanelColorSettings>
 
 				<PanelBody title={__('Spatie')}>
-					<div className="madeit-control">
+					{/* <div className="madeit-control">
 						<BoxControl
 							__next40pxDefaultSize
 							label={__('Inhoud padding')}
@@ -115,7 +121,140 @@ function CardEdit(props) {
 							values={contentPadding}
 							allowReset={ false }
 						/>
+					</div> */}
+
+
+					<div
+						className="madeit-control"
+						style={ {
+							display: 'flex',
+							flexWrap: 'wrap',
+							gap: '6px',
+						} }
+					>
+						<ControlHeader
+							title={ __( 'Inhoud Padding', 'madeit' ) }
+							afterBreakpoint={
+								<UnitSelect
+									style={{ marginLeft: 'auto', }}
+									value={ paddingUnit || 'px' }
+									units={ [ 'px', '%', 'em', 'rem' ] }
+									onChange={ ( unit ) => {
+
+										const nextPadding = {};
+
+										[ 'top', 'right', 'bottom', 'left' ].forEach(
+											( key ) => {
+
+												const raw = currentPadding?.[ key ];
+
+												if ( ! raw ) {
+													return;
+												}
+
+												const numeric = parseFloat( raw );
+
+												if ( ! Number.isFinite( numeric ) ) {
+													return;
+												}
+
+												nextPadding[ key ] = `${ numeric }${ unit }`;
+
+											}
+										);
+
+										setAttributes( {
+											contentPadding: nextPadding,
+											paddingUnit: unit,
+											madeitHasUserEdits: true,
+										} );
+
+									} }
+								/>
+							}
+						/>
+
+						<div
+							className="madeit-controls"
+							style={ {
+								display: 'flex',
+								alignItems: 'flex-start',
+								maxWidth: 'calc(100% - 35px)',
+								width: '100%',
+							} }
+						>
+							{ [
+								{ label: 'Bovenaan', key: 'top' },
+								{ label: 'Rechts', key: 'right' },
+								{ label: 'Onderaan', key: 'bottom' },
+								{ label: 'Links', key: 'left' },
+							].map( ( item ) => {
+
+								const rawValue = currentPadding?.[ item.key ];
+
+								const numericValue = parseFloat( rawValue );
+
+								const displayValue = Number.isFinite( numericValue )
+									? numericValue
+									: '';
+
+								return (
+									<div
+										key={ item.key }
+										className="control-item"
+										style={ {
+											display: 'flex',
+											flexDirection: 'column',
+											alignItems: 'center',
+											flex: 1,
+										} }
+									>
+										<input
+											type="number"
+											value={ displayValue }
+											min={ -9999 }
+											onChange={ ( e ) => {
+
+												const val = e.target.value;
+
+												setAttributes( {
+													contentPadding: {
+														...currentPadding,
+														[ item.key ]:
+															val === ''
+																? undefined
+																: `${ val }${ paddingUnit }`,
+													},
+													madeitHasUserEdits: true,
+												} );
+
+											} }
+											style={ {
+												width: '100%',
+												height: '27px',
+												minHeight: '27px',
+												fontSize: '.85em',
+												textAlign: 'center',
+												padding: '0',
+											} }
+										/>
+
+										<span
+											style={ {
+												fontSize: '9px',
+												marginTop: '4px',
+											} }
+										>
+											{ __( item.label, 'madeit' ) }
+										</span>
+									</div>
+								);
+
+							} ) }
+						</div>
 					</div>
+
+
 
 					<ToggleControl
 						label={__('Afbeelding tot rand')}

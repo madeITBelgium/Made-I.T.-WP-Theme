@@ -17,9 +17,6 @@ export default function Save({ attributes }) {
             style={{
                 height: attributes.height,
                 objectFit: attributes.objectFit,
-                ...(showCaption
-                ? { '--caption-height': attributes.captionHeight + 'px' }
-                : {}),
             }}
         >
             {linkUrl ? (

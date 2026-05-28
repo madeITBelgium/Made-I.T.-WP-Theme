@@ -8,22 +8,35 @@
   "version": "2.0.0",
   "madeit": {
     "changelog": {
-      "2.0.0": [
-        "✨ De nieuwe container block is geüpdate, er zijn nieuwe functionaliteiten toegevoegd:",
-        "- Eigen hoogte en maximale breedte aanpassen.",
-        "- Overflow toegevoegd.",
-        "- Soort element kiezen.",
-        "- Flex opties toegevoegd.",
-        "- flex-direction",
-        "- flex-alignment",
-        "- justify-alignment",
-        "- wrap-items",
-        "- Spatie tussen kolommen toegevoegd",
-        "- Deze update maakt de container block nog veelzijdiger en gebruiksvriendelijker, waardoor je nog meer creatieve mogelijkheden hebt bij het ontwerpen van je pagina's."
+      "3.0.1": [
+        {
+          "type": "fix",
+          "label": "Fix bug",
+          "text": "container in container styling"
+        },
+        {
+          "type": "fix",
+          "label": "Version fix",
+          "text": "Warning meldingen gefixt en geüpdate."
+        }
       ],
-      "1.2.0": [
-        "✨ Nieuwe block toegevoegd: Made I.T. Container",
-        "Deze block biedt een flexibele container met verschillende opties voor styling en layout."
+      "3.0.0": [
+        {
+          "type": "info",
+          "label": "Release",
+          "intro": "✨ De nieuwe container block is geüpdate, er zijn nieuwe functionaliteiten toegevoegd:",
+          "items": [
+            "Eigen hoogte en maximale breedte aanpassen.",
+            "Overflow toegevoegd.",
+            "Soort element kiezen.",
+            "Flex opties toegevoegd.",
+            "flex-direction",
+            "flex-alignment",
+            "justify-alignment",
+            "wrap-items",
+            "Spatie tussen kolommen toegevoegd"
+          ]
+        }
       ]
     }
   }

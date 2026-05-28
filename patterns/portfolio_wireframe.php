@@ -10,7 +10,7 @@
 <div class="wp-block-madeit-block-content container-fluid madeit-block-content--frontend" style="background-image:url(https://test.madeit.be/wp-content/uploads/2026/05/placeholder.png);background-position:center center;background-repeat:no-repeat;background-size:cover;--madeit-min-height-desktop:100vh;--madeit-row-gap-desktop:20px;--madeit-row-gap-tablet:20px;--madeit-row-gap-mobile:20px;--madeit-flex-direction-desktop:row;--madeit-flex-direction-tablet:column;--madeit-flex-direction-mobile:column;--madeit-align-items-desktop:center;--madeit-justify-content-desktop:flex-start;--madeit-flex-wrap-desktop:nowrap"><div class="container-fluid"><div class="row madeit-container-row rows-1" data-madeit-dir="row" data-madeit-dir-tablet="column" data-madeit-dir-mobile="column">
 
 <!-- wp:madeit/block-content-column -->
-<div class="wp-block-madeit-block-content-column col-12 col-lg-12"><div class="madeit-content-column__inner"><!-- wp:heading {"textAlign":"center","level":1,"madeitTypoClass":"madeit-typo-d2d5beb"} -->
+<div class="wp-block-madeit-block-content-column col-12 col-lg-12"><div class="madeit-content-column__inner"><!-- wp:heading {"level":1,"style":{"typography":{"textAlign":"center"}},"madeitTypoClass":"madeit-typo-d2d5beb"} -->
 <h1 class="wp-block-heading has-text-align-center">This Headline Grabs Visitors’ Attention</h1>
 <!-- /wp:heading -->
 
@@ -18,7 +18,7 @@
 <div style="height:20px" aria-hidden="true" class="wp-block-spacer"></div>
 <!-- /wp:spacer -->
 
-<!-- wp:paragraph {"align":"center","fontSize":"h5","madeitTypoClass":"madeit-typo-e0f1ccf"} -->
+<!-- wp:paragraph {"style":{"typography":{"textAlign":"center"}},"fontSize":"h5","madeitTypoClass":"madeit-typo-e0f1ccf"} -->
 <p class="has-text-align-center has-h-5-font-size">A short description introducing visitors to your portfolio and the services you offer</p>
 <!-- /wp:paragraph -->
 
@@ -37,7 +37,7 @@
 <!-- /wp:madeit/block-content -->
 
 <!-- wp:madeit/block-content {"contentWidth":"container","containerMargin":{"top":"100px","bottom":"100px"},"flexDirectionTablet":"column","flexDirectionMobile":"column","alignItems":"center","justifyContent":"center","columnsCount":2,"className":"container"} -->
-<div class="wp-block-madeit-block-content container-fluid madeit-block-content--frontend container" style="--madeit-flex-direction-tablet:column;--madeit-flex-direction-mobile:column;--madeit-align-items-desktop:center;--madeit-justify-content-desktop:center;--madeit-container-margin-top-desktop:100px;--madeit-container-margin-bottom-desktop:100px"><div class="container"><div class="row madeit-container-row rows-2" data-madeit-dir="row" data-madeit-dir-tablet="column" data-madeit-dir-mobile="column">
+<div class="wp-block-madeit-block-content container-fluid madeit-block-content--frontend" style="--madeit-flex-direction-tablet:column;--madeit-flex-direction-mobile:column;--madeit-align-items-desktop:center;--madeit-justify-content-desktop:center;--madeit-container-margin-top-desktop:100px;--madeit-container-margin-bottom-desktop:100px"><div class="container"><div class="row madeit-container-row rows-2" data-madeit-dir="row" data-madeit-dir-tablet="column" data-madeit-dir-mobile="column">
 
 <!-- wp:madeit/block-content-column {"width":6} -->
 <div class="wp-block-madeit-block-content-column col-12 col-lg-6"><div class="madeit-content-column__inner"><!-- wp:heading {"madeitTypoClass":"madeit-typo-1af6b76"} -->
@@ -80,11 +80,11 @@
 <div class="wp-block-madeit-block-content container-fluid madeit-block-content--frontend" style="--madeit-flex-direction-tablet:column;--madeit-flex-direction-mobile:column;--madeit-justify-content-desktop:center;--madeit-container-margin-top-desktop:100px;--madeit-container-margin-bottom-desktop:100px"><div class="container"><div class="row madeit-container-row rows-1" data-madeit-dir="row" data-madeit-dir-tablet="column" data-madeit-dir-mobile="column">
 
 <!-- wp:madeit/block-content-column -->
-<div class="wp-block-madeit-block-content-column col-12 col-lg-12"><div class="madeit-content-column__inner"><!-- wp:heading {"textAlign":"center","madeitTypoClass":"madeit-typo-06e591c"} -->
+<div class="wp-block-madeit-block-content-column col-12 col-lg-12"><div class="madeit-content-column__inner"><!-- wp:heading {"style":{"typography":{"textAlign":"center"}},"madeitTypoClass":"madeit-typo-06e591c"} -->
 <h2 class="wp-block-heading has-text-align-center">Recent projects</h2>
 <!-- /wp:heading -->
 
-<!-- wp:heading {"textAlign":"center","level":5,"madeitTypoClass":"madeit-typo-cf1cb41"} -->
+<!-- wp:heading {"level":5,"style":{"typography":{"textAlign":"center"}},"madeitTypoClass":"madeit-typo-cf1cb41"} -->
 <h5 class="wp-block-heading has-text-align-center">A short description that introduces visitors to your portfolio</h5>
 <!-- /wp:heading -->
 
@@ -104,7 +104,7 @@
 <div style="height:20px" aria-hidden="true" class="wp-block-spacer"></div>
 <!-- /wp:spacer -->
 
-<!-- wp:heading {"textAlign":"center","level":4,"madeitTypoClass":"madeit-typo-71f071c"} -->
+<!-- wp:heading {"level":4,"style":{"typography":{"textAlign":"center"}},"madeitTypoClass":"madeit-typo-71f071c"} -->
 <h4 class="wp-block-heading has-text-align-center">Project Title</h4>
 <!-- /wp:heading --></div></div>
 <!-- /wp:madeit/block-content-column -->
@@ -118,7 +118,7 @@
 <div style="height:20px" aria-hidden="true" class="wp-block-spacer"></div>
 <!-- /wp:spacer -->
 
-<!-- wp:heading {"textAlign":"center","level":4,"madeitTypoClass":"madeit-typo-71f071c"} -->
+<!-- wp:heading {"level":4,"style":{"typography":{"textAlign":"center"}},"madeitTypoClass":"madeit-typo-71f071c"} -->
 <h4 class="wp-block-heading has-text-align-center">Project Title</h4>
 <!-- /wp:heading --></div></div>
 <!-- /wp:madeit/block-content-column -->
@@ -132,7 +132,7 @@
 <div style="height:20px" aria-hidden="true" class="wp-block-spacer"></div>
 <!-- /wp:spacer -->
 
-<!-- wp:heading {"textAlign":"center","level":4,"madeitTypoClass":"madeit-typo-71f071c"} -->
+<!-- wp:heading {"level":4,"style":{"typography":{"textAlign":"center"}},"madeitTypoClass":"madeit-typo-71f071c"} -->
 <h4 class="wp-block-heading has-text-align-center">Project Title</h4>
 <!-- /wp:heading --></div></div>
 <!-- /wp:madeit/block-content-column -->
@@ -158,11 +158,11 @@
 <div class="wp-block-madeit-block-content container-fluid madeit-block-content--frontend" style="background-color:#e3e5e6;--madeit-flex-direction-tablet:column;--madeit-flex-direction-mobile:column;--madeit-justify-content-desktop:center;--madeit-container-margin-top-desktop:100px;--madeit-container-margin-bottom-desktop:100px"><div class="container-fluid"><div class="row madeit-container-row rows-1" data-madeit-dir="row" data-madeit-dir-tablet="column" data-madeit-dir-mobile="column" style="--madeit-container-row-padding-top-desktop:50px;--madeit-container-row-padding-right-desktop:0px;--madeit-container-row-padding-bottom-desktop:50px;--madeit-container-row-padding-left-desktop:0px">
 
 <!-- wp:madeit/block-content-column -->
-<div class="wp-block-madeit-block-content-column col-12 col-lg-12"><div class="madeit-content-column__inner"><!-- wp:heading {"textAlign":"center","madeitTypoClass":"madeit-typo-06e591c"} -->
+<div class="wp-block-madeit-block-content-column col-12 col-lg-12"><div class="madeit-content-column__inner"><!-- wp:heading {"style":{"typography":{"textAlign":"center"}},"madeitTypoClass":"madeit-typo-06e591c"} -->
 <h2 class="wp-block-heading has-text-align-center">As Featured In</h2>
 <!-- /wp:heading -->
 
-<!-- wp:heading {"textAlign":"center","level":5,"madeitTypoClass":"madeit-typo-cf1cb41"} -->
+<!-- wp:heading {"level":5,"style":{"typography":{"textAlign":"center"}},"madeitTypoClass":"madeit-typo-cf1cb41"} -->
 <h5 class="wp-block-heading has-text-align-center">This is a space to showcase any publications your work has been featured in</h5>
 <!-- /wp:heading -->
 
@@ -200,7 +200,7 @@
 <div class="wp-block-madeit-block-content container-fluid madeit-block-content--frontend" style="--madeit-flex-direction-tablet:column;--madeit-flex-direction-mobile:column;--madeit-justify-content-desktop:center"><div class="container"><div class="row madeit-container-row rows-1" data-madeit-dir="row" data-madeit-dir-tablet="column" data-madeit-dir-mobile="column">
 
 <!-- wp:madeit/block-content-column -->
-<div class="wp-block-madeit-block-content-column col-12 col-lg-12"><div class="madeit-content-column__inner"><!-- wp:heading {"textAlign":"center","madeitTypoClass":"madeit-typo-06e591c"} -->
+<div class="wp-block-madeit-block-content-column col-12 col-lg-12"><div class="madeit-content-column__inner"><!-- wp:heading {"style":{"typography":{"textAlign":"center"}},"madeitTypoClass":"madeit-typo-06e591c"} -->
 <h2 class="wp-block-heading has-text-align-center">Client Testimonials</h2>
 <!-- /wp:heading -->
 

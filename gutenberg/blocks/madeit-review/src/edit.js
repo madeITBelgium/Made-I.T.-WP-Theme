@@ -10,6 +10,8 @@ import {
 	SelectControl,
 	CheckboxControl,
 	__experimentalUnitControl as UnitControl,
+	__experimentalToggleGroupControl as ToggleGroupControl,
+    __experimentalToggleGroupControlOption as ToggleGroupControlOption,
 } from '@wordpress/components';
 import { useEffect, useRef, useState } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
@@ -324,6 +326,7 @@ export default function Edit({ attributes, setAttributes }) {
 
 						<div className="madeit-control-rangeRow">
 							<RangeControl
+								__next40pxDefaultSize
 								value={isSpotlightLayout ? 1 : valueMap[activeSlidesPerViewBreakpoint]}
 								onChange={(val) => {
 									if (isSpotlightLayout) return;
@@ -359,6 +362,7 @@ export default function Edit({ attributes, setAttributes }) {
 
 						{/* Pagination */}
 						<SelectControl
+							__next40pxDefaultSize
 							label={__('Pagination', 'madeit-review')}
 							value={paginationType}
 							options={[
@@ -376,6 +380,7 @@ export default function Edit({ attributes, setAttributes }) {
 							title={ __( 'Transition duur (ms)' ) }
 						/>
 						<RangeControl
+							__next40pxDefaultSize
 							value={transitionDuration}
 							onChange={(val) => setAttributes({ transitionDuration: val })}
 							min={100}
@@ -394,6 +399,7 @@ export default function Edit({ attributes, setAttributes }) {
 
 						{/* Autoplay speed */}
 						<RangeControl
+							__next40pxDefaultSize
 							label={__('Autoplay snelheid (ms)', 'madeit-review')}
 							value={autoplaySpeed}
 							onChange={(val) => setAttributes({ autoplaySpeed: val })}
@@ -520,6 +526,7 @@ export default function Edit({ attributes, setAttributes }) {
 							{height && (
 								<div style={{ marginTop: '0px' }}>
 									<SelectControl
+										__next40pxDefaultSize
 										label={__('Object-fit', 'madeit-review')}
 										value={objectFit}
 										onChange={(val) => setAttributes({ objectFit: val })}
@@ -539,27 +546,41 @@ export default function Edit({ attributes, setAttributes }) {
 								<ControlHeader
 									title={ __( 'Border radius', 'madeit-review' ) }
 									afterBreakpoint={
-										<ButtonGroup className="madeit-control-units">
-											{['px', '%', 'vh'].map((unit) => (
-												<Button
-													key={unit}
-													isPressed={detectedBorderRadiusUnit === unit}
-													onClick={() => {
-														const nextAttributes = { borderRadiusUnit: unit };
-														BORDER_RADIUS_KEYS.forEach((key) => {
-															const raw = attributes[key];
-															if (!raw) return;
-															const numeric = parseFloat(raw);
-															if (!Number.isFinite(numeric)) return;
-															nextAttributes[key] = `${numeric}${unit}`;
-														});
-														setAttributes(nextAttributes);
-													}}
-												>
-													{unit}
-												</Button>
-											))}
-									</ButtonGroup>
+										<ToggleGroupControl
+											className="madeit-control-units"
+											value={ detectedBorderRadiusUnit }
+											onChange={ ( unit ) => {
+
+												const nextAttributes = { borderRadiusUnit: unit };
+
+												BORDER_RADIUS_KEYS.forEach( ( key ) => {
+
+													const raw = attributes?.[ key ];
+
+													if ( raw === undefined || raw === null || raw === '' ) {
+														return;
+													}
+
+													const numeric = parseFloat( raw );
+
+													if ( ! Number.isFinite( numeric ) ) {
+														return;
+													}
+
+													nextAttributes[ key ] = `${ numeric }${ unit }`;
+												} );
+
+												setAttributes( nextAttributes );
+											} }
+										>
+											{ [ 'px', '%', 'vh' ].map( ( unit ) => (
+												<ToggleGroupControlOption
+													key={ unit }
+													value={ unit }
+													label={ unit }
+												/>
+											) ) }
+										</ToggleGroupControl>
 								}
 							/>
 

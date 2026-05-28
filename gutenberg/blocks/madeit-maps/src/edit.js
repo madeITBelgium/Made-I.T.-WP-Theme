@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { useEffect, useRef, useState } from '@wordpress/element';
 import { InspectorControls, PanelColorSettings, useBlockProps } from '@wordpress/block-editor';
-import { PanelBody, RangeControl, TextControl, TextareaControl, ToggleControl, ButtonGroup, Button, Flex, FlexItem, FlexBlock } from '@wordpress/components';
+import { PanelBody, RangeControl, TextControl, TextareaControl, ToggleControl, ButtonGroup, Button, Flex, FlexItem, FlexBlock, __experimentalToggleGroupControl as ToggleGroupControl, __experimentalToggleGroupControlOption as ToggleGroupControlOption, } from '@wordpress/components';
 import { useDispatch } from '@wordpress/data';
 
 import greyscaleIcon from './assets/greyscale.png';
@@ -355,6 +355,7 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 				<PanelBody title={__('Map instellingen', 'madeit')} initialOpen={true}>
 					<div style={{ marginBottom: '0px' }}>
 						<TextControl
+							__next40pxDefaultSize
 							label={__('Locatie', 'madeit')}
 							value={locationInput}
 							onChange={(value) => setLocationInput(value)}
@@ -377,11 +378,13 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 					{openCoordinates && (
 						<div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
 							<TextControl
+								__next40pxDefaultSize
 								label={__('Latitude', 'madeit')}
 								value={latitude}
 								onChange={(value) => setAttributes({ latitude: parseFloat(value) || 0 })}
 							/>
 							<TextControl
+								__next40pxDefaultSize
 								label={__('Longitude', 'madeit')}
 								value={longitude}
 								onChange={(value) => setAttributes({ longitude: parseFloat(value) || 0 })}
@@ -390,6 +393,7 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 					)}
 					<div style={{ marginTop: '20px' }}>
 						<RangeControl
+							__next40pxDefaultSize
 							label={__('Zoom', 'madeit')}
 							value={zoom}
 							min={1}
@@ -397,7 +401,8 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 							onChange={(value) => setAttributes({ zoom: value })}
 						/>
 					</div>
-					<TextControl
+					<TextControl	
+						__next40pxDefaultSize
 						label={__('Hoogte', 'madeit')}
 						value={height}
 						help={__('Bijv. 400px of 60vh', 'madeit')}
@@ -443,32 +448,68 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 					) : (
 						<p style={{ marginTop: '8px' }}>{__('Standaard map kleur wordt gebruikt.', 'madeit')}</p>
 					)}
-					<ButtonGroup
-						style={{ display: 'flex', marginTop: '12px', flexWrap: 'wrap', gap: '8px' }}
+					<ToggleGroupControl
+						style={{
+							display: 'flex',
+							marginTop: '12px',
+							flexWrap: 'wrap',
+							gap: '8px',
+						}}
+						value={ normalizedMapColor || '' }
+						onChange={ ( value ) =>
+							setAttributes( {
+								mapColor: value,
+							} )
+						}
 					>
-							<Button
-								style={{ height: '76px', width: '31%', padding: '0'}}
-								isPressed={!normalizedMapColor}
-								onClick={() => setAttributes({ mapColor: '' })}
-							>
-								<img src={standardIcon} alt={__('Standaard', 'madeit')} style={{ width: '90%', height: '70px', objectFit: 'cover', margin: 'auto' }} />
-							</Button>
-							<Button
-								style={{ height: '76px', width: '31%', padding: '0'}}
-								isPressed={normalizedMapColor === 'grayscale'}
-								onClick={() => setAttributes({ mapColor: 'grayscale' })}
-							>
-								<img src={greyscaleIcon} alt={__('Grijstinten', 'madeit')} style={{ width: '90%', height: '70px', objectFit: 'cover', margin: 'auto' }} />
-							</Button>
-							<Button
-								style={{ height: '76px', width: '31%', padding: '0'}}
-								isPressed={normalizedMapColor === 'purple'}
-								onClick={() => setAttributes({ mapColor: 'purple' })}
-							>
-								<img src={purpleIcon} alt={__('Paars', 'madeit')} style={{ width: '90%', height: '70px', objectFit: 'cover', margin: 'auto' }} />
-							</Button>
-							
-					</ButtonGroup>
+						<ToggleGroupControlOption
+							value=""
+							label={
+								<img
+									src={ standardIcon }
+									alt={ __( 'Standaard', 'madeit' ) }
+									style={{
+										width: '90%',
+										height: '70px',
+										objectFit: 'cover',
+										margin: 'auto',
+									}}
+								/>
+							}
+						/>
+
+						<ToggleGroupControlOption
+							value="grayscale"
+							label={
+								<img
+									src={ greyscaleIcon }
+									alt={ __( 'Grijstinten', 'madeit' ) }
+									style={{
+										width: '90%',
+										height: '70px',
+										objectFit: 'cover',
+										margin: 'auto',
+									}}
+								/>
+							}
+						/>
+
+						<ToggleGroupControlOption
+							value="purple"
+							label={
+								<img
+									src={ purpleIcon }
+									alt={ __( 'Paars', 'madeit' ) }
+									style={{
+										width: '90%',
+										height: '70px',
+										objectFit: 'cover',
+										margin: 'auto',
+									}}
+								/>
+							}
+						/>
+					</ToggleGroupControl>
 					
 				</PanelBody>
 
@@ -515,6 +556,7 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 											<div style={{ marginTop: '8px' }}>
 												<div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
 													<TextControl
+														__next40pxDefaultSize
 														style={{ minWidth: '79%', marginBottom: '0' }}
 														label={__('Locatie', 'madeit')}
 														value={m && typeof m.query === 'string' ? m.query : ''}
@@ -548,11 +590,13 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 												{openCoordinates && (
 													<div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
 														<TextControl
+															__next40pxDefaultSize
 															label={__('Latitude', 'madeit')}
 															value={m && Number.isFinite(m.latitude) ? m.latitude : ''}
 															onChange={(value) => updateMarker(i, { latitude: parseFloat(value) || 0 })}
 														/>
 														<TextControl
+															__next40pxDefaultSize
 															label={__('Longitude', 'madeit')}
 															value={m && Number.isFinite(m.longitude) ? m.longitude : ''}
 															onChange={(value) => updateMarker(i, { longitude: parseFloat(value) || 0 })}
@@ -586,6 +630,7 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 						{__('Voer een locatie in om de kaart te tonen', 'madeit')}
 					</p>
 					<TextControl
+						__next40pxDefaultSize
 						label={__('Locatie', 'madeit')}
 						value={locationInput}
 						onChange={(value) => setLocationInput(value)}

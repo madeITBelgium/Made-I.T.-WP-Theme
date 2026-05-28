@@ -92,7 +92,7 @@ function madeit_mobile_breakpoint_tooltip() {
             <tr><td>Altijd ingeklapt</td><td>Hamburgermenu altijd actief</td></tr>
             <tr><td>Grote smartphone</td><td>Vanaf grotere smartphones</td></tr>
             <tr><td>Tablet</td><td>Vanaf tablets</td></tr>
-            <tr><td>Tablet liggend / kleine laptop</td><td>Bredere tablets en kleine laptops</td></tr>
+            <tr><td>Tablet liggend / kleine laptop</td><td>Bredere tablets en kleine laptops<span style="font-size: 10px;padding: 2px 5px;background: #2271b1;border-radius: 10px;color: white;margin-left: 5px;">Default</span></td></tr>
             <tr><td>Laptop / desktop</td><td>Standaard desktops</td></tr>
             <tr><td>Brede desktop</td><td>Grote schermen</td></tr>
         </table>

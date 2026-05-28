@@ -561,7 +561,7 @@ if (!function_exists('madeit_block_editor_styles')) {
         wp_enqueue_script('madeit-gutenberg-toolbar', get_template_directory_uri().'/assets/js/gutenberg-toolbar.js', [], MADEIT_VERSION, true);
     }
 
-    add_action('enqueue_block_editor_assets', 'madeit_block_editor_styles');
+    add_action('enqueue_block_assets', 'madeit_block_editor_styles');
 }
 
 /*
@@ -837,7 +837,7 @@ if (!function_exists('madeit_blocks_colors_inline')) {
             do_action('qm/stop', 'madeit:colors_css_wrap');
         }
     }
-    add_action('enqueue_block_editor_assets', 'madeit_colors_css_wrap');
+    add_action('enqueue_block_assets', 'madeit_colors_css_wrap');
 }
 
 /*
@@ -1935,7 +1935,7 @@ if (!function_exists('madeit_extend_gutenberg')) {
             true
         );
     }
-    add_action('enqueue_block_editor_assets', 'madeit_extend_gutenberg');
+    add_action('enqueue_block_assets', 'madeit_extend_gutenberg');
 }
 
 wp_enqueue_script(
@@ -1955,33 +1955,33 @@ wp_enqueue_script(
 );
 
 // Font Library uploader in the block inspector (core Font Library API).
-add_action('enqueue_block_editor_assets', static function (): void {
-    $madeitFontUploaderPath = get_parent_theme_file_path('/inc/core/fontStyles/edit.js');
-    $madeitFontUploaderVer = null;
-    if ($madeitFontUploaderPath && file_exists($madeitFontUploaderPath)) {
-        $madeitFontUploaderVer = (string) filemtime($madeitFontUploaderPath);
-    } elseif (defined('MADEIT_VERSION')) {
-        $madeitFontUploaderVer = MADEIT_VERSION;
-    }
+// add_action('enqueue_block_editor_assets', static function (): void {
+//     $madeitFontUploaderPath = get_parent_theme_file_path('/inc/core/fontStyles/edit.js');
+//     $madeitFontUploaderVer = null;
+//     if ($madeitFontUploaderPath && file_exists($madeitFontUploaderPath)) {
+//         $madeitFontUploaderVer = (string) filemtime($madeitFontUploaderPath);
+//     } elseif (defined('MADEIT_VERSION')) {
+//         $madeitFontUploaderVer = MADEIT_VERSION;
+//     }
 
-    wp_enqueue_script(
-        'madeit-fontstyles-uploader',
-        get_parent_theme_file_uri('/inc/core/fontStyles/edit.js'),
-        [
-            'wp-hooks',
-            'wp-compose',
-            'wp-element',
-            'wp-components',
-            'wp-block-editor',
-            'wp-api-fetch',
-            'wp-i18n',
-        ],
-        $madeitFontUploaderVer,
-        true
-    );
-});
+//     wp_enqueue_script(
+//         'madeit-fontstyles-uploader',
+//         get_parent_theme_file_uri('/inc/core/fontStyles/edit.js'),
+//         [
+//             'wp-hooks',
+//             'wp-compose',
+//             'wp-element',
+//             'wp-components',
+//             'wp-block-editor',
+//             'wp-api-fetch',
+//             'wp-i18n',
+//         ],
+//         $madeitFontUploaderVer,
+//         true
+//     );
+// });
 
-require_once get_parent_theme_file_path('/inc/core/fontStyles/local-fonts.php');
+// require_once get_parent_theme_file_path('/inc/core/fontStyles/local-fonts.php');
 require_once get_parent_theme_file_path('/inc/core/separator-extension/separator-extension.php');
 require_once get_parent_theme_file_path('/inc/core/image-extention/image-extention.php');
 
