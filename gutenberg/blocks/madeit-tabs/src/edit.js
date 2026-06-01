@@ -539,6 +539,7 @@ export default function Edit({ clientId, attributes, setAttributes }) {
                             onChange={setSearch}
                         />
                         <ToggleGroupControl
+                            __next40pxDefaultSize
                             style={{ marginTop: '8px' }}
                             value={ styleFilter }
                             onChange={ ( value ) => setStyleFilter( value ) }
@@ -904,7 +905,9 @@ export default function Edit({ clientId, attributes, setAttributes }) {
                                                     {tab.attributes?.showIcon === true && (
                                                         <>
                                                             {/* Icon type */}
-                                                            <ToggleGroupControl>
+                                                            <ToggleGroupControl
+                                                                __next40pxDefaultSize
+                                                            >
                                                                 <ToggleGroupControlOption
                                                                     value="fontawesome"
                                                                     label="FontAwesome"
@@ -1013,6 +1016,7 @@ export default function Edit({ clientId, attributes, setAttributes }) {
                                     resetLabel={ __( 'Reset justify items' ) }
                                 />
                                 <ToggleGroupControl
+                                    __next40pxDefaultSize
                                     className="madeit-control-buttonGroup"
                                     value={ currentJustifyContent }
                                     onChange={ ( value ) =>
@@ -1052,6 +1056,7 @@ export default function Edit({ clientId, attributes, setAttributes }) {
                                 />
 
                                 <ToggleGroupControl
+                                    __next40pxDefaultSize
                                     className="madeit-control-buttonGroup"
                                     value={ currentTabPosition }
                                     onChange={ ( value ) =>

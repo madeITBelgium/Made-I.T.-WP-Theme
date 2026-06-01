@@ -547,6 +547,7 @@ export default function Edit({ attributes, setAttributes }) {
 									title={ __( 'Border radius', 'madeit-review' ) }
 									afterBreakpoint={
 										<ToggleGroupControl
+											__next40pxDefaultSize
 											className="madeit-control-units"
 											value={ detectedBorderRadiusUnit }
 											onChange={ ( unit ) => {

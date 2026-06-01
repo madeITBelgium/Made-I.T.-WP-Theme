@@ -449,6 +449,7 @@ export default function Edit({ attributes, setAttributes, clientId, isSelected }
 						<p style={{ marginTop: '8px' }}>{__('Standaard map kleur wordt gebruikt.', 'madeit')}</p>
 					)}
 					<ToggleGroupControl
+						__next40pxDefaultSize
 						style={{
 							display: 'flex',
 							marginTop: '12px',

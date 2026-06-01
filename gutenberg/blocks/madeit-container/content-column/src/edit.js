@@ -245,6 +245,7 @@ function ColumnEdit( props ) {
                                 title={ __( 'Padding', 'madeit' ) }
                                 afterBreakpoint={
                                     <ToggleGroupControl
+                                        __next40pxDefaultSize
                                         className="madeit-control-units"
                                         value={ paddingUnit }
                                         onChange={ ( unit ) => {
@@ -465,6 +466,7 @@ function ColumnEdit( props ) {
                                 title={ __( 'Margin', 'madeit' ) }
                                 afterBreakpoint={
                                    <ToggleGroupControl
+                                        __next40pxDefaultSize
                                         className="madeit-control-units"
                                         value={ marginUnit }
                                         onChange={ ( unit ) => {

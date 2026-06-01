@@ -308,7 +308,29 @@ $break-medium: 782px;
             // Flex-richting en max-breedte: niet voor single-kolom layouts.
             &:not(.rows-1) {
                 flex-direction: var(--madeit-flex-direction-desktop, row);
-                max-width:      var(--madeit-max-width-desktop, 100%);
+                // max-width:      var(--madeit-max-width-desktop, 100%);
+
+                @for $i from 2 through 11 {
+                    &.rows-#{$i} {
+                        --madeit-columns: #{$i};
+                    }
+                }
+
+                .wp-block-madeit-block-content-column {
+                    flex-basis: calc(
+                        (
+                            var(--madeit-max-width-desktop, 100%) -
+                            (var(--madeit-row-gap-desktop, 20px) * (var(--madeit-columns) - 1))
+                        ) / var(--madeit-columns)
+                    );
+                    
+                    max-width: calc(
+                        (
+                            var(--madeit-max-width-desktop, 100%) -
+                            (var(--madeit-row-gap-desktop, 20px) * (var(--madeit-columns) - 1))
+                        ) / var(--madeit-columns)
+                    );
+                }
             }
 
             // Single-kolom layout: max-breedte op het kind.
