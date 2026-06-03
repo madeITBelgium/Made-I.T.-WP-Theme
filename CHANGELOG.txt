@@ -1,6 +1,14 @@
 Made I.T. Theme Changelog
 ==========================
 
+Version 3.0.3 - 2026-06-03
+-------------------------
+Fixed
+- Removed stray output from under construction routing to prevent blank lines before XML responses
+
+Notes
+- Patch release to avoid extra whitespace in sitemap and other XML outputs.
+
 Version 3.0.2 - 2026-06-03
 -------------------------
 Added

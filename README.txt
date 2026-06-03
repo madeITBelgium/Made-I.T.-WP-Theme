@@ -2,7 +2,7 @@
 Contributors: madeit
 Requires at least: WordPress 5.0
 Tested up to: 7.0
-Version: 3.0.2
+Version: 3.0.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: madeit, bootstrap, bootstrap4, made i.t., Made I.T.
@@ -55,6 +55,9 @@ License: CC0 1.0 Universal (CC0 1.0)
 Source: https://unsplash.com/@englr?photo=bIhpiQA009k
 
 == Changelog ==
+= 3.0.3 =
+* Fixed stray output in under construction routing to prevent blank lines before XML responses
+
 = 3.0.2 =
 * Fixed frontend Container block rendering and wrapper handling for `madeit-block-content`
 * Improved Separator block attribute defaults and editor style handling
