@@ -1,13 +1,13 @@
 <?php
 
 $curDir = __DIR__;
-$themeRoot = realpath($curDir . '/..');
+$themeRoot = realpath($curDir.'/..');
 if ($themeRoot === false) {
     fwrite(STDERR, "Unable to resolve theme root directory\n");
     exit(1);
 }
 
-$stylePath = $themeRoot . '/style.css';
+$stylePath = $themeRoot.'/style.css';
 if (!is_readable($stylePath)) {
     fwrite(STDERR, "Unable to read theme style.css at: $stylePath\n");
     exit(1);
@@ -45,26 +45,26 @@ foreach ($iterator as $item) {
         continue;
     }
 
-    echo $subPath . "\n";
+    echo $subPath."\n";
 
     if (!empty($output['defined'])) {
-        echo 'Define: ' . count($output['defined']) . "\n";
+        echo 'Define: '.count($output['defined'])."\n";
         foreach ($output['defined'] as $key => $value) {
-            echo $key . "\tLijnnummer: " . $value['linenr'] . "\t Default: " . trim($value['default']) . "\t (Ex: " . $value['line'] . ") \n";
+            echo $key."\tLijnnummer: ".$value['linenr']."\t Default: ".trim($value['default'])."\t (Ex: ".$value['line'].") \n";
         }
     }
 
     if (!empty($output['filters'])) {
-        echo 'Filters: ' . count($output['filters']) . "\n";
+        echo 'Filters: '.count($output['filters'])."\n";
         foreach ($output['filters'] as $key => $value) {
-            echo $key . "\tLijnnummer: " . $value['linenr'] . "\t Variables/Defaults: " . trim($value['default']) . " \n";
+            echo $key."\tLijnnummer: ".$value['linenr']."\t Variables/Defaults: ".trim($value['default'])." \n";
         }
     }
 
     if (!empty($output['actions'])) {
-        echo 'Actions: ' . count($output['actions']) . "\n";
+        echo 'Actions: '.count($output['actions'])."\n";
         foreach ($output['actions'] as $key => $value) {
-            echo $key . "\tLijnnummer: " . $value['linenr'] . "\t Variables/Defaults: " . trim($value['default']) . " \n";
+            echo $key."\tLijnnummer: ".$value['linenr']."\t Variables/Defaults: ".trim($value['default'])." \n";
         }
     }
 
@@ -72,7 +72,7 @@ foreach ($iterator as $item) {
     $json[$subPath] = $output;
 }
 
-$outFile = $curDir . '/filters-hooks-' . $version . '-' . date('Y-m-d-Hi') . '.json';
+$outFile = $curDir.'/filters-hooks-'.$version.'-'.date('Y-m-d-Hi').'.json';
 if (file_put_contents($outFile, json_encode($json, JSON_PRETTY_PRINT)) === false) {
     fwrite(STDERR, "Unable to write JSON file: $outFile\n");
     exit(1);
@@ -91,8 +91,8 @@ function lookupSettings($path)
     preg_match_all('/\bdefine\b\(\s*["\']([\w_]+)["\']\s*,\s*(.*?)\s*\)/s', $content, $output_array, PREG_OFFSET_CAPTURE);
     foreach ($output_array[0] as $key => $line) {
         $result['defined'][$output_array[1][$key][0]] = [
-            'linenr' => substr_count(substr($content, 0, $line[1]), "\n") + 1,
-            'line' => $line[0],
+            'linenr'  => substr_count(substr($content, 0, $line[1]), "\n") + 1,
+            'line'    => $line[0],
             'default' => $output_array[2][$key][0],
         ];
     }
@@ -100,8 +100,8 @@ function lookupSettings($path)
     preg_match_all('/\bapply_filters\b\(\s*["\']([^"\']+)["\']\s*,\s*(.*?)\s*\)/s', $content, $output_array, PREG_OFFSET_CAPTURE);
     foreach ($output_array[0] as $key => $line) {
         $result['filters'][$output_array[1][$key][0]] = [
-            'linenr' => substr_count(substr($content, 0, $line[1]), "\n") + 1,
-            'line' => $line[0],
+            'linenr'  => substr_count(substr($content, 0, $line[1]), "\n") + 1,
+            'line'    => $line[0],
             'default' => $output_array[2][$key][0],
         ];
     }
@@ -109,8 +109,8 @@ function lookupSettings($path)
     preg_match_all('/\bdo_action\b\(\s*["\']([^"\']+)["\']\s*,\s*(.*?)\s*\)/s', $content, $output_array, PREG_OFFSET_CAPTURE);
     foreach ($output_array[0] as $key => $line) {
         $result['actions'][$output_array[1][$key][0]] = [
-            'linenr' => substr_count(substr($content, 0, $line[1]), "\n") + 1,
-            'line' => $line[0],
+            'linenr'  => substr_count(substr($content, 0, $line[1]), "\n") + 1,
+            'line'    => $line[0],
             'default' => $output_array[2][$key][0],
         ];
     }

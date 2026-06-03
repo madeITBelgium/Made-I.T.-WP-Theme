@@ -18,14 +18,14 @@ foreach ([$oldFile, $newFile] as $file) {
 $oldData = json_decode(file_get_contents($oldFile), true);
 $newData = json_decode(file_get_contents($newFile), true);
 if (json_last_error() !== JSON_ERROR_NONE) {
-    fwrite(STDERR, "JSON error: " . json_last_error_msg() . "\n");
+    fwrite(STDERR, 'JSON error: '.json_last_error_msg()."\n");
     exit(1);
 }
 
 $summary = [
-    'files_added' => 0,
+    'files_added'   => 0,
     'files_removed' => 0,
-    'hooks_added' => 0,
+    'hooks_added'   => 0,
     'hooks_removed' => 0,
     'hooks_changed' => 0,
 ];
@@ -85,7 +85,7 @@ foreach ($commonFiles as $file) {
                 $oldValue = $oldHook[$field] ?? null;
                 $newValue = $newHook[$field] ?? null;
                 if ($oldValue !== $newValue) {
-                    $changes[] = "$field: " . displayDiff($oldValue, $newValue);
+                    $changes[] = "$field: ".displayDiff($oldValue, $newValue);
                 }
             }
 
@@ -101,7 +101,7 @@ foreach ($commonFiles as $file) {
 
     if ($fileChanges) {
         echo "Changes in file: $file\n";
-        echo implode("\n", $fileChanges) . "\n\n";
+        echo implode("\n", $fileChanges)."\n\n";
     }
 }
 
@@ -124,5 +124,6 @@ function displayDiff($oldValue, $newValue)
     if ($old === $new) {
         return $old;
     }
+
     return "'$old' -> '$new'";
 }
