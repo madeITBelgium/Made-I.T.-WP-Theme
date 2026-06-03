@@ -2,7 +2,7 @@
 Contributors: madeit
 Requires at least: WordPress 5.0
 Tested up to: 7.0
-Version: 3.0.1
+Version: 3.0.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: madeit, bootstrap, bootstrap4, made i.t., Made I.T.
@@ -55,6 +55,13 @@ License: CC0 1.0 Universal (CC0 1.0)
 Source: https://unsplash.com/@englr?photo=bIhpiQA009k
 
 == Changelog ==
+= 3.0.2 =
+* Fixed frontend Container block rendering and wrapper handling for `madeit-block-content`
+* Improved Separator block attribute defaults and editor style handling
+* Updated build tooling to preserve `node_modules` during node project rebuilds
+* Refreshed Gutenberg block build output for advanced-controls, madeit-card, madeit-container, madeit-maps, madeit-review, madeit-slider, and madeit-tabs
+* Added generated filters/hooks export metadata for maintenance and diagnostics
+
 = 3.0.1 =
 * Added Git changelog skill and release tooling for better version tracking
 * Updated Gutenberg block editor support and builds for Card, Container, Color Image, Maps, Review, Slider, and Tabs

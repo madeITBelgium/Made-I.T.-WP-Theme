@@ -1,6 +1,21 @@
 Made I.T. Theme Changelog
 ==========================
 
+Version 3.0.2 - 2026-06-03
+-------------------------
+Added
+- Added generated filters/hooks export metadata in `bin/filters-hooks-2.10.10-2026-06-03-1225.json`
+
+Changed
+- Fixed frontend Container block rendering and wrapper handling in `assets/js/script.js`
+- Improved Separator block attribute defaults and fallback handling in `inc/core/separator-extension/assets/separator.js`
+- Preserved existing `node_modules` in `bin/build-node-projects.sh` when rebuilding node subprojects
+- Updated generated Gutenberg block build output for `advanced-controls`, `madeit-card`, `madeit-container`, `madeit-maps`, `madeit-review`, `madeit-slider`, and `madeit-tabs`
+- Bumped theme version to `3.0.2` in `style.css`
+
+Notes
+- Patch release with frontend block fixes, separator stability improvements, and build tooling refinements.
+
 Version 3.0.1 - 2026-06-03
 -------------------------
 Added
