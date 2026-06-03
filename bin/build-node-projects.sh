@@ -27,7 +27,7 @@ for project in "${projects[@]}"; do
     cd "$project"
     npm install
     npm run build
-    rm -rf node_modules
+    #rm -rf node_modules
   )
 done
 
