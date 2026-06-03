@@ -11,6 +11,15 @@
 		TextControl
 	} = wp.components;
 
+	const DEFAULT_SEPARATOR_ATTRS = {
+		separatorWidth: 100,
+		separatorAlign: 'center',
+		separatorThickness: 1,
+		separatorStyle: 'solid',
+		separatorHasIcon: false,
+		separatorIcon: '★'
+	};
+
 	/**
 	 * Add custom attributes
 	 */
@@ -20,28 +29,22 @@
 		settings.attributes = {
 			...settings.attributes,
 			separatorWidth: {
-				type: 'number',
-				default: 100
+				type: 'number'
 			},
 			separatorAlign: {
-				type: 'string',
-				default: 'center'
+				type: 'string'
 			},
 			separatorThickness: {
-				type: 'number',
-				default: 1
+				type: 'number'
 			},
 			separatorStyle: {
-				type: 'string',
-				default: 'solid'
+				type: 'string'
 			},
 			separatorHasIcon: {
-				type: 'boolean',
-				default: false
+				type: 'boolean'
 			},
 			separatorIcon: {
-				type: 'string',
-				default: '★'
+				type: 'string'
 			}
 		};
 
@@ -75,6 +78,13 @@
 				setAttributes
 			} = props;
 
+				const effectiveWidth = separatorWidth ?? DEFAULT_SEPARATOR_ATTRS.separatorWidth;
+				const effectiveAlign = separatorAlign ?? DEFAULT_SEPARATOR_ATTRS.separatorAlign;
+				const effectiveThickness = separatorThickness ?? DEFAULT_SEPARATOR_ATTRS.separatorThickness;
+				const effectiveStyle = separatorStyle ?? DEFAULT_SEPARATOR_ATTRS.separatorStyle;
+				const effectiveHasIcon = separatorHasIcon ?? DEFAULT_SEPARATOR_ATTRS.separatorHasIcon;
+				const effectiveIcon = separatorIcon ?? DEFAULT_SEPARATOR_ATTRS.separatorIcon;
+
 			return createElement(
 				Fragment,
 				{},
@@ -88,7 +98,7 @@
 
 						createElement(RangeControl, {
 							label: 'Width (%)',
-							value: separatorWidth,
+							value: effectiveWidth,
 							onChange: (value) => setAttributes({ separatorWidth: value }),
 							min: 10,
 							max: 100
@@ -96,7 +106,7 @@
 
 						createElement(SelectControl, {
 							label: 'Alignment',
-							value: separatorAlign,
+							value: effectiveAlign,
 							options: [
 								{ label: 'Left', value: 'left' },
 								{ label: 'Center', value: 'center' },
@@ -107,7 +117,7 @@
 
 						createElement(RangeControl, {
 							label: 'Thickness (px)',
-							value: separatorThickness,
+							value: effectiveThickness,
 							onChange: (value) => setAttributes({ separatorThickness: value }),
 							min: 1,
 							max: 10
@@ -115,7 +125,7 @@
 
 						createElement(SelectControl, {
 							label: 'Line Style',
-							value: separatorStyle,
+							value: effectiveStyle,
 							options: [
 								{ label: 'Solid', value: 'solid' },
 								{ label: 'Dashed', value: 'dashed' },
@@ -126,14 +136,14 @@
 
 						// createElement(ToggleControl, {
 						// 	label: 'Show Icon',
-						// 	checked: separatorHasIcon,
+						// 	checked: effectiveHasIcon,
 						// 	onChange: (value) => setAttributes({ separatorHasIcon: value })
 						// }),
 
 						// separatorHasIcon &&
 						// 	createElement(TextControl, {
-						// 		label: 'Icon / Character',
-						// 		value: separatorIcon,
+						// 	label: 'Icon / Character',
+						// 	value: effectiveIcon,
 						// 		onChange: (value) => setAttributes({ separatorIcon: value })
 						// 	})
 					)
@@ -158,19 +168,42 @@
 	function addSeparatorProps(extraProps, blockType, attributes) {
 		
 		if (!TARGET_BLOCKS.includes(blockType.name)) return extraProps;
+		if (
+			attributes.separatorWidth === undefined &&
+			attributes.separatorAlign === undefined &&
+			attributes.separatorThickness === undefined &&
+			attributes.separatorStyle === undefined &&
+			attributes.separatorHasIcon === undefined &&
+			attributes.separatorIcon === undefined
+		) {
+			return extraProps;
+		}
 
 		extraProps.className = [
 			extraProps.className || '',
-			`is-aligned-${attributes.separatorAlign}`,
+			attributes.separatorAlign ? `is-aligned-${attributes.separatorAlign}` : '',
 			attributes.separatorHasIcon ? 'has-icon' : ''
 		].join(' ');
 
 		extraProps.style = {
 			...(extraProps.style || {}),
-			'width': `${attributes.separatorWidth}%`,
-			'border-top': attributes.separatorStyle === 'solid' ? `solid ${attributes.separatorThickness}px` : `${attributes.separatorStyle} ${attributes.separatorThickness}px`,
-			'margin': attributes.separatorAlign === 'left' ? '0 auto' :
-							 attributes.separatorAlign === 'right' ? '0 0 0 auto' : '0 auto'
+			...(attributes.separatorWidth !== undefined ? { width: `${attributes.separatorWidth}%` } : {}),
+			...(attributes.separatorStyle && attributes.separatorThickness !== undefined
+				? {
+					'border-top': attributes.separatorStyle === 'solid'
+						? `solid ${attributes.separatorThickness}px`
+						: `${attributes.separatorStyle} ${attributes.separatorThickness}px`
+				}
+				: {}),
+			...(attributes.separatorAlign
+				? {
+					margin: attributes.separatorAlign === 'left'
+						? '0 auto'
+						: attributes.separatorAlign === 'right'
+							? '0 0 0 auto'
+							: '0 auto'
+				}
+				: {})
 
 		};
 
@@ -197,17 +230,26 @@
 				separatorHasIcon
 			} = props.attributes;
 
+			const effectiveWidth = separatorWidth ?? DEFAULT_SEPARATOR_ATTRS.separatorWidth;
+			const effectiveAlign = separatorAlign ?? DEFAULT_SEPARATOR_ATTRS.separatorAlign;
+			const effectiveThickness = separatorThickness ?? DEFAULT_SEPARATOR_ATTRS.separatorThickness;
+			const effectiveStyle = separatorStyle ?? DEFAULT_SEPARATOR_ATTRS.separatorStyle;
+
 			const wrapperProps = {
 				style: {
-					width: `${separatorWidth}%`,
-					borderTopStyle: separatorStyle,
-					borderTopWidth: `${separatorThickness}px`,
-					marginLeft: separatorAlign === 'left' ? '0' : 'auto',
-					marginRight: separatorAlign === 'right' ? '0' : 'auto',
+					...(separatorWidth !== undefined ? { width: `${effectiveWidth}%` } : {}),
+					...(separatorStyle !== undefined ? { borderTopStyle: effectiveStyle } : {}),
+					...(separatorThickness !== undefined ? { borderTopWidth: `${effectiveThickness}px` } : {}),
+					...(separatorAlign !== undefined
+						? {
+							marginLeft: effectiveAlign === 'left' ? '0' : 'auto',
+							marginRight: effectiveAlign === 'right' ? '0' : 'auto'
+						}
+						: {})
 				},
 				className: [
 					props.className || '',
-					`is-aligned-${separatorAlign}`,
+					separatorAlign ? `is-aligned-${separatorAlign}` : '',
 					separatorHasIcon ? 'has-icon' : '',
 				].join(' ')
 			};

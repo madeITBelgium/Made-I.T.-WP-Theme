@@ -309,28 +309,6 @@ $break-medium: 782px;
             &:not(.rows-1) {
                 flex-direction: var(--madeit-flex-direction-desktop, row);
                 // max-width:      var(--madeit-max-width-desktop, 100%);
-
-                @for $i from 2 through 11 {
-                    &.rows-#{$i} {
-                        --madeit-columns: #{$i};
-                    }
-                }
-
-                .wp-block-madeit-block-content-column {
-                    flex-basis: calc(
-                        (
-                            var(--madeit-max-width-desktop, 100%) -
-                            (var(--madeit-row-gap-desktop, 20px) * (var(--madeit-columns) - 1))
-                        ) / var(--madeit-columns)
-                    );
-                    
-                    max-width: calc(
-                        (
-                            var(--madeit-max-width-desktop, 100%) -
-                            (var(--madeit-row-gap-desktop, 20px) * (var(--madeit-columns) - 1))
-                        ) / var(--madeit-columns)
-                    );
-                }
             }
 
             // Single-kolom layout: max-breedte op het kind.
@@ -338,6 +316,30 @@ $break-medium: 782px;
                 max-width: var(--madeit-max-width-desktop, 100%);
             }
 
+        }
+
+        .container {
+        
+            @for $i from 2 through 11 {
+                .madeit-container-row.rows-#{$i} {
+                    --madeit-columns: #{$i};
+                }
+            }
+            .wp-block-madeit-block-content-column {
+                flex-basis: calc(
+                    (
+                        var(--madeit-max-width-desktop, 100vw) -
+                        (var(--madeit-row-gap-desktop, 20px) * (var(--madeit-columns) - 1))
+                    ) / var(--madeit-columns)
+                );
+                
+                max-width: calc(
+                    (
+                        var(--madeit-max-width-desktop, 100vw) -
+                        (var(--madeit-row-gap-desktop, 20px) * (var(--madeit-columns) - 1))
+                    ) / var(--madeit-columns)
+                );
+            }
         }
         
         &[style*="--madeit-min-height-"] > div > .madeit-container-row {

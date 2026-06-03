@@ -856,3 +856,60 @@ document.querySelectorAll('.dropdown a.dropdown-toggle').forEach(function(item) 
         `[fix-column-inner] Klaar — ${ fixed } gefixt, ${ skipped } overgeslagen.`
     );
 } )();
+
+// ─── Fix container block ──────────────────────────────────────────────────
+(function fixContainer() {
+    const containers = document.querySelectorAll('.wp-block-madeit-block-content');
+    const containersFixed = document.querySelectorAll('.wp-block-madeit-block-content.madeit-block-content--frontend');
+
+    if (containersFixed.length) {
+        console.log('[fix-container] Geen content containers gevonden.');
+        return;
+    }
+
+    let fixed = 0;
+    let skipped = 0;
+
+    containers.forEach((container) => {
+        // Controleer of er al een container-wrapper bestaat
+        const firstChild = container.firstElementChild;
+
+        if (
+            firstChild &&
+            (
+                firstChild.classList.contains('container') ||
+                firstChild.classList.contains('container-fluid')
+            )
+        ) {
+            skipped++;
+            return;
+        }
+
+        // Voeg frontend class toe aan het block zelf
+        container.classList.add('madeit-block-content--frontend');
+
+        // Row opzoeken en class toevoegen
+        const row = container.querySelector(':scope > .row');
+
+        if (row) {
+            row.classList.add('madeit-container-row');
+        }
+
+        const inner = document.createElement('div');
+        inner.className = container.classList.contains('container-fluid')
+            ? 'container-fluid'
+            : 'container';
+
+        while (container.firstChild) {
+            inner.appendChild(container.firstChild);
+        }
+
+        container.appendChild(inner);
+
+        fixed++;
+    });
+
+    console.log(
+        `[fix-container] Klaar — ${fixed} gefixt, ${skipped} overgeslagen.`
+    );
+})();

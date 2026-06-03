@@ -17,105 +17,97 @@ registerBlockType(metadata.name, {
     edit,
     save,
 
-    // deprecated versie van de block die nog steeds de oude attributen en save functie bevat, zodat bestaande blocks niet breken bij het updaten van de code
+    // Deprecated versie van de block om oude content zonder padding vars te valideren.
     deprecated: [
         {
-        attributes: {
-            // oude attributen (misschien niets of alleen defaults)
-            hasMediaBleed: { type: 'boolean', default: false },
-            paddingTop: { type: 'string', default: '1.25rem' },
-            paddingRight: { type: 'string', default: '1.25rem' },
-            paddingBottom: { type: 'string', default: '1.25rem' },
-            paddingLeft: { type: 'string', default: '1.25rem' },
-
-            paddingUnit: {
-	type: 'string',
-	default: 'px',
-},
-
-contentPadding: {
-	type: 'object',
-	default: {},
-},
-
-contentPaddingTablet: {
-	type: 'object',
-	default: {},
-},
-
-contentPaddingMobile: {
-	type: 'object',
-	default: {},
-},
-        },
-        save: ( props ) => {
-            // oude save functie die alleen de basisstructuur van de card rendert zonder de nieuwe attributen
-            const { 
-                verticalAlignment,
-                width,
-                customBackgroundColor,
-                backgroundColor,
-                customTextColor,
-                textColor,
-                cardTitle,
-                level,
-                hasTitle
-            } = props.attributes;
-            
-            const {
-                className
-            } = props
-            
-            const backgroundColorClass = backgroundColor ? getColorClassName( 'background-color', backgroundColor ) : undefined;
-            const textColorClass = textColor ? getColorClassName( 'color', textColor ) : undefined;
-            
-            const TagName = 'h' + level;
-            
-            var wrapperClasses = classnames( className, {
-                [ `card` ]: true,
-            } );
-            
-            wrapperClasses = classnames(wrapperClasses, {
-                'has-text-color': textColorClass,
-                'has-background': backgroundColorClass,
-                [ backgroundColorClass ]: backgroundColorClass,
-                [ textColorClass ]: textColorClass,
-            } );
-            
-            var style = {
-                backgroundColor: backgroundColorClass ? undefined : customBackgroundColor,
-                color: textColorClass ? undefined : customTextColor,
-            };
-        
-            return (
-                <div className={ wrapperClasses } style={ style }>
-                    { hasTitle && (
-                        <div class="card-header">
-                            <TagName><RichText.Content value={ cardTitle } /></TagName>
-                        </div>
-                    ) }
-                    <div class="card-body">
-                        <InnerBlocks.Content />
-                    </div>
-                </div>
-            );
-        }
-    }
-    ],
-
-    // migratie functie die wordt gebruikt om oude blocks bij te werken naar de nieuwe structuur en attributen, zodat ze blijven werken zonder dat gebruikers handmatig iets hoeven te doen
-    migrations: [
-        {
+            attributes: {
+                backgroundColor: { type: 'string' },
+                customBackgroundColor: { type: 'string' },
+                textColor: { type: 'string' },
+                customTextColor: { type: 'string' },
+                hasTitle: { type: 'boolean', default: false },
+                cardTitle: { type: 'string' },
+                level: { type: 'number', default: 2 },
+                mediaBleed: { type: 'boolean', default: false },
+                paddingTop: { type: 'string' },
+                paddingRight: { type: 'string' },
+                paddingBottom: { type: 'string' },
+                paddingLeft: { type: 'string' },
+                paddingUnit: { type: 'string' },
+                contentPadding: { type: 'object' },
+                contentPaddingTablet: { type: 'object' },
+                contentPaddingMobile: { type: 'object' }
+            },
             migrate: (attributes) => {
-                // migratie functie die de oude attributen omzet naar de nieuwe structuur en default waarden toevoegt als ze ontbreken
+                const nextPadding = attributes.contentPadding || {
+                    top: attributes.paddingTop || '1.25rem',
+                    right: attributes.paddingRight || '1.25rem',
+                    bottom: attributes.paddingBottom || '1.25rem',
+                    left: attributes.paddingLeft || '1.25rem'
+                };
+
                 return {
                     ...attributes,
-                    hasMediaBleed: attributes.hasMediaBleed || false,
-                    paddingTop: attributes.paddingTop || '1.25rem',
-                    paddingRight: attributes.paddingRight || '1.25rem',
-                    paddingBottom: attributes.paddingBottom || '1.25rem',
-                    paddingLeft: attributes.paddingLeft || '1.25rem',
+                    contentPadding: nextPadding
                 };
+            },
+            save: (props) => {
+                const {
+                    customBackgroundColor,
+                    backgroundColor,
+                    customTextColor,
+                    textColor,
+                    cardTitle,
+                    level,
+                    hasTitle,
+                    mediaBleed
+                } = props.attributes;
+
+                const { className } = props;
+                const backgroundColorClass = backgroundColor
+                    ? getColorClassName('background-color', backgroundColor)
+                    : undefined;
+                const textColorClass = textColor
+                    ? getColorClassName('color', textColor)
+                    : undefined;
+                const TagName = 'h' + level;
+
+                let wrapperClasses = classnames(className, {
+                    card: true
+                });
+
+                wrapperClasses = classnames(wrapperClasses, {
+                    'has-media-bleed': !!mediaBleed
+                });
+
+                wrapperClasses = classnames(wrapperClasses, {
+                    'has-text-color': textColorClass,
+                    'has-background': backgroundColorClass,
+                    [backgroundColorClass]: backgroundColorClass,
+                    [textColorClass]: textColorClass
+                });
+
+                const style = {
+                    backgroundColor: backgroundColorClass
+                        ? undefined
+                        : customBackgroundColor,
+                    color: textColorClass ? undefined : customTextColor
+                };
+
+                return (
+                    <div className={wrapperClasses} style={style}>
+                        {hasTitle && (
+                            <div className="card-header">
+                                <TagName>
+                                    <RichText.Content value={cardTitle} />
+                                </TagName>
+                            </div>
+                        )}
+                        <div className="card-body">
+                            <InnerBlocks.Content />
+                        </div>
+                    </div>
+                );
             }
         }
     ]
