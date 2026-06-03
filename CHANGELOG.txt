@@ -28,3 +28,33 @@ Removed
 
 Notes
 - This release is primarily a tooling and Gutenberg block maintenance update, with improved build automation, editor integration, and security support.
+
+Version 3.0.0 - 2026-06-03
+-------------------------
+Added
+- New security framework and admin UI in `inc/security/`: WAF, rate limiting, 2FA, REST API policy, IP manager, post-breach protection, request logging, whitelist management, and admin views for login security, REST API, cron guard, and post-breach handling.
+- New admin tooling and integrations: `inc/admin-chat.php`, `inc/tracking-ids.php`, setup wizard support, under construction admin page, `inc/admin/admin-menu/admin-menu.php`, and support for category SEO pages, Google Merchant, content locking, and popup engine.
+- New Gutenberg loader and migration support: `gutenberg/loader.php` and `gutenberg/migrations/auto-migrate-carousel-to-slider.php`.
+- New WooCommerce up-sells template support: `woocommerce/single-product/up-sells.php`.
+- New theme performance support: `performance/performance.php`, `inc/cache-theme-style.php`, and centralized popup frontend integration.
+- Added plugin/theme updater constants and configuration in `functions.php`.
+
+Changed
+- Removed theme overrides for WooCommerce email templates to restore native WooCommerce email handling.
+- Updated WooCommerce templates, hooks, and filter integration throughout cart, checkout, account, order, product, and review templates.
+- Updated filter defaults:
+  - `madeit_woo_single_product_col_1_class` now includes `position-relative` by default.
+  - `madeit_navbar_container_class` now includes `main-navbar` by default.
+  - `madeit_upper_navbar_class` now appends computed `$background['class']` to its default class list.
+  - `madeit_upper_bottom_navbar_class` now appends computed `$background['class']` to its default class list.
+  - `woocommerce_single_product_image_thumbnail_html` default now passes `wc_get_gallery_image_html($attachment_id, false, $key)`.
+  - `woocommerce_reset_variations_link` default now includes an accessible `aria-label="Clear options"`.
+- Added or updated theme define defaults in `functions.php`, including `MADEIT_VERSION=3.0.0`, updater defaults (`MADEIT_UPDATER_TYPE`, `MADEIT_UPDATER_LEVEL`, GitHub/GitLab updater defaults, `MADEIT_PLUGIN_UPDATER`, `MADEIT_PLUGIN_UPDATER_ENDPOINT`, `MADEIT_PLUGIN_UPDATER_LEVEL`), and new feature flags such as `MADEIT_FEEDBACK`, `MADEIT_ADMIN_CHAT`, `MADEIT_TRACKING_IDS`, `MADEIT_SETUP_WIZARD`, and `MADEIT_SECURITY`.
+- Bumped theme version from `2.10.0` to `3.0.0`.
+
+Fixed
+- Fixed WooCommerce hook/filter integration and improved theme compatibility with updated templates.
+- Fixed security/admin initialization and new feature integration for the major release.
+
+Notes
+- Major release with new security platform, admin tooling, WooCommerce layout updates, and updated theme defaults.
