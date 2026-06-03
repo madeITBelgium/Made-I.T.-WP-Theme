@@ -101,7 +101,7 @@
     padding: 10px !important;
 }
 
-.madeit-control-breakpoints button:not([aria-checked="true"]) {
+.madeit-control-breakpoints button:not([aria-checked="true"]):not([aria-pressed="true"]) {
     opacity: 0;
     transition: all .2s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
@@ -114,7 +114,7 @@
     transition: all .2s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 .madeit-control-breakpoints:hover button {
-    opacity: 1;
+    opacity: 1 !important;
     transform: translateX(0);
     transition: all .2s cubic-bezier(0.075, 0.82, 0.165, 1);
 }

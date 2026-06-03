@@ -308,6 +308,9 @@ export default function Edit({ attributes, setAttributes }) {
 					<>
 					{/* Style of the reviews */}
 					<PanelBody title={__('reviews', 'madeit-review')} initialOpen={true}>
+						<a href="/edit.php?post_type=review" rel="noopener noreferrer" style={{ marginBottom: '10px', display: 'inline-block' }}>
+							{__('Beheer jouw reviews', 'madeit-review')}
+						</a>
 						{/* 1. Choose slider layout */}
 						{reviewLayoutSelector({
 							selectedLayout: layout,

@@ -419,8 +419,8 @@ class Honeypot {
         $submitted_at = (int) $ts;
 
         if ( ! wp_verify_nonce( $nonce, 'madeit_security_login_time' ) ) {
-            self::ban_login_honeypot_ip( $ip, $ua, 'Login honeypot timing nonce invalid', 'honeypot_login_invalid_nonce' );
-            return new \WP_Error( 'madeit_security_honeypot', __( 'Invalid login request.', 'madeit-security' ) );
+            self::handle_login_nonce_mismatch( $ip, $ua );
+            return new \WP_Error( 'madeit_security_honeypot_expired', __( 'Login page expired. Please refresh and try again.', 'madeit-security' ) );
         }
 
         if ( ( time() - $submitted_at ) < 2 ) {
@@ -429,6 +429,37 @@ class Honeypot {
         }
 
         return $user;
+    }
+
+    private static function handle_login_nonce_mismatch( string $ip, string $ua ): void {
+        $transient_key = 'madeit_security_login_nonce_mismatch_' . md5( $ip );
+        $count         = (int) get_transient( $transient_key );
+        $count++;
+
+        // Allow a couple of stale-tab failures without banning the visitor.
+        set_transient( $transient_key, $count, 10 * MINUTE_IN_SECONDS );
+
+        if ( $count >= 3 ) {
+            delete_transient( $transient_key );
+            self::ban_login_honeypot_ip( $ip, $ua, 'Login honeypot timing nonce invalid (repeated)', 'honeypot_login_invalid_nonce_repeat' );
+            return;
+        }
+
+        global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- security data must not be served from cache
+        $wpdb->insert(
+            $wpdb->prefix . 'madeit_security_events',
+            [
+                'event_type'  => 'honeypot_warning',
+                'severity'    => 'medium',
+                'ip'          => $ip,
+                'url'         => wp_login_url(),
+                'rule_id'     => 'honeypot_login_invalid_nonce',
+                'description' => 'Login honeypot timing nonce invalid (no ban on first mismatch).',
+                'created_at'  => current_time( 'mysql' ),
+            ],
+            [ '%s','%s','%s','%s','%s','%s','%s' ]
+        );
     }
 
     private static function ban_login_honeypot_ip( string $ip, string $ua, string $description, string $rule_id ): void {
