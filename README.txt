@@ -56,7 +56,11 @@ Source: https://unsplash.com/@englr?photo=bIhpiQA009k
 
 == Changelog ==
 = 3.0.1 =
-* Small improvements
+* Added Git changelog skill and release tooling for better version tracking
+* Updated Gutenberg block editor support and builds for Card, Container, Color Image, Maps, Review, Slider, and Tabs
+* Added AI sidebar and editor restriction enhancements
+* Added honeypot security support and improved admin notices/updates flow
+* Added build scripts, filters/hooks export tooling, and theme screenshot
 
 = 3.0.0 =
 * WooCommerce 9.4 - 10.5.2

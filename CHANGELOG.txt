@@ -1,0 +1,30 @@
+Made I.T. Theme Changelog
+==========================
+
+Version 3.0.1 - 2026-06-03
+-------------------------
+Added
+- New Git changelog and release tooling with `.github/skills/project-git-change-log/SKILL.md`
+- New CLI tooling in `bin/` for building node subprojects and exporting WordPress filters/hooks
+- New theme screenshot image `screenshot.png`
+- Additional Gutenberg block save-version compatibility files for Container blocks
+
+Changed
+- Updated Gutenberg blocks and editor code across the theme: `madeit-card`, `madeit-color-image-block`, `madeit-container`, `madeit-maps`, `madeit-review`, `madeit-slider`, `madeit-tabs`, and shared editor components
+- Updated generated block build output and package lock files for multiple Gutenberg blocks
+- Updated editor support scripts: `assets/js/ai-sidebar.js`, `assets/js/editor-restrict-blocks.js`, and `assets/js/gutenberg.js`
+- Updated theme assets including `assets/bootstrap-5/style.css`, `assets/css/gutenberg.css`, and `style.css`
+- Updated admin notice and update handling in `gutenberg/admin/notices.php` and `gutenberg/admin/updates.php`
+- Updated `functions.php` and `inc/admin/admin-menu/customizer.php` for theme functionality improvements
+- Updated `inc/security/modules/Honeypot.php` to add honeypot support for spam mitigation
+- Updated pattern `patterns/portfolio_wireframe.php`
+
+Fixed
+- Fixed build tooling consistency and package metadata for Gutenberg block packages
+- Cleaned up generated source maps and build artifacts for updated block builds
+
+Removed
+- Removed obsolete Gutenberg content column build source maps and CSS map artifacts from the repository
+
+Notes
+- This release is primarily a tooling and Gutenberg block maintenance update, with improved build automation, editor integration, and security support.
