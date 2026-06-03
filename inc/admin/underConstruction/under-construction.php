@@ -586,7 +586,3 @@ function under_construction_template_redirect() {
     }
 }
 add_action('template_redirect', 'under_construction_template_redirect');
-
-?>
-
-
