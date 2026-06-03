@@ -260,7 +260,7 @@ ob_start();
         </div>
 
         <?php if (!$query->have_posts()) : ?>
-            <p class="madeit-reviews__empty"><?php echo esc_html(__('Geen reviews gevonden.', 'madeit-review')); ?></p>
+            <p class="madeit-reviews__empty"><?php echo esc_html(__('Er zijn nog geen gekoppelde reviews, bekijk of de juiste API is ingesteld.', 'madeit-review')); ?></p>
         <?php endif; ?>
     </div>
 
