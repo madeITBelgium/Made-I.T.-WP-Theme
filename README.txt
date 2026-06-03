@@ -2,7 +2,7 @@
 Contributors: madeit
 Requires at least: WordPress 5.0
 Tested up to: 7.0
-Version: 3.0.0
+Version: 3.0.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: madeit, bootstrap, bootstrap4, made i.t., Made I.T.
@@ -55,6 +55,9 @@ License: CC0 1.0 Universal (CC0 1.0)
 Source: https://unsplash.com/@englr?photo=bIhpiQA009k
 
 == Changelog ==
+= 3.0.1 =
+* Small improvements
+
 = 3.0.0 =
 * WooCommerce 9.4 - 10.5.2
 * Bootstrap v5.3.7
