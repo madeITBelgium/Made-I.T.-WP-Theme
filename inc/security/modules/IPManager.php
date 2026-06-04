@@ -20,6 +20,9 @@ class IPManager {
 
         if ( defined( 'WP_CLI' ) && WP_CLI ) {
             \WP_CLI::add_command( 'madeit-security refresh-blacklist', [ __CLASS__, 'cli_refresh_blacklist' ] );
+            \WP_CLI::add_command( 'madeit-security list-blocked', [ __CLASS__, 'cli_list_blocked' ] );
+            \WP_CLI::add_command( 'madeit-security unblock-ip', [ __CLASS__, 'cli_unblock_ip' ] );
+            \WP_CLI::add_command( 'madeit-security whitelist-ip', [ __CLASS__, 'cli_whitelist_ip' ] );
         }
     }
 
@@ -663,6 +666,141 @@ class IPManager {
 
         $error = ! empty( $meta['error'] ) ? (string) $meta['error'] : 'Unknown error';
         \WP_CLI::error( 'Remote blacklist refresh failed: ' . $error );
+    }
+
+    /**
+     * WP-CLI: List blocked IPs (local and/or remote).
+     *
+     * ## OPTIONS
+     *
+     * [--source=<source>]
+     * : local, remote, or all. Default: all
+     *
+     * [--format=<format>]
+     * : table, csv, json, yaml. Default: table
+     *
+     * [--fields=<fields>]
+     * : Comma-separated list of fields. Default: ip,source,reason,rule_id,permanent,blocked_until,created_at,updated_at,request_count
+     *
+     * ## EXAMPLES
+     *
+     * wp madeit-security list-blocked --source=local
+     * wp madeit-security list-blocked --format=json
+     */
+    public static function cli_list_blocked( array $args, array $assoc_args ): void {
+        $source = isset( $assoc_args['source'] ) ? strtolower( (string) $assoc_args['source'] ) : 'all';
+        if ( ! in_array( $source, [ 'local', 'remote', 'all' ], true ) ) {
+            \WP_CLI::error( 'Invalid --source. Use local, remote, or all.' );
+        }
+
+        $format = isset( $assoc_args['format'] ) ? (string) $assoc_args['format'] : 'table';
+        $fields = isset( $assoc_args['fields'] )
+            ? array_map( 'trim', explode( ',', (string) $assoc_args['fields'] ) )
+            : [ 'ip', 'source', 'reason', 'rule_id', 'permanent', 'blocked_until', 'created_at', 'updated_at', 'request_count' ];
+
+        $items = [];
+
+        if ( $source === 'local' || $source === 'all' ) {
+            global $wpdb;
+            // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- security data must not be served from cache
+            $rows = $wpdb->get_results( $wpdb->prepare(
+                "SELECT ip, reason, rule_id, permanent, blocked_until, created_at, updated_at, request_count
+                FROM {$wpdb->prefix}madeit_security_blocked_ips
+                WHERE permanent = 1 OR blocked_until > %s
+                ORDER BY updated_at DESC",
+                current_time( 'mysql' )
+            ), ARRAY_A );
+            // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+
+            foreach ( $rows as $row ) {
+                $items[] = [
+                    'ip'            => (string) ( $row['ip'] ?? '' ),
+                    'source'        => 'local',
+                    'reason'        => (string) ( $row['reason'] ?? '' ),
+                    'rule_id'       => (string) ( $row['rule_id'] ?? '' ),
+                    'permanent'     => (int) ( $row['permanent'] ?? 0 ),
+                    'blocked_until' => (string) ( $row['blocked_until'] ?? '' ),
+                    'created_at'    => (string) ( $row['created_at'] ?? '' ),
+                    'updated_at'    => (string) ( $row['updated_at'] ?? '' ),
+                    'request_count' => (int) ( $row['request_count'] ?? 0 ),
+                ];
+            }
+        }
+
+        if ( $source === 'remote' || $source === 'all' ) {
+            foreach ( self::get_remote_blacklist_set() as $ip => $true ) {
+                $items[] = [
+                    'ip'            => (string) $ip,
+                    'source'        => 'remote',
+                    'reason'        => 'Remote blacklist',
+                    'rule_id'       => 'remote_blacklist',
+                    'permanent'     => 1,
+                    'blocked_until' => '',
+                    'created_at'    => '',
+                    'updated_at'    => '',
+                    'request_count' => 0,
+                ];
+            }
+        }
+
+        if ( empty( $items ) ) {
+            \WP_CLI::log( 'No blocked IPs found.' );
+            return;
+        }
+
+        \WP_CLI\Utils\format_items( $format, $items, $fields );
+    }
+
+    /**
+     * WP-CLI: Unblock an IP address (local block list only).
+     *
+     * Usage: wp madeit-security unblock-ip <ip>
+     */
+    public static function cli_unblock_ip( array $args, array $assoc_args ): void {
+        $ip = isset( $args[0] ) ? (string) $args[0] : '';
+        if ( ! filter_var( $ip, FILTER_VALIDATE_IP ) ) {
+            \WP_CLI::error( 'Invalid IP address.' );
+        }
+
+        $ok = self::unblock_ip( $ip );
+        if ( $ok ) {
+            self::audit( 'unblock_ip', 'ip', $ip, "Unblocked IP via WP-CLI: $ip" );
+            \WP_CLI::success( "IP $ip removed from local block list." );
+        } else {
+            \WP_CLI::warning( "IP $ip was not found in the local block list." );
+        }
+
+        if ( isset( self::get_remote_blacklist_set()[ $ip ] ) ) {
+            \WP_CLI::warning( 'This IP is present in the remote blacklist and may still be blocked.' );
+        }
+    }
+
+    /**
+     * WP-CLI: Whitelist an IP address.
+     *
+     * ## OPTIONS
+     *
+     * [--label=<label>]
+     * : Optional label for the whitelist entry.
+     *
+     * Usage: wp madeit-security whitelist-ip <ip> [--label="Office IP"]
+     */
+    public static function cli_whitelist_ip( array $args, array $assoc_args ): void {
+        $ip = isset( $args[0] ) ? (string) $args[0] : '';
+        if ( ! filter_var( $ip, FILTER_VALIDATE_IP ) ) {
+            \WP_CLI::error( 'Invalid IP address.' );
+        }
+
+        $label = isset( $assoc_args['label'] ) ? (string) $assoc_args['label'] : 'WP-CLI whitelist';
+        $ok = \MadeIT\Security\Whitelist::add( $ip, $label );
+
+        if ( $ok ) {
+            self::audit( 'whitelist_ip', 'ip', $ip, "Whitelisted IP via WP-CLI: $ip" );
+            \WP_CLI::success( "IP $ip added to whitelist." );
+            return;
+        }
+
+        \WP_CLI::error( "Could not whitelist IP $ip." );
     }
 
     private static function parse_remote_blacklist_body( string $body ): array {
