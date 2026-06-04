@@ -560,17 +560,82 @@ class RequestLogger
         if (headers_sent()) {
             return;
         }
+        $ajax_url = admin_url('admin-ajax.php');
+        $nonce = wp_create_nonce('madeit_security_unblock_request');
+        $ip = self::get_real_ip();
         http_response_code(403);
         header('Content-Type: text/html; charset=utf-8');
         wp_register_style('madeit-security-blocked-ip', MADEIT_SECURITY_URL.'includes/assets/css/blocked-ip-page.css', [], MADEIT_VERSION);
         wp_enqueue_style('madeit-security-blocked-ip');
         echo '<html><head><title>Access Denied — Security</title>';
         wp_print_styles('madeit-security-blocked-ip');
-        echo '</head>
-        <body><div class="box"><h1>🛡️ Access Denied</h1>
-        <p>Your IP address has been blocked by Security.</p>
-        <p><small>If you believe this is an error, please contact the site administrator.</small></p>
-        </div></body></html>';
+        $ajax_url_esc = esc_url($ajax_url);
+        $nonce_esc = esc_attr($nonce);
+        $ip_esc = esc_html($ip);
+        echo <<<HTML
+</head>
+<body><div class="box"><h1>🛡️ Access Denied</h1>
+<p>Your IP address has been blocked by Security.</p>
+<p class="blocked-ip">IP: {$ip_esc}</p>
+<p><small>If you believe this is an error, you can request an unblock below.</small></p>
+<form id="madeit-unblock-form" class="unblock-form" method="post" action="{$ajax_url_esc}" data-ajax-url="{$ajax_url_esc}">
+    <input type="hidden" name="action" value="madeit_security_unblock_request" />
+    <input type="hidden" name="nonce" value="{$nonce_esc}" />
+    <label for="madeit-unblock-email">Email</label>
+    <input id="madeit-unblock-email" name="email" type="email" required placeholder="you@example.com" />
+    <label for="madeit-unblock-message">Message (optional)</label>
+    <textarea id="madeit-unblock-message" name="message" rows="3" placeholder="Tell us why you should be unblocked"></textarea>
+    <button type="submit" class="unblock-btn">Request unblock</button>
+    <div id="madeit-unblock-result" class="unblock-result" role="status" aria-live="polite"></div>
+</form>
+<script>
+(function(){
+    var form = document.getElementById('madeit-unblock-form');
+    if (!form) return;
+    var result = document.getElementById('madeit-unblock-result');
+    form.addEventListener('submit', function(e){
+        e.preventDefault();
+        if (result) {
+            result.textContent = '';
+            result.className = 'unblock-result';
+        }
+        var btn = form.querySelector('button[type="submit"]');
+        if (btn) {
+            btn.disabled = true;
+            btn.textContent = 'Sending...';
+        }
+        var data = new URLSearchParams(new FormData(form));
+        fetch(form.getAttribute('data-ajax-url'), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+            body: data.toString()
+        }).then(function(r){ return r.json(); }).then(function(payload){
+            if (!result) return;
+            if (payload && payload.success) {
+                result.textContent = payload.data && payload.data.message ? payload.data.message : 'Request sent.';
+                result.className = 'unblock-result success';
+                form.reset();
+            } else {
+                var msg = (payload && payload.data && payload.data.message) ? payload.data.message : 'Request failed.';
+                result.textContent = msg;
+                result.className = 'unblock-result error';
+            }
+        }).catch(function(){
+            if (result) {
+                result.textContent = 'Request failed. Please try again.';
+                result.className = 'unblock-result error';
+            }
+        }).finally(function(){
+            if (btn) {
+                btn.disabled = false;
+                btn.textContent = 'Request unblock';
+            }
+        });
+    });
+})();
+</script>
+</div></body></html>
+HTML;
         exit;
     }
 }

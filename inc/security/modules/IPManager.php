@@ -17,6 +17,8 @@ class IPManager {
         add_action( 'wp_ajax_madeit_security_live_visitors',  [ __CLASS__, 'ajax_live_visitors' ] );
         add_action( 'wp_ajax_madeit_security_visitor_log',    [ __CLASS__, 'ajax_visitor_log' ] );
         add_action( 'wp_ajax_madeit_security_visitor_stats',  [ __CLASS__, 'ajax_visitor_stats' ] );
+        add_action( 'wp_ajax_nopriv_madeit_security_unblock_request', [ __CLASS__, 'ajax_unblock_request' ] );
+        add_action( 'wp_ajax_madeit_security_unblock_request',        [ __CLASS__, 'ajax_unblock_request' ] );
 
         if ( defined( 'WP_CLI' ) && WP_CLI ) {
             \WP_CLI::add_command( 'madeit-security refresh-blacklist', [ __CLASS__, 'cli_refresh_blacklist' ] );
@@ -215,6 +217,71 @@ class IPManager {
 
         self::audit( 'whitelist_ip', 'ip', $ip, "Whitelisted IP: $ip" );
         wp_send_json_success( [ 'message' => "IP $ip added to whitelist." ] );
+    }
+
+    public static function ajax_unblock_request(): void {
+        $nonce = isset( $_POST['nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['nonce'] ) ) : '';
+        if ( ! wp_verify_nonce( $nonce, 'madeit_security_unblock_request' ) ) {
+            wp_send_json_error( [ 'message' => 'Invalid request.' ], 400 );
+        }
+
+        $email = isset( $_POST['email'] ) ? sanitize_email( wp_unslash( $_POST['email'] ) ) : '';
+        $message = isset( $_POST['message'] ) ? sanitize_textarea_field( wp_unslash( $_POST['message'] ) ) : '';
+        if ( ! $email || ! is_email( $email ) ) {
+            wp_send_json_error( [ 'message' => 'Please enter a valid email address.' ], 422 );
+        }
+
+        $ip = \MadeIT\Security\RequestLogger::get_real_ip();
+        $rate_key = 'madeit_security_unblock_req_' . md5( $ip . '|' . $email );
+        if ( get_transient( $rate_key ) ) {
+            wp_send_json_error( [ 'message' => 'Request already sent. Please wait before trying again.' ], 429 );
+        }
+
+        $reason = '';
+        global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- security data must not be served from cache
+        $row = $wpdb->get_row( $wpdb->prepare(
+            "SELECT reason, permanent, blocked_until
+            FROM {$wpdb->prefix}madeit_security_blocked_ips
+            WHERE ip = %s
+                AND (permanent = 1 OR blocked_until IS NULL OR blocked_until > %s)
+            LIMIT 1",
+            $ip,
+            current_time( 'mysql' )
+        ) );
+        if ( $row ) {
+            $reason = (string) $row->reason;
+        }
+
+        $admin_email = get_option( 'admin_email' );
+        $site_name = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
+        $site_url = home_url( '/' );
+        $ua = isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : '';
+
+        $subject = sprintf( 'Unblock request on %s (IP: %s)', $site_name, $ip );
+        $body = "Unblock request received:\n\n";
+        $body .= "Site: {$site_name}\n";
+        $body .= "URL: {$site_url}\n";
+        $body .= "IP: {$ip}\n";
+        if ( $reason !== '' ) {
+            $body .= "Block reason: {$reason}\n";
+        }
+        if ( $ua !== '' ) {
+            $body .= "User-Agent: {$ua}\n";
+        }
+        $body .= "Requester email: {$email}\n";
+        if ( $message !== '' ) {
+            $body .= "Message:\n{$message}\n";
+        }
+        $body .= "\nUnblock in WP Admin: " . admin_url( 'admin.php?page=madeit-security-ip-mgmt' ) . "\n";
+
+        $sent = wp_mail( $admin_email, $subject, $body );
+        if ( ! $sent ) {
+            wp_send_json_error( [ 'message' => 'Could not send request. Please try again later.' ], 500 );
+        }
+
+        set_transient( $rate_key, 1, 10 * MINUTE_IN_SECONDS );
+        wp_send_json_success( [ 'message' => 'Your request has been sent to the site administrator.' ] );
     }
 
     public static function ajax_get_ip_info(): void {

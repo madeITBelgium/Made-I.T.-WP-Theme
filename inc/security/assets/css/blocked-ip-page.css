@@ -1,4 +1,14 @@
 body{font-family:sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#1a252f}
-.box{background:#fff;padding:40px 60px;border-radius:8px;text-align:center;max-width:480px}
+.box{background:#fff;padding:40px 60px;border-radius:8px;text-align:center;max-width:520px;box-shadow:0 20px 50px rgba(0,0,0,.35)}
 h1{color:#c0392b;font-size:2em;margin-bottom:8px}
 p{color:#555}
+.blocked-ip{margin-top:8px;font-weight:600;color:#1a252f}
+.unblock-form{margin-top:18px;text-align:left}
+.unblock-form label{display:block;font-weight:600;font-size:.85rem;margin:10px 0 6px;color:#1a252f}
+.unblock-form input,.unblock-form textarea{width:100%;padding:10px 12px;border:1px solid #d0d7de;border-radius:6px;font-size:.95rem}
+.unblock-form textarea{resize:vertical}
+.unblock-btn{margin-top:12px;width:100%;padding:10px 12px;border:none;border-radius:6px;background:#1f6feb;color:#fff;font-weight:600;cursor:pointer}
+.unblock-btn:disabled{opacity:.7;cursor:default}
+.unblock-result{margin-top:10px;font-size:.9rem;color:#555}
+.unblock-result.success{color:#2e7d32}
+.unblock-result.error{color:#c0392b}
