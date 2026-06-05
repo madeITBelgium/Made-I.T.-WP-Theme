@@ -57,7 +57,7 @@ Source: https://unsplash.com/@englr?photo=bIhpiQA009k
 == Changelog ==
 = 3.0.4 =
 * Added WP-CLI commands to list blocked IPs, unblock IPs, and whitelist IPs in the security module
-* Commands: wp madeit-security list-blocked, wp madeit-security unblock-ip <ip>, wp madeit-security whitelist-ip <ip> [--label="Office IP"]
+* Commands: wp madeit-security list-blocked, wp madeit-security block-ip <ip> [--reason="Manual block"] [--duration=3600], wp madeit-security unblock-ip <ip>, wp madeit-security whitelist-ip <ip> [--label="Office IP"]
 
 = 3.0.3 =
 * Fixed stray output in under construction routing to prevent blank lines before XML responses

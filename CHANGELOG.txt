@@ -4,7 +4,7 @@ Made I.T. Theme Changelog
 Version 3.0.4 - 2026-06-04
 -------------------------
 Added
-- Added WP-CLI commands to list blocked IPs, unblock IPs, and whitelist IPs in the security module
+- Added WP-CLI commands to list blocked IPs, block IPs, unblock IPs, and whitelist IPs in the security module
 
 Version 3.0.3 - 2026-06-03
 -------------------------

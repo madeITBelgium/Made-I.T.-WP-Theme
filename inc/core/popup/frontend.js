@@ -1,5 +1,6 @@
 
 (function () {
+    console.log('Popup script loaded');
     
     var activeModal = null;
     var activeBackdrop = null;
@@ -13,13 +14,15 @@
         document.body.appendChild(backdrop);
         activeBackdrop = backdrop;
     }
-
+    
     function removeBackdrop() {
         if (!activeBackdrop) {
             return;
         }
         if (activeBackdrop.parentNode) {
             activeBackdrop.parentNode.removeChild(activeBackdrop);
+
+            console.log('Backdrop removed');
         }
         activeBackdrop = null;
     }
@@ -27,6 +30,8 @@
     function showModalFallback(modal) {
         activeModal = modal;
         ensureBackdrop();
+
+        console.log('Showing modal with fallback');
 
         document.body.classList.add('modal-open');
         modal.style.display = 'block';
@@ -40,6 +45,8 @@
             return;
         }
 
+        console.log('Hiding modal with fallback');
+
         activeModal.classList.remove('show');
         activeModal.style.display = 'none';
         activeModal.setAttribute('aria-hidden', 'true');
@@ -50,28 +57,61 @@
         removeBackdrop();
     }
 
-    function openPopupModal(popupId) {
+    function hideModal(modal) {
+
+        if (!modal) return;
+
+        if (window.bootstrap && window.bootstrap.Modal) {
+            window.bootstrap.Modal.getOrCreateInstance(modal).hide();
+        } else {
+            modal.classList.remove('show');
+            modal.style.display = 'none';
+        }
+
+        activeModal = null;
+
+        document.body.classList.remove('modal-open');
+        removeBackdrop();
+    }
+
+   function openPopupModal(popupId) {
         var modal = document.getElementById('popup-' + popupId);
         if (!modal) {
             return false;
         }
 
-        // Bootstrap 5
+        activeModal = modal; 
+
         if (window.bootstrap && window.bootstrap.Modal) {
             window.bootstrap.Modal.getOrCreateInstance(modal).show();
             return true;
         }
 
-        // Bootstrap 4 (jQuery plugin)
         if (window.jQuery && window.jQuery.fn && window.jQuery.fn.modal) {
             window.jQuery(modal).modal('show');
             return true;
         }
 
-        // Fallback if Bootstrap JS isn't present
         showModalFallback(modal);
         return true;
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        var modals = document.querySelectorAll('.madeit-popup[data-action="specific_pages"]');
+
+        modals.forEach(function (modal) {
+
+            if (window.bootstrap && window.bootstrap.Modal) {
+                window.bootstrap.Modal.getOrCreateInstance(modal).show();
+            } else {
+                showModalFallback(modal);
+            }
+
+            activeModal = modal;
+        });
+
+    });
 
     document.addEventListener(
         'click',
@@ -82,9 +122,7 @@
             }
 
             var trigger = target.closest('[data-madeit-popup-id]');
-            console.log('[POPUP] trigger:', trigger);
             var popupId = trigger ? trigger.getAttribute('data-madeit-popup-id') : null;
-            console.log('[POPUP] popupId:', popupId);
             
             if (!popupId) {
                 var link = target.closest('a');
@@ -113,27 +151,30 @@
     document.addEventListener(
         'click',
         function (event) {
-            if (!activeModal) {
+
+            console.log('Click detected');
+
+            var modal = activeModal || document.querySelector('.modal.show');
+
+            if (!modal) {
                 return;
             }
 
             var target = event.target;
-            if (!target) {
-                return;
-            }
 
-            // Close buttons (Bootstrap 4/5 conventions)
+            console.log('Active modal:', modal);
+            console.log('Click target:', target);
+
             if (
                 target.closest('[data-bs-dismiss="modal"]') ||
                 target.closest('[data-dismiss="modal"]')
             ) {
-                hideModalFallback();
+                hideModal(modal);
                 return;
             }
 
-            // Click on overlay closes
-            if (target === activeModal) {
-                hideModalFallback();
+            if (target === modal) {
+                hideModal(modal);
             }
         },
         true

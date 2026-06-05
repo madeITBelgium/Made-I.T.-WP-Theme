@@ -124,14 +124,13 @@ wp.domReady(function () {
     let isFixingOutsideBlocks = false;
     let hasRunInitialFix = false;
     let isEditorReady = false;
-    
 
     const allowedOutsideRootBlocks = [
         'madeit/block-content',
         'madeit/block-content-column',
         'core/cover',
         'core/spacer',
-        'core/block'
+        'core/block' // de core/block wordt gebruikt voor patterns en templates.
     ];
 
     // Warning block
@@ -211,7 +210,7 @@ wp.domReady(function () {
 
         // Als er geen outside blocks zijn, hoeven we niets te doen. Belangrijk: dit moet na de initiële fix check komen, anders krijgen we een loop.
         if (!outsideBlocks.length) {
-            hasRunInitialFix = true;
+            // Geen outside blocks
             return;
         }
         // Er zijn outside blocks, dus we moeten ingrijpen

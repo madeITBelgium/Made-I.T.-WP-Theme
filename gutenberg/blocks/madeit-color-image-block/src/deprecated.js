@@ -15,11 +15,11 @@ const deprecated = [
             const { color, top, right, bottom, left } = attributes;
 
             const wrapperMargins = {
-                marginTop:    top    < 0 ? `${ -top }px`    : `${ top }px`,
-                marginRight:  right  < 0 ? `${ -right }px`  : `${ right }px`,
-                marginBottom: bottom < 0 ? `${ -bottom }px` : `${ bottom }px`,
-                marginLeft:   left   < 0 ? `${ -left }px`   : `${ left }px`,
-            };
+                marginTop:    top    < 0 ? `${ -top }px`    : '0px',
+                marginRight:  right  < 0 ? `${ -right }px`  : '0px',
+                marginBottom: bottom < 0 ? `${ -bottom }px` : '0px',
+                marginLeft:   left   < 0 ? `${ -left }px`   : '0px',
+            }; 
 
             const blockProps = useBlockProps.save( {
                 style: {

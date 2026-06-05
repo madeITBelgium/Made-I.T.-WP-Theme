@@ -23,6 +23,7 @@ class IPManager {
         if ( defined( 'WP_CLI' ) && WP_CLI ) {
             \WP_CLI::add_command( 'madeit-security refresh-blacklist', [ __CLASS__, 'cli_refresh_blacklist' ] );
             \WP_CLI::add_command( 'madeit-security list-blocked', [ __CLASS__, 'cli_list_blocked' ] );
+            \WP_CLI::add_command( 'madeit-security block-ip', [ __CLASS__, 'cli_block_ip' ] );
             \WP_CLI::add_command( 'madeit-security unblock-ip', [ __CLASS__, 'cli_unblock_ip' ] );
             \WP_CLI::add_command( 'madeit-security whitelist-ip', [ __CLASS__, 'cli_whitelist_ip' ] );
         }
@@ -755,7 +756,7 @@ class IPManager {
      * wp madeit-security list-blocked --format=json
      */
     public static function cli_list_blocked( array $args, array $assoc_args ): void {
-        $source = isset( $assoc_args['source'] ) ? strtolower( (string) $assoc_args['source'] ) : 'all';
+        $source = isset( $assoc_args['source'] ) ? strtolower( (string) $assoc_args['source'] ) : 'local';
         if ( ! in_array( $source, [ 'local', 'remote', 'all' ], true ) ) {
             \WP_CLI::error( 'Invalid --source. Use local, remote, or all.' );
         }
@@ -816,6 +817,44 @@ class IPManager {
         }
 
         \WP_CLI\Utils\format_items( $format, $items, $fields );
+    }
+
+    /**
+     * WP-CLI: Block an IP address.
+     *
+     * ## OPTIONS
+     *
+     * <ip>
+     * : IP address to block.
+     *
+     * [--reason=<reason>]
+     * : Optional reason. Default: Manually blocked
+     *
+     * [--duration=<seconds>]
+     * : Duration in seconds (0 = permanent). Default: 0
+     *
+     * Usage: wp madeit-security block-ip <ip> [--reason="Manual block"] [--duration=3600]
+     */
+    public static function cli_block_ip( array $args, array $assoc_args ): void {
+        $ip = isset( $args[0] ) ? (string) $args[0] : '';
+        if ( ! filter_var( $ip, FILTER_VALIDATE_IP ) ) {
+            \WP_CLI::error( 'Invalid IP address.' );
+        }
+
+        $reason = isset( $assoc_args['reason'] ) ? (string) $assoc_args['reason'] : 'Manually blocked';
+        $duration = isset( $assoc_args['duration'] ) ? (int) $assoc_args['duration'] : 0;
+        if ( $duration < 0 ) {
+            \WP_CLI::error( 'Invalid duration. Use 0 or a positive integer.' );
+        }
+
+        $ok = self::block_ip( $ip, $reason, $duration, 'manual' );
+        if ( $ok ) {
+            self::audit( 'block_ip', 'ip', $ip, "Blocked IP via WP-CLI: $ip. Reason: $reason" );
+            \WP_CLI::success( "IP $ip added to block list." );
+            return;
+        }
+
+        \WP_CLI::error( "Could not block IP $ip." );
     }
 
     /**

@@ -8,9 +8,16 @@
   "description": "Image block with background color and configurable offsets.",
   "status": "normal",
 
-  "version": "1.2.0",
+  "version": "3.0.2",
   "madeit": {
     "changelog": {
+      "3.0.2": [
+        {
+          "type": "fix",
+          "label": "Migration fix",
+          "text": "Migratie van 3.0.1 naar 3.0.2 gefixt."
+        }
+      ],
       "3.0.1": [
         {
           "type": "fix",

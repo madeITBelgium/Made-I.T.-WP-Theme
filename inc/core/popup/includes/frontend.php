@@ -72,13 +72,12 @@ function mp_render_popups() {
         $action   = get_field('popup_action', $popup->ID);
         ?>
 
-        <div class="modal fade madeit-popup popup-<?= esc_attr($style); ?> <?= ($action !== 'specific_pages') ? '' : 'show'; ?>" 
+        <div class="modal fade madeit-popup popup-<?= esc_attr($style); ?>" 
              id="popup-<?= $popup->ID; ?>"
              data-id="<?= $popup->ID; ?>"
              data-action="<?= esc_attr($action); ?>"
              data-delay="<?= esc_attr($delay); ?>"
              data-sessies="<?= esc_attr($sessions); ?>"
-             <?= ($action !== 'specific_pages') ? '' : 'style="display:block;"'; ?>
              >
 
 

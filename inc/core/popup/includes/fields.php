@@ -70,14 +70,6 @@ acf_add_local_field_group([
             'placement' => 'left',
         ],
         [
-            'key'           => 'field_popup_pages',
-            'label'         => 'Pagina\'s',
-            'name'          => 'popup_pages',
-            'type'          => 'relationship',
-            'post_type'     => ['page', 'post', 'product'],
-            'return_format' => 'id',
-        ],
-        [
             'key'     => 'field_popup_action',
             'label'   => 'Actie',
             'name'    => 'popup_action',
@@ -88,6 +80,27 @@ acf_add_local_field_group([
             ],
             'default_value' => 'specific_pages',
         ],
+        [
+            'key'           => 'field_popup_pages',
+            'label'         => 'Pagina\'s',
+            'name'          => 'popup_pages',
+            'type'          => 'relationship',
+            'post_type'     => ['page', 'post', 'product'],
+            'return_format' => 'id',
+
+            'instructions' => 'Selecteer hier de pagina\'s waarop deze popup mag verschijnen. Als je niets aanduid zal hij overal verschijnen.',
+
+            'conditional_logic' => [
+                [
+                    [
+                        'field' => 'field_popup_action',
+                        'operator' => '==',
+                        'value' => 'specific_pages',
+                    ],
+                ],
+            ],
+        ],
+        
 
         // Display
         // [
