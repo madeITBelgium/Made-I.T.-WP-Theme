@@ -397,10 +397,18 @@ class Honeypot {
             return $user;
         }
 
+        $is_woocommerce_login = self::is_woocommerce_login_request();
+
         // Hidden field is filled: automated submission.
         if ( ! empty( $_POST['madeit_security_hp_login_website'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
             self::ban_login_honeypot_ip( $ip, $ua, 'Login honeypot field was filled', 'honeypot_login_field' );
             return new \WP_Error( 'madeit_security_honeypot', __( 'Invalid login request.', 'madeit-security' ) );
+        }
+
+        // WooCommerce login forms don't include our wp-login timing token.
+        // Keep general honeypot protections, but skip token nonce/timing checks.
+        if ( $is_woocommerce_login ) {
+            return $user;
         }
 
         // Missing timing token: suspicious automated request.
@@ -429,6 +437,26 @@ class Honeypot {
         }
 
         return $user;
+    }
+
+    private static function is_woocommerce_login_request(): bool {
+        if ( ! class_exists( 'WooCommerce' ) ) {
+            return false;
+        }
+
+        if ( isset( $_POST['woocommerce-login-nonce'] ) || isset( $_POST['woocommerce-lost-password-nonce'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- request shape detection only
+            return true;
+        }
+
+        $request_uri = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- request shape detection only
+        if ( $request_uri && str_contains( $request_uri, 'my-account' ) ) {
+            $has_wc_credentials = isset( $_POST['username'], $_POST['password'] ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- request shape detection only
+            if ( $has_wc_credentials ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static function handle_login_nonce_mismatch( string $ip, string $ua ): void {
