@@ -6,6 +6,26 @@ Version 3.0.4 - 2026-06-04
 Added
 - Added WP-CLI commands to list blocked IPs, block IPs, unblock IPs, and whitelist IPs in the security module
 
+Changed
+- Updated popup frontend behavior to support specific-page auto-display and improved modal close handling across Bootstrap and fallback flows
+- Updated popup ACF field behavior so page selection is conditionally shown for the specific_pages action with clearer admin instructions
+- Updated popup markup rendering to avoid forcing immediate modal display in frontend HTML output
+- Updated blocked IP page styling with improved layout and request form states
+- Updated Color Image block metadata/versioning and regenerated build assets for migration compatibility
+- Updated editor outside-root block guard handling in editor restriction script
+
+Fixed
+- Fixed Color Image block deprecated margin migration so positive offsets no longer generate invalid wrapper margins
+- Fixed WooCommerce login compatibility in honeypot login protection by skipping wp-login timing token checks for WooCommerce form flows
+- Added unblock request support on blocked IP page with nonce validation, rate limiting, and admin email notifications
+
+Notes
+- Includes new security operations tooling through WP-CLI:
+  - `wp madeit-security list-blocked`
+  - `wp madeit-security block-ip <ip> [--reason="Manual block"] [--duration=3600]`
+  - `wp madeit-security unblock-ip <ip>`
+  - `wp madeit-security whitelist-ip <ip> [--label="Office IP"]`
+
 Version 3.0.3 - 2026-06-03
 -------------------------
 Fixed

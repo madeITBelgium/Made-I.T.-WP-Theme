@@ -56,8 +56,12 @@ Source: https://unsplash.com/@englr?photo=bIhpiQA009k
 
 == Changelog ==
 = 3.0.4 =
-* Added WP-CLI commands to list blocked IPs, unblock IPs, and whitelist IPs in the security module
-* Commands: wp madeit-security list-blocked, wp madeit-security block-ip <ip> [--reason="Manual block"] [--duration=3600], wp madeit-security unblock-ip <ip>, wp madeit-security whitelist-ip <ip> [--label="Office IP"]
+* Added security WP-CLI commands: list-blocked, block-ip, unblock-ip, and whitelist-ip
+* Added blocked-IP self-service unblock request flow with email submission, nonce protection, and rate limiting
+* Improved popup frontend behavior for specific page targeting and modal close handling
+* Improved popup admin fields with conditional page-selection UI and clearer usage instructions
+* Fixed Color Image block migration behavior for deprecated margin offsets and updated block metadata/build artifacts
+* Fixed WooCommerce login compatibility in honeypot checks by skipping wp-login timing token validation for WooCommerce login forms
 
 = 3.0.3 =
 * Fixed stray output in under construction routing to prevent blank lines before XML responses
