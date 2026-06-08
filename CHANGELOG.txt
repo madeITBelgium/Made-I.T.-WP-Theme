@@ -1,6 +1,35 @@
 Made I.T. Theme Changelog
 ==========================
 
+Version 3.0.5 - 2026-06-08
+-------------------------
+Added
+- Added custom responsive unit value attributes for Container Content block min-height and max-width across desktop, tablet, and mobile breakpoints
+- Added legacy save-version export and matching deprecated migration path (`saveV5`) for older container markup with inline margin styles
+- Added security settings and hardening dashboard support for WordPress core auto-updates
+- Added generated source maps for Container Content block build assets (`index.css.map`, `index.js.map`, and `style-index.css.map`)
+
+Changed
+- Changed Container Content block editor and save behavior to support `__custom__` units via dedicated custom-value fields in `AdvancedUnitSelect`
+- Changed Container Content frontend sizing CSS so multi-column max-width now accounts for row-gap spacing
+- Changed security auto-update handling to run core/plugin/theme updates only within the configured time window (06:00-17:00 site timezone)
+- Changed security defaults for core, plugin, and theme auto-updates to enabled
+- Changed daily call telemetry to include disk size, free space, and used space metrics
+- Changed support-session notification subject to include site URL context
+
+Fixed
+- Fixed duplicate blocked IP handling by switching to SQL upsert logic in IP manager (`INSERT ... ON DUPLICATE KEY UPDATE`)
+- Fixed tracking and analytics first-item selection by using `array_first(...) ?? ''` fallbacks instead of direct index access
+- Fixed legacy Container Content block migration eligibility rules to better separate inline-margin legacy markup cases
+- Fixed remote update action in daily call flow by implementing theme update execution with `Theme_Upgrader`
+
+Removed
+- No removed files or features in this release window
+
+Notes
+- Comparison scope uses `3.0.4` versus current master working state for `3.0.5`.
+- `style.css` and `README.txt` version bump markers are currently present as uncommitted working-tree changes.
+
 Version 3.0.4 - 2026-06-04
 -------------------------
 Added

@@ -3,7 +3,7 @@ Contributors: madeit
 Requires at least: WordPress 5.0
 Tested up to: 7.0
 Requires PHP: 8.5
-Version: 3.0.4
+Version: 3.0.5
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: madeit, bootstrap, bootstrap4, made i.t., Made I.T.
@@ -56,6 +56,13 @@ License: CC0 1.0 Universal (CC0 1.0)
 Source: https://unsplash.com/@englr?photo=bIhpiQA009k
 
 == Changelog ==
+= 3.0.5 =
+* Added custom responsive unit support for Container Content min-height and max-width (including custom unit input values)
+* Improved legacy container migration paths for inline-margin wrappers and regenerated related block build assets
+* Added WordPress core auto-update control in security settings and hardening checks
+* Improved security auto-update behavior with a guarded update window (06:00-17:00, site timezone)
+* Fixed blocked-IP duplicate handling via upsert logic and improved remote update automation in daily calls
+
 = 3.0.4 =
 * Added security WP-CLI commands: list-blocked, block-ip, unblock-ip, and whitelist-ip
 * Added blocked-IP self-service unblock request flow with email submission, nonce protection, and rate limiting
