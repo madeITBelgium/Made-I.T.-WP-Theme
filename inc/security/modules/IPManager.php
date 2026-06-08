@@ -58,40 +58,31 @@ class IPManager {
         }
 
         // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- security data must not be served from cache
-        $existing = $wpdb->get_var( $wpdb->prepare(
-            "SELECT id FROM {$wpdb->prefix}madeit_security_blocked_ips WHERE ip = %s", $ip
-        ) );
+        $table = $wpdb->prefix . 'madeit_security_blocked_ips';
+        $now   = current_time( 'mysql' );
 
-        if ( $existing ) {
-            return (bool) $wpdb->update(
-                $wpdb->prefix . 'madeit_security_blocked_ips',
-                [
-                    'reason'        => $reason,
-                    'rule_id'       => $rule_id,
-                    'permanent'     => $permanent,
-                    'blocked_until' => $blocked_until,
-                    'updated_at'    => current_time( 'mysql' ),
-                ],
-                [ 'ip' => $ip ],
-                [ '%s','%s','%d','%s','%s' ],
-                [ '%s' ]
-            );
-        }
-
-        return (bool) $wpdb->insert(
-            $wpdb->prefix . 'madeit_security_blocked_ips',
-            [
-                'ip'            => $ip,
-                'reason'        => $reason,
-                'rule_id'       => $rule_id,
-                'permanent'     => $permanent,
-                'blocked_until' => $blocked_until,
-                'created_by'    => $by_user ?: get_current_user_id(),
-                'created_at'    => current_time( 'mysql' ),
-                'updated_at'    => current_time( 'mysql' ),
-            ],
-            [ '%s','%s','%s','%d','%s','%d','%s','%s' ]
+        $sql = $wpdb->prepare(
+            "INSERT INTO {$table}
+                (ip, reason, rule_id, permanent, blocked_until, created_by, created_at, updated_at)
+            VALUES
+                (%s, %s, %s, %d, %s, %d, %s, %s)
+            ON DUPLICATE KEY UPDATE
+                reason = VALUES(reason),
+                rule_id = VALUES(rule_id),
+                permanent = VALUES(permanent),
+                blocked_until = VALUES(blocked_until),
+                updated_at = VALUES(updated_at)",
+            $ip,
+            $reason,
+            $rule_id,
+            $permanent,
+            $blocked_until,
+            $by_user ?: get_current_user_id(),
+            $now,
+            $now
         );
+
+        return (bool) $wpdb->query( $sql );
         // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
     }
 
