@@ -2374,7 +2374,7 @@ if (!function_exists('madeit_user_analytics')) {
         if (defined('MADEIT_ANALYTICS_GA') && MADEIT_ANALYTICS_GA) {
             $tags = apply_filters('madeit_analtyics_ga', explode(',', MADEIT_ANALYTICS_GA)); ?>
             <!-- Google tag (gtag.js) -->
-            <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo $tags[0]; ?>"></script>
+            <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo array_first($tags); ?>"></script>
             <script>
             gtag('js', new Date());
             <?php foreach ($tags as $tag) { ?>

@@ -186,6 +186,18 @@
             "type": "string",
             "default": "px"
         },
+        "minHeightCustom": {
+            "type": "string",
+            "default": ""
+        },
+        "minHeightCustomTablet": {
+            "type": "string",
+            "default": ""
+        },
+        "minHeightCustomMobile": {
+            "type": "string",
+            "default": ""
+        },
         "maxWidth": {
             "type": "number"
         },
@@ -207,6 +219,19 @@
             "type": "string",
             "default": "px"
         },
+        "maxWidthCustom": {
+            "type": "string",
+            "default": ""
+        },
+        "maxWidthCustomTablet": {
+            "type": "string",
+            "default": ""
+        },
+        "maxWidthCustomMobile": {
+            "type": "string",
+            "default": ""
+        },
+
         "rowGap": {
             "type": "number"
         },

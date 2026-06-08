@@ -2,6 +2,7 @@
 Contributors: madeit
 Requires at least: WordPress 5.0
 Tested up to: 7.0
+Requires PHP: 8.5
 Version: 3.0.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-2.0.html

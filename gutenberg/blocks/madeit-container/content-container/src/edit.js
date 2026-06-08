@@ -114,12 +114,20 @@ export function ColumnsEditContainer( props ) {
         minHeightUnitTablet,
         minHeightMobile,
         minHeightUnitMobile,
+        minHeightCustom,
+        minHeightCustomTablet,
+        minHeightCustomMobile,
+
         maxWidth,
         maxWidthUnit,
         maxWidthTablet,
         maxWidthUnitTablet,
         maxWidthMobile,
         maxWidthUnitMobile,
+        maxWidthCustom,
+        maxWidthCustomTablet,
+        maxWidthCustomMobile,
+
         rowGap,
         rowGapUnit,
         rowGapTablet,
@@ -171,24 +179,43 @@ export function ColumnsEditContainer( props ) {
     const directionValueKey = activeDirectionBreakpoint === 'tablet' ? 'flexDirectionTablet' : activeDirectionBreakpoint === 'mobile' ? 'flexDirectionMobile' : 'flexDirection';
     const maxWidthValueKey =  activeMaxWidthBreakpoint === 'tablet' ? 'maxWidthTablet' : activeMaxWidthBreakpoint === 'mobile' ? 'maxWidthMobile' : 'maxWidth';
     const maxWidthUnitKey =   activeMaxWidthBreakpoint === 'tablet' ? 'maxWidthUnitTablet' : activeMaxWidthBreakpoint === 'mobile' ? 'maxWidthUnitMobile' : 'maxWidthUnit';
+    
+    const maxWidthCustomKey =
+        activeMaxWidthBreakpoint === 'tablet'
+            ? 'maxWidthCustomTablet'
+            : activeMaxWidthBreakpoint === 'mobile'
+            ? 'maxWidthCustomMobile'
+            : 'maxWidthCustom';
+    
     const minHeightValueKey = activeMinHeightBreakpoint === 'tablet' ? 'minHeightTablet' : activeMinHeightBreakpoint === 'mobile' ? 'minHeightMobile' : 'minHeight';
     const minHeightUnitKey = activeMinHeightBreakpoint === 'tablet' ? 'minHeightUnitTablet' : activeMinHeightBreakpoint === 'mobile' ? 'minHeightUnitMobile' : 'minHeightUnit';
     
-    
+    const minHeightCustomKey =
+        activeMinHeightBreakpoint === 'tablet'
+            ? 'minHeightCustomTablet'
+            : activeMinHeightBreakpoint === 'mobile'
+            ? 'minHeightCustomMobile'
+            : 'minHeightCustom';
+
     // ── Huidige waarden ────────────────────────────────────────────────────
     const currentDirection = attributes?.[ directionValueKey ] || 'row';
     const currentMaxWidthValue = attributes?.[ maxWidthValueKey ];
     const currentMaxWidthUnit = attributes?.[ maxWidthUnitKey ] || 'px';
+    const currentMaxWidthCustom =
+        attributes?.[maxWidthCustomKey] || '';
+    
     const currentMinHeightValue = attributes?.[ minHeightValueKey ];
     const currentMinHeightUnit = attributes?.[ minHeightUnitKey ] || 'px';
-    
+    const currentMinHeightCustom = attributes?.[ minHeightCustomKey ] || '';
 
     // ── Reset helpers ──────────────────────────────────────────────────────
     const resetDirection = () =>
         setAttributes( { [ directionValueKey ]: activeDirectionBreakpoint === 'desktop' ? 'row' : undefined, } );
     const resetMaxWidth = () =>
-        setAttributes( { [ maxWidthValueKey ]: undefined, [ maxWidthUnitKey ]: 'px', madeitHasUserEdits: true, } );
+        setAttributes( { [ maxWidthValueKey ]: undefined, [ maxWidthUnitKey ]: 'px', [maxWidthCustomKey]: '',  madeitHasUserEdits: true, } );
 
+    const resetMinHeight = () =>
+        setAttributes( { [ minHeightValueKey ]: undefined, [ minHeightUnitKey ]: 'px', [minHeightCustomKey]: '',  madeitHasUserEdits: true, } );
 
 
     // ── Container / size helpers ───────────────────────────────────────────
@@ -515,25 +542,65 @@ export function ColumnsEditContainer( props ) {
     }
 
     // Responsive min-height via CSS variables.
-    if ( typeof minHeight === 'number' ) {
-        style['--madeit-min-height-desktop'] = `${ minHeight }${ minHeightUnit || 'px' }`;
-    }
-    if ( typeof minHeightTablet === 'number' ) {
-        style['--madeit-min-height-tablet'] = `${ minHeightTablet }${ minHeightUnitTablet || 'px' }`;
-    }
-    if ( typeof minHeightMobile === 'number' ) {
-        style['--madeit-min-height-mobile'] = `${ minHeightMobile }${ minHeightUnitMobile || 'px' }`;
+    if ( minHeightUnit === '__custom__' ) {
+        if ( minHeightCustom ) {
+            style['--madeit-min-height-desktop'] = minHeightCustom;
+        }
+    } else {
+        if ( typeof minHeight === 'number' ) {
+            style['--madeit-min-height-desktop'] = `${ minHeight }${ minHeightUnit || 'px' }`;
+        }
     }
 
+    if ( minHeightUnitTablet === '__custom__' ) {
+        if ( minHeightCustomTablet ) {
+            style['--madeit-min-height-tablet'] = minHeightCustomTablet;
+        }
+    } else {
+        if ( typeof minHeightTablet === 'number' ) {
+            style['--madeit-min-height-tablet'] = `${ minHeightTablet }${ minHeightUnitTablet || 'px' }`;
+        }
+    }
+
+    if ( minHeightUnitMobile === '__custom__' ) {
+        if ( minHeightCustomMobile ) {
+            style['--madeit-min-height-mobile'] = minHeightCustomMobile;
+        }
+    } else {
+        if ( typeof minHeightMobile === 'number' ) {
+            style['--madeit-min-height-mobile'] = `${ minHeightMobile }${ minHeightUnitMobile || 'px' }`;
+        }
+    }
+
+
     // Responsive max-width via CSS variables.
-    if ( typeof maxWidth === 'number' ) {
-        style['--madeit-max-width-desktop'] = `${ maxWidth }${ maxWidthUnit || 'px' }`;
+    if ( maxWidthUnit === '__custom__' ) {
+        if ( maxWidthCustom ) {
+            style['--madeit-max-width-desktop'] = maxWidthCustom;
+        }
+    } else if ( typeof maxWidth === 'number' ) {
+        style['--madeit-max-width-desktop'] =
+            `${ maxWidth }${ maxWidthUnit || 'px' }`;
     }
-    if ( typeof maxWidthTablet === 'number' ) {
-        style['--madeit-max-width-tablet'] = `${ maxWidthTablet }${ maxWidthUnitTablet || 'px' }`;
+
+    if ( maxWidthUnitTablet === '__custom__' ) {
+        if ( maxWidthCustomTablet ) {
+            style['--madeit-max-width-tablet'] =
+                maxWidthCustomTablet;
+        }
+    } else if ( typeof maxWidthTablet === 'number' ) {
+        style['--madeit-max-width-tablet'] =
+            `${ maxWidthTablet }${ maxWidthUnitTablet || 'px' }`;
     }
-    if ( typeof maxWidthMobile === 'number' ) {
-        style['--madeit-max-width-mobile'] = `${ maxWidthMobile }${ maxWidthUnitMobile || 'px' }`;
+
+    if ( maxWidthUnitMobile === '__custom__' ) {
+        if ( maxWidthCustomMobile ) {
+            style['--madeit-max-width-mobile'] =
+                maxWidthCustomMobile;
+        }
+    } else if ( typeof maxWidthMobile === 'number' ) {
+        style['--madeit-max-width-mobile'] =
+            `${ maxWidthMobile }${ maxWidthUnitMobile || 'px' }`;
     }
 
      // Responsive row-gap via CSS variables.
@@ -768,12 +835,6 @@ export function ColumnsEditContainer( props ) {
         typeof currentMinHeightValue === 'number'
             ? currentMinHeightUnit
             : legacyMinHeight?.unit ?? currentMinHeightUnit;
-    const resetMinHeight = () =>
-        setAttributes( {
-            [ minHeightValueKey ]: undefined,
-            [ minHeightUnitKey ]: 'px',
-            madeitHasUserEdits: true,
-        } );
 
 
     const rowGapValueKey =
@@ -1191,9 +1252,21 @@ const clearPreviewBlockStyle = () => {
                                 onBreakpointChange={ setActiveBreakpoint }
                                 afterBreakpoint={
                                     <AdvancedUnitSelect
-                                        value={ currentMaxWidthUnit }
-                                        units={ ['px', '%', 'em', 'rem', 'vw'] }
-                                        onChange={ (unit) => setAttributes({ [maxWidthUnitKey]: unit, madeitHasUserEdits: true }) }
+                                        value={currentMaxWidthUnit}
+                                        customValue={currentMaxWidthCustom}
+                                        units={['px', '%', 'em', 'rem', 'vw']}
+                                        onChange={(unit) =>
+                                            setAttributes({
+                                                [maxWidthUnitKey]: unit,
+                                                madeitHasUserEdits: true,
+                                            })
+                                        }
+                                        onCustomChange={(custom) =>
+                                            setAttributes({
+                                                [maxWidthCustomKey]: custom,
+                                                madeitHasUserEdits: true,
+                                            })
+                                        }
                                     />
                                     
                                 }
@@ -1247,9 +1320,21 @@ const clearPreviewBlockStyle = () => {
                                 onBreakpointChange={ setActiveBreakpoint }
                                 afterBreakpoint={
                                     <AdvancedUnitSelect
-                                        value={ currentMinHeightUnit }
-                                        units={ ['px', '%', 'em', 'rem', 'vh'] }
-                                        onChange={ (unit) => setAttributes({ [minHeightUnitKey]: unit, madeitHasUserEdits: true }) }
+                                        value={currentMinHeightUnit}
+                                        customValue={currentMinHeightCustom}
+                                        units={['px', '%', 'em', 'rem', 'vh']}
+                                        onChange={(unit) =>
+                                            setAttributes({
+                                                [minHeightUnitKey]: unit,
+                                                madeitHasUserEdits: true,
+                                            })
+                                        }
+                                        onCustomChange={(custom) =>
+                                            setAttributes({
+                                                [minHeightCustomKey]: custom,
+                                                madeitHasUserEdits: true,
+                                            })
+                                        }
                                     />
                                 }
                                 

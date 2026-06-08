@@ -8,6 +8,13 @@
   "version": "2.0.0",
   "madeit": {
     "changelog": {
+      "3.0.2": [
+        {
+          "type": "fix",
+          "label": "Fix custom units",
+          "text": "Custom units for max-width and min-height werken nu correct."
+        }
+      ],
       "3.0.1": [
         {
           "type": "fix",

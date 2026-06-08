@@ -17,5 +17,6 @@ export { default as saveVlegacyDirectRowInlineStyle } from './saveVlegacy-direct
 export { default as saveVpre0b } from './saveV8';
 export { default as saveVpre0  } from './saveV7';
 export { default as saveV9     } from './saveV3';
+export { default as saveV5     } from './saveV5';
 export { default as saveV12    } from './saveV2';
 export { default as saveV13    } from './saveV1'; 

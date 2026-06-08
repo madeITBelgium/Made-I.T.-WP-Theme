@@ -362,7 +362,7 @@ if (!function_exists('madeit_tracking_store_ajax')) {
         if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
             $forwarded_for = sanitize_text_field(wp_unslash($_SERVER['HTTP_X_FORWARDED_FOR']));
             $forwarded_parts = array_map('trim', explode(',', $forwarded_for));
-            $ip_address = isset($forwarded_parts[0]) ? $forwarded_parts[0] : '';
+            $ip_address = array_first($forwarded_parts) ?? '';
         }
         if (empty($ip_address)) {
             $ip_address = isset($_SERVER['REMOTE_ADDR']) ? sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'])) : '';

@@ -114,7 +114,7 @@ function madeit_get_changelog_updates() {
             'title' => (string) ($block_data['title'] ?? ''),
             'version' => (string) $latest_version,
             'items' => $latest_items,
-            'description' => isset($latest_items[0]) ? (string) $latest_items[0] : '',
+            'description' => array_first($latest_items) ?? '',
         ];
     }
 

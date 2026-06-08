@@ -111,8 +111,9 @@ function madeit_security_number( string $opt, string $label, string $desc, int $
     <div class="madeit-security-panel">
         <div class="madeit-security-panel__header"><h2 class="madeit-security-panel__title">Auto-Updates</h2></div>
         <div class="madeit-security-form-body">
-            <?php madeit_security_toggle( 'madeit_security_auto_update_plugins', 'Auto-Update Plugins', 'Automatically install plugin updates when available — keeps security patches applied promptly' ); ?>
-            <?php madeit_security_toggle( 'madeit_security_auto_update_themes',  'Auto-Update Themes',  'Automatically install theme updates when available — prevents known vulnerabilities from lingering' ); ?>
+            <?php madeit_security_toggle( 'madeit_security_auto_update_core',    'Auto-Update WordPress Core', 'Automatically install WordPress core updates, but only between 06:00 and 17:00 (site timezone)' ); ?>
+            <?php madeit_security_toggle( 'madeit_security_auto_update_plugins', 'Auto-Update Plugins', 'Automatically install plugin updates when available, but only between 06:00 and 17:00 (site timezone)' ); ?>
+            <?php madeit_security_toggle( 'madeit_security_auto_update_themes',  'Auto-Update Themes',  'Automatically install theme updates when available, but only between 06:00 and 17:00 (site timezone)' ); ?>
         </div>
     </div>
 

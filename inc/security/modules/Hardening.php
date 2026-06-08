@@ -35,15 +35,53 @@ class Hardening {
         remove_action( 'wp_head', 'rsd_link' );
         remove_action( 'wp_head', 'rest_output_link_wp_head' );
 
+        // Auto-update core
+        if ( \MadeIT\Security\Settings::bool( 'madeit_security_auto_update_core', false ) ) {
+            add_filter( 'auto_update_core', [ __CLASS__, 'allow_auto_update_for_window' ], 10, 2 ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WordPress core hook
+            add_filter( 'allow_minor_auto_core_updates', [ __CLASS__, 'allow_core_auto_update_for_window' ] ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WordPress core hook
+            add_filter( 'allow_major_auto_core_updates', [ __CLASS__, 'allow_core_auto_update_for_window' ] ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WordPress core hook
+            add_filter( 'allow_dev_auto_core_updates', [ __CLASS__, 'allow_core_auto_update_for_window' ] ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WordPress core hook
+        }
+
         // Auto-update plugins
         if ( \MadeIT\Security\Settings::bool( 'madeit_security_auto_update_plugins', false ) ) {
-            add_filter( 'auto_update_plugin', '__return_true' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WordPress core hook
+            add_filter( 'auto_update_plugin', [ __CLASS__, 'allow_auto_update_for_window' ], 10, 2 ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WordPress core hook
         }
 
         // Auto-update themes
         if ( \MadeIT\Security\Settings::bool( 'madeit_security_auto_update_themes', false ) ) {
-            add_filter( 'auto_update_theme', '__return_true' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WordPress core hook
+            add_filter( 'auto_update_theme', [ __CLASS__, 'allow_auto_update_for_window' ], 10, 2 ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WordPress core hook
         }
+    }
+
+    /**
+     * Only allow automatic updates during business hours in the site timezone.
+     * Window: 06:00 (inclusive) until 17:00 (exclusive).
+     *
+     * @param bool $should_update Current decision from WordPress/other filters.
+     */
+    public static function allow_auto_update_for_window( bool $should_update ): bool {
+        if ( ! $should_update ) {
+            return false;
+        }
+
+        return self::is_auto_update_window_open();
+    }
+
+    /**
+     * Core update specific gate for allow_*_auto_core_updates filters.
+     */
+    public static function allow_core_auto_update_for_window( bool $should_update ): bool {
+        return self::allow_auto_update_for_window( $should_update );
+    }
+
+    /**
+     * Check if current local site hour falls in the allowed auto-update window.
+     */
+    private static function is_auto_update_window_open(): bool {
+        $hour = (int) current_time( 'G' );
+
+        return $hour >= 6 && $hour < 17;
     }
 
     /**

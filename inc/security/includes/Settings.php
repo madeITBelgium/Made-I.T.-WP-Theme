@@ -175,8 +175,9 @@ class Settings
                 'madeit_security_coop_enabled'           => false,
 
                 // Auto-Updates
-                'madeit_security_auto_update_plugins'    => false,
-                'madeit_security_auto_update_themes'     => false,
+                'madeit_security_auto_update_core'       => true,
+                'madeit_security_auto_update_plugins'    => true,
+                'madeit_security_auto_update_themes'     => true,
 
                 // Two-Factor Authentication
                 'madeit_security_twofa_enabled'          => false,

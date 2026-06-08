@@ -37,6 +37,7 @@ import {
     saveVpre0b,
     saveVpre0,
     saveV9,
+    saveV5,
     saveV12,
     saveV13,
 } from './save-versions';
@@ -152,6 +153,23 @@ registerBlockType( metadata.name, {
 
     deprecated: [
 
+        // ── V5 ───────────────────────────────────────────────────────────────
+        // Legacy markup met inline margin/padding styles en optioneel de oude
+        // frontend wrapper class. Dit dekt oudere frontend- en non-frontend
+        // wrappers met inline container margin.
+        {
+            attributes: metadata.attributes,
+            isEligible( attrs ) {
+                if ( attrs?.madeitHasUserEdits ) return false;
+                const ws = ( attrs?.wrapperStyle ?? '' ).replace( /\s+/g, '' );
+                if ( ! ws ) return false;
+                const hasInlineMargin = /(?:^|;)margin-[a-zA-Z0-9-]+:/.test( ws );
+                return hasInlineMargin && ! ws.includes( '--madeit-container-margin' );
+            },
+            save: saveV5,
+            migrate,
+        },
+
         // ── Vpre0b ────────────────────────────────────────────────────────────
         // Inner container div aanwezig, normale klassen, partial CSS-vars.
         // Meest recente tussenfase vóór de huidige save.
@@ -162,6 +180,8 @@ registerBlockType( metadata.name, {
                 const tokens = ( attrs?.wrapperClassName ?? '' ).trim().split( /\s+/ ).filter( Boolean );
                 // Niet matchen als klassen verdubbeld zijn (dat is Vpre0)
                 if ( tokens.filter( t => t === 'wp-block-madeit-block-content' ).length >= 2 ) return false;
+                const ws = ( attrs?.wrapperStyle ?? '' ).replace( /\s+/g, '' );
+                if ( /(?:^|;)margin-[a-zA-Z0-9-]+:/.test( ws ) ) return false;
                 return tokens.includes( 'madeit-block-content--frontend' ) || tokens.length === 0;
             },
             save: saveVpre0b,
@@ -245,13 +265,33 @@ registerBlockType( metadata.name, {
         {
             attributes: metadata.attributes,
             isEligible( attrs ) {
+                if ( attrs?.madeitHasUserEdits ) return false;
+                const wrapperTokens = ( attrs?.wrapperClassName ?? '' ).trim().split( /\s+/ ).filter( Boolean );
+                if ( ! wrapperTokens.includes( 'madeit-block-content--frontend' ) ) return false;
+                if ( ! wrapperTokens.includes( 'container-fluid' ) ) return false;
                 const ws = ( attrs?.wrapperStyle ?? '' ).replace( /\s+/g, '' );
                 if ( ! ws ) return false;
-                // Matcht als er inline margin staat (geen CSS-var voor margin)
                 return ( ws.includes( 'margin-top:' ) || ws.includes( 'margin-bottom:' ) ) &&
                        ! ws.includes( '--madeit-container-margin' );
             },
             save: saveV9,
+            migrate,
+        },
+
+        // ── V5 ────────────────────────────────────────────────────────────────
+        // Legacy markup met inline margin/padding styles en optioneel de oude
+        // frontend wrapper class. Dit dekt oudere frontend- en non-frontend
+        // wrappers met inline container margin.
+        {
+            attributes: metadata.attributes,
+            isEligible( attrs ) {
+                if ( attrs?.madeitHasUserEdits ) return false;
+                const ws = ( attrs?.wrapperStyle ?? '' ).replace( /\s+/g, '' );
+                if ( ! ws ) return false;
+                return ( ws.includes( 'margin-top:' ) || ws.includes( 'margin-bottom:' ) ) &&
+                       ! ws.includes( '--madeit-container-margin' );
+            },
+            save: saveV5,
             migrate,
         },
 

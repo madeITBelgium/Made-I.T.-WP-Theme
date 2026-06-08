@@ -137,8 +137,8 @@ export default function save( props ) {
     const bgStyle = buildBackgroundStyle( attributes );
     const {
         overflow,
-        minHeight, minHeightUnit, minHeightTablet, minHeightUnitTablet, minHeightMobile, minHeightUnitMobile,
-        maxWidth, maxWidthUnit, maxWidthTablet, maxWidthUnitTablet, maxWidthMobile, maxWidthUnitMobile,
+        minHeight, minHeightUnit, minHeightTablet, minHeightUnitTablet, minHeightMobile, minHeightUnitMobile, minHeightCustom, minHeightCustomTablet, minHeightCustomMobile,
+        maxWidth, maxWidthUnit, maxWidthTablet, maxWidthUnitTablet, maxWidthMobile, maxWidthUnitMobile, maxWidthCustom, maxWidthCustomTablet, maxWidthCustomMobile,
         rowGap, rowGapUnit, rowGapTablet, rowGapUnitTablet, rowGapMobile, rowGapUnitMobile,
         flexDirection, flexDirectionTablet, flexDirectionMobile,
         alignItems, alignItemsTablet, alignItemsMobile,
@@ -153,16 +153,84 @@ export default function save( props ) {
 
     if ( typeof overflow === 'string' && overflow.length > 0 && overflow !== 'visible' ) ws.overflow = overflow;
 
-    const mhD = toCssLength( minHeight,      minHeightUnit      || 'px' );
-    const mhT = toCssLength( minHeightTablet, minHeightUnitTablet || minHeightUnit || 'px' );
-    const mhM = toCssLength( minHeightMobile, minHeightUnitMobile || minHeightUnitTablet || minHeightUnit || 'px' );
-    if ( mhD ) setCssVar( ws, '--madeit-min-height-desktop', mhD );
-    if ( mhT ) setCssVar( ws, '--madeit-min-height-tablet',  mhT );
-    if ( mhM ) setCssVar( ws, '--madeit-min-height-mobile',  mhM );
+    function getResponsiveValue(value, unit, customValue) {
+    if (unit === '__custom__') {
+        return customValue || undefined;
+    }
 
-    if ( typeof maxWidth       === 'number' ) setCssVar( ws, '--madeit-max-width-desktop', `${ maxWidth       }${ maxWidthUnit       || 'px' }` );
-    if ( typeof maxWidthTablet === 'number' ) setCssVar( ws, '--madeit-max-width-tablet',  `${ maxWidthTablet }${ maxWidthUnitTablet || 'px' }` );
-    if ( typeof maxWidthMobile === 'number' ) setCssVar( ws, '--madeit-max-width-mobile',  `${ maxWidthMobile }${ maxWidthUnitMobile || 'px' }` );
+    if (typeof value === 'number') {
+        return `${value}${unit || 'px'}`;
+    }
+
+    return undefined;
+}
+
+// ─────────────────────────────────────────────
+// MAX WIDTH (DESKTOP / TABLET / MOBILE)
+// ─────────────────────────────────────────────
+
+const mwD = getResponsiveValue(
+    maxWidth,
+    maxWidthUnit,
+    maxWidthCustom
+);
+
+const mwT = getResponsiveValue(
+    maxWidthTablet,
+    maxWidthUnitTablet || maxWidthUnit,
+    maxWidthCustomTablet || maxWidthCustom
+);
+
+const mwM = getResponsiveValue(
+    maxWidthMobile,
+    maxWidthUnitMobile || maxWidthUnitTablet || maxWidthUnit,
+    maxWidthCustomMobile || maxWidthCustomTablet || maxWidthCustom
+);
+
+// ── CSS VARS SETTING ─────────────────────────
+
+if (mwD) {
+    setCssVar(ws, '--madeit-max-width-desktop', mwD);
+}
+
+if (mwT) {
+    setCssVar(ws, '--madeit-max-width-tablet', mwT);
+}
+
+if (mwM) {
+    setCssVar(ws, '--madeit-max-width-mobile', mwM);
+}
+
+// ─────────────────────────────────────────────
+// MIN HEIGHT (zoals je al had)
+// ─────────────────────────────────────────────
+
+const mhD = toCssLength(minHeight, minHeightUnit || 'px');
+
+const mhT = toCssLength(
+    minHeightTablet,
+    minHeightUnitTablet || minHeightUnit || 'px'
+);
+
+const mhM = toCssLength(
+    minHeightMobile,
+    minHeightUnitMobile ||
+        minHeightUnitTablet ||
+        minHeightUnit ||
+        'px'
+);
+
+if (mhD) {
+    setCssVar(ws, '--madeit-min-height-desktop', mhD);
+}
+
+if (mhT) {
+    setCssVar(ws, '--madeit-min-height-tablet', mhT);
+}
+
+if (mhM) {
+    setCssVar(ws, '--madeit-min-height-mobile', mhM);
+}
 
     if ( typeof rowGap === 'number' ) {
         setCssVar( ws, '--madeit-row-gap-desktop', `${ rowGap }${ rowGapUnit || 'px' }` );
