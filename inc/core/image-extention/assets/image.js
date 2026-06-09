@@ -262,12 +262,18 @@
             imageWidthTablet ||
             imageHeightTablet;
 
+		const style = {
+			...(extraProps.style || {}),
+			...applyImageStyle(attributes),
+		};
+
+		if (style.layout && typeof style.layout === 'object') {
+			delete style.layout;
+		}
+
 		const result = {
 			...extraProps,
-			style: {
-				...(extraProps.style || {}),
-				...applyImageStyle(attributes),
-			},
+			style,
 		};
 
 		if (hasResponsive) {

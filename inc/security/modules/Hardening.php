@@ -58,10 +58,10 @@ class Hardening {
      * Only allow automatic updates during business hours in the site timezone.
      * Window: 06:00 (inclusive) until 17:00 (exclusive).
      *
-     * @param bool $should_update Current decision from WordPress/other filters.
+     * @param bool|null $should_update Current decision from WordPress/other filters.
      */
-    public static function allow_auto_update_for_window( bool $should_update ): bool {
-        if ( ! $should_update ) {
+    public static function allow_auto_update_for_window( ?bool $should_update ): bool {
+        if ( true !== $should_update ) {
             return false;
         }
 
@@ -71,7 +71,7 @@ class Hardening {
     /**
      * Core update specific gate for allow_*_auto_core_updates filters.
      */
-    public static function allow_core_auto_update_for_window( bool $should_update ): bool {
+    public static function allow_core_auto_update_for_window( ?bool $should_update ): bool {
         return self::allow_auto_update_for_window( $should_update );
     }
 

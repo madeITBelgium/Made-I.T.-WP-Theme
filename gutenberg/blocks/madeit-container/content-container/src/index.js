@@ -228,7 +228,10 @@ registerBlockType( metadata.name, {
                     ? attrs.boxedInnerContainerClassName.trim() : '';
                 if ( ! boxedInnerRow ) return false;
                 if ( ! boxedInnerContainer ) return false;
-                return true;
+                const wrapperTokens = ( attrs?.wrapperClassName ?? '' ).trim().split( /\s+/ ).filter( Boolean );
+                const hasFrontendClass = wrapperTokens.includes( 'madeit-block-content--frontend' );
+                const hasMadeitRowClass = boxedInnerRow.includes( 'madeit-container-row' );
+                return hasFrontendClass || hasMadeitRowClass;
             },
             save: saveVlegacyBoxedInnerRow,
             migrate( attrs ) {

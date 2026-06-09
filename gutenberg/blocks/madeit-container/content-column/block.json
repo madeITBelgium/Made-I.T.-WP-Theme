@@ -15,7 +15,11 @@
     "supports": {
         "inserter": false,
         "reusable": false,
-        "html": false
+        "html": false,
+
+        "className": true,
+        "customClassName": true,
+        "styles": true
     },
     "textdomain": "madeit",
     "editorScript": "file:./build/index.js",
