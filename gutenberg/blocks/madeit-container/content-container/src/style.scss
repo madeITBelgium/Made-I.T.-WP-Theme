@@ -670,7 +670,7 @@ $break-medium: 782px;
 // =============================================================================
 
 // Bootstrap `.row > *` heeft standaard padding; wij beheren dat zelf.
-.row > * {
+.row > *:not(.blog-index-post) {
     padding-right: calc(var(--bs-gutter-x) * 0.5);
     padding-left: calc(var(--bs-gutter-x) * 0.5);
 }

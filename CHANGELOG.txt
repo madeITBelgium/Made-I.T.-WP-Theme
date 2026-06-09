@@ -1,6 +1,26 @@
 Made I.T. Theme Changelog
 ==========================
 
+Version 3.0.6 - 2026-06-09
+-------------------------
+Added
+- Added class name and style support for the Container Content Column block in the editor
+
+Changed
+- Changed Container Content alignment handling so only full-width containers set `data-align="full"`
+- Changed Container Content migration eligibility to require frontend wrapper or row markers
+- Changed security auto-update defaults so core, plugin, and theme updates are enabled by default
+- Changed auto-update gating to accept nullable core decisions while enforcing the update window
+
+Fixed
+- Fixed container width adjustments on blog index items by skipping negative-margin corrections
+- Fixed frontend container auto-fix behavior to avoid blog post styling conflicts
+- Fixed core image style merging by applying responsive styles safely and stripping layout objects
+- Fixed setup wizard initialization by removing an unconditional `opcache_reset()` call
+
+Removed
+- Removed generated source maps for Container Content block build assets
+
 Version 3.0.5 - 2026-06-08
 -------------------------
 Added

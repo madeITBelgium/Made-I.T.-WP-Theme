@@ -3,7 +3,7 @@ Contributors: madeit
 Requires at least: WordPress 5.0
 Tested up to: 7.0
 Requires PHP: 8.5
-Version: 3.0.5
+Version: 3.0.6
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: madeit, bootstrap, bootstrap4, made i.t., Made I.T.
@@ -56,6 +56,14 @@ License: CC0 1.0 Universal (CC0 1.0)
 Source: https://unsplash.com/@englr?photo=bIhpiQA009k
 
 == Changelog ==
+= 3.0.6 =
+* Added class name and style support for Container Content Column blocks in the editor
+* Improved container alignment and migration rules for container content blocks
+* Updated security auto-update defaults and window gating behavior
+* Fixed blog index container sizing conflicts and frontend container auto-fix behavior
+* Fixed core image style merging and removed unconditional opcache reset during setup
+* Removed generated source maps for Container Content block build assets
+
 = 3.0.5 =
 * Added custom responsive unit support for Container Content min-height and max-width (including custom unit input values)
 * Improved legacy container migration paths for inline-margin wrappers and regenerated related block build assets
