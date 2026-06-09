@@ -862,7 +862,11 @@ document.querySelectorAll('.dropdown a.dropdown-toggle').forEach(function(item) 
     const containers = document.querySelectorAll('.wp-block-madeit-block-content');
     const containersFixed = document.querySelectorAll('.wp-block-madeit-block-content.madeit-block-content--frontend');
 
-    const blogs = document.querySelectorAll('.blog-post');
+    const blogs = document.querySelectorAll([[
+        '.blog-post',
+        '.single-post',
+        '.archive',
+    ]]);
 
     if (blogs.length) {
         console.log('Blog post content gevonden, containers worden niet gefixt om conflicten met thema styling te voorkomen.');
