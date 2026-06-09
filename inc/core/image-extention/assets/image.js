@@ -245,6 +245,10 @@
 		if (blockType.name !== 'core/image') {
 			return extraProps;
 		}
+		const mergedStyle = {
+			...(extraProps.style || {}),
+			...applyImageStyle(attributes),
+		};
 
 		const {
 			width,
@@ -253,7 +257,7 @@
 			imageHeightTablet,
 			imageWidthMobile,
 			imageHeightMobile,
-			style = {},
+			style = mergedStyle,
 		} = attributes;
 
 		const hasResponsive =
@@ -262,10 +266,6 @@
             imageWidthTablet ||
             imageHeightTablet;
 
-		const style = {
-			...(extraProps.style || {}),
-			...applyImageStyle(attributes),
-		};
 
 		if (style.layout && typeof style.layout === 'object') {
 			delete style.layout;

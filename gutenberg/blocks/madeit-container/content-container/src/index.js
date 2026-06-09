@@ -142,7 +142,7 @@ registerBlockType( metadata.name, {
 
     getEditWrapperProps( attributes ) {
         const { size } = attributes;
-        if ( size === 'container-fluid' || size === 'container-content-boxed' ) {
+        if ( size === 'container-fluid' ) {
             return { 'data-align': 'full' };
         }
         return { 'data-align': 'container' };

@@ -862,6 +862,13 @@ document.querySelectorAll('.dropdown a.dropdown-toggle').forEach(function(item) 
     const containers = document.querySelectorAll('.wp-block-madeit-block-content');
     const containersFixed = document.querySelectorAll('.wp-block-madeit-block-content.madeit-block-content--frontend');
 
+    const blogs = document.querySelectorAll('.blog-post');
+
+    if (blogs.length) {
+        console.log('Blog post content gevonden, containers worden niet gefixt om conflicten met thema styling te voorkomen.');
+        return;
+    }
+
     if (containersFixed.length) {
         console.log('[fix-container] Geen content containers gevonden.');
         return;

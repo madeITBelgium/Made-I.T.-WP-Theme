@@ -36,7 +36,7 @@ class Hardening {
         remove_action( 'wp_head', 'rest_output_link_wp_head' );
 
         // Auto-update core
-        if ( \MadeIT\Security\Settings::bool( 'madeit_security_auto_update_core', false ) ) {
+        if ( \MadeIT\Security\Settings::bool( 'madeit_security_auto_update_core', true ) ) {
             add_filter( 'auto_update_core', [ __CLASS__, 'allow_auto_update_for_window' ], 10, 2 ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WordPress core hook
             add_filter( 'allow_minor_auto_core_updates', [ __CLASS__, 'allow_core_auto_update_for_window' ] ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WordPress core hook
             add_filter( 'allow_major_auto_core_updates', [ __CLASS__, 'allow_core_auto_update_for_window' ] ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WordPress core hook
@@ -44,12 +44,12 @@ class Hardening {
         }
 
         // Auto-update plugins
-        if ( \MadeIT\Security\Settings::bool( 'madeit_security_auto_update_plugins', false ) ) {
+        if ( \MadeIT\Security\Settings::bool( 'madeit_security_auto_update_plugins', true ) ) {
             add_filter( 'auto_update_plugin', [ __CLASS__, 'allow_auto_update_for_window' ], 10, 2 ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WordPress core hook
         }
 
         // Auto-update themes
-        if ( \MadeIT\Security\Settings::bool( 'madeit_security_auto_update_themes', false ) ) {
+        if ( \MadeIT\Security\Settings::bool( 'madeit_security_auto_update_themes', true ) ) {
             add_filter( 'auto_update_theme', [ __CLASS__, 'allow_auto_update_for_window' ], 10, 2 ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WordPress core hook
         }
     }
@@ -62,7 +62,7 @@ class Hardening {
      */
     public static function allow_auto_update_for_window( ?bool $should_update ): bool {
         if ( true !== $should_update ) {
-            return false;
+            //return false;
         }
 
         return self::is_auto_update_window_open();

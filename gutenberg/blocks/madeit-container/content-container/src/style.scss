@@ -214,8 +214,10 @@ $break-medium: 782px;
         --madeit-justify-content-desktop:   flex-start;
         --madeit-flex-wrap-desktop:         nowrap;
 
-        // Corrigeer breedte voor eventuele negatieve margin-left/right.
-        width: calc(100% - var(--margin-left-desktop, 0px) - var(--margin-right-desktop, 0px));
+        &:not(.blog-index-post) {
+            // Corrigeer breedte voor eventuele negatieve margin-left/right.
+            width: calc(100% - var(--margin-left-desktop, 0px) - var(--margin-right-desktop, 0px));
+        }
     }
 
 

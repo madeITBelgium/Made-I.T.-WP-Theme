@@ -5,10 +5,6 @@
  * @package MadeIt
  */
 
-opcache_reset();
-
-
-
 require_once __DIR__ . '/class-setup-steps.php';
 
 class MadeIt_Setup_Wizard {
