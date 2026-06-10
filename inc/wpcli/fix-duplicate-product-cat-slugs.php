@@ -46,11 +46,12 @@ class Madeit_Fix_Duplicate_Product_Cat_Slugs_Command
         ]);
 
         if (is_wp_error($terms)) {
-            \WP_CLI::error('Kon termen niet ophalen: ' . $terms->get_error_message());
+            \WP_CLI::error('Kon termen niet ophalen: '.$terms->get_error_message());
         }
 
         if (empty($terms)) {
             \WP_CLI::success("Geen termen gevonden in taxonomy '{$taxonomy}'.");
+
             return;
         }
 
@@ -75,6 +76,7 @@ class Madeit_Fix_Duplicate_Product_Cat_Slugs_Command
 
         if (empty($duplicateGroups)) {
             \WP_CLI::success("Geen dubbele slugs gevonden in taxonomy '{$taxonomy}'.");
+
             return;
         }
 
@@ -83,27 +85,27 @@ class Madeit_Fix_Duplicate_Product_Cat_Slugs_Command
         $fixedCount = 0;
         $errorCount = 0;
 
-        \WP_CLI::log('Dubbele slugs gevonden: ' . count($duplicateGroups));
+        \WP_CLI::log('Dubbele slugs gevonden: '.count($duplicateGroups));
 
         foreach ($duplicateGroups as $slug => $group) {
             \WP_CLI::log('');
-            \WP_CLI::log("Slug '{$slug}' komt " . count($group) . 'x voor.');
+            \WP_CLI::log("Slug '{$slug}' komt ".count($group).'x voor.');
 
             // Laat de oudste term ongewijzigd en herstel de rest.
             $keeper = array_shift($group);
-            \WP_CLI::log('  Behouden: term_id=' . (int) $keeper->term_id . ' name="' . $keeper->name . '"');
+            \WP_CLI::log('  Behouden: term_id='.(int) $keeper->term_id.' name="'.$keeper->name.'"');
 
             foreach ($group as $term) {
                 $baseSlug = $this->buildBaseSlug($term, $taxonomy);
                 if ($baseSlug === '') {
-                    $baseSlug = 'term-' . (int) $term->term_id;
+                    $baseSlug = 'term-'.(int) $term->term_id;
                 }
 
                 $newSlug = $this->makeUniqueSlug($baseSlug, $taxonomy, (int) $term->term_id, $usedSlugs);
 
                 if ($newSlug === (string) $term->slug) {
                     $newSlug = $this->makeUniqueSlug(
-                        $baseSlug . '-' . (int) $term->term_id,
+                        $baseSlug.'-'.(int) $term->term_id,
                         $taxonomy,
                         (int) $term->term_id,
                         $usedSlugs
@@ -112,8 +114,8 @@ class Madeit_Fix_Duplicate_Product_Cat_Slugs_Command
 
                 if ($dryRun) {
                     \WP_CLI::log(
-                        '  [DRY-RUN] term_id=' . (int) $term->term_id .
-                        ' name="' . $term->name . '" slug: "' . $term->slug . '" -> "' . $newSlug . '"'
+                        '  [DRY-RUN] term_id='.(int) $term->term_id.
+                        ' name="'.$term->name.'" slug: "'.$term->slug.'" -> "'.$newSlug.'"'
                     );
                     $fixedCount++;
                     continue;
@@ -126,16 +128,16 @@ class Madeit_Fix_Duplicate_Product_Cat_Slugs_Command
                 if (is_wp_error($updated)) {
                     $errorCount++;
                     \WP_CLI::warning(
-                        '  term_id=' . (int) $term->term_id .
-                        ' kon niet geupdatet worden: ' .
+                        '  term_id='.(int) $term->term_id.
+                        ' kon niet geupdatet worden: '.
                         $updated->get_error_message()
                     );
                     continue;
                 }
 
                 \WP_CLI::log(
-                    '  term_id=' . (int) $term->term_id .
-                    ' aangepast: "' . $term->slug . '" -> "' . $newSlug . '"'
+                    '  term_id='.(int) $term->term_id.
+                    ' aangepast: "'.$term->slug.'" -> "'.$newSlug.'"'
                 );
                 $fixedCount++;
             }
@@ -144,11 +146,13 @@ class Madeit_Fix_Duplicate_Product_Cat_Slugs_Command
         \WP_CLI::log('');
         if ($dryRun) {
             \WP_CLI::success("DRY-RUN klaar. {$fixedCount} term(en) zouden aangepast worden.");
+
             return;
         }
 
         if ($errorCount > 0) {
             \WP_CLI::warning("Klaar met {$errorCount} fout(en). {$fixedCount} term(en) aangepast.");
+
             return;
         }
 
@@ -209,19 +213,19 @@ class Madeit_Fix_Duplicate_Product_Cat_Slugs_Command
     {
         $baseSlug = sanitize_title((string) $baseSlug);
         if ($baseSlug === '') {
-            $baseSlug = 'term-' . (int) $termId;
+            $baseSlug = 'term-'.(int) $termId;
         }
 
         $candidate = $baseSlug;
         $index = 2;
 
         while (!$this->isSlugAvailableForTerm($candidate, (int) $termId, $usedSlugs)) {
-            $candidate = $baseSlug . '-' . $index;
+            $candidate = $baseSlug.'-'.$index;
             $index++;
 
             if ($index > 10000) {
                 // Extreme safeguard tegen oneindige loop bij corrupte data.
-                $candidate = $baseSlug . '-' . (int) $termId;
+                $candidate = $baseSlug.'-'.(int) $termId;
                 break;
             }
         }
