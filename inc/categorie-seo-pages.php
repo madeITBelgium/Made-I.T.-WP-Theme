@@ -61,11 +61,11 @@ function madeit_categorie_seo_pages_get_posts_for_position($termId, $positie)
     $termLookupIds = madeit_categorie_seo_pages_wpml_term_lookup_ids($termId, $taxonomy);
 
     $queryArgs = [
-        'post_type'      => 'categorie-pagina',
-        'post_status'    => 'publish',
-        'posts_per_page' => 1,
+        'post_type'        => 'categorie-pagina',
+        'post_status'      => 'publish',
+        'posts_per_page'   => 1,
         'suppress_filters' => false,
-        'meta_query'     => [
+        'meta_query'       => [
             [
                 'key'     => 'categorie',
                 'value'   => $termLookupIds,
