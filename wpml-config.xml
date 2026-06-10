@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<wpml-config>
+  <custom-types>
+    <custom-type translate="1">categorie-pagina</custom-type>
+  </custom-types>
+</wpml-config>

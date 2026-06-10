@@ -1,5 +1,142 @@
 <?php
 
+function madeit_categorie_seo_pages_wpml_current_language()
+{
+    if (has_filter('wpml_current_language')) {
+        return apply_filters('wpml_current_language', null);
+    }
+
+    return null;
+}
+
+function madeit_categorie_seo_pages_wpml_default_language()
+{
+    if (has_filter('wpml_default_language')) {
+        return apply_filters('wpml_default_language', null);
+    }
+
+    return null;
+}
+
+function madeit_categorie_seo_pages_wpml_term_lookup_ids($termId, $taxonomy)
+{
+    $ids = [(int) $termId];
+
+    if (!has_filter('wpml_object_id')) {
+        return $ids;
+    }
+
+    $defaultLanguage = madeit_categorie_seo_pages_wpml_default_language();
+
+    if (!empty($defaultLanguage)) {
+        $defaultLanguageTermId = apply_filters('wpml_object_id', (int) $termId, $taxonomy, true, $defaultLanguage);
+        if (!empty($defaultLanguageTermId)) {
+            $ids[] = (int) $defaultLanguageTermId;
+        }
+    }
+
+    return array_values(array_unique(array_filter($ids)));
+}
+
+function madeit_categorie_seo_pages_wpml_translate_post_id($postId)
+{
+    if (!has_filter('wpml_object_id')) {
+        return (int) $postId;
+    }
+
+    $currentLanguage = madeit_categorie_seo_pages_wpml_current_language();
+
+    if (empty($currentLanguage)) {
+        return (int) $postId;
+    }
+
+    $translatedId = apply_filters('wpml_object_id', (int) $postId, 'categorie-pagina', true, $currentLanguage);
+
+    return !empty($translatedId) ? (int) $translatedId : (int) $postId;
+}
+
+function madeit_categorie_seo_pages_get_posts_for_position($termId, $positie)
+{
+    $taxonomy = is_product_tag() ? 'product_tag' : 'product_cat';
+    $termLookupIds = madeit_categorie_seo_pages_wpml_term_lookup_ids($termId, $taxonomy);
+
+    $queryArgs = [
+        'post_type'      => 'categorie-pagina',
+        'post_status'    => 'publish',
+        'posts_per_page' => 1,
+        'suppress_filters' => false,
+        'meta_query'     => [
+            [
+                'key'     => 'categorie',
+                'value'   => $termLookupIds,
+                'compare' => 'IN',
+            ],
+            [
+                'key'     => 'positie',
+                'value'   => $positie,
+                'compare' => '=',
+            ],
+        ],
+    ];
+
+    $currentLanguage = madeit_categorie_seo_pages_wpml_current_language();
+    if (!empty($currentLanguage)) {
+        $queryArgs['lang'] = $currentLanguage;
+    }
+
+    $categoriePages = get_posts($queryArgs);
+
+    if (!empty($categoriePages)) {
+        return $categoriePages;
+    }
+
+    if (empty($currentLanguage)) {
+        return $categoriePages;
+    }
+
+    $fallbackArgs = $queryArgs;
+    $fallbackArgs['lang'] = 'all';
+    $fallbackPosts = get_posts($fallbackArgs);
+
+    if (empty($fallbackPosts)) {
+        return [];
+    }
+
+    $translatedPostId = madeit_categorie_seo_pages_wpml_translate_post_id($fallbackPosts[0]->ID);
+    $translatedPost = get_post($translatedPostId);
+
+    if ($translatedPost instanceof WP_Post && 'publish' === $translatedPost->post_status) {
+        return [$translatedPost];
+    }
+
+    return [];
+}
+
+function madeit_categorie_seo_pages_render($categoriePages, $showDivider = false)
+{
+    if (empty($categoriePages)) {
+        return;
+    }
+
+    if ($showDivider) {
+        echo '<div class="categorie-seo-page-devider mt-5"></div>';
+    }
+
+    foreach ($categoriePages as $categoriePage) {
+        if (false !== strpos($categoriePage->post_content, '<!-- wp:madeit/block-container') || false !== strpos($categoriePage->post_content, '<!-- wp:madeit/block-content')) {
+            echo apply_filters('the_content', $categoriePage->post_content);
+        } else {
+            echo "<div class='container'>";
+            echo "<div class='row'>";
+            echo "<div class='col-12'>";
+            echo apply_filters('the_content', $categoriePage->post_content);
+            echo '</div>';
+            echo '</div>';
+            echo '</div>';
+        }
+    }
+}
+
 add_action('woocommerce_after_main_content', 'madeit_categorie_seo_pages_woo_after_main_content', 10);
 function madeit_categorie_seo_pages_woo_after_main_content()
 {
@@ -8,42 +145,13 @@ function madeit_categorie_seo_pages_woo_after_main_content()
         // Get the current category or tag
         $term = get_queried_object();
 
-        $termId = $term->term_id;
-        $termName = $term->name;
-        $type = is_product_category() ? 'category' : 'tag';
-
-        $categoriePages = get_posts([
-            'post_type'      => 'categorie-pagina',
-            'posts_per_page' => 1,
-            'meta_query'     => [
-                [
-                    'key'     => 'categorie',
-                    'value'   => $termId,
-                    'compare' => '=',
-                ],
-                [
-                    'key'     => 'positie',
-                    'value'   => 'Onderaan',
-                    'compare' => '=',
-                ],
-            ],
-        ]);
-        if (count($categoriePages) > 0) {
-            echo '<div class="categorie-seo-page-devider mt-5"></div>';
-            foreach ($categoriePages as $categoriePage) {
-                if (false !== strpos($categoriePage->post_content, '<!-- wp:madeit/block-container') || false !== strpos($categoriePage->post_content, '<!-- wp:madeit/block-content')) {
-                    echo apply_filters('the_content', $categoriePage->post_content);
-                } else {
-                    echo "<div class='container'>";
-                    echo "<div class='row'>";
-                    echo "<div class='col-12'>";
-                    echo apply_filters('the_content', $categoriePage->post_content);
-                    echo '</div>';
-                    echo '</div>';
-                    echo '</div>';
-                }
-            }
+        if (!isset($term->term_id)) {
+            return;
         }
+
+        $termId = $term->term_id;
+        $categoriePages = madeit_categorie_seo_pages_get_posts_for_position($termId, 'Onderaan');
+        madeit_categorie_seo_pages_render($categoriePages, true);
     }
 }
 
@@ -55,41 +163,13 @@ function madeit_categorie_seo_pages_woo_before_main_content()
         // Get the current category or tag
         $term = get_queried_object();
 
-        $termId = $term->term_id;
-        $termName = $term->name;
-        $type = is_product_category() ? 'category' : 'tag';
-
-        $categoriePages = get_posts([
-            'post_type'      => 'categorie-pagina',
-            'posts_per_page' => 1,
-            'meta_query'     => [
-                [
-                    'key'     => 'categorie',
-                    'value'   => $termId,
-                    'compare' => '=',
-                ],
-                [
-                    'key'     => 'positie',
-                    'value'   => 'Bovenaan',
-                    'compare' => '=',
-                ],
-            ],
-        ]);
-        if (count($categoriePages) > 0) {
-            foreach ($categoriePages as $categoriePage) {
-                if (false !== strpos($categoriePage->post_content, '<!-- wp:madeit/block-container') || false !== strpos($categoriePage->post_content, '<!-- wp:madeit/block-content')) {
-                    echo apply_filters('the_content', $categoriePage->post_content);
-                } else {
-                    echo "<div class='container'>";
-                    echo "<div class='row'>";
-                    echo "<div class='col-12'>";
-                    echo apply_filters('the_content', $categoriePage->post_content);
-                    echo '</div>';
-                    echo '</div>';
-                    echo '</div>';
-                }
-            }
+        if (!isset($term->term_id)) {
+            return;
         }
+
+        $termId = $term->term_id;
+        $categoriePages = madeit_categorie_seo_pages_get_posts_for_position($termId, 'Bovenaan');
+        madeit_categorie_seo_pages_render($categoriePages);
     }
 }
 
@@ -101,42 +181,13 @@ function madeit_categorie_seo_pages_woocommerce_shop_loop_header()
         // Get the current category or tag
         $term = get_queried_object();
 
-        $termId = $term->term_id;
-        $termName = $term->name;
-        $type = is_product_category() ? 'category' : 'tag';
-
-        $categoriePages = get_posts([
-            'post_type'      => 'categorie-pagina',
-            'posts_per_page' => 1,
-            'meta_query'     => [
-                [
-                    'key'     => 'categorie',
-                    'value'   => $termId,
-                    'compare' => '=',
-                ],
-                [
-                    'key'     => 'positie',
-                    'value'   => 'Onder titel',
-                    'compare' => '=',
-                ],
-            ],
-        ]);
-        if (count($categoriePages) > 0) {
-            echo '<div class="categorie-seo-page-devider mt-5"></div>';
-            foreach ($categoriePages as $categoriePage) {
-                if (false !== strpos($categoriePage->post_content, '<!-- wp:madeit/block-container') || false !== strpos($categoriePage->post_content, '<!-- wp:madeit/block-content')) {
-                    echo apply_filters('the_content', $categoriePage->post_content);
-                } else {
-                    echo "<div class='container'>";
-                    echo "<div class='row'>";
-                    echo "<div class='col-12'>";
-                    echo apply_filters('the_content', $categoriePage->post_content);
-                    echo '</div>';
-                    echo '</div>';
-                    echo '</div>';
-                }
-            }
+        if (!isset($term->term_id)) {
+            return;
         }
+
+        $termId = $term->term_id;
+        $categoriePages = madeit_categorie_seo_pages_get_posts_for_position($termId, 'Onder titel');
+        madeit_categorie_seo_pages_render($categoriePages, true);
     }
 }
 
@@ -273,10 +324,6 @@ add_action('init', function () {
             2 => 'editor',
             3 => 'revisions',
             4 => 'custom-fields',
-        ],
-        'taxonomies' => [
-            0 => 'product_cat',
-            1 => 'product_tag',
         ],
         'rewrite'          => false,
         'delete_with_user' => false,

@@ -210,6 +210,11 @@ if(!defined('MADEIT_SETUP_WIZARD')) {
     define('MADEIT_SETUP_WIZARD', true);
 }
 
+// Added in 3.0.0
+if(!defined('MADEIT_CATEGORIE_SEO_PAGES')) {
+    define('MADEIT_CATEGORIE_SEO_PAGES', true);
+}
+
 if(!defined('MADEIT_NAME')) {
     define('MADEIT_NAME', 'Made I.T.');
 }
