@@ -33,6 +33,7 @@ import icon from './icon';
 import {
     saveVnoResponsiveDir,
     saveVlegacyBoxedInnerRow,
+    saveVlegacyBoxedInlineWrapper,
     saveVlegacyDirectRowInlineStyle,
     saveVpre0b,
     saveVpre0,
@@ -240,6 +241,28 @@ registerBlockType( metadata.name, {
                     size: 'container',
                 };
             },
+        },
+
+        // ── Vboxed-inline ────────────────────────────────────────────────────
+        // Legacy boxed markup met inline wrapper styles en ZONDER frontend-class.
+        // Structuur: .row > .col > .container > .row (inner rows zonder data attrs).
+        {
+            attributes: metadata.attributes,
+            isEligible( attrs ) {
+                if ( attrs?.madeitHasUserEdits ) return false;
+                const boxedInnerRow = typeof attrs?.boxedInnerRowClassName === 'string'
+                    ? attrs.boxedInnerRowClassName.trim() : '';
+                const boxedInnerContainer = typeof attrs?.boxedInnerContainerClassName === 'string'
+                    ? attrs.boxedInnerContainerClassName.trim() : '';
+                if ( ! boxedInnerRow ) return false;
+                if ( ! boxedInnerContainer ) return false;
+                const wrapperTokens = ( attrs?.wrapperClassName ?? '' ).trim().split( /\s+/ ).filter( Boolean );
+                if ( wrapperTokens.includes( 'madeit-block-content--frontend' ) ) return false;
+                if ( ! wrapperTokens.includes( 'container-fluid' ) ) return false;
+                return true;
+            },
+            save: saveVlegacyBoxedInlineWrapper,
+            migrate,
         },
 
         // ── Vdirect ──────────────────────────────────────────────────────────

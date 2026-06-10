@@ -13,6 +13,7 @@
 
 export { default as saveVnoResponsiveDir } from './saveVno-responsive-dir';
 export { default as saveVlegacyBoxedInnerRow } from './saveVlegacy-boxed-inner-row';
+export { default as saveVlegacyBoxedInlineWrapper } from './save-legacy-boxed-inline-wrapper';
 export { default as saveVlegacyDirectRowInlineStyle } from './saveVlegacy-direct-row-inline-style';
 export { default as saveVpre0b } from './saveV8';
 export { default as saveVpre0  } from './saveV7';

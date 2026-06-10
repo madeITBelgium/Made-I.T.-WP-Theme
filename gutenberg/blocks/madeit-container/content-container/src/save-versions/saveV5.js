@@ -30,7 +30,10 @@ import { useBlockProps, InnerBlocks, getColorClassName } from '@wordpress/block-
 export default function save( props ) {
     const {
         wrapperClassName,
+        wrapperStyle,
         directRowClassName,
+        boxedInnerContainerClassName,
+        boxedInnerRowClassName,
         verticalAlignment,
         backgroundType,
         containerBackgroundColor,
@@ -114,6 +117,17 @@ export default function save( props ) {
         defaultSize = 'container';
     }
 
+    // Legacy boxed markup detection: if the stored HTML contains the boxed
+    // inner container/row structure, treat it as container-content-boxed
+    // even when the size attribute is missing (defaults to container).
+    const hasLegacyBoxedInnerContainer =
+        typeof boxedInnerContainerClassName === 'string' && boxedInnerContainerClassName.trim().length > 0;
+    const hasLegacyBoxedInnerRow =
+        typeof boxedInnerRowClassName === 'string' && boxedInnerRowClassName.trim().length > 0;
+    if ( defaultSize === 'container' && ( hasLegacyBoxedInnerContainer || hasLegacyBoxedInnerRow ) ) {
+        defaultSize = 'container-content-boxed';
+    }
+
     // Legacy compatibility (2026-04-17 default change follow-up):
     // Some older content was saved with a `.container` wrapper while the block
     // had no explicit `size` attribute. After changing the default to
@@ -159,6 +173,30 @@ export default function save( props ) {
     // the enhanced layout-related CSS variables. To keep block validation
     // stable, do not serialize these vars for that legacy markup.
     const shouldSerializeEnhancedLayoutVars = ! shouldUseLegacyWrapperClasses;
+
+    const parseInlineStyle = ( styleText ) => {
+        if ( typeof styleText !== 'string' || ! styleText.trim() ) return undefined;
+        const styleObj = {};
+        const parts = styleText.split( ';' );
+        for ( const part of parts ) {
+            const trimmed = part.trim();
+            if ( ! trimmed ) continue;
+            const idx = trimmed.indexOf( ':' );
+            if ( idx === -1 ) continue;
+            const rawProp = trimmed.slice( 0, idx ).trim();
+            const rawVal = trimmed.slice( idx + 1 ).trim();
+            if ( ! rawProp || ! rawVal ) continue;
+            const prop = rawProp.startsWith( '--' )
+                ? rawProp
+                : rawProp.replace( /-([a-z])/g, ( _m, c ) => c.toUpperCase() );
+            styleObj[ prop ] = rawVal;
+        }
+        return Object.keys( styleObj ).length > 0 ? styleObj : undefined;
+    };
+
+    const parsedWrapperStyle = parseInlineStyle( wrapperStyle );
+    const shouldUseParsedWrapperStyle =
+        shouldUseLegacyWrapperClasses && !! parsedWrapperStyle;
 
     // Defaults from the block's default variation (`madeit-default-responsive`).
     // Older content could have these attribute values but did NOT serialize the
@@ -258,7 +296,7 @@ export default function save( props ) {
                     : customContainerBackgroundColor,
     };
 
-    var style = {};
+    var style = shouldUseParsedWrapperStyle ? { ...parsedWrapperStyle } : {};
 
     const toCssLength = ( value, unit = 'px' ) => {
         if ( typeof value === 'number' && Number.isFinite( value ) ) {
@@ -325,43 +363,43 @@ export default function save( props ) {
         containerBackgroundStyle.backgroundImage = computedBackgroundGradientValue;
     }
 
-    if ( ! applyContainerBackgroundToInner ) {
+    if ( ! applyContainerBackgroundToInner && ! shouldUseParsedWrapperStyle ) {
         style = { ...style, ...containerBackgroundStyle };
     }
 
     // Apply overflow to outer wrapper (avoid serializing default `visible`).
-    if ( typeof overflow === 'string' && overflow.length > 0 && overflow !== 'visible' ) {
+    if ( ! shouldUseParsedWrapperStyle && typeof overflow === 'string' && overflow.length > 0 && overflow !== 'visible' ) {
         style.overflow = overflow;
     }
 
     // Responsive min-height via CSS variables.
     const minHeightDesktopCss = toCssLength( minHeight, minHeightUnit || 'px' );
-    if ( minHeightDesktopCss !== undefined ) {
+    if ( ! shouldUseParsedWrapperStyle && minHeightDesktopCss !== undefined ) {
         style['--madeit-min-height-desktop'] = minHeightDesktopCss;
     }
     const minHeightTabletCss = toCssLength(
         minHeightTablet,
         minHeightUnitTablet || minHeightUnit || 'px'
     );
-    if ( minHeightTabletCss !== undefined ) {
+    if ( ! shouldUseParsedWrapperStyle && minHeightTabletCss !== undefined ) {
         style['--madeit-min-height-tablet'] = minHeightTabletCss;
     }
     const minHeightMobileCss = toCssLength(
         minHeightMobile,
         minHeightUnitMobile || minHeightUnitTablet || minHeightUnit || 'px'
     );
-    if ( minHeightMobileCss !== undefined ) {
+    if ( ! shouldUseParsedWrapperStyle && minHeightMobileCss !== undefined ) {
         style['--madeit-min-height-mobile'] = minHeightMobileCss;
     }
 
     // Responsive max-width via CSS variables.
-    if ( typeof maxWidth === 'number' ) {
+    if ( ! shouldUseParsedWrapperStyle && typeof maxWidth === 'number' ) {
         style['--madeit-max-width-desktop'] = `${ maxWidth }${ maxWidthUnit || 'px' }`;
     }
-    if ( typeof maxWidthTablet === 'number' ) {
+    if ( ! shouldUseParsedWrapperStyle && typeof maxWidthTablet === 'number' ) {
         style['--madeit-max-width-tablet'] = `${ maxWidthTablet }${ maxWidthUnitTablet || 'px' }`;
     }
-    if ( typeof maxWidthMobile === 'number' ) {
+    if ( ! shouldUseParsedWrapperStyle && typeof maxWidthMobile === 'number' ) {
         style['--madeit-max-width-mobile'] = `${ maxWidthMobile }${ maxWidthUnitMobile || 'px' }`;
     }
 
@@ -369,7 +407,7 @@ export default function save( props ) {
         // Row gap via CSS variables.
         // Important for block validation stability: only serialize tablet/mobile overrides
         // when a desktop rowGap is explicitly set.
-        if ( shouldSerializeEnhancedLayoutVars ) {
+        if ( shouldSerializeEnhancedLayoutVars && ! shouldUseParsedWrapperStyle ) {
             const hasRowGapDesktop =
                 typeof rowGap === 'number' && rowGap !== DEFAULT_ROW_GAP;
             if ( hasRowGapDesktop ) {
@@ -395,7 +433,7 @@ export default function save( props ) {
         }
 
     // Responsive flex-direction via CSS variables.
-    if ( shouldSerializeEnhancedLayoutVars ) {
+    if ( shouldSerializeEnhancedLayoutVars && ! shouldUseParsedWrapperStyle ) {
         if (
             typeof flexDirection === 'string' &&
             flexDirection.length > 0 &&
@@ -420,7 +458,7 @@ export default function save( props ) {
     }
 
     // Responsive align-items / justify-content via CSS variables.
-    if ( shouldSerializeEnhancedLayoutVars ) {
+    if ( shouldSerializeEnhancedLayoutVars && ! shouldUseParsedWrapperStyle ) {
         if (
             typeof alignItems === 'string' &&
             alignItems.length > 0 &&
@@ -451,7 +489,7 @@ export default function save( props ) {
     }
 
     // Responsive flex-wrap via CSS variables.
-    if ( shouldSerializeEnhancedLayoutVars ) {
+    if ( shouldSerializeEnhancedLayoutVars && ! shouldUseParsedWrapperStyle ) {
         if (
             typeof flexWrap === 'string' &&
             flexWrap.length > 0 &&
@@ -467,10 +505,10 @@ export default function save( props ) {
         }
     }
     
-    if(containerMargin !== undefined && containerMargin.top !== undefined) {
+    if ( ! shouldUseParsedWrapperStyle && containerMargin !== undefined && containerMargin.top !== undefined ) {
         style.marginTop = containerMargin.top;
     }
-    if(containerMargin !== undefined && containerMargin.bottom !== undefined) {
+    if ( ! shouldUseParsedWrapperStyle && containerMargin !== undefined && containerMargin.bottom !== undefined ) {
         style.marginBottom = containerMargin.bottom;
     }
     /*
@@ -488,7 +526,7 @@ export default function save( props ) {
 
     // Legacy compatibility: existing content may have containerPadding serialized
     // on the outer wrapper. Keep doing that unless explicitly migrated.
-    if ( ! shouldApplyContainerPaddingOnRow ) {
+    if ( ! shouldApplyContainerPaddingOnRow && ! shouldUseParsedWrapperStyle ) {
         if(containerPadding !== undefined && containerPadding.top !== undefined ) {
             style.paddingTop = containerPadding.top;
         }

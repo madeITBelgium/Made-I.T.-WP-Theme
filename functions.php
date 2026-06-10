@@ -370,58 +370,23 @@ if (!function_exists('madeit_setup')) {
             'widgets' => [
                 // Place three core-defined widgets in the sidebar area.
                 'sidebar-1' => [
-                    'text_business_info',
-                    'search',
-                    'text_about',
                 ],
 
                 // Add the core-defined business info widget to the footer 1 area.
                 'sidebar-2' => [
-                    'text_business_info',
                 ],
 
                 // Put two core-defined widgets in the footer 2 area.
                 'sidebar-3' => [
-                    'text_about',
-                    'search',
                 ],
             ],
 
             // Specify the core-defined pages to create and add custom thumbnails to some of them.
             'posts' => [
                 'home',
-                'about' => [
-                    'thumbnail' => '{{image-inside}}',
-                ],
-                'contact' => [
-                    'thumbnail' => '{{image-price-table}}',
-                ],
-                'blog' => [
-                    'thumbnail' => '{{image-koffie-machien}}',
-                ],
-                'homepage-section' => [
-                    'thumbnail' => '{{image-outside}}',
-                ],
-            ],
-
-            // Create the custom image attachments used as post thumbnails for pages.
-            'attachments' => [
-                'image-koffie-machien' => [
-                    'post_title' => _x('Koffie Machien', 'Theme starter content', 'madeit'),
-                    'file'       => 'assets/images/pexels-photo-296888.jpeg', // URL relative to the template directory.
-                ],
-                'image-outside' => [
-                    'post_title' => _x('Outside', 'Theme starter content', 'madeit'),
-                    'file'       => 'assets/images/pexels-photo-429247.jpeg',
-                ],
-                'image-inside' => [
-                    'post_title' => _x('Inside', 'Theme starter content', 'madeit'),
-                    'file'       => 'assets/images/pexels-photo-704982.jpeg',
-                ],
-                'image-price-table' => [
-                    'post_title' => _x('Price table', 'Theme starter content', 'madeit'),
-                    'file'       => 'assets/images/pexels-photo-705676.jpeg',
-                ],
+                'about' => [],
+                'contact' => [],
+                'blog' => [],
             ],
 
             // Default to a static front page and assign the front and posts pages.
@@ -429,14 +394,6 @@ if (!function_exists('madeit_setup')) {
                 'show_on_front'  => 'page',
                 'page_on_front'  => '{{home}}',
                 'page_for_posts' => '{{blog}}',
-            ],
-
-            // Set the front page section theme mods to the IDs of the core-registered pages.
-            'theme_mods' => [
-                //'panel_1' => '{{homepage-section}}',
-                'panel_1' => '{{about}}',
-                'panel_2' => '{{blog}}',
-                'panel_3' => '{{contact}}',
             ],
 
             // Set up nav menus for each of the two areas registered in the theme.

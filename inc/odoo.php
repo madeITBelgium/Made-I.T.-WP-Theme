@@ -76,7 +76,7 @@ if (!function_exists('madeit_odoo_get_category_id_from_path')) {
 
             $insertedTerm = wp_insert_term($segment, 'product_cat', [
                 'parent' => (int) $parentId,
-                'slug'   => sanitize_title($segment),
+                //'slug'   => sanitize_title($segment),
             ]);
 
             if (is_wp_error($insertedTerm)) {
