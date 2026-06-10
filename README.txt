@@ -3,7 +3,7 @@ Contributors: madeit
 Requires at least: WordPress 5.0
 Tested up to: 7.0
 Requires PHP: 8.5
-Version: 3.0.6
+Version: 3.0.7
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: madeit, bootstrap, bootstrap4, made i.t., Made I.T.
@@ -56,6 +56,16 @@ License: CC0 1.0 Universal (CC0 1.0)
 Source: https://unsplash.com/@englr?photo=bIhpiQA009k
 
 == Changelog ==
+= 3.0.7 =
+* Added legacy boxed inline wrapper save handling for the Container Content block
+* Added WP-CLI command to fix duplicate product category slugs
+* Improved Container Content migration eligibility for legacy boxed inline wrappers
+* Preserved legacy inline wrapper styles and avoided new CSS vars on legacy markup
+* Simplified starter content defaults by removing bundled widgets, thumbnails, and theme mods
+* Updated under-construction and theme image assets (loader, templates, screenshot)
+* Fixed product category inserts during Odoo sync by letting WordPress generate unique slugs
+* Removed bundled starter content attachments and sample images
+
 = 3.0.6 =
 * Added class name and style support for Container Content Column blocks in the editor
 * Improved container alignment and migration rules for container content blocks

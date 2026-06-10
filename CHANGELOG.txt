@@ -1,6 +1,24 @@
 Made I.T. Theme Changelog
 ==========================
 
+Version 3.0.7 - 2026-06-10
+-------------------------
+Added
+- Added legacy boxed inline wrapper save handling for the Container Content block
+- Added WP-CLI command to fix duplicate product category slugs
+
+Changed
+- Changed Container Content migration eligibility to detect legacy boxed inline wrappers
+- Changed legacy saveV5 handling to preserve inline wrapper styles and avoid new CSS vars on legacy markup
+- Changed starter content defaults to omit bundled widgets, thumbnails, and theme mods
+- Updated under-construction and theme image assets (loader, templates, screenshot)
+
+Fixed
+- Fixed product category inserts during Odoo sync by letting WordPress generate unique slugs
+
+Removed
+- Removed bundled starter content attachments and sample images
+
 Version 3.0.6 - 2026-06-09
 -------------------------
 Added
