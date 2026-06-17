@@ -36,14 +36,14 @@ if (!function_exists('madeit_odoo_get_category_id_from_path')) {
             return null;
         }
 
-        $cacheKey = 'madeit_odoo_category_id_'.md5($path);
-        $cachedValue = get_transient($cacheKey);
-        if ($cachedValue) {
-            return (int) $cachedValue;
-        }
+        // $cacheKey = 'madeit_odoo_category_id_'.md5($path);
+        // $cachedValue = get_transient($cacheKey);
+        // if ($cachedValue) {
+        //     return (int) $cachedValue;
+        // }
 
         $parentId = 0;
-        $segments = explode('/', $path);
+        $segments = preg_split('/\s+\/\s+/', $path);
         foreach ($segments as $segment) {
             $segment = trim($segment);
             if ($segment === '') {
@@ -70,8 +70,22 @@ if (!function_exists('madeit_odoo_get_category_id_from_path')) {
             }
 
             if (!empty($terms)) {
-                $parentId = (int) $terms[0]->term_id;
-                continue;
+                $lowestTermId = null;
+                foreach ($terms as $term) {
+                    if (!isset($term->term_id)) {
+                        continue;
+                    }
+
+                    $termId = (int) $term->term_id;
+                    if ($lowestTermId === null || $termId < $lowestTermId) {
+                        $lowestTermId = $termId;
+                    }
+                }
+
+                if ($lowestTermId !== null) {
+                    $parentId = $lowestTermId;
+                    continue;
+                }
             }
 
             $insertedTerm = wp_insert_term($segment, 'product_cat', [
@@ -93,9 +107,9 @@ if (!function_exists('madeit_odoo_get_category_id_from_path')) {
             $parentId = isset($insertedTerm['term_id']) ? (int) $insertedTerm['term_id'] : 0;
         }
 
-        if ($parentId) {
-            set_transient($cacheKey, $parentId, 60 * 60 * 24 * 5);
-        }
+        // if ($parentId) {
+        //     set_transient($cacheKey, $parentId, 60 * 60 * 24 * 5);
+        // }
 
         return $parentId ?: null;
     }

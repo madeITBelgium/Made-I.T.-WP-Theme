@@ -7,7 +7,7 @@
 
 $options = get_option('madeit_navbar_options', []);
 
-$mobile_breakpoint = ! empty( $options['mobile_menu_breakpoint'] ) ? $options['mobile_menu_breakpoint'] : 'md';
+$mobile_breakpoint = ! empty( $options['mobile_menu_breakpoint'] ) ? $options['mobile_menu_breakpoint'] : 'lg';
 $show_mobile_search = ! empty( $options['mobile_menu_search'] );
 $show_mobile_cta    = ! empty( $options['mobile_menu_cta'] );
 
