@@ -1,6 +1,34 @@
 Made I.T. Theme Changelog
 ==========================
 
+Version 3.0.8 - 2026-06-17
+-------------------------
+Added
+- Added WPML config for custom post type `categorie-pagina` in `wpml-config.xml`
+- Added new WP-CLI command `madeit merge-product-cat` to safely merge product categories (supports dry-run/apply, recursive child merge, and product reassignment)
+
+Changed
+- Refactored category SEO page rendering in `inc/categorie-seo-pages.php` into reusable helpers for query/render flow
+- Added WPML-aware lookup and fallback behavior for category SEO pages (current language, default language term lookup, translated post fallback)
+- Updated duplicate category slug WP-CLI command to a safer workflow with explicit apply mode, WPML language/trid-aware classification, and richer reporting
+- Extended duplicate slug WP-CLI command with options for language filtering, default language priority, and optional orphan parent repair
+- Changed Odoo category path parsing and category reuse logic to better handle spaced separators and existing duplicate terms
+- Updated mobile menu fallback breakpoint in top navigation from `md` to `lg`
+- Added theme constant `MADEIT_CATEGORIE_SEO_PAGES` defaulting to enabled
+
+Fixed
+- Fixed Odoo category matching to always use the lowest `term_id` when duplicate matches exist for the same segment/parent
+- Fixed potential stale category resolution in Odoo sync flow by disabling transient reads/writes for category path lookup
+
+Removed
+- No removed files or features in this release window
+
+Notes
+- Comparison scope: `3.0.7..HEAD`
+- Commits included:
+  - `656fc654` Improve SEO category pages
+  - `555e60d0` Update
+
 Version 3.0.7 - 2026-06-10
 -------------------------
 Added

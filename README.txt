@@ -3,7 +3,7 @@ Contributors: madeit
 Requires at least: WordPress 5.0
 Tested up to: 7.0
 Requires PHP: 8.5
-Version: 3.0.7
+Version: 3.0.8
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: madeit, bootstrap, bootstrap4, made i.t., Made I.T.
@@ -56,6 +56,14 @@ License: CC0 1.0 Universal (CC0 1.0)
 Source: https://unsplash.com/@englr?photo=bIhpiQA009k
 
 == Changelog ==
+= 3.0.8 =
+* Added WPML config for `categorie-pagina` and expanded multilingual handling for category SEO pages
+* Refactored category SEO page loading/rendering with reusable helpers and WPML fallback translation logic
+* Added new WP-CLI command `madeit merge-product-cat` for safe product category merges (dry-run/apply)
+* Improved duplicate product category slug fixer with explicit apply mode, WPML-aware duplicate classification, language options, and orphan parent checks
+* Updated Odoo category synchronization to parse spaced category paths and select the lowest existing category ID when duplicates exist
+* Changed mobile navigation fallback breakpoint from `md` to `lg`
+
 = 3.0.7 =
 * Added legacy boxed inline wrapper save handling for the Container Content block
 * Added WP-CLI command to fix duplicate product category slugs
