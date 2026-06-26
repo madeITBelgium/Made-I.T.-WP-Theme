@@ -83,17 +83,17 @@ class Madeit_Merge_Product_Cat_Command
             \WP_CLI::error("Doelterm {$targetId} niet gevonden in taxonomy '{$taxonomy}'.");
         }
 
-        $this->hasWpmlTable = $this->tableExists($wpdb->prefix . 'icl_translations');
+        $this->hasWpmlTable = $this->tableExists($wpdb->prefix.'icl_translations');
 
-        \WP_CLI::log('Modus: ' . ($dryRun ? 'DRY-RUN' : 'APPLY'));
+        \WP_CLI::log('Modus: '.($dryRun ? 'DRY-RUN' : 'APPLY'));
         \WP_CLI::log("Merge: {$sourceId} ({$sourceTerm->name}) -> {$targetId} ({$targetTerm->name})");
 
         $stats = [
-            'products_touched' => 0,
+            'products_touched'    => 0,
             'children_reparented' => 0,
-            'children_merged' => 0,
-            'terms_deleted' => 0,
-            'errors' => 0,
+            'children_merged'     => 0,
+            'terms_deleted'       => 0,
+            'errors'              => 0,
         ];
 
         $this->mergeTermInto($sourceId, $targetId, $taxonomy, $dryRun, $stats);
@@ -101,22 +101,23 @@ class Madeit_Merge_Product_Cat_Command
         \WP_CLI::log('');
         if ($stats['errors'] > 0) {
             \WP_CLI::warning(
-                'Klaar met fouten. ' .
-                'products_touched=' . $stats['products_touched'] . ', ' .
-                'children_reparented=' . $stats['children_reparented'] . ', ' .
-                'children_merged=' . $stats['children_merged'] . ', ' .
-                'terms_deleted=' . $stats['terms_deleted'] . ', ' .
-                'errors=' . $stats['errors']
+                'Klaar met fouten. '.
+                'products_touched='.$stats['products_touched'].', '.
+                'children_reparented='.$stats['children_reparented'].', '.
+                'children_merged='.$stats['children_merged'].', '.
+                'terms_deleted='.$stats['terms_deleted'].', '.
+                'errors='.$stats['errors']
             );
+
             return;
         }
 
         \WP_CLI::success(
-            ($dryRun ? 'DRY-RUN klaar. ' : 'Klaar. ') .
-            'products_touched=' . $stats['products_touched'] . ', ' .
-            'children_reparented=' . $stats['children_reparented'] . ', ' .
-            'children_merged=' . $stats['children_merged'] . ', ' .
-            'terms_deleted=' . $stats['terms_deleted']
+            ($dryRun ? 'DRY-RUN klaar. ' : 'Klaar. ').
+            'products_touched='.$stats['products_touched'].', '.
+            'children_reparented='.$stats['children_reparented'].', '.
+            'children_merged='.$stats['children_merged'].', '.
+            'terms_deleted='.$stats['terms_deleted']
         );
     }
 
@@ -126,7 +127,7 @@ class Madeit_Merge_Product_Cat_Command
         $sourceProductIds = get_objects_in_term((int) $sourceId, $taxonomy);
         if (is_wp_error($sourceProductIds)) {
             $stats['errors']++;
-            \WP_CLI::warning('Kon gekoppelde producten niet ophalen voor term ' . (int) $sourceId);
+            \WP_CLI::warning('Kon gekoppelde producten niet ophalen voor term '.(int) $sourceId);
             $sourceProductIds = [];
         }
 
@@ -163,7 +164,7 @@ class Madeit_Merge_Product_Cat_Command
             $setResult = wp_set_object_terms($productId, $newTerms, $taxonomy, false);
             if (is_wp_error($setResult)) {
                 $stats['errors']++;
-                \WP_CLI::warning("Product {$productId} kon niet geupdatet worden: " . $setResult->get_error_message());
+                \WP_CLI::warning("Product {$productId} kon niet geupdatet worden: ".$setResult->get_error_message());
                 continue;
             }
 
@@ -200,7 +201,7 @@ class Madeit_Merge_Product_Cat_Command
 
             if (is_wp_error($updated)) {
                 $stats['errors']++;
-                \WP_CLI::warning("Subcategorie {$sourceChildId} kon niet herhangen worden: " . $updated->get_error_message());
+                \WP_CLI::warning("Subcategorie {$sourceChildId} kon niet herhangen worden: ".$updated->get_error_message());
                 continue;
             }
 
@@ -211,6 +212,7 @@ class Madeit_Merge_Product_Cat_Command
         if ($dryRun) {
             \WP_CLI::log("  [DRY-RUN] Term verwijderen: {$sourceId}");
             $stats['terms_deleted']++;
+
             return;
         }
 
@@ -219,6 +221,7 @@ class Madeit_Merge_Product_Cat_Command
             $stats['errors']++;
             $message = is_wp_error($deleted) ? $deleted->get_error_message() : 'onbekende fout';
             \WP_CLI::warning("Term {$sourceId} kon niet verwijderd worden: {$message}");
+
             return;
         }
 
@@ -228,9 +231,9 @@ class Madeit_Merge_Product_Cat_Command
     private function getChildren($parentId, $taxonomy)
     {
         $children = get_terms([
-            'taxonomy' => $taxonomy,
+            'taxonomy'   => $taxonomy,
             'hide_empty' => false,
-            'parent' => (int) $parentId,
+            'parent'     => (int) $parentId,
         ]);
 
         if (is_wp_error($children) || !is_array($children)) {
@@ -272,7 +275,7 @@ class Madeit_Merge_Product_Cat_Command
             return $slug;
         }
 
-        return $slug . '|' . $lang;
+        return $slug.'|'.$lang;
     }
 
     private function getTermLanguage($termId, $taxonomy)
@@ -286,6 +289,7 @@ class Madeit_Merge_Product_Cat_Command
 
         if (!$this->hasWpmlTable) {
             $this->languageCache[$termId] = null;
+
             return null;
         }
 
@@ -297,6 +301,7 @@ class Madeit_Merge_Product_Cat_Command
 
         if (!$termTaxonomyId) {
             $this->languageCache[$termId] = null;
+
             return null;
         }
 
@@ -306,7 +311,7 @@ class Madeit_Merge_Product_Cat_Command
              WHERE element_type = %s
                AND element_id = %d
              LIMIT 1",
-            'tax_' . $taxonomy,
+            'tax_'.$taxonomy,
             (int) $termTaxonomyId
         ));
 
@@ -321,6 +326,7 @@ class Madeit_Merge_Product_Cat_Command
         global $wpdb;
 
         $found = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tableName));
+
         return $found === $tableName;
     }
 }
