@@ -1,14 +1,21 @@
 <?php
 /**
- * The template for displaying product content within loops.
+ * The template for displaying product content within loops
  *
- * @see     https://docs.woocommerce.com/document/template-structure/
+ * This template can be overridden by copying it to yourtheme/woocommerce/content-product.php.
  *
- * @author  Made I.T.
+ * HOWEVER, on occasion WooCommerce will need to update template files and you
+ * (the theme developer) will need to copy the new files to your theme to
+ * maintain compatibility. We try to do this as little as possible, but it does
+ * happen. When this occurs the version of the template file will be bumped and
+ * the readme will list any important changes.
  *
+ * @see     https://woocommerce.com/document/template-structure/
+ * @package WooCommerce\Templates
  * @version 9.4.0
  */
-defined('ABSPATH') || exit;
+
+defined( 'ABSPATH' ) || exit;
 
 global $product;
 
@@ -16,6 +23,7 @@ global $product;
 if ( ! is_a( $product, WC_Product::class ) || ! $product->is_visible() ) {
     return;
 }
+
 $productImageContainer = apply_filters('madeit_woo_category_product_image_container_class', ['d-block', 'mt-auto', 'mb-auto']);
 $productContentContainer = apply_filters('madeit_woo_category_product_content_container_class', ['card-body', 'text-center', 'd-flex', 'justify-content-between', 'flex-column']);
 $productInnerContainer = apply_filters('madeit_woo_product_inner_container_class', ['card', 'h-100', 'p-4', 'border-0', 'd-flex', 'justify-content-between']);
