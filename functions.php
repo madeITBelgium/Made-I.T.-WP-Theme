@@ -523,7 +523,7 @@ if (!function_exists('madeit_block_editor_styles')) {
         wp_enqueue_script('madeit-gutenberg-toolbar', get_template_directory_uri().'/assets/js/gutenberg-toolbar.js', [], MADEIT_VERSION, true);
     }
 
-    add_action('enqueue_block_assets', 'madeit_block_editor_styles');
+    add_action('enqueue_block_editor_assets', 'madeit_block_editor_styles');
 }
 
 /*
@@ -1897,24 +1897,26 @@ if (!function_exists('madeit_extend_gutenberg')) {
             true
         );
     }
-    add_action('enqueue_block_assets', 'madeit_extend_gutenberg');
+    add_action('enqueue_block_editor_assets', 'madeit_extend_gutenberg');
 }
 
-wp_enqueue_script(
-    'madeit-wp-deps',
-    get_parent_theme_file_uri('/inc/core/assets/js/wp-deps.js'),
-    array(
-        'wp-components',
-        'wp-block-editor',
-        'wp-element',
-        'wp-hooks',
-        'wp-compose',
-        'wp-api-fetch',
-        'wp-data',
-    ),
-    '1.0',
-    true
-);
+add_action('enqueue_block_editor_assets', static function (): void {
+    wp_enqueue_script(
+        'madeit-wp-deps',
+        get_parent_theme_file_uri('/inc/core/assets/js/wp-deps.js'),
+        array(
+            'wp-components',
+            'wp-block-editor',
+            'wp-element',
+            'wp-hooks',
+            'wp-compose',
+            'wp-api-fetch',
+            'wp-data',
+        ),
+        '1.0',
+        true
+    );
+});
 
 // Font Library uploader in the block inspector (core Font Library API).
 // add_action('enqueue_block_editor_assets', static function (): void {

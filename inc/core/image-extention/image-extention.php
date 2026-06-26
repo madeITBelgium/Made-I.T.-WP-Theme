@@ -33,4 +33,18 @@ function madeit_image_extention_assets()
 }
 
 add_action('enqueue_block_editor_assets', 'madeit_image_extention_assets');
-add_action('enqueue_block_assets', 'madeit_image_extention_assets');
+
+function madeit_image_extention_frontend_assets()
+{
+    $dir = get_template_directory();
+    $uri = get_template_directory_uri();
+
+    wp_enqueue_style(
+        'madeit-image-extention',
+        $uri.'/inc/core/image-extention/assets/image.css',
+        [],
+        filemtime($dir.'/inc/core/image-extention/assets/image.css')
+    );
+}
+
+add_action('wp_enqueue_scripts', 'madeit_image_extention_frontend_assets');
