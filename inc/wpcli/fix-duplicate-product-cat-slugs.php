@@ -20,19 +20,19 @@ class Madeit_Fix_Duplicate_Product_Cat_Slugs_Command
      *
      * [--apply]
      * : Voer de wijzigingen effectief uit. Zonder deze flag draait het commando in dry-run modus.
-
+     *
      * [--dry-run]
      * : Alias voor expliciet dry-run gedrag.
      *
      * [--taxonomy=<taxonomy>]
      * : Taxonomy om te controleren. Standaard: product_cat.
-
+     *
      * [--languages=<languages>]
      * : Komma-gescheiden talen om te controleren in WPML. Standaard: nl,fr.
-
+     *
      * [--default-language=<code>]
      * : Taalcode die voorkeur krijgt als slug behouden moet worden. Standaard: nl.
-
+     *
      * [--fix-parent-orphans]
      * : Zet corrupte parent-referenties (parent bestaat niet in dezelfde taxonomy) op 0.
      *
@@ -64,15 +64,16 @@ class Madeit_Fix_Duplicate_Product_Cat_Slugs_Command
             \WP_CLI::error("Taxonomy '{$taxonomy}' bestaat niet.");
         }
 
-        if (!$this->tableExists($wpdb->prefix . 'icl_translations')) {
+        if (!$this->tableExists($wpdb->prefix.'icl_translations')) {
             \WP_CLI::error('WPML tabel icl_translations niet gevonden. Dit commando verwacht WPML.');
         }
 
-        \WP_CLI::log('Modus: ' . ($dryRun ? 'DRY-RUN' : 'APPLY'));
+        \WP_CLI::log('Modus: '.($dryRun ? 'DRY-RUN' : 'APPLY'));
 
         $rows = $this->getWpmlTaxonomyRows($taxonomy, $languages);
         if (empty($rows)) {
-            \WP_CLI::success("Geen termen gevonden in taxonomy '{$taxonomy}' voor talen: " . implode(',', $languages) . '.');
+            \WP_CLI::success("Geen termen gevonden in taxonomy '{$taxonomy}' voor talen: ".implode(',', $languages).'.');
+
             return;
         }
 
@@ -98,10 +99,10 @@ class Madeit_Fix_Duplicate_Product_Cat_Slugs_Command
             \WP_CLI::log('');
             \WP_CLI::log("Slug '{$slug}' is verdacht: {$classification['reason']}");
             \WP_CLI::log(
-                '  Behouden: term_id=' . (int) $keeper['term_id'] .
-                ' lang=' . $keeper['language_code'] .
-                ' trid=' . (int) $keeper['trid'] .
-                ' name="' . $keeper['name'] . '"'
+                '  Behouden: term_id='.(int) $keeper['term_id'].
+                ' lang='.$keeper['language_code'].
+                ' trid='.(int) $keeper['trid'].
+                ' name="'.$keeper['name'].'"'
             );
 
             foreach ($group as $term) {
@@ -110,28 +111,28 @@ class Madeit_Fix_Duplicate_Product_Cat_Slugs_Command
 
                 if ($newSlug === (string) $term['slug']) {
                     $newSlug = $this->makeUniqueSlug(
-                        $baseSlug . '-' . (int) $term['term_id'],
+                        $baseSlug.'-'.(int) $term['term_id'],
                         (int) $term['term_id'],
                         $usedSlugs
                     );
                 }
 
                 $plannedSlugChanges[] = [
-                    'term_id' => (int) $term['term_id'],
-                    'taxonomy' => $taxonomy,
-                    'old_slug' => (string) $term['slug'],
-                    'new_slug' => $newSlug,
-                    'name' => (string) $term['name'],
+                    'term_id'       => (int) $term['term_id'],
+                    'taxonomy'      => $taxonomy,
+                    'old_slug'      => (string) $term['slug'],
+                    'new_slug'      => $newSlug,
+                    'name'          => (string) $term['name'],
                     'language_code' => (string) $term['language_code'],
-                    'trid' => (int) $term['trid'],
+                    'trid'          => (int) $term['trid'],
                 ];
 
                 \WP_CLI::log(
-                    '  ' . ($dryRun ? '[DRY-RUN] ' : '') .
-                    'term_id=' . (int) $term['term_id'] .
-                    ' lang=' . $term['language_code'] .
-                    ' trid=' . (int) $term['trid'] .
-                    ' slug: "' . $term['slug'] . '" -> "' . $newSlug . '"'
+                    '  '.($dryRun ? '[DRY-RUN] ' : '').
+                    'term_id='.(int) $term['term_id'].
+                    ' lang='.$term['language_code'].
+                    ' trid='.(int) $term['trid'].
+                    ' slug: "'.$term['slug'].'" -> "'.$newSlug.'"'
                 );
             }
         }
@@ -139,9 +140,9 @@ class Madeit_Fix_Duplicate_Product_Cat_Slugs_Command
         $parentOrphans = $this->findParentOrphans($taxonomy);
         foreach ($parentOrphans as $orphan) {
             \WP_CLI::log(
-                '  ' . ($dryRun ? '[DRY-RUN] ' : '') .
-                'Orphan parent: term_id=' . (int) $orphan['term_id'] .
-                ' parent=' . (int) $orphan['parent'] .
+                '  '.($dryRun ? '[DRY-RUN] ' : '').
+                'Orphan parent: term_id='.(int) $orphan['term_id'].
+                ' parent='.(int) $orphan['parent'].
                 ($fixParentOrphans ? ' -> 0' : ' (geen wijziging zonder --fix-parent-orphans)')
             );
         }
@@ -159,8 +160,8 @@ class Madeit_Fix_Duplicate_Product_Cat_Slugs_Command
                 if (is_wp_error($updated)) {
                     $errorCount++;
                     \WP_CLI::warning(
-                        'Slug update mislukt voor term_id=' . (int) $change['term_id'] .
-                        ': ' . $updated->get_error_message()
+                        'Slug update mislukt voor term_id='.(int) $change['term_id'].
+                        ': '.$updated->get_error_message()
                     );
                     continue;
                 }
@@ -177,8 +178,8 @@ class Madeit_Fix_Duplicate_Product_Cat_Slugs_Command
                     if (is_wp_error($result)) {
                         $errorCount++;
                         \WP_CLI::warning(
-                            'Parent-fix mislukt voor term_id=' . (int) $orphan['term_id'] .
-                            ': ' . $result->get_error_message()
+                            'Parent-fix mislukt voor term_id='.(int) $orphan['term_id'].
+                            ': '.$result->get_error_message()
                         );
                         continue;
                     }
@@ -192,12 +193,13 @@ class Madeit_Fix_Duplicate_Product_Cat_Slugs_Command
 
         if ($dryRun) {
             \WP_CLI::success(
-                'DRY-RUN klaar. ' .
-                count($plannedSlugChanges) . ' slug-wijziging(en) gepland, ' .
-                count($parentOrphans) . ' orphan parent(s) gevonden' .
-                ($fixParentOrphans ? ' (zouden op 0 gezet worden)' : '') .
-                '. Bewaarde primaire termen: ' . $keptCount . '.'
+                'DRY-RUN klaar. '.
+                count($plannedSlugChanges).' slug-wijziging(en) gepland, '.
+                count($parentOrphans).' orphan parent(s) gevonden'.
+                ($fixParentOrphans ? ' (zouden op 0 gezet worden)' : '').
+                '. Bewaarde primaire termen: '.$keptCount.'.'
             );
+
             return;
         }
 
@@ -205,6 +207,7 @@ class Madeit_Fix_Duplicate_Product_Cat_Slugs_Command
             \WP_CLI::warning(
                 "Klaar met {$errorCount} fout(en). {$slugFixedCount} slug(s) aangepast, {$parentFixedCount} parent(s) hersteld."
             );
+
             return;
         }
 
@@ -256,6 +259,7 @@ class Madeit_Fix_Duplicate_Product_Cat_Slugs_Command
         global $wpdb;
 
         $found = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $tableName));
+
         return $found === $tableName;
     }
 
@@ -265,7 +269,7 @@ class Madeit_Fix_Duplicate_Product_Cat_Slugs_Command
 
         $languageSql = implode(',', array_fill(0, count($languages), '%s'));
         $params = [
-            'tax_' . $taxonomy,
+            'tax_'.$taxonomy,
             $taxonomy,
         ];
         foreach ($languages as $lang) {
@@ -356,20 +360,20 @@ class Madeit_Fix_Duplicate_Product_Cat_Slugs_Command
         if ($hasIntraLanguageDuplicates) {
             return [
                 'needs_fix' => true,
-                'reason' => 'duplicaat binnen dezelfde taal',
+                'reason'    => 'duplicaat binnen dezelfde taal',
             ];
         }
 
         if ($hasCrossLanguageCollision && !$singleTrid) {
             return [
                 'needs_fix' => true,
-                'reason' => 'zelfde slug over talen met verschillende WPML trid',
+                'reason'    => 'zelfde slug over talen met verschillende WPML trid',
             ];
         }
 
         return [
             'needs_fix' => false,
-            'reason' => 'zelfde slug binnen dezelfde WPML vertaalgroep',
+            'reason'    => 'zelfde slug binnen dezelfde WPML vertaalgroep',
         ];
     }
 
@@ -400,7 +404,7 @@ class Madeit_Fix_Duplicate_Product_Cat_Slugs_Command
             $lang = 'x';
         }
 
-        $suffix = '-' . $lang . '-' . (int) $term['term_id'];
+        $suffix = '-'.$lang.'-'.(int) $term['term_id'];
         $maxBaseLen = 180 - strlen($suffix);
         if ($maxBaseLen < 20) {
             $maxBaseLen = 20;
@@ -413,7 +417,7 @@ class Madeit_Fix_Duplicate_Product_Cat_Slugs_Command
             $slugBase = 'term';
         }
 
-        return $slugBase . $suffix;
+        return $slugBase.$suffix;
     }
 
     private function findParentOrphans($taxonomy)
@@ -446,19 +450,19 @@ class Madeit_Fix_Duplicate_Product_Cat_Slugs_Command
     {
         $baseSlug = sanitize_title((string) $baseSlug);
         if ($baseSlug === '') {
-            $baseSlug = 'term-' . (int) $termId;
+            $baseSlug = 'term-'.(int) $termId;
         }
 
         $candidate = $baseSlug;
         $index = 2;
 
         while (!$this->isSlugAvailableForTerm($candidate, (int) $termId, $usedSlugs)) {
-            $candidate = $baseSlug . '-' . $index;
+            $candidate = $baseSlug.'-'.$index;
             $index++;
 
             if ($index > 10000) {
                 // Extreme safeguard tegen oneindige loop bij corrupte data.
-                $candidate = $baseSlug . '-' . (int) $termId;
+                $candidate = $baseSlug.'-'.(int) $termId;
                 break;
             }
         }

@@ -93,14 +93,13 @@ acf_add_local_field_group([
             'conditional_logic' => [
                 [
                     [
-                        'field' => 'field_popup_action',
+                        'field'    => 'field_popup_action',
                         'operator' => '==',
-                        'value' => 'specific_pages',
+                        'value'    => 'specific_pages',
                     ],
                 ],
             ],
         ],
-        
 
         // Display
         // [
