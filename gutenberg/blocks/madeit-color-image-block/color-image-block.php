@@ -18,8 +18,8 @@ function color_image_block_madeit_block_assets()
     wp_enqueue_style(
         'color-image-block-madeit-style-css', // Handle.
         get_theme_file_uri('gutenberg/blocks/color-image-block/dist/blocks.style.build.css'), // Block style CSS.
-        ['wp-editor'] // Dependency to include the CSS after it.
-        // filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.style.build.css' ) // Version: filemtime — Gets file modification time.
+        ['wp-editor'], // Dependency to include the CSS after it.
+        MADEIT_VERSION
     );
 } // End function color-image-block_madeit_block_assets().
 
@@ -42,7 +42,7 @@ function color_image_block_madeit_editor_assets()
         'color-image-block-madeit-block-js', // Handle.
         get_theme_file_uri('gutenberg/blocks/color-image-block/dist/blocks.build.js'),  // Block.build.js: We register the block here. Built with Webpack.
         ['wp-blocks', 'wp-i18n', 'wp-element', 'wp-components', 'wp-block-editor'], // Dependencies, defined above.
-        // filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.build.js' ), // Version: filemtime — Gets file modification time.
+        MADEIT_VERSION,
         true // Enqueue the script in the footer.
     );
 
@@ -50,8 +50,8 @@ function color_image_block_madeit_editor_assets()
     wp_enqueue_style(
         'color-image-block-madeit-block-editor-css', // Handle.
         get_theme_file_uri('gutenberg/blocks/color-image-block/dist/blocks.editor.build.css'), // Block editor CSS.
-        ['wp-edit-blocks'] // Dependency to include the CSS after it.
-        // filemtime( plugin_dir_path( __DIR__ ) . 'dist/blocks.editor.build.css' ) // Version: filemtime — Gets file modification time.
+        ['wp-edit-blocks'],  // Dependency to include the CSS after it.
+        MADEIT_VERSION 
     );
 } // End function color-image-block_madeit_editor_assets().
 

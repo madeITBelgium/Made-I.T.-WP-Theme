@@ -18,16 +18,12 @@ function madeit_enqueue_cookieconsent_assets()
     $js_path = get_theme_file_path($js_rel);
     $conf_path = get_theme_file_path($conf_rel);
 
-    $css_ver = file_exists($css_path) ? filemtime($css_path) : MADEIT_VERSION;
-    $js_ver = file_exists($js_path) ? filemtime($js_path) : MADEIT_VERSION;
-    $conf_ver = file_exists($conf_path) ? filemtime($conf_path) : MADEIT_VERSION;
-
     if (file_exists($css_path)) {
         wp_enqueue_style(
             'madeit-cookieconsent',
             get_theme_file_uri($css_rel),
             [],
-            $css_ver
+            MADEIT_VERSION
         );
     }
 
@@ -36,7 +32,7 @@ function madeit_enqueue_cookieconsent_assets()
             'madeit-cookieconsent',
             get_theme_file_uri($js_rel),
             [],
-            $js_ver,
+            MADEIT_VERSION,
             true
         );
     }
@@ -46,7 +42,7 @@ function madeit_enqueue_cookieconsent_assets()
             'madeit-cookieconsent-config',
             get_theme_file_uri($conf_rel),
             ['madeit-cookieconsent'],
-            $conf_ver,
+            MADEIT_VERSION,
             true
         );
     }

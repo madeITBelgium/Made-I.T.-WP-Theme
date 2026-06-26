@@ -1874,16 +1874,9 @@ if (!function_exists('madeit_cookie_notice')) {
 if (!function_exists('madeit_extend_gutenberg')) {
     function madeit_extend_gutenberg()
     {
-        $script_rel = '/assets/js/gutenberg.js';
-        $script_path = get_theme_file_path($script_rel);
-        $script_ver = defined('MADEIT_VERSION') ? MADEIT_VERSION : false;
-        if (is_string($script_path) && $script_path !== '' && file_exists($script_path)) {
-            $script_ver = (string) filemtime($script_path);
-        }
-
         wp_enqueue_script(
             'madeit-guten-script',
-            get_theme_file_uri($script_rel),
+            get_theme_file_uri('/assets/js/gutenberg.js'),
             [
                 'wp-blocks',
                 'wp-i18n',
@@ -1893,7 +1886,7 @@ if (!function_exists('madeit_extend_gutenberg')) {
                 'wp-hooks',
                 'wp-block-editor',
             ],
-            $script_ver,
+            MADEIT_VERSION,
             true
         );
     }
@@ -1952,14 +1945,6 @@ require_once get_parent_theme_file_path('/inc/core/image-extention/image-extenti
 
 // responsive.js for responsive block editor preview (editor-only; uses wp.* globals).
 add_action('enqueue_block_editor_assets', static function (): void {
-    $madeitResponsivePath = get_theme_file_path('/inc/core/fontStyles/responsive.js');
-    $madeitResponsiveVer = null;
-    if ($madeitResponsivePath && file_exists($madeitResponsivePath)) {
-        $madeitResponsiveVer = (string) filemtime($madeitResponsivePath);
-    } elseif (defined('MADEIT_VERSION')) {
-        $madeitResponsiveVer = MADEIT_VERSION;
-    }
-
     wp_enqueue_script(
         'madeit-responsive',
         get_theme_file_uri('/inc/core/fontStyles/responsive.js'),
@@ -1973,7 +1958,7 @@ add_action('enqueue_block_editor_assets', static function (): void {
             'wp-editor',
             'wp-data',
         ],
-        $madeitResponsiveVer,
+        MADEIT_VERSION,
         true
     );
 });

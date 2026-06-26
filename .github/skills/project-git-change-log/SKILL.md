@@ -38,6 +38,7 @@ Gebruik deze skill wanneer je:
    - Removed
 8. Werk `README.txt` bij met een korte en duidelijke samenvatting van de belangrijkste wijzigingen.
 9. Kijk of style.css de versie nummer moet aangepast worden.
+10. Update MADEIT_VERSION in functions.php indien het versie nummer nog moet worden aangepast.
 
 ## Output
 - `README.txt` bijgewerkt met een overzicht van de belangrijkste wijzigingsthema's.

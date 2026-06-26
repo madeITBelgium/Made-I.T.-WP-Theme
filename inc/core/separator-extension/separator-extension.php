@@ -20,7 +20,7 @@ function madeit_separator_extension_assets()
             'wp-components',
             'wp-block-editor',
         ],
-        filemtime($dir.'/inc/core/separator-extension/assets/separator.js'),
+        MADEIT_VERSION,
         true
     );
 
@@ -28,7 +28,7 @@ function madeit_separator_extension_assets()
         'madeit-separator-extension',
         $uri.'/inc/core/separator-extension/assets/separator.css',
         [],
-        filemtime($dir.'/inc/core/separator-extension/assets/separator.css')
+        MADEIT_VERSION
     );
 }
 
@@ -43,7 +43,7 @@ function madeit_separator_extension_frontend_assets()
         'madeit-separator-extension',
         $uri.'/inc/core/separator-extension/assets/separator.css',
         [],
-        filemtime($dir.'/inc/core/separator-extension/assets/separator.css')
+        MADEIT_VERSION
     );
 }
 
