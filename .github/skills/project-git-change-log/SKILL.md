@@ -37,6 +37,7 @@ Gebruik deze skill wanneer je:
    - Fixed
    - Removed
 8. Werk `README.txt` bij met een korte en duidelijke samenvatting van de belangrijkste wijzigingen.
+9. Kijk of style.css de versie nummer moet aangepast worden.
 
 ## Output
 - `README.txt` bijgewerkt met een overzicht van de belangrijkste wijzigingsthema's.

@@ -1,0 +1,11 @@
+{
+  "name": "madeit-blocks",
+  "private": true,
+  "scripts": {
+    "build": "wp-scripts build */src",
+    "start": "wp-scripts start */src"
+  },
+  "devDependencies": {
+    "@wordpress/scripts": "^27.0.0"
+  }
+}
