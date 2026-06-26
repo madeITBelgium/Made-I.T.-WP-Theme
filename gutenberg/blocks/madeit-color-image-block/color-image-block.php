@@ -51,7 +51,7 @@ function color_image_block_madeit_editor_assets()
         'color-image-block-madeit-block-editor-css', // Handle.
         get_theme_file_uri('gutenberg/blocks/color-image-block/dist/blocks.editor.build.css'), // Block editor CSS.
         ['wp-edit-blocks'],  // Dependency to include the CSS after it.
-        MADEIT_VERSION 
+        MADEIT_VERSION
     );
 } // End function color-image-block_madeit_editor_assets().
 
