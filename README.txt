@@ -3,7 +3,7 @@ Contributors: madeit
 Requires at least: WordPress 5.0
 Tested up to: 7.0
 Requires PHP: 8.5
-Version: 3.0.8
+Version: 3.0.9
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: madeit, bootstrap, bootstrap4, made i.t., Made I.T.
@@ -56,6 +56,14 @@ License: CC0 1.0 Universal (CC0 1.0)
 Source: https://unsplash.com/@englr?photo=bIhpiQA009k
 
 == Changelog ==
+= 3.0.9 =
+* Fixed frontend editor-dependency leakage by moving Gutenberg/editor script enqueues to editor-only hooks (`enqueue_block_editor_assets`)
+* Fixed block extension enqueue behavior for image/separator extensions by splitting editor assets and frontend-only styles
+* Changed asset versioning strategy across theme and block loader assets to consistently use `MADEIT_VERSION`
+* Added root `gutenberg/blocks/package.json` with consolidated block build/start scripts
+* Updated block package dependencies (including js-yaml 4.2.0, form-data 4.0.6, launch-editor 2.14.1, shell-quote 1.8.4, axios 1.17.0)
+* Regenerated Gutenberg build asset metadata files and updated lockfiles for synced dependency state
+
 = 3.0.8 =
 * Added WPML config for `categorie-pagina` and expanded multilingual handling for category SEO pages
 * Refactored category SEO page loading/rendering with reusable helpers and WPML fallback translation logic

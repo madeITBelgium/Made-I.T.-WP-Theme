@@ -1,6 +1,30 @@
 Made I.T. Theme Changelog
 ==========================
 
+Version 3.0.9 - 2026-06-26
+-------------------------
+Added
+- Added root block workspace manifest `gutenberg/blocks/package.json` with shared `build` and `start` scripts for Gutenberg blocks.
+
+Changed
+- Changed multiple Gutenberg and theme asset registrations to use `MADEIT_VERSION` instead of per-file `filemtime(...)` cache busting (`functions.php`, `gutenberg/loader.php`, `inc/cookieconsent.php`, block init files).
+- Changed editor script loading to editor-only hooks by moving `madeit_block_editor_styles` and `madeit_extend_gutenberg` from `enqueue_block_assets` to `enqueue_block_editor_assets`.
+- Updated block package manifests/lockfiles with dependency bumps, including `js-yaml` 4.2.0, `form-data` 4.0.6, `launch-editor` 2.14.1, `shell-quote` 1.8.4, and `axios` 1.17.0.
+- Regenerated Gutenberg build asset metadata files to normalized PHP array syntax in multiple `build/*.asset.php` files.
+- Applied code-style normalization in several WP-CLI and helper files without intended behavioral changes (`inc/wpcli/*`, `inc/call.php`, `inc/categorie-seo-pages.php`, `inc/core/popup/includes/fields.php`).
+
+Fixed
+- Fixed frontend loading of editor-only JavaScript dependencies (`wp-block-editor`, `wp-api-fetch`, `wp-data`) by removing global enqueue and constraining it to block editor context.
+- Fixed image and separator extension enqueue behavior so frontend only receives CSS, while editor-only JavaScript stays in editor hooks.
+
+Removed
+- Removed broad `enqueue_block_assets` usage for editor-only scripts in key theme bootstrap paths.
+
+Notes
+- Comparison scope: `3.0.8..HEAD`
+- Files changed: 35 (295 insertions, 233 deletions)
+- Working tree status before release prep: clean (no uncommitted changes)
+
 Version 3.0.8 - 2026-06-17
 -------------------------
 Added
