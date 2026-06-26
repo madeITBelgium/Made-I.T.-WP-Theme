@@ -19,7 +19,7 @@ function container_madeit_block_assets()
         'container-madeit-style-css', // Handle.
         get_template_directory_uri().'/gutenberg/container/dist/blocks.style.build.css', // Block style CSS.
         ['wp-editor'], // Dependency to include the CSS after it.
-       MADEIT_VERSION
+        MADEIT_VERSION
     );
 } // End function container_madeit_block_assets().
 
