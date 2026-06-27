@@ -38,7 +38,6 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu
 
         $atts = [];
         $atts['class'] = !empty($class_names) ? $class_names : '';
-        $atts['role'] = 'menu';
 
         /**
          * Filters the HTML attributes applied to a menu list element.
@@ -114,7 +113,7 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu
             $id = apply_filters('nav_menu_item_id', 'menu-item-'.$item->ID, $item, $args);
             $id = $id ? ' id="'.esc_attr($id).'"' : '';
 
-            $output .= $indent.'<li'.$id.$value.$class_names.' role="menuitem">';
+            $output .= $indent.'<li'.$id.$value.$class_names.'>';
 
             $atts = [];
             //$atts['title'] = !empty($item->title) ? $item->title : '';
@@ -228,7 +227,7 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu
         if ($depth === 0 && function_exists('get_field') && get_field('megamenu', $element->ID)) {
             $output = str_replace('data-bs-toggle="dropdown" aria-expanded="false">'.apply_filters('the_title', $element->title, $element->ID), 'data-bs-toggle="dropdown" aria-expanded="false" id="navbarDropdown'.$rand.'">'.apply_filters('the_title', $element->title, $element->ID), $output);
             $classes = apply_filters('madeit_megamenu_dropdown_class', ['dropdown-menu', 'container'], $element);
-            $output .= '<div class="'.implode(' ', $classes).'" role="menu" aria-labelledby="navbarDropdown'.$rand.'">';
+            $output .= '<div class="'.implode(' ', $classes).'" aria-labelledby="navbarDropdown'.$rand.'">';
             $output .= '<div class="row w-100 m-auto">';
             if (get_field('megamenu_stijl', $element->ID) === 'style_1') { //3 columns
                 //Mobile

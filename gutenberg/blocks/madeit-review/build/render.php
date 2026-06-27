@@ -254,8 +254,8 @@ ob_start();
             <?php endif; ?>
 
             <?php if ($show_arrows) : ?>
-                <div class="swiper-button-prev" aria-label="<?php echo esc_attr(__('Vorige', 'madeit-review')); ?>"></div>
-                <div class="swiper-button-next" aria-label="<?php echo esc_attr(__('Volgende', 'madeit-review')); ?>"></div>
+                <button type="button" class="swiper-button-prev" aria-label="<?php echo esc_attr(__('Vorige', 'madeit-review')); ?>"></button>
+                <button type="button" class="swiper-button-next" aria-label="<?php echo esc_attr(__('Volgende', 'madeit-review')); ?>"></button>
             <?php endif; ?>
         </div>
 

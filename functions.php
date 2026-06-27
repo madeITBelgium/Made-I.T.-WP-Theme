@@ -2266,7 +2266,7 @@ Wp Rocket settings
 if (!function_exists('madeit_wprocket_pre_get_rocket_option_delay_js_exclusions')) {
     function madeit_wprocket_pre_get_rocket_option_delay_js_exclusions($optie, $default)
     {
-        return ['aos.js'] + $default;
+        return ['aos.js', 'cookieconsent.js', 'cookieconsent-config.js', 'script.js', 'tracking-ids.js', 'script-fix-jquery.js', 'jquery.min.js'] + $default;
     }
     add_filter('pre_get_rocket_option_delay_js_exclusions', 'madeit_wprocket_pre_get_rocket_option_delay_js_exclusions', 10, 2);
 }
@@ -2276,6 +2276,7 @@ if (defined('WP_ROCKET_VERSION')) {
         $safelist[] = '/wp-content/themes/madeit/assets/css/cookieconsent.css';
         return $safelist;
     });
+    /*
     add_filter('rocket_excluded_inline_js_content', function($excluded) {
         $excluded[] = ';';
         $excluded[] = ',';
@@ -2295,6 +2296,7 @@ if (defined('WP_ROCKET_VERSION')) {
         $excluded[] = '/wp-includes/js/dist/(.*)';
         return $excluded;
     });
+    */
 }
 
 if (!function_exists('madeit_user_analytics')) {

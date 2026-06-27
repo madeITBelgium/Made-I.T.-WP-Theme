@@ -136,7 +136,7 @@ ob_start();
 
                         $naam = trim((string) ($field('naam', $post_id) ?: get_the_title($post_id)));
                         if ($naam === '') {
-                            $naam = (string) __('Anoniem', 'madeit-review');
+                            $naam = (string) __('Anoniem', 'madeit');
                         }
 
                         $bedrijf = trim((string) $field('bedrijf', $post_id));
@@ -254,13 +254,13 @@ ob_start();
             <?php endif; ?>
 
             <?php if ($show_arrows) : ?>
-                <div class="swiper-button-prev" aria-label="<?php echo esc_attr(__('Vorige', 'madeit-review')); ?>"></div>
-                <div class="swiper-button-next" aria-label="<?php echo esc_attr(__('Volgende', 'madeit-review')); ?>"></div>
+                <button type="button" class="swiper-button-prev" aria-label="<?php echo esc_attr(__('Vorige', 'madeit')); ?>"></button>
+                <button type="button" class="swiper-button-next" aria-label="<?php echo esc_attr(__('Volgende', 'madeit')); ?>"></button>
             <?php endif; ?>
         </div>
 
         <?php if (!$query->have_posts()) : ?>
-            <p class="madeit-reviews__empty"><?php echo esc_html(__('Er zijn nog geen gekoppelde reviews, bekijk of de juiste API is ingesteld.', 'madeit-review')); ?></p>
+            <p class="madeit-reviews__empty"><?php echo esc_html(__('Er zijn nog geen gekoppelde reviews, bekijk of de juiste API is ingesteld.', 'madeit')); ?></p>
         <?php endif; ?>
     </div>
 

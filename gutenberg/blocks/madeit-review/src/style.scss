@@ -34,6 +34,17 @@
 .wp-block-madeit-reviews .swiper-button-prev {
 	color: var(--madeit-review-arrow-color, currentColor);
 	top: calc(50% - 20px) !important;
+	background: transparent;
+	border: 0;
+	padding: 0;
+	cursor: pointer;
+}
+
+.wp-block-madeit-reviews .swiper-button-next:focus-visible,
+.wp-block-madeit-reviews .swiper-button-prev:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+	border-radius: 4px;
 }
 
 .wp-block-madeit-reviews .swiper-button-next:after,
