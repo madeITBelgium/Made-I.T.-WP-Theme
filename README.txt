@@ -17,6 +17,7 @@ This release focuses on Gutenberg/editor stability, WooCommerce compatibility, a
 - Added shared Gutenberg block build tooling and refreshed block package manifests and dependencies.
 - Improved WooCommerce templates for order/account flows and product variation rendering.
 - Refined theme color contrast handling for clearer text and interface readability.
+- Added multilingual CookieConsent support with translatable consent/preferences content for NL, EN, FR, and DE.
 
 == Installation ==
 

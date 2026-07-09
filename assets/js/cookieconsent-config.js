@@ -12,6 +12,113 @@ const SERVICE_FUNCTIONALITY_STORAGE = "functionality_storage";
 const SERVICE_PERSONALIZATION_STORAGE = "personalization_storage";
 const SERVICE_SECURITY_STORAGE = "security_storage";
 
+const cookieConsentI18nConfig = window.madeitCookieConsentConfig || {};
+
+const fallbackNlTranslations = {
+    consentModal: {
+        title: "We waarderen uw privacy",
+        description: "We gebruiken cookies om uw browse-ervaring te verbeteren, gepersonaliseerde advertenties of inhoud weer te geven en ons verkeer te analyseren. Door op 'Alles accepteren' te klikken, stemt u in met ons gebruik van cookies.",
+        acceptAllBtn: "Alles accepteren",
+        acceptNecessaryBtn: "Alleen noodzakelijke cookies accepteren",
+        showPreferencesBtn: "Voorkeuren beheren",
+        footer: ""
+    },
+    preferencesModal: {
+        title: "Cookievoorkeuren",
+        acceptAllBtn: "Alles accepteren",
+        acceptNecessaryBtn: "Alleen noodzakelijke cookies accepteren",
+        savePreferencesBtn: "Voorkeuren opslaan",
+        closeIconLabel: "Sluit venster",
+        serviceCounterLabel: "Service|Services",
+        sections: [
+            {
+                title: "Cookie Gebruik",
+                description: "Wij gebruiken cookies om uw ervaring op onze website te verbeteren. Sommige cookies zijn essentieel voor de werking van de site, terwijl andere ons helpen om inzicht te krijgen in hoe u onze site gebruikt en om gepersonaliseerde inhoud aan te bieden."
+            },
+            {
+                title: "Strikt noodzakelijke cookies <span class=\"pm__badge\">Altijd ingeschakeld</span>",
+                description: "Essentieel voor de werking van de website en kan niet worden uitgeschakeld.",
+                linkedCategory: CAT_NECESSARY
+            },
+            {
+                title: "Analytics",
+                description: "Helpt ons begrijpen hoe bezoekers de site gebruiken.",
+                linkedCategory: CAT_ANALYTICS
+            },
+            {
+                title: "Advertising",
+                description: "Wordt gebruikt voor advertenties en metingen.",
+                linkedCategory: CAT_ADVERTISEMENT
+            },
+            {
+                title: "Functionality",
+                description: "Ondersteunt extra functionaliteit en personalisatie.",
+                linkedCategory: CAT_FUNCTIONALITY
+            },
+            {
+                title: "Security",
+                description: "Ondersteunt beveiliging, fraudepreventie en bescherming.",
+                linkedCategory: CAT_SECURITY
+            }
+        ]
+    },
+    services: {
+        [SERVICE_ANALYTICS_STORAGE]: "Analytics opslag (cookies)",
+        [SERVICE_AD_STORAGE]: "Advertentie-opslag (cookies)",
+        [SERVICE_AD_USER_DATA]: "Advertentie user data (Google)",
+        [SERVICE_AD_PERSONALIZATION]: "Gepersonaliseerde advertenties",
+        [SERVICE_FUNCTIONALITY_STORAGE]: "Functionele opslag",
+        [SERVICE_PERSONALIZATION_STORAGE]: "Personalisatie opslag",
+        [SERVICE_SECURITY_STORAGE]: "Security opslag"
+    }
+};
+
+const allTranslations = cookieConsentI18nConfig.translations || { nl: fallbackNlTranslations };
+const fallbackLang = cookieConsentI18nConfig.fallbackLang || "nl";
+const supportedLangs = Object.keys(allTranslations);
+
+function detectConsentLanguage() {
+    const htmlLang = (document.documentElement.lang || "").slice(0, 2).toLowerCase();
+    const browserLang = (navigator.language || "").slice(0, 2).toLowerCase();
+
+    if (supportedLangs.includes(htmlLang)) {
+        return htmlLang;
+    }
+
+    if (supportedLangs.includes(browserLang)) {
+        return browserLang;
+    }
+
+    if (supportedLangs.includes(fallbackLang)) {
+        return fallbackLang;
+    }
+
+    return supportedLangs[0] || "nl";
+}
+
+const activeLang = detectConsentLanguage();
+const activeTranslations = allTranslations[activeLang] || allTranslations[fallbackLang] || fallbackNlTranslations;
+const activeServiceLabels = activeTranslations.services || fallbackNlTranslations.services;
+
+const consentModalTranslations = {};
+supportedLangs.forEach((lang) => {
+    const langTranslations = allTranslations[lang];
+
+    if (langTranslations && langTranslations.consentModal && langTranslations.preferencesModal) {
+        consentModalTranslations[lang] = {
+            consentModal: langTranslations.consentModal,
+            preferencesModal: langTranslations.preferencesModal
+        };
+    }
+});
+
+if (!Object.keys(consentModalTranslations).length) {
+    consentModalTranslations.nl = {
+        consentModal: fallbackNlTranslations.consentModal,
+        preferencesModal: fallbackNlTranslations.preferencesModal
+    };
+}
+
 // Define dataLayer and the gtag function.
 window.dataLayer = window.dataLayer || [];
 function gtag() {
@@ -86,95 +193,45 @@ CookieConsent.run({
             },
             services: {
                 [SERVICE_ANALYTICS_STORAGE]: {
-                    label: "Analytics opslag (cookies)"
+                    label: activeServiceLabels[SERVICE_ANALYTICS_STORAGE] || "Analytics storage (cookies)"
                 }
             }
         },
         [CAT_ADVERTISEMENT]: {
             services: {
                 [SERVICE_AD_STORAGE]: {
-                    label: "Advertentie-opslag (cookies)"
+                    label: activeServiceLabels[SERVICE_AD_STORAGE] || "Ad storage (cookies)"
                 },
                 [SERVICE_AD_USER_DATA]: {
-                    label: "Advertentie user data (Google)"
+                    label: activeServiceLabels[SERVICE_AD_USER_DATA] || "Ad user data (Google)"
                 },
                 [SERVICE_AD_PERSONALIZATION]: {
-                    label: "Gepersonaliseerde advertenties"
+                    label: activeServiceLabels[SERVICE_AD_PERSONALIZATION] || "Personalized ads"
                 }
             }
         },
         [CAT_FUNCTIONALITY]: {
             services: {
                 [SERVICE_FUNCTIONALITY_STORAGE]: {
-                    label: "Functionele opslag"
+                    label: activeServiceLabels[SERVICE_FUNCTIONALITY_STORAGE] || "Functionality storage"
                 },
                 [SERVICE_PERSONALIZATION_STORAGE]: {
-                    label: "Personalisatie opslag"
+                    label: activeServiceLabels[SERVICE_PERSONALIZATION_STORAGE] || "Personalization storage"
                 }
             }
         },
         [CAT_SECURITY]: {
             services: {
                 [SERVICE_SECURITY_STORAGE]: {
-                    label: "Security opslag"
+                    label: activeServiceLabels[SERVICE_SECURITY_STORAGE] || "Security storage"
                 }
             }
         }
     },
 
     language: {
-        default: "nl",
+        default: activeLang,
         autoDetect: "browser",
-        translations: {
-            nl: {
-                consentModal: {
-                    title: "We waarderen uw privacy",
-                    description: "We gebruiken cookies om uw browse-ervaring te verbeteren, gepersonaliseerde advertenties of inhoud weer te geven en ons verkeer te analyseren. Door op ‘Alles accepteren’ te klikken, stemt u in met ons gebruik van cookies.",
-                    acceptAllBtn: "Alles accepteren",
-                    acceptNecessaryBtn: "Alleen noodzakelijke cookies accepteren",
-                    showPreferencesBtn: "Voorkeuren beheren",
-                    footer: ""
-                },
-                preferencesModal: {
-                    title: "Cookievoorkeuren",
-                    acceptAllBtn: "Alles accepteren",
-                    acceptNecessaryBtn: "Alleen noodzakelijke cookies accepteren",
-                    savePreferencesBtn: "Voorkeuren opslaan",
-                    closeIconLabel: "Sluit venster",
-                    serviceCounterLabel: "Service|Services",
-                    sections: [
-                        {
-                            title: "Cookie Gebruik",
-                            description: "Wij gebruiken cookies om uw ervaring op onze website te verbeteren. Sommige cookies zijn essentieel voor de werking van de site, terwijl andere ons helpen om inzicht te krijgen in hoe u onze site gebruikt en om gepersonaliseerde inhoud aan te bieden."
-                        },
-                        {
-                            title: "Strikt noodzakelijke cookies <span class=\"pm__badge\">Altijd ingeschakeld</span>",
-                            description: "Essentieel voor de werking van de website en kan niet worden uitgeschakeld.",
-                            linkedCategory: CAT_NECESSARY
-                        },
-                        {
-                            title: "Analytics",
-                            description: "Helpt ons begrijpen hoe bezoekers de site gebruiken.",
-                            linkedCategory: CAT_ANALYTICS
-                        },
-                        {
-                            title: "Advertising",
-                            description: "Wordt gebruikt voor advertenties en metingen.",
-                            linkedCategory: CAT_ADVERTISEMENT
-                        },
-                        {
-                            title: "Functionality",
-                            description: "Ondersteunt extra functionaliteit en personalisatie.",
-                            linkedCategory: CAT_FUNCTIONALITY
-                        },
-                        {
-                            title: "Security",
-                            description: "Ondersteunt beveiliging, fraudepreventie en bescherming.",
-                            linkedCategory: CAT_SECURITY
-                        }
-                    ]
-                }
-            }
-        }
+        translations: consentModalTranslations
     }
 });

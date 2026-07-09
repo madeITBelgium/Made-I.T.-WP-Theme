@@ -1064,3 +1064,95 @@ msgstr "Wijzig Popup"
 #: inc/popup.php:19
 msgid "Zoek Popup"
 msgstr "Zoek Popup"
+
+#: inc/cookieconsent.php
+msgid "We waarderen uw privacy"
+msgstr "We value your privacy"
+
+#: inc/cookieconsent.php
+msgid "We gebruiken cookies om uw browse-ervaring te verbeteren, gepersonaliseerde advertenties of inhoud weer te geven en ons verkeer te analyseren. Door op 'Alles accepteren' te klikken, stemt u in met ons gebruik van cookies."
+msgstr "We use cookies to improve your browsing experience, serve personalized ads or content, and analyze our traffic. By clicking 'Accept all', you consent to our use of cookies."
+
+#: inc/cookieconsent.php
+msgid "Alles accepteren"
+msgstr "Accept all"
+
+#: inc/cookieconsent.php
+msgid "Alleen noodzakelijke cookies accepteren"
+msgstr "Accept necessary cookies only"
+
+#: inc/cookieconsent.php
+msgid "Voorkeuren beheren"
+msgstr "Manage preferences"
+
+#: inc/cookieconsent.php
+msgid "Cookievoorkeuren"
+msgstr "Cookie preferences"
+
+#: inc/cookieconsent.php
+msgid "Voorkeuren opslaan"
+msgstr "Save preferences"
+
+#: inc/cookieconsent.php
+msgid "Sluit venster"
+msgstr "Close dialog"
+
+#: inc/cookieconsent.php
+msgid "Cookie Gebruik"
+msgstr "Cookie Usage"
+
+#: inc/cookieconsent.php
+msgid "Wij gebruiken cookies om uw ervaring op onze website te verbeteren. Sommige cookies zijn essentieel voor de werking van de site, terwijl andere ons helpen om inzicht te krijgen in hoe u onze site gebruikt en om gepersonaliseerde inhoud aan te bieden."
+msgstr "We use cookies to improve your experience on our website. Some cookies are essential for the site to function, while others help us understand how you use the site and offer personalized content."
+
+#: inc/cookieconsent.php
+msgid "Strikt noodzakelijke cookies <span class=\"pm__badge\">Altijd ingeschakeld</span>"
+msgstr "Strictly necessary cookies <span class=\"pm__badge\">Always enabled</span>"
+
+#: inc/cookieconsent.php
+msgid "Essentieel voor de werking van de website en kan niet worden uitgeschakeld."
+msgstr "Essential for the website to function and cannot be disabled."
+
+#: inc/cookieconsent.php
+msgid "Helpt ons begrijpen hoe bezoekers de site gebruiken."
+msgstr "Helps us understand how visitors use the site."
+
+#: inc/cookieconsent.php
+msgid "Wordt gebruikt voor advertenties en metingen."
+msgstr "Used for advertising and measurement."
+
+#: inc/cookieconsent.php
+msgid "Ondersteunt extra functionaliteit en personalisatie."
+msgstr "Supports additional functionality and personalization."
+
+#: inc/cookieconsent.php
+msgid "Ondersteunt beveiliging, fraudepreventie en bescherming."
+msgstr "Supports security, fraud prevention, and protection."
+
+#: inc/cookieconsent.php
+msgid "Analytics opslag (cookies)"
+msgstr "Analytics storage (cookies)"
+
+#: inc/cookieconsent.php
+msgid "Advertentie-opslag (cookies)"
+msgstr "Ad storage (cookies)"
+
+#: inc/cookieconsent.php
+msgid "Advertentie user data (Google)"
+msgstr "Ad user data (Google)"
+
+#: inc/cookieconsent.php
+msgid "Gepersonaliseerde advertenties"
+msgstr "Personalized ads"
+
+#: inc/cookieconsent.php
+msgid "Functionele opslag"
+msgstr "Functionality storage"
+
+#: inc/cookieconsent.php
+msgid "Personalisatie opslag"
+msgstr "Personalization storage"
+
+#: inc/cookieconsent.php
+msgid "Security opslag"
+msgstr "Security storage"

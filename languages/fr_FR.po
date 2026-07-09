@@ -1066,3 +1066,95 @@ msgstr "Wijzig Popup"
 #: inc/popup.php:19
 msgid "Zoek Popup"
 msgstr "Zoek Popup"
+
+#: inc/cookieconsent.php
+msgid "We waarderen uw privacy"
+msgstr "Nous respectons votre vie privee"
+
+#: inc/cookieconsent.php
+msgid "We gebruiken cookies om uw browse-ervaring te verbeteren, gepersonaliseerde advertenties of inhoud weer te geven en ons verkeer te analyseren. Door op 'Alles accepteren' te klikken, stemt u in met ons gebruik van cookies."
+msgstr "Nous utilisons des cookies pour ameliorer votre navigation, proposer des publicites ou contenus personnalises et analyser notre trafic. En cliquant sur 'Tout accepter', vous acceptez notre utilisation des cookies."
+
+#: inc/cookieconsent.php
+msgid "Alles accepteren"
+msgstr "Tout accepter"
+
+#: inc/cookieconsent.php
+msgid "Alleen noodzakelijke cookies accepteren"
+msgstr "Accepter uniquement les cookies necessaires"
+
+#: inc/cookieconsent.php
+msgid "Voorkeuren beheren"
+msgstr "Gerer les preferences"
+
+#: inc/cookieconsent.php
+msgid "Cookievoorkeuren"
+msgstr "Preferences de cookies"
+
+#: inc/cookieconsent.php
+msgid "Voorkeuren opslaan"
+msgstr "Enregistrer les preferences"
+
+#: inc/cookieconsent.php
+msgid "Sluit venster"
+msgstr "Fermer la fenetre"
+
+#: inc/cookieconsent.php
+msgid "Cookie Gebruik"
+msgstr "Utilisation des cookies"
+
+#: inc/cookieconsent.php
+msgid "Wij gebruiken cookies om uw ervaring op onze website te verbeteren. Sommige cookies zijn essentieel voor de werking van de site, terwijl andere ons helpen om inzicht te krijgen in hoe u onze site gebruikt en om gepersonaliseerde inhoud aan te bieden."
+msgstr "Nous utilisons des cookies pour ameliorer votre experience sur notre site. Certains cookies sont essentiels au fonctionnement du site, tandis que d'autres nous aident a comprendre votre utilisation et a proposer du contenu personnalise."
+
+#: inc/cookieconsent.php
+msgid "Strikt noodzakelijke cookies <span class=\"pm__badge\">Altijd ingeschakeld</span>"
+msgstr "Cookies strictement necessaires <span class=\"pm__badge\">Toujours actifs</span>"
+
+#: inc/cookieconsent.php
+msgid "Essentieel voor de werking van de website en kan niet worden uitgeschakeld."
+msgstr "Essentiels au fonctionnement du site et ne peuvent pas etre desactives."
+
+#: inc/cookieconsent.php
+msgid "Helpt ons begrijpen hoe bezoekers de site gebruiken."
+msgstr "Nous aide a comprendre comment les visiteurs utilisent le site."
+
+#: inc/cookieconsent.php
+msgid "Wordt gebruikt voor advertenties en metingen."
+msgstr "Utilise pour la publicite et la mesure."
+
+#: inc/cookieconsent.php
+msgid "Ondersteunt extra functionaliteit en personalisatie."
+msgstr "Prend en charge des fonctionnalites supplementaires et la personnalisation."
+
+#: inc/cookieconsent.php
+msgid "Ondersteunt beveiliging, fraudepreventie en bescherming."
+msgstr "Prend en charge la securite, la prevention de la fraude et la protection."
+
+#: inc/cookieconsent.php
+msgid "Analytics opslag (cookies)"
+msgstr "Stockage analytics (cookies)"
+
+#: inc/cookieconsent.php
+msgid "Advertentie-opslag (cookies)"
+msgstr "Stockage publicitaire (cookies)"
+
+#: inc/cookieconsent.php
+msgid "Advertentie user data (Google)"
+msgstr "Donnees utilisateur publicitaires (Google)"
+
+#: inc/cookieconsent.php
+msgid "Gepersonaliseerde advertenties"
+msgstr "Publicites personnalisees"
+
+#: inc/cookieconsent.php
+msgid "Functionele opslag"
+msgstr "Stockage fonctionnel"
+
+#: inc/cookieconsent.php
+msgid "Personalisatie opslag"
+msgstr "Stockage de personnalisation"
+
+#: inc/cookieconsent.php
+msgid "Security opslag"
+msgstr "Stockage de securite"
