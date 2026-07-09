@@ -1,6 +1,12 @@
 Made I.T. Theme Changelog
 ==========================
 
+Unreleased (workspace updates)
+-----------------------------
+- Improved WooCommerce template compatibility for result counts, account order details, order tracking, and variable add-to-cart rendering.
+- Adjusted the theme color-contrast helper to use brightness-based logic for more reliable text and icon readability.
+- Updated the release summary in README.txt to reflect the current maintenance and compatibility work.
+
 Version 3.0.9 - 2026-06-26
 -------------------------
 Added

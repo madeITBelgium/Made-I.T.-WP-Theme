@@ -10,6 +10,14 @@ Tags: madeit, bootstrap, bootstrap4, made i.t., Made I.T.
 
 == Description ==
 
+== Recent highlights ==
+
+This release focuses on Gutenberg/editor stability, WooCommerce compatibility, and maintenance improvements:
+- Improved block asset loading so editor-only scripts are enqueued only in the editor context.
+- Added shared Gutenberg block build tooling and refreshed block package manifests and dependencies.
+- Improved WooCommerce templates for order/account flows and product variation rendering.
+- Refined theme color contrast handling for clearer text and interface readability.
+
 == Installation ==
 
 1. In your admin panel, go to Appearance -> Themes and click the 'Add New' button.
