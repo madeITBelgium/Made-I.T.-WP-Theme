@@ -1185,14 +1185,29 @@ function madeit_hsl2hex($hsl)
     return madeit_rgb2hex($rgb);
 }
 
+// function madeit_contrast_color($hex)
+// {
+//     list($r, $g, $b) = madeit_hsl2rgb(madeit_hex2hsl($hex));
+//     $r = round(255 * $r);
+//     $g = round(255 * $g);
+//     $b = round(255 * $b);
+
+//     $a = 1 - (0.299 * $r + 0.587 * $g * 0.114 * $b) / 255;
+
+//     return $a < 0.3 ? MADEIT_BLACK_COLOR : MADEIT_WHITE_COLOR;
+// }
+
 function madeit_contrast_color($hex)
 {
     list($r, $g, $b) = madeit_hsl2rgb(madeit_hex2hsl($hex));
+
     $r = round(255 * $r);
     $g = round(255 * $g);
     $b = round(255 * $b);
 
-    $a = 1 - (0.299 * $r + 0.587 * $g * 0.114 * $b) / 255;
+    $brightness = (($r * 299) + ($g * 587) + ($b * 114)) / 1000;
 
-    return $a < 0.3 ? MADEIT_BLACK_COLOR : MADEIT_WHITE_COLOR;
+    return $brightness > 150
+        ? MADEIT_BLACK_COLOR
+        : MADEIT_WHITE_COLOR;
 }
