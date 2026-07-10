@@ -3,7 +3,7 @@ Contributors: madeit
 Requires at least: WordPress 5.0
 Tested up to: 7.0
 Requires PHP: 8.5
-Version: 3.0.9
+Version: 3.0.10
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: madeit, bootstrap, bootstrap4, made i.t., Made I.T.
@@ -12,12 +12,11 @@ Tags: madeit, bootstrap, bootstrap4, made i.t., Made I.T.
 
 == Recent highlights ==
 
-This release focuses on Gutenberg/editor stability, WooCommerce compatibility, and maintenance improvements:
-- Improved block asset loading so editor-only scripts are enqueued only in the editor context.
-- Added shared Gutenberg block build tooling and refreshed block package manifests and dependencies.
-- Improved WooCommerce templates for order/account flows and product variation rendering.
-- Refined theme color contrast handling for clearer text and interface readability.
+This release focuses on WooCommerce compatibility, translation quality, and frontend clarity:
+- Improved WooCommerce templates for cart, loop result count, account order details, order tracking, and variable add-to-cart rendering.
+- Refined theme color contrast behavior for clearer text and interface readability.
 - Added multilingual CookieConsent support with translatable consent/preferences content for NL, EN, FR, and DE.
+- Added CookieConsent translation entries in EN/FR/DE PO files and regenerated MO catalogs.
 
 == Installation ==
 
@@ -65,6 +64,13 @@ License: CC0 1.0 Universal (CC0 1.0)
 Source: https://unsplash.com/@englr?photo=bIhpiQA009k
 
 == Changelog ==
+= 3.0.10 =
+* Added multilingual CookieConsent support (NL/EN/FR/DE) with runtime language-aware consent and preferences content.
+* Added CookieConsent translation entries in EN/FR/DE PO files and regenerated MO files.
+* Improved WooCommerce template compatibility for cart, catalog loop/result count, order details/tracking, and variation forms.
+* Refined theme color contrast helper behavior for improved foreground/background readability.
+* Updated review block render/style source and generated build assets.
+
 = 3.0.9 =
 * Fixed frontend editor-dependency leakage by moving Gutenberg/editor script enqueues to editor-only hooks (`enqueue_block_editor_assets`)
 * Fixed block extension enqueue behavior for image/separator extensions by splitting editor assets and frontend-only styles

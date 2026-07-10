@@ -1,12 +1,28 @@
 Made I.T. Theme Changelog
 ==========================
 
-Unreleased (workspace updates)
------------------------------
-- Added multilingual CookieConsent content support (NL/EN/FR/DE) by passing translated strings from PHP to JavaScript via `wp_localize_script`.
-- Changed CookieConsent JS config to use runtime language detection with safe fallback handling and language-specific service labels.
-- Added new CookieConsent translation entries to `languages/en_US.po`, `languages/fr_FR.po`, and `languages/de_DE.po`.
-- Regenerated `languages/en_US.mo`, `languages/fr_FR.mo`, and `languages/de_DE.mo` after translation updates.
+Version 3.0.10 - 2026-07-09
+-------------------------
+Added
+- Added multilingual CookieConsent support (NL/EN/FR/DE) by passing translated consent and preferences strings from PHP to JavaScript via `wp_localize_script`.
+- Added translation catalog entries for CookieConsent content in `languages/en_US.po`, `languages/fr_FR.po`, and `languages/de_DE.po`.
+
+Changed
+- Changed CookieConsent JavaScript configuration to use runtime language selection with safe fallback behavior and language-specific service labels.
+- Updated WooCommerce template overrides for cart, product loop card rendering, result count, order details/tracking, and variable add-to-cart output.
+- Updated review block render/style sources and generated build artifacts for improved output consistency.
+- Updated theme color contrast helper behavior for clearer foreground/background readability.
+
+Fixed
+- Fixed translation runtime availability by regenerating `languages/en_US.mo`, `languages/fr_FR.mo`, and `languages/de_DE.mo` after PO updates.
+
+Removed
+- No removed files or features in this release window.
+
+Notes
+- Comparison scope: `ea756c0e..HEAD` (3.0.9 baseline commit)
+- Files changed: 26 (1144 insertions, 489 deletions)
+- Working tree status at generation time: clean (no uncommitted changes)
 
 Version 3.0.9 - 2026-06-26
 -------------------------
