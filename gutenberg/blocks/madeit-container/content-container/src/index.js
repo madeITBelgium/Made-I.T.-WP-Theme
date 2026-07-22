@@ -88,13 +88,20 @@ const normalizeSpacing = ( attrs ) => {
  */
 const resolveSize = ( attrs ) => {
     const { size, wrapperClassName } = attrs;
-    // Vertrouw een expliciete niet-boxed size
-    if ( size === 'container-fluid' ) return 'container-fluid';
-    // Afleiden uit opgeslagen wrapper klassen
+
+    // Vertrouw eerst de expliciete size-waarde, indien aanwezig
+    if ( size === 'container-fluid' )        return 'container-fluid';
+    if ( size === 'container' )               return 'container';
+    if ( size === 'container-content-boxed' ) return 'container'; // verwijderde optie → container
+
+    // Alleen als size ontbreekt: probeer af te leiden uit de klassen
+    // (let op: wrapperClassName = outer wrapper, is per ontwerp vaak
+    // altijd container-fluid — dus alleen bruikbaar als laatste redmiddel)
     const tokens = typeof wrapperClassName === 'string'
         ? wrapperClassName.trim().split( /\s+/ ) : [];
-    if ( tokens.includes( 'container-fluid' ) ) return 'container-fluid';
-    if ( tokens.includes( 'container' ) )       return 'container';
+    if ( tokens.includes( 'container-content-boxed' ) ) return 'container';
+    if ( tokens.includes( 'container' ) )               return 'container';
+
     return 'container'; // fallback
 };
 

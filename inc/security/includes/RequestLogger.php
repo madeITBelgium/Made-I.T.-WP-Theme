@@ -562,6 +562,7 @@ class RequestLogger
         }
         $ajax_url = admin_url('admin-ajax.php');
         $nonce = wp_create_nonce('madeit_security_unblock_request');
+        $rendered_at = (string) time();
         $ip = self::get_real_ip();
         http_response_code(403);
         header('Content-Type: text/html; charset=utf-8');
@@ -571,6 +572,7 @@ class RequestLogger
         wp_print_styles('madeit-security-blocked-ip');
         $ajax_url_esc = esc_url($ajax_url);
         $nonce_esc = esc_attr($nonce);
+        $rendered_at_esc = esc_attr($rendered_at);
         $ip_esc = esc_html($ip);
         echo <<<HTML
 </head>
@@ -581,6 +583,9 @@ class RequestLogger
 <form id="madeit-unblock-form" class="unblock-form" method="post" action="{$ajax_url_esc}" data-ajax-url="{$ajax_url_esc}">
     <input type="hidden" name="action" value="madeit_security_unblock_request" />
     <input type="hidden" name="nonce" value="{$nonce_esc}" />
+    <input type="hidden" name="rendered_at" value="{$rendered_at_esc}" />
+    <input type="hidden" id="madeit-unblock-js" name="js_enabled" value="0" />
+    <input type="hidden" id="madeit-unblock-hp" name="company" value="" autocomplete="off" />
     <label for="madeit-unblock-email">Email</label>
     <input id="madeit-unblock-email" name="email" type="email" required placeholder="you@example.com" />
     <label for="madeit-unblock-message">Message (optional)</label>
@@ -592,6 +597,10 @@ class RequestLogger
 (function(){
     var form = document.getElementById('madeit-unblock-form');
     if (!form) return;
+    var jsFlag = document.getElementById('madeit-unblock-js');
+    if (jsFlag) {
+        jsFlag.value = '1';
+    }
     var result = document.getElementById('madeit-unblock-result');
     form.addEventListener('submit', function(e){
         e.preventDefault();

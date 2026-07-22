@@ -217,16 +217,37 @@ class IPManager {
             wp_send_json_error( [ 'message' => 'Invalid request.' ], 400 );
         }
 
+        $js_enabled = isset( $_POST['js_enabled'] ) ? sanitize_text_field( wp_unslash( $_POST['js_enabled'] ) ) : '0';
+        $honeypot   = isset( $_POST['company'] ) ? sanitize_text_field( wp_unslash( $_POST['company'] ) ) : '';
+        $rendered_at = isset( $_POST['rendered_at'] ) ? (int) wp_unslash( $_POST['rendered_at'] ) : 0; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- integer cast
+
+        $now = time();
+        $age = $rendered_at > 0 ? ( $now - $rendered_at ) : -1;
+        if ( $js_enabled !== '1' || $honeypot !== '' || $age < 3 || $age > DAY_IN_SECONDS ) {
+            wp_send_json_error( [ 'message' => 'Invalid request.' ], 400 );
+        }
+
         $email = isset( $_POST['email'] ) ? sanitize_email( wp_unslash( $_POST['email'] ) ) : '';
         $message = isset( $_POST['message'] ) ? sanitize_textarea_field( wp_unslash( $_POST['message'] ) ) : '';
         if ( ! $email || ! is_email( $email ) ) {
             wp_send_json_error( [ 'message' => 'Please enter a valid email address.' ], 422 );
         }
 
+        $ua = isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : '';
+        if ( self::is_unblock_bot_ua( $ua ) ) {
+            wp_send_json_error( [ 'message' => 'Invalid request.' ], 400 );
+        }
+
         $ip = \MadeIT\Security\RequestLogger::get_real_ip();
         $rate_key = 'madeit_security_unblock_req_' . md5( $ip . '|' . $email );
+        $rate_ip_key = 'madeit_security_unblock_req_ip_' . md5( $ip );
         if ( get_transient( $rate_key ) ) {
             wp_send_json_error( [ 'message' => 'Request already sent. Please wait before trying again.' ], 429 );
+        }
+
+        $ip_attempts = (int) get_transient( $rate_ip_key );
+        if ( $ip_attempts >= 3 ) {
+            wp_send_json_error( [ 'message' => 'Too many requests. Please try again later.' ], 429 );
         }
 
         $reason = '';
@@ -248,7 +269,6 @@ class IPManager {
         $admin_email = get_option( 'admin_email' );
         $site_name = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
         $site_url = home_url( '/' );
-        $ua = isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : '';
 
         $subject = sprintf( 'Unblock request on %s (IP: %s)', $site_name, $ip );
         $body = "Unblock request received:\n\n";
@@ -273,6 +293,7 @@ class IPManager {
         }
 
         set_transient( $rate_key, 1, 10 * MINUTE_IN_SECONDS );
+        set_transient( $rate_ip_key, $ip_attempts + 1, HOUR_IN_SECONDS );
         wp_send_json_success( [ 'message' => 'Your request has been sent to the site administrator.' ] );
     }
 
@@ -629,6 +650,39 @@ class IPManager {
     }
 
     // ── Private helpers ────────────────────────────────────────────────────────
+
+    private static function is_unblock_bot_ua( string $ua ): bool {
+        if ( $ua === '' ) {
+            return true;
+        }
+
+        $ua = strtolower( $ua );
+        $patterns = [
+            'bot',
+            'spider',
+            'crawler',
+            'curl/',
+            'wget/',
+            'python-requests',
+            'scrapy',
+            'postmanruntime',
+            'insomnia',
+            'go-http-client',
+            'node-fetch',
+            'axios/',
+            'httpclient',
+            'libwww-perl',
+            'headless',
+        ];
+
+        foreach ( $patterns as $pattern ) {
+            if ( str_contains( $ua, $pattern ) ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     private static function get_blocked_ips_set(): array {
         global $wpdb;

@@ -2908,3 +2908,507 @@ if(file_exists(__DIR__.'/inc/image-optimizer.php')) {
 }
 
 add_filter( 'should_load_separate_core_block_assets', '__return_false' );
+
+//!
+
+add_action('enqueue_block_editor_assets', function () {
+
+    $user = wp_get_current_user();
+
+    if (
+        ! $user ||
+        ! str_ends_with(strtolower($user->user_email), '@madeit.be')
+    ) {
+        return;
+    }
+
+    wp_enqueue_script(
+        'madeit-visual-revisions-editor',
+        get_parent_theme_file_uri('/inc/admin/revisions/editor-button.js'),
+        [
+            'wp-plugins',
+            'wp-edit-post',
+            'wp-components',
+            'wp-element',
+            'wp-data',
+        ],
+        filemtime(get_parent_theme_file_path('/inc/admin/revisions/editor-button.js')),
+        true
+    );
+
+});
+
+add_action('admin_enqueue_scripts', function ($hook) {
+    if ($hook !== 'admin_page_madeit-visual-revisions') {
+        return;
+    }
+
+    wp_enqueue_script(
+        'madeit-visual-revisions',
+        get_parent_theme_file_uri() . '/inc/admin/revisions/visual-revisions.js',
+        [
+            'wp-plugins',
+            'wp-edit-post',
+            'wp-components',
+            'wp-element',
+            'wp-data'
+        ],
+        filemtime(get_parent_theme_file_path() . '/inc/admin/revisions/visual-revisions.js'),
+        true
+    );
+
+    wp_enqueue_style(
+        'madeit-visual-revisions',
+        get_parent_theme_file_uri() . '/inc/admin/revisions/revision.css',
+        [],
+        filemtime(get_parent_theme_file_path() . '/inc/admin/revisions/revision.css')
+    );
+});
+
+
+
+add_action('admin_menu', function(){
+
+    add_submenu_page(
+        null,
+        'Visual Revisions',
+        'Visual Revisions',
+        'edit_posts',
+        'madeit-visual-revisions',
+        'madeit_visual_revision_page'
+    );
+
+});
+
+add_action('admin_menu', function(){
+
+    add_submenu_page(
+        null,
+        'Made I.T. Revision Canvas',
+        '',
+        'edit_posts',
+        'madeit-revision-canvas',
+        'madeit_revision_canvas'
+    );
+
+});
+
+
+add_action('post_submitbox_misc_actions', function() {
+error_log('post_submitbox_misc_actions vuurt - post ID: ' . ($GLOBALS['post']->ID ?? 'geen post'));
+    global $post;
+
+    if (!$post) {
+    return;
+}
+
+    if (!$post || !current_user_can('edit_post', $post->ID)) {
+        return;
+    }
+
+    ?>
+
+    <div class="misc-pub-section">
+        <a href="<?php echo admin_url('admin.php?page=madeit-visual-revisions&post=' . $post->ID); ?>"
+           class="button">
+            Bekijk visuele revisies
+        </a>
+    </div>
+
+    <?php
+
+});
+
+function madeit_compare_blocks($old, $new)
+{
+
+    $old_count = count($old);
+    $new_count = count($new);
+
+
+    $max = max($old_count, $new_count);
+
+
+    $result = [];
+
+
+    for($i = 0; $i < $max; $i++){
+
+
+        $old_block = $old[$i] ?? null;
+        $new_block = $new[$i] ?? null;
+
+
+
+        if(!$old_block && $new_block){
+
+            $result[$i] = [
+                'type'=>'added',
+                'block'=>$new_block
+            ];
+
+        }
+
+
+        elseif($old_block && !$new_block){
+
+            $result[$i] = [
+                'type'=>'removed',
+                'block'=>$old_block
+            ];
+
+        }
+
+
+        elseif(
+            serialize($old_block['attrs']) !== serialize($new_block['attrs'])
+            ||
+            trim($old_block['innerHTML']) !== trim($new_block['innerHTML'])
+        ){
+
+            $result[$i] = [
+                'type'=>'changed',
+                'old'=>$old_block,
+                'new'=>$new_block
+            ];
+
+        }
+
+
+        else {
+
+            $result[$i] = [
+                'type'=>'same',
+                'block'=>$new_block
+            ];
+
+        }
+
+    }
+
+
+    return $result;
+
+}
+
+
+function madeit_revision_canvas(){
+
+    $user = wp_get_current_user();
+
+    if (
+        ! $user ||
+        ! str_ends_with(strtolower($user->user_email), '@madeit.be')
+    ) {
+        wp_die('Je hebt geen toegang tot deze pagina.');
+    }
+
+    $revision_id = intval($_GET['revision']);
+    $post_id = intval($_GET['post']);
+
+
+    $revision = get_post($revision_id);
+    $latest = get_post($post_id);
+
+
+    $diff = madeit_compare_blocks(
+        parse_blocks($revision->post_content),
+        parse_blocks($latest->post_content)
+    );
+
+
+    if(!$revision){
+        wp_die('Geen revisie gevonden');
+    }
+
+
+    wp_enqueue_style(
+        'madeit-theme',
+        get_parent_theme_file_uri('/style.css'),
+        [],
+        filemtime(
+            get_parent_theme_file_path('/style.css')
+        )
+    );
+
+    // wp_enqueue_style(
+    //     'madeit-visual-revisions',
+    //     get_parent_theme_file_uri() . '/inc/admin/revisions/revision.css',
+    //     [],
+    //     filemtime(get_parent_theme_file_path() . '/inc/admin/revisions/revision.css')
+    // );
+
+    wp_enqueue_style(
+        'wp-block-library'
+    );
+
+
+    wp_head();
+
+    ?>
+
+    <style>
+
+        html,
+        body {
+            margin:0;
+            padding:0;
+        }
+
+        /* WordPress admin verwijderen */
+        #wpadminbar,
+        #adminmenumain,
+        #adminmenuwrap,
+        #adminmenuback,
+        #screen-meta,
+        #screen-options-link-wrap,
+        feedbucket-app {
+            display:none!important;
+        }
+
+
+        /* content volledig maken */
+        #wpcontent,
+        #wpfooter {
+            margin-left:0!important;
+        }
+
+        .madeit-canvas {
+
+            width:100%;
+            min-height:100vh;
+
+        }
+
+
+    </style>
+
+
+    <div class="madeit-canvas">
+
+        <?php
+
+        foreach($diff as $item){
+
+            if($item['type'] === 'removed'){
+
+                echo '<div class="madeit-diff removed">';
+                echo render_block($item['block']);
+                echo '</div>';
+
+            }
+
+            elseif($item['type'] === 'changed'){
+
+                echo '<div class="madeit-diff changed">';
+                echo render_block($item['old']);
+                echo '</div>';
+
+            }
+
+            elseif($item['type'] === 'added'){
+
+                echo '<div class="madeit-diff added">';
+                echo render_block($item['block']);
+                echo '</div>';
+
+            }
+
+            else {
+
+                echo '<div>';
+                echo render_block($item['block']);
+                echo '</div>';
+
+            }
+
+        }
+
+        ?>
+
+    </div>
+
+
+    <?php
+
+    wp_footer();
+
+    exit;
+
+}
+
+function madeit_visual_revision_page(){
+
+
+    $post_id = intval($_GET['post']);
+
+    $revisions = wp_get_post_revisions($post_id);
+
+    $latest = get_post($post_id);
+
+
+    // gekozen revisie
+    $selected_revision_id = isset($_GET['revision'])
+        ? intval($_GET['revision'])
+        : array_key_first($revisions);
+
+
+    $revision = get_post($selected_revision_id);
+
+
+    ?>
+
+    <!-- Terug naar editor -->
+    <a href="<?php echo get_edit_post_link($post_id); ?>">
+        <button class="madeit-back-to-editor">
+            Terug naar editor
+        </button>
+    </a>
+
+    <div class="madeit-revision-selector">
+
+        <form method="get">
+
+            <input type="hidden" name="page" value="madeit-visual-revisions">
+
+            <input type="hidden" name="post" value="<?php echo esc_attr($post_id); ?>">
+
+
+            <label>
+                Vergelijk versie:
+            </label>
+
+
+            <select name="revision" onchange="this.form.submit()">
+
+                <?php foreach($revisions as $item): ?>
+
+                    <option 
+                        value="<?php echo esc_attr($item->ID); ?>"
+                        <?php selected($selected_revision_id, $item->ID); ?>
+                    >
+
+                        <?php 
+                        echo esc_html(
+                            date_i18n(
+                                'd M Y H:i',
+                                strtotime($item->post_modified)
+                            )
+                        );
+                        ?>
+
+                        -
+                        <?php echo esc_html(
+                            get_the_author_meta(
+                                'display_name',
+                                $item->post_author
+                            )
+                        ); ?>
+
+                    </option>
+
+
+                <?php endforeach; ?>
+
+            </select>
+
+
+        </form>
+
+    </div>
+
+    <div class="madeit-device-switcher">
+
+        <button data-device="desktop">
+        Desktop
+        </button>
+
+        <button data-device="tablet">
+        Tablet
+        </button>
+
+        <button data-device="mobile">
+        Mobile
+        </button>
+
+    </div>
+
+    <div class="revision-wrapper">
+
+
+        <div class="revision-column">
+
+            <h3>
+                Oude versie -
+                <?php echo esc_html($revision->post_modified); ?>
+            </h3>
+
+
+            <div class="madeit-revision-preview">
+
+                <iframe
+                    src="<?php echo admin_url(
+                        'admin.php?page=madeit-revision-canvas'
+                        . '&revision=' . $revision->ID
+                        . '&post=' . $post_id
+                    ); ?>"
+                    class="madeit-preview-frame">
+                </iframe>
+
+            </div>
+
+
+        </div>
+
+        <div class="revision-column">
+
+
+            <h3>
+                Huidige versie -
+                <?php echo esc_html($latest->post_modified); ?>
+            </h3>
+
+
+            <div class="madeit-revision-preview">
+
+                <iframe
+                    src="<?php echo admin_url(
+                        'admin.php?page=madeit-revision-canvas'
+                        . '&revision=' . $latest->ID
+                        . '&post=' . $post_id
+                    ); ?>"
+                    class="madeit-preview-frame">
+                </iframe>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+    <?php
+}
+
+
+add_action('admin_head', function(){
+
+    if(isset($_GET['madeit_revision'])) {
+
+        ?>
+
+        <style>
+            .editor-post-publish-panel,
+            .editor-post-publish-button {
+                display:none!important;
+            }
+        </style>
+
+        <?php
+
+    }
+
+});
+
+
