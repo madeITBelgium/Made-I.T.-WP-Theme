@@ -1,6 +1,11 @@
 Made I.T. Theme Changelog
 ==========================
 
+Version 3.0.12 - 2026-07-24
+-------------------------
+Fixed
+- Fixed Container Content block migration for legacy inline wrapper cases to ensure proper handling of older markup.
+
 Version 3.0.11 - 2026-07-22
 -------------------------
 Added

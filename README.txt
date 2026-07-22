@@ -3,7 +3,7 @@ Contributors: madeit
 Requires at least: WordPress 5.0
 Tested up to: 7.0
 Requires PHP: 8.5
-Version: 3.0.11
+Version: 3.0.12
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: madeit, bootstrap, bootstrap4, made i.t., Made I.T.
@@ -64,6 +64,9 @@ License: CC0 1.0 Universal (CC0 1.0)
 Source: https://unsplash.com/@englr?photo=bIhpiQA009k
 
 == Changelog ==
+= 3.0.12 =
+* Fix container content block migration for legacy.
+
 = 3.0.11 =
 * Added a visual revision review workflow with editor access points and a dedicated revision preview page for content comparisons.
 * Added revision-specific styling and JavaScript assets to support the new preview experience.
