@@ -249,6 +249,12 @@ export function ColumnsEditContainer( props ) {
         if ( contentWidth !== 'container-fluid' ) return;
         setAttributes( { contentWidth: 'container' } );
     }, [ size, contentWidth, setAttributes ] );
+
+    // De verwijderde 'container-content-boxed' size → 'container'
+    useEffect( () => {
+        if ( size !== 'container-content-boxed' ) return;
+        setAttributes( { size: 'container', madeitHasUserEdits: true } );
+    }, [ size, setAttributes ] );
     
     const { count } = useSelect( ( select ) => {
         return {
@@ -264,8 +270,8 @@ export function ColumnsEditContainer( props ) {
     // ── CSS klassen ────────────────────────────────────────────────────────
     var classes = classnames( className, {
         [ `are-vertically-aligned-${ verticalAlignment }` ]: verticalAlignment,
-        [ `container` ]: 'container' === size,
-        [ `container-fluid` ]: 'container-fluid' === size || 'container-content-boxed' === size,
+        [ `container` ]: 'container' === size || 'container-content-boxed' === size,
+        [ `container-fluid` ]: 'container-fluid' === size,
     } );
 
     // classes = classnames( classes, {
