@@ -3,7 +3,7 @@ Contributors: madeit
 Requires at least: WordPress 5.0
 Tested up to: 7.0
 Requires PHP: 8.5
-Version: 3.0.10
+Version: 3.0.11
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: madeit, bootstrap, bootstrap4, made i.t., Made I.T.
@@ -12,11 +12,11 @@ Tags: madeit, bootstrap, bootstrap4, made i.t., Made I.T.
 
 == Recent highlights ==
 
-This release focuses on WooCommerce compatibility, translation quality, and frontend clarity:
-- Improved WooCommerce templates for cart, loop result count, account order details, order tracking, and variable add-to-cart rendering.
-- Refined theme color contrast behavior for clearer text and interface readability.
-- Added multilingual CookieConsent support with translatable consent/preferences content for NL, EN, FR, and DE.
-- Added CookieConsent translation entries in EN/FR/DE PO files and regenerated MO catalogs.
+This release adds a visual revision workflow for internal content review and improves the theme's security logging and IP-management behavior:
+- Added a revision review experience with editor shortcuts and a dedicated preview canvas for comparing post revisions.
+- Improved request logging so the security module skips noisy backend traffic while keeping useful visitor data intact.
+- Strengthened IP-management safeguards around blocking, whitelisting, and unblock request handling.
+- Continued the theme's focus on a cleaner admin workflow for content editors and site operators.
 
 == Installation ==
 
@@ -64,6 +64,12 @@ License: CC0 1.0 Universal (CC0 1.0)
 Source: https://unsplash.com/@englr?photo=bIhpiQA009k
 
 == Changelog ==
+= 3.0.11 =
+* Added a visual revision review workflow with editor access points and a dedicated revision preview page for content comparisons.
+* Added revision-specific styling and JavaScript assets to support the new preview experience.
+* Improved security request logging by skipping irrelevant admin traffic and keeping visitor logging more focused.
+* Strengthened IP management and unblock-request handling for more reliable security operations.
+
 = 3.0.10 =
 * Added multilingual CookieConsent support (NL/EN/FR/DE) with runtime language-aware consent and preferences content.
 * Added CookieConsent translation entries in EN/FR/DE PO files and regenerated MO files.

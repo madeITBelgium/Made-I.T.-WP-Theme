@@ -1,6 +1,27 @@
 Made I.T. Theme Changelog
 ==========================
 
+Version 3.0.11 - 2026-07-22
+-------------------------
+Added
+- Added a visual revision review workflow with editor entry points and a dedicated revision preview page for comparing content revisions.
+- Added revision styling and JavaScript assets to support the preview experience in the admin area.
+
+Changed
+- Updated the security request logger to skip irrelevant backend traffic and keep visitor logging more focused.
+- Improved IP management and unblock-request handling for more reliable security operations.
+
+Fixed
+- Reduced noise in security logging for admin-driven requests and related background operations.
+
+Removed
+- No removed files or features in this release window.
+
+Notes
+- Comparison scope: `3.0.10..HEAD`
+- Files changed: 10 (810 insertions, 11 deletions)
+- Working tree status at generation time: clean (no uncommitted changes)
+
 Version 3.0.10 - 2026-07-09
 -------------------------
 Added
