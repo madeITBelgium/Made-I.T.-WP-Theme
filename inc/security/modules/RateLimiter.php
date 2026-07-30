@@ -16,12 +16,12 @@ class RateLimiter {
         'login'       => [ 15,  300  ],
         'search'      => [ 15,  60   ],
         'feed'        => [ 10,  60   ],
-        'sitemap'     => [ 5,   3600 ],
+        'sitemap'     => [ 60,  3600 ],
         'ajax'        => [ 60,  60   ],
         'rest'        => [ 60,  60   ],
         'rest_unauth' => [ 30,  60   ],
-        'woo_checkout'=> [ 5,   60   ],
-        'xmlrpc'      => [ 3,   300   ],
+        'woo_checkout'=> [ 10,  60   ],
+        'xmlrpc'      => [ 5,   300  ],
         'cron'        => [ 1,   60   ],
     ];
 
