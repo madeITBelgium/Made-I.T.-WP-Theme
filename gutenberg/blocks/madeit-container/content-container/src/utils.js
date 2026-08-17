@@ -6,6 +6,28 @@ import memoize from 'memize';
 import { times, findIndex, sumBy, merge, mapValues } from 'lodash';
 
 /**
+ * Applies an opacity percentage to every color stop of a CSS gradient string,
+ * using color-mix() so the gradient itself becomes translucent.
+ *
+ * @param {string} gradient       CSS gradient value (e.g. `linear-gradient(...)`).
+ * @param {number} opacityPercent Opacity percentage (0-100).
+ *
+ * @return {string} Gradient with each color stop wrapped in color-mix().
+ */
+export function applyOpacityToGradient( gradient, opacityPercent ) {
+    if ( typeof gradient !== 'string' || ! gradient.trim() ) return gradient;
+    if ( typeof opacityPercent !== 'number' || ! Number.isFinite( opacityPercent ) ) return gradient;
+
+    const clamped = Math.max( 0, Math.min( 100, opacityPercent ) );
+    if ( clamped >= 100 ) return gradient;
+
+    return gradient.replace(
+        /(#[0-9a-fA-F]{3,8}\b|rgba?\([^)]*\)|hsla?\([^)]*\))/g,
+        ( color ) => `color-mix(in srgb, ${ color } ${ clamped }%, transparent)`
+    );
+}
+
+/**
  * Returns the layouts configuration for a given number of columns.
  *
  * @param {number} columns Number of columns.

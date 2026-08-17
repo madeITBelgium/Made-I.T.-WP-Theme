@@ -77,6 +77,24 @@
         "containerBackgroundGradient": {
             "type": "object"
         },
+        "containerBackgroundOverlayType": {
+            "type": "string"
+        },
+        "containerBackgroundOverlayColor": {
+            "type": "string"
+        },
+        "customContainerBackgroundOverlayColor": {
+            "type": "string"
+        },
+        "containerBackgroundOverlayGradient": {
+            "type": "object"
+        },
+        "containerBackgroundOverlayOpacity": {
+            "type": "number"
+        },
+        "containerBackgroundOverlayBlendMode": {
+            "type": "string"
+        },
         "size": {
             "type": "string",
             "default": "container"

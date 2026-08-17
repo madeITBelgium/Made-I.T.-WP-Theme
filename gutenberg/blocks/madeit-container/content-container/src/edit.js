@@ -46,6 +46,7 @@ import {
     getMappedColumnWidths,
     getRedistributedColumnWidths,
     toWidthPrecision,
+    applyOpacityToGradient,
 } from './utils.js';
 import { ControlHeader, ResponsiveBoxControl, ResponsiveVisibilityPanel, UnitSelect, AdvancedUnitSelect } from '../../../../shared';
 import containerVariations from './variations';
@@ -68,6 +69,8 @@ export function ColumnsEditContainer( props ) {
         clientId,
         containerBackgroundColor,
         setContainerBackgroundColor,
+        containerBackgroundOverlayColor,
+        setContainerBackgroundOverlayColor,
         rowBackgroundColor,
         setRowBackgroundColor,
         rowTextColor,
@@ -106,6 +109,10 @@ export function ColumnsEditContainer( props ) {
         containerBackgroundRepeat,
         containerBackgroundSize,
         containerBackgroundGradient,
+        containerBackgroundOverlayType,
+        containerBackgroundOverlayGradient,
+        containerBackgroundOverlayOpacity,
+        containerBackgroundOverlayBlendMode,
 
         // ─── Other attributes ─────────────────
         minHeight,
@@ -346,6 +353,62 @@ export function ColumnsEditContainer( props ) {
             ? computedBackgroundGradient.gradient
             : undefined;
 
+    const overlayColorValue =
+        typeof containerBackgroundOverlayColor?.color === 'string'
+            ? containerBackgroundOverlayColor.color
+            : '';
+
+    const hasOverlayColor = overlayColorValue.trim().length > 0;
+
+    const computedBackgroundOverlayOpacity =
+        typeof containerBackgroundOverlayOpacity === 'number' &&
+        Number.isFinite( containerBackgroundOverlayOpacity )
+            ? Math.max( 0, Math.min( 100, containerBackgroundOverlayOpacity ) )
+            : 50;
+
+    const computedBackgroundOverlayBlendMode =
+        typeof containerBackgroundOverlayBlendMode === 'string' &&
+        containerBackgroundOverlayBlendMode.trim().length > 0
+            ? containerBackgroundOverlayBlendMode
+            : 'normal';
+
+    const computedBackgroundOverlayGradient =
+        containerBackgroundOverlayGradient || {
+            gradient: '',
+        };
+
+    const computedBackgroundOverlayGradientValue =
+        typeof computedBackgroundOverlayGradient?.gradient === 'string' &&
+        computedBackgroundOverlayGradient.gradient.trim().length > 0
+            ? computedBackgroundOverlayGradient.gradient
+            : undefined;
+
+    const hasOverlayGradient =
+        typeof computedBackgroundOverlayGradientValue === 'string' &&
+        computedBackgroundOverlayGradientValue.length > 0;
+
+    // Overlay is either a color OR a gradient, never both at once.
+    // 'transparent' is a legacy value meaning "no overlay" and must stay disabled.
+    const computedBackgroundOverlayMode =
+        containerBackgroundOverlayType === 'transparent'
+            ? 'none'
+            : containerBackgroundOverlayType === 'gradient' || containerBackgroundOverlayType === 'color'
+                ? containerBackgroundOverlayType
+                : ( hasOverlayGradient && ! hasOverlayColor ? 'gradient' : 'color' );
+
+    const getOverlayLayer = () => {
+        if ( computedBackgroundOverlayMode === 'color' && hasOverlayColor ) {
+            const overlayMix = `color-mix(in srgb, ${ overlayColorValue } ${ computedBackgroundOverlayOpacity }%, transparent)`;
+            return `linear-gradient(${ overlayMix }, ${ overlayMix })`;
+        }
+
+        if ( computedBackgroundOverlayMode === 'gradient' && hasOverlayGradient ) {
+            return applyOpacityToGradient( computedBackgroundOverlayGradientValue, computedBackgroundOverlayOpacity );
+        }
+
+        return undefined;
+    };
+
     const gradients = useSelect( ( select ) => {
         const settings = select( 'core/block-editor' )?.getSettings?.() || {};
 
@@ -502,6 +565,18 @@ export function ColumnsEditContainer( props ) {
 
     if ( computedBackgroundType === 'gradient' && computedBackgroundGradientValue ) {
         containerBackgroundStyle.backgroundImage = computedBackgroundGradientValue;
+    }
+
+    const backgroundOverlayLayer = getOverlayLayer();
+    if ( backgroundOverlayLayer ) {
+        const currentBackgroundImage = containerBackgroundStyle.backgroundImage;
+        containerBackgroundStyle.backgroundImage = currentBackgroundImage
+            ? `${ backgroundOverlayLayer }, ${ currentBackgroundImage }`
+            : backgroundOverlayLayer;
+
+        if ( computedBackgroundOverlayBlendMode !== 'normal' ) {
+            containerBackgroundStyle.backgroundBlendMode = computedBackgroundOverlayBlendMode;
+        }
     }
 
     var style = {
@@ -1044,6 +1119,57 @@ export function ColumnsEditContainer( props ) {
             containerBackgroundRepeat: undefined,
             containerBackgroundSize: undefined,
             containerBackgroundGradient: {},
+        } );
+    };
+
+    const setContainerBackgroundOverlayGradient = ( value ) => {
+        if ( ! value ) {
+            setAttributes( {
+                containerBackgroundOverlayGradient: undefined,
+                madeitHasUserEdits: true,
+            } );
+            return;
+        }
+
+        if ( typeof value === 'string' ) {
+            if ( value.trim().length === 0 ) {
+                setAttributes( {
+                    containerBackgroundOverlayGradient: undefined,
+                    madeitHasUserEdits: true,
+                } );
+                return;
+            }
+
+            setAttributes( {
+                containerBackgroundOverlayGradient: { gradient: value },
+                madeitHasUserEdits: true,
+            } );
+            return;
+        }
+
+        if ( typeof value?.gradient === 'string' && value.gradient.trim().length === 0 ) {
+            setAttributes( {
+                containerBackgroundOverlayGradient: undefined,
+                madeitHasUserEdits: true,
+            } );
+            return;
+        }
+
+        setAttributes( {
+            containerBackgroundOverlayGradient: value,
+            madeitHasUserEdits: true,
+        } );
+    };
+
+    const resetBackgroundOverlay = () => {
+        setAttributes( {
+            containerBackgroundOverlayType: undefined,
+            containerBackgroundOverlayColor: undefined,
+            customContainerBackgroundOverlayColor: undefined,
+            containerBackgroundOverlayGradient: undefined,
+            containerBackgroundOverlayOpacity: undefined,
+            containerBackgroundOverlayBlendMode: undefined,
+            madeitHasUserEdits: true,
         } );
     };
 
@@ -1875,14 +2001,110 @@ const clearPreviewBlockStyle = () => {
                             )}
                         </PanelBody>
 
-                        <PanelBody className="disabledPanel" title="Achtergrond overlay" initialOpen={false}>
-                            {/* Overlay Transparant, classic */}
+                        <PanelBody title="Achtergrond overlay" initialOpen={false}>
+                            <div className="madeit-control">
+                                <ControlHeader
+                                    title={ __( 'Overlay' ) }
+                                    onReset={ resetBackgroundOverlay }
+                                />
+                            </div>
 
-                            {/* Overlay kleur */}
+                            <div className="madeit-control">
+                                <ToggleGroupControl
+                                    __next40pxDefaultSize
+                                    className="madeit-control-buttonGroup"
+                                    label={ __( 'Overlay type' ) }
+                                    value={ computedBackgroundOverlayMode }
+                                    onChange={ ( value ) =>
+                                        setAttributes( {
+                                            containerBackgroundOverlayType: value,
+                                            madeitHasUserEdits: true,
+                                        } )
+                                    }
+                                >
+                                    <ToggleGroupControlOption value="color" label={ __( 'Kleur' ) } />
+                                    <ToggleGroupControlOption value="gradient" label={ __( 'Gradient' ) } />
+                                </ToggleGroupControl>
+                            </div>
 
-                            {/* Overlay dekking */}
+                            { computedBackgroundOverlayMode === 'color' && (
+                                <div className="madeit-control">
+                                    <PanelColorSettings
+                                        initialOpen={ true }
+                                        colorSettings={ [
+                                            {
+                                                label: __( 'Overlay kleur' ),
+                                                value: containerBackgroundOverlayColor?.color,
+                                                onChange: ( value ) => {
+                                                    setContainerBackgroundOverlayColor( value );
+                                                    setAttributes( { madeitHasUserEdits: true } );
+                                                },
+                                            },
+                                        ] }
+                                    />
+                                </div>
+                            ) }
 
-                            {/* Blend mode */}
+                            { computedBackgroundOverlayMode === 'gradient' && (
+                                <div className="madeit-control">
+                                    <GradientControl
+                                        label={ __( 'Overlay gradient' ) }
+                                        gradients={ gradients }
+                                        value={ computedBackgroundOverlayGradientValue }
+                                        onChange={ ( value ) =>
+                                            setContainerBackgroundOverlayGradient( { gradient: value } )
+                                        }
+                                    />
+                                </div>
+                            ) }
+
+                            <div className="madeit-control">
+                                <RangeControl
+                                    __next40pxDefaultSize
+                                    label={ __( 'Overlay dekking' ) }
+                                    value={ computedBackgroundOverlayOpacity }
+                                    onChange={ ( value ) =>
+                                        setAttributes( {
+                                            containerBackgroundOverlayOpacity: value,
+                                            madeitHasUserEdits: true,
+                                        } )
+                                    }
+                                    min={ 0 }
+                                    max={ 100 }
+                                />
+                            </div>
+
+                            <div className="madeit-control">
+                                <SelectControl
+                                    __next40pxDefaultSize
+                                    label={ __( 'Blend mode' ) }
+                                    value={ computedBackgroundOverlayBlendMode }
+                                    options={ [
+                                        { label: __( 'Normal' ), value: 'normal' },
+                                        { label: __( 'Multiply' ), value: 'multiply' },
+                                        { label: __( 'Screen' ), value: 'screen' },
+                                        { label: __( 'Overlay' ), value: 'overlay' },
+                                        { label: __( 'Darken' ), value: 'darken' },
+                                        { label: __( 'Lighten' ), value: 'lighten' },
+                                        { label: __( 'Color dodge' ), value: 'color-dodge' },
+                                        { label: __( 'Color burn' ), value: 'color-burn' },
+                                        { label: __( 'Hard light' ), value: 'hard-light' },
+                                        { label: __( 'Soft light' ), value: 'soft-light' },
+                                        { label: __( 'Difference' ), value: 'difference' },
+                                        { label: __( 'Exclusion' ), value: 'exclusion' },
+                                        { label: __( 'Hue' ), value: 'hue' },
+                                        { label: __( 'Saturation' ), value: 'saturation' },
+                                        { label: __( 'Color' ), value: 'color' },
+                                        { label: __( 'Luminosity' ), value: 'luminosity' },
+                                    ] }
+                                    onChange={ ( value ) =>
+                                        setAttributes( {
+                                            containerBackgroundOverlayBlendMode: value,
+                                            madeitHasUserEdits: true,
+                                        } )
+                                    }
+                                />
+                            </div>
                         </PanelBody>
 
                         <PanelBody title="Spatie" initialOpen={false}>
@@ -2880,5 +3102,10 @@ const ColumnsEdit = ( props ) => {
 };
 
 export default compose([
-    withColors('containerBackgroundColor', 'rowTextColor', 'rowBackgroundColor')
+    withColors(
+        'containerBackgroundColor',
+        'containerBackgroundOverlayColor',
+        'rowTextColor',
+        'rowBackgroundColor'
+    )
 ])( ColumnsEdit );
