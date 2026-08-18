@@ -3,7 +3,7 @@ Contributors: madeit
 Requires at least: WordPress 5.0
 Tested up to: 7.0
 Requires PHP: 8.5
-Version: 3.0.12
+Version: 3.0.13
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: madeit, bootstrap, bootstrap4, made i.t., Made I.T.
@@ -12,10 +12,11 @@ Tags: madeit, bootstrap, bootstrap4, made i.t., Made I.T.
 
 == Recent highlights ==
 
-This release improves compatibility for existing Container Content blocks:
-- Migrates the retired boxed container option to the standard container layout when editing legacy content.
-- Preserves existing block content while marking migrated blocks as user-edited to prevent repeated legacy migration.
-- Regenerates the Container Content editor assets for the updated migration behavior.
+This release improves Gutenberg editing, responsive media controls, security, and dependency maintenance:
+- Adds responsive width and height controls for supported image blocks.
+- Adds color and gradient overlays, opacity, and blend modes to Container Content blocks.
+- Improves protection against blocking local or private IP addresses and tunes rate limits.
+- Updates Gutenberg build tooling and package dependencies.
 
 == Installation ==
 
@@ -63,6 +64,14 @@ License: CC0 1.0 Universal (CC0 1.0)
 Source: https://unsplash.com/@englr?photo=bIhpiQA009k
 
 == Changelog ==
+= 3.0.13 =
+* Added responsive per-device width and height controls for supported image blocks.
+* Added Container Content background overlays with color or gradient modes, opacity, and blend modes.
+* Added generated multi-color gradient presets from theme color combinations.
+* Added safeguards that prevent local, private, link-local, and reserved IP addresses from being blocked.
+* Updated security rate limits for sitemap, WooCommerce checkout, and XML-RPC requests.
+* Updated Gutenberg source and generated assets, shared editor controls, and dependency lockfiles.
+
 = 3.0.12 =
 * Fixed migration of legacy Container Content blocks using the retired boxed container option.
 * Changed the editor to convert the retired option to the standard container layout while preserving existing content.

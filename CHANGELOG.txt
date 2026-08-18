@@ -1,6 +1,30 @@
 Made I.T. Theme Changelog
 ==========================
 
+Version 3.0.13 - 2026-08-18
+----------------------------
+Added
+- Added responsive per-device width and height controls for supported image blocks.
+- Added Container Content background overlays with color or gradient modes, opacity, and blend modes.
+- Added generated multi-color gradient presets from theme color combinations.
+
+Changed
+- Updated Gutenberg source and generated assets, shared editor controls, and dependency lockfiles.
+- Updated Gutenberg build tooling and package dependencies, including `@wordpress/scripts` and `js-yaml`.
+- Updated security rate limits for sitemap, WooCommerce checkout, and XML-RPC requests.
+
+Fixed
+- Prevented local, private, link-local, and reserved IP addresses from being blocked by security IP management.
+- Preserved legacy Container Content background behavior while adding overlay rendering and gradient opacity handling.
+
+Removed
+- No files or user-facing features were removed in this release window.
+
+Notes
+- Comparison scope: `3.0.12..master`
+- Files changed before documentation/version updates: 44 (28222 insertions, 19293 deletions)
+- Working tree was clean before this changelog update.
+
 Version 3.0.12 - 2026-07-24
 ----------------------------
 Changed
