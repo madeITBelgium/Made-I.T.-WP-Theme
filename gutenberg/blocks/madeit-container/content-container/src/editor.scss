@@ -627,7 +627,7 @@ body.madeit-content-container-advanced-tabs
 
             // Mobiel: stapelen op volle breedte.
             @media (max-width: 599px) {
-                flex-basis: 100% !important;
+                flex-basis: auto !important;
                 max-width: 100% !important;
             }
 

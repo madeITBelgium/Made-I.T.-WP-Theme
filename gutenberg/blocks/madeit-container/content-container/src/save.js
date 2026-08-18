@@ -17,6 +17,7 @@
 
 import classnames from 'classnames';
 import { useBlockProps, InnerBlocks, getColorClassName } from '@wordpress/block-editor';
+import { applyOpacityToGradient } from './utils.js';
 
 const FRONTEND_WRAPPER_CLASS = 'madeit-block-content--frontend';
 const ALLOWED_HTML_TAGS = [ 'div', 'section', 'article', 'main', 'header', 'footer' ];
@@ -64,11 +65,20 @@ function filterExtraClasses( className ) {
     } ).join( ' ' );
 }
 
+function clampPercent( value, fallback = 50 ) {
+    if ( typeof value !== 'number' || ! Number.isFinite( value ) ) return fallback;
+    return Math.max( 0, Math.min( 100, value ) );
+}
+
 function buildBackgroundStyle( attributes ) {
     const {
         backgroundType, containerBackgroundColor, customContainerBackgroundColor,
         containerBackgroundImage, containerBackgroundPosition, containerBackgroundRepeat,
         containerBackgroundSize, containerBackgroundGradient,
+        containerBackgroundOverlayType, containerBackgroundOverlayColor,
+        containerBackgroundOverlayGradient,
+        customContainerBackgroundOverlayColor, containerBackgroundOverlayOpacity,
+        containerBackgroundOverlayBlendMode,
     } = attributes;
 
     const hasClassic = !! ( containerBackgroundImage?.url || containerBackgroundColor || customContainerBackgroundColor );
@@ -94,6 +104,53 @@ function buildBackgroundStyle( attributes ) {
         containerBackgroundGradient.gradient.trim()
             ? containerBackgroundGradient.gradient : undefined;
     if ( bgType === 'gradient' && gradVal ) style.backgroundImage = gradVal;
+
+    const overlayPresetColor =
+        typeof containerBackgroundOverlayColor === 'string' && containerBackgroundOverlayColor.trim()
+            ? `var(--wp--preset--color--${ containerBackgroundOverlayColor.trim() })`
+            : undefined;
+    const overlayColor =
+        typeof customContainerBackgroundOverlayColor === 'string' && customContainerBackgroundOverlayColor.trim()
+            ? customContainerBackgroundOverlayColor
+            : overlayPresetColor;
+
+    const overlayGradient =
+        typeof containerBackgroundOverlayGradient?.gradient === 'string' &&
+        containerBackgroundOverlayGradient.gradient.trim()
+            ? containerBackgroundOverlayGradient.gradient
+            : undefined;
+
+    const overlayOpacity = clampPercent( containerBackgroundOverlayOpacity, 50 );
+
+    // Overlay is either a color OR a gradient, never both at once.
+    // 'transparent' is a legacy value meaning "no overlay" and must stay disabled.
+    const overlayMode =
+        containerBackgroundOverlayType === 'transparent'
+            ? 'none'
+            : containerBackgroundOverlayType === 'gradient' || containerBackgroundOverlayType === 'color'
+                ? containerBackgroundOverlayType
+                : ( overlayGradient && ! overlayColor ? 'gradient' : 'color' );
+
+    let overlayLayer;
+
+    if ( overlayMode === 'color' && overlayColor ) {
+        const overlayMix = `color-mix(in srgb, ${ overlayColor } ${ overlayOpacity }%, transparent)`;
+        overlayLayer = `linear-gradient(${ overlayMix }, ${ overlayMix })`;
+    } else if ( overlayMode === 'gradient' && overlayGradient ) {
+        overlayLayer = applyOpacityToGradient( overlayGradient, overlayOpacity );
+    }
+
+    if ( overlayLayer ) {
+        style.backgroundImage = style.backgroundImage
+            ? `${ overlayLayer }, ${ style.backgroundImage }`
+            : overlayLayer;
+
+        if ( typeof containerBackgroundOverlayBlendMode === 'string' && containerBackgroundOverlayBlendMode.trim() ) {
+            if ( containerBackgroundOverlayBlendMode !== 'normal' ) {
+                style.backgroundBlendMode = containerBackgroundOverlayBlendMode;
+            }
+        }
+    }
 
     return style;
 }
