@@ -59,14 +59,42 @@
         "margin": {
             "type": "object"
         },
+        "marginTablet": {
+            "type": "object"
+        },
+        "marginMobile": {
+            "type": "object"
+        },
         "marginUnit": {
+            "type": "string",
+            "default": "px"
+        },
+        "marginUnitTablet": {
+            "type": "string",
+            "default": "px"
+        },
+        "marginUnitMobile": {
             "type": "string",
             "default": "px"
         },
         "padding": {
             "type": "object"
         },
+        "paddingTablet": {
+            "type": "object"
+        },
+        "paddingMobile": {
+            "type": "object"
+        },
         "paddingUnit": {
+            "type": "string",
+            "default": "px"
+        },
+        "paddingUnitTablet": {
+            "type": "string",
+            "default": "px"
+        },
+        "paddingUnitMobile": {
             "type": "string",
             "default": "px"
         },
@@ -75,6 +103,28 @@
             "source": "attribute",
             "selector": ".madeit-content-column__inner",
             "attribute": "class"
+        },
+        "hideOnDesktop": {
+            "type": "boolean"
+        },
+        "hideOnTablet": {
+            "type": "boolean"
+        },
+        "hideOnMobile": {
+            "type": "boolean"
+        },
+        "orderFirst": {
+            "type": "boolean"
+        },
+        "orderLast": {
+            "type": "boolean"
+        },
+        "maxContainerSize": {
+            "type": "boolean"
+        },
+        "aosFade": {
+            "type": "string",
+            "default": ""
         }
     }
 }

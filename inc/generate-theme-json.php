@@ -195,6 +195,55 @@ function madeit_generate_gradients_colors()
             continue;
         }
 
+
+        // =========================
+        // CUSTOM CSS / MULTI-COLOR GRADIENT
+        // =========================
+        if ($type === 'css') {
+            $keys = [];
+
+            if (isset($combination['from'])) {
+                $keys[] = $combination['from'];
+            }
+
+            if (isset($combination['via'])) {
+                $keys[] = $combination['via'];
+            }
+
+            if (isset($combination['to'])) {
+                $keys[] = $combination['to'];
+            }
+
+            if (count($keys) >= 2) {
+                $gradientStops = [];
+                $totalKeys = count($keys);
+
+                foreach ($keys as $index => $key) {
+                    if (!isset($colors[$key])) {
+                        continue;
+                    }
+
+                    if ($totalKeys === 2) {
+                        $position = $index === 0 ? '0%' : '100%';
+                    } else {
+                        $position = $index === 0 ? '0%' : ($index === $totalKeys - 1 ? '100%' : round(($index / ($totalKeys - 1)) * 100).'%');
+                    }
+
+                    $gradientStops[] = $colors[$key].' '.$position;
+                }
+
+                if (!empty($gradientStops)) {
+                    $result[] = [
+                        'gradient' => 'linear-gradient(135deg, '.implode(', ', $gradientStops).')',
+                        'slug' => implode('-', $keys),
+                        'name' => implode(' and ', array_map('ucfirst', $keys)),
+                    ];
+                }
+
+                continue;
+            }
+        }
+
         // =========================
         // NORMAL GRADIENT
         // =========================

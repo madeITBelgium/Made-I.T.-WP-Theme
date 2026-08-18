@@ -9,10 +9,15 @@ export default function save( { attributes } ) {
         customBackgroundColor,
         margin,
         padding,
+        paddingTablet,
+        paddingMobile,
         maxContainerSize,
+        aosFade,
         innerWrapperClassName,
         textColor,
         backgroundColor,
+        marginTablet,
+        marginMobile,
     } = attributes;
 
     const widthRounded = Number.isFinite( width ) ? Math.round( width ) : undefined;
@@ -81,6 +86,21 @@ export default function save( { attributes } ) {
         backgroundColor: backgroundColorClass ? undefined : customBackgroundColor,
     };
 
+    const setSpacingVars = ( style, prefix, values, breakpoint ) => {
+        if ( ! values || typeof values !== 'object' ) return;
+
+        [ 'top', 'right', 'bottom', 'left' ].forEach( ( side ) => {
+            if ( values[ side ] !== undefined ) {
+                style[ `--madeit-column-${ prefix }-${ side }-${ breakpoint }` ] = values[ side ];
+            }
+        } );
+    };
+
+    setSpacingVars( outerStyle, 'margin', marginTablet, 'tablet' );
+    setSpacingVars( outerStyle, 'margin', marginMobile, 'mobile' );
+    setSpacingVars( innerStyle, 'padding', paddingTablet, 'tablet' );
+    setSpacingVars( innerStyle, 'padding', paddingMobile, 'mobile' );
+
     const innerBaseClassName = stripBackgroundTokens(
         innerWrapperClassName || 'madeit-content-column__inner'
     );
@@ -95,11 +115,12 @@ export default function save( { attributes } ) {
     const blockProps = useBlockProps.save({
         className: classes,
         style: outerStyle,
+        'data-aos': aosFade || undefined,
     });
 
     return (
         <div { ...blockProps }>
-            <div className={ innerClasses } style={ innerStyle }>
+            <div className={ innerClasses } style={ innerStyle } >
                 <InnerBlocks.Content />
             </div>
         </div>

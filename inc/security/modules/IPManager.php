@@ -44,6 +44,11 @@ class IPManager {
             return false;
         }
 
+        // Never block local / private / reserved IPs (loopback, LAN, link-local, etc.)
+        if ( self::is_local_ip( $ip ) ) {
+            return false;
+        }
+
         // Never block the current admin's own IP — prevents self-lockout
         if ( is_user_logged_in() && current_user_can( 'manage_options' )
             && $ip === \MadeIT\Security\RequestLogger::get_real_ip() ) {
@@ -99,6 +104,11 @@ class IPManager {
     public static function is_blocked( string $ip ): bool {
         global $wpdb;
 
+        // Local / private / reserved IPs are never blocked
+        if ( self::is_local_ip( $ip ) ) {
+            return false;
+        }
+
         do_action( 'qm/start', 'madeit_security:ip_is_blocked_total' );
 
         if ( isset( self::get_remote_blacklist_set()[ $ip ] ) ) {
@@ -138,6 +148,11 @@ class IPManager {
 
         if ( ! filter_var( $ip, FILTER_VALIDATE_IP ) ) {
             wp_send_json_error( [ 'message' => 'Invalid IP address' ] );
+        }
+
+        // Don't block local / private / reserved IPs
+        if ( self::is_local_ip( $ip ) ) {
+            wp_send_json_error( [ 'message' => 'You cannot block a local or private IP address' ] );
         }
 
         // Don't block your own IP
@@ -651,6 +666,20 @@ class IPManager {
 
     // ── Private helpers ────────────────────────────────────────────────────────
 
+    /**
+     * True for loopback, private (RFC 1918 / ULA), link-local and other reserved IPs.
+     */
+    private static function is_local_ip( string $ip ): bool {
+        // filter_var without NO_PRIV_RANGE / NO_RES_RANGE flags fails for local ranges,
+        // so a "public" result means it is NOT local.
+        return filter_var(
+            $ip,
+            FILTER_VALIDATE_IP,
+            FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE
+        ) === false;
+    }
+
+
     private static function is_unblock_bot_ua( string $ua ): bool {
         if ( $ua === '' ) {
             return true;
@@ -930,6 +959,8 @@ class IPManager {
      * WP-CLI: Whitelist an IP address.
      *
      * ## OPTIONS
+     * <ip>
+     * : IP address to whitelist.
      *
      * [--label=<label>]
      * : Optional label for the whitelist entry.
