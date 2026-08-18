@@ -12,11 +12,10 @@ Tags: madeit, bootstrap, bootstrap4, made i.t., Made I.T.
 
 == Recent highlights ==
 
-This release adds a visual revision workflow for internal content review and improves the theme's security logging and IP-management behavior:
-- Added a revision review experience with editor shortcuts and a dedicated preview canvas for comparing post revisions.
-- Improved request logging so the security module skips noisy backend traffic while keeping useful visitor data intact.
-- Strengthened IP-management safeguards around blocking, whitelisting, and unblock request handling.
-- Continued the theme's focus on a cleaner admin workflow for content editors and site operators.
+This release improves compatibility for existing Container Content blocks:
+- Migrates the retired boxed container option to the standard container layout when editing legacy content.
+- Preserves existing block content while marking migrated blocks as user-edited to prevent repeated legacy migration.
+- Regenerates the Container Content editor assets for the updated migration behavior.
 
 == Installation ==
 
@@ -65,7 +64,9 @@ Source: https://unsplash.com/@englr?photo=bIhpiQA009k
 
 == Changelog ==
 = 3.0.12 =
-* Fix container content block migration for legacy.
+* Fixed migration of legacy Container Content blocks using the retired boxed container option.
+* Changed the editor to convert the retired option to the standard container layout while preserving existing content.
+* Updated generated Container Content editor assets for the migration change.
 
 = 3.0.11 =
 * Added a visual revision review workflow with editor access points and a dedicated revision preview page for content comparisons.

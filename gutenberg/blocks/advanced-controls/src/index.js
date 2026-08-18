@@ -2,6 +2,7 @@ const MADEIT_ADVANCED_CONTROLS_EXCLUDED_BLOCKS = [
     'madeit/block-content',
     'madeit/block-tabs',
     'madeit/reviews',
+    'madeit/block-content-column',
 ];
 
 function madeit_hide_block_mobile(settings, name) {
@@ -65,7 +66,7 @@ const madeitAdvancedControls = wp.compose.createHigherOrderComponent((BlockEdit)
     return (props) => {
         const { Fragment } = wp.element;
         const { ToggleControl, PanelBody, SelectControl } = wp.components;
-        const { InspectorControls } = wp.blockEditor;
+        const { InspectorControls, InspectorAdvancedControls } = wp.blockEditor;
         const { attributes, setAttributes, isSelected } = props;
         const isExcluded = MADEIT_ADVANCED_CONTROLS_EXCLUDED_BLOCKS.includes(props.name);
         
@@ -188,7 +189,7 @@ const madeitAdvancedControls = wp.compose.createHigherOrderComponent((BlockEdit)
             <Fragment>
                 <BlockEdit {...props} />
                 {isSelected && !isExcluded /*&& (props.name == 'core/cover')*/ && 
-                <InspectorControls>
+                <InspectorAdvancedControls>
                     <PanelBody
                         title={wp.i18n.__('Extra Made IT Opties')}
                         initialOpen={true}>
@@ -254,7 +255,7 @@ const madeitAdvancedControls = wp.compose.createHigherOrderComponent((BlockEdit)
                             onChange={(newval) => setAttributes({ aosFade: newval })}
                         />
                     </PanelBody>
-                </InspectorControls>
+                </InspectorAdvancedControls>
                 }
             </Fragment>
         );

@@ -2,9 +2,22 @@ Made I.T. Theme Changelog
 ==========================
 
 Version 3.0.12 - 2026-07-24
--------------------------
+----------------------------
+Changed
+- Changed the Container Content editor to convert the retired `container-content-boxed` size to the standard `container` layout.
+- Updated Container Content block editor build assets for the migration behavior.
+
 Fixed
-- Fixed Container Content block migration for legacy inline wrapper cases to ensure proper handling of older markup.
+- Fixed legacy Container Content blocks retaining an obsolete boxed layout selection when opened in the editor.
+
+Removed
+- Removed use of the retired boxed container layout for migrated Container Content blocks.
+
+Notes
+- Comparison scope: `3.0.11..3.0.12`
+- Commits included: `f859c07e Fix container`, `60760ebb Update`
+- Files changed: 6 (20 insertions, 6 deletions)
+- Local worktree changes are not part of this tagged release.
 
 Version 3.0.11 - 2026-07-22
 -------------------------

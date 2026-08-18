@@ -20,7 +20,16 @@
         }
         input {
             border-radius: 0;
+            padding: 0 5px; 
         }
+    }
+}
+
+.block-editor-panel-color-gradient-settings {
+    border-top: 0 !important;
+
+    > div {
+        margin-top: 0 !important;
     }
 }
 
@@ -28,6 +37,40 @@
 	background-color: #21759b;
 	color: #fff;
 	padding: 2px;
+}
+
+$column-spacing-sides: top, right, bottom, left;
+
+.wp-block-madeit-block-content-column {
+    @each $side in $column-spacing-sides {
+        &[style*="--madeit-column-margin-#{$side}-tablet:"] {
+            @media (max-width: 991px) {
+                margin-#{$side}: var(--madeit-column-margin-#{$side}-tablet) !important;
+            }
+        }
+
+        &[style*="--madeit-column-margin-#{$side}-mobile:"] {
+            @media (max-width: 575px) {
+                margin-#{$side}: var(--madeit-column-margin-#{$side}-mobile) !important;
+            }
+        }
+    }
+
+    > .madeit-content-column__inner, .block-editor-block-list__layout {
+        @each $side in $column-spacing-sides {
+            &[style*="--madeit-column-padding-#{$side}-tablet:"] {
+                @media (max-width: 991px) {
+                    padding-#{$side}: var(--madeit-column-padding-#{$side}-tablet, if($side == left or $side == right, 12px, 0)) !important;
+                }
+            }
+
+            &[style*="--madeit-column-padding-#{$side}-mobile:"] {
+                @media (max-width: 575px) {
+                    padding-#{$side}: var(--madeit-column-padding-#{$side}-mobile, if($side == left or $side == right, 12px, 0)) !important;
+                }
+            }
+        }
+    }
 }
 
 
@@ -170,4 +213,43 @@
         padding-right: var(--container-offset-maxContent);
     }
 
+}
+
+
+
+// Only when the column block is selected, hide the default tabs and show our custom tabs
+.block-editor-block-inspector__tabs:has( .madeit-inspector-tabs) > div[role="tablist"] {
+    display: none !important;
+}
+
+
+.madeit-inspector-tabs .components-tab-panel__tabs {
+    display: flex;
+    border-bottom: 1px solid #ddd;
+    padding: 0;
+}
+
+.madeit-inspector-tabs .components-tab-panel__tabs-item {
+    flex: 1;
+    justify-content: center;
+    height: 48px;
+    padding: 0 8px;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    box-shadow: none;
+    font-size: 13px;
+}
+
+.madeit-inspector-tabs .components-tab-panel__tabs-item.is-active {
+    border-bottom-color: var(--wp-admin-theme-color);
+    color: var(--wp-admin-theme-color);
+}
+
+.madeit-inspector-tabs .components-tab-panel__tabs-item:focus {
+    box-shadow: none;
+}
+
+.madeit-inspector-tabs__content {
+    padding-top: 16px;
 }

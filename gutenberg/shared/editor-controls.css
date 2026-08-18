@@ -75,16 +75,22 @@
 
 .madeit-control-header .madeit-control-header__tools {
     width: 100%;
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
 }
 
 .madeit-control-breakpoints {
-    display: flex;
+    position: relative;
+    height: 20px !important;
+    display: flex !important;
     gap: 5px;
     width: 20px;
+}
+.madeit-control-breakpoints button {
+    position: absolute;
+    top: 0;
 }
 .madeit-control-breakpoints::before {
     display: none;
@@ -92,9 +98,12 @@
 .madeit-control-breakpoints:hover {
     width: 100%;
 }
+.madeit-control-breakpoints:hover button {
+    top: -10px;
+}
 
 .madeit-control-breakpoints button {
-    height: 16px !important;
+    /* height: 16px !important; */
     width: 16px !important;
     min-width: auto !important;
     border-radius: 50px !important;
@@ -115,8 +124,9 @@
 }
 .madeit-control-breakpoints:hover button {
     opacity: 1 !important;
-    transform: translateX(0);
+    /* transform: translateX(0); */
     transition: all .2s cubic-bezier(0.075, 0.82, 0.165, 1);
+    position: relative !important;
 }
 
 .madeit-control-breakpoints button span {
@@ -241,4 +251,11 @@ body.madeit-preview--mobile .hide-mobile,
 body.madeit-preview--mobile .is-hidden-mobile {
 	opacity: 0.35;
 	filter: grayscale(1);
+}
+
+
+
+/* FIX */
+.madeit-control .components-range-control__number {
+    width: auto !important;
 }

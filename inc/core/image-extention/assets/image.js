@@ -1,29 +1,100 @@
 (function (wp) {
 	const { addFilter } = wp.hooks;
 	const { createHigherOrderComponent } = wp.compose;
-	const { Fragment, createElement, cloneElement, Children } = wp.element;
-	const { InspectorControls } = wp.blockEditor || wp.editor;
-	const { PanelBody, TextControl } = wp.components;
+	const { Fragment, createElement } = wp.element;
+	const { InspectorControls } = wp.blockEditor;
+	const {
+		Button,
+		ButtonGroup,
+		ToggleControl,
+		__experimentalUnitControl: UnitControl,
+	} = wp.components;
 
-	/* --------------------------------------------------
-	 * ADD CUSTOM ATTRIBUTES
-	 * -------------------------------------------------- */
-	function addImageAttributes(settings, name) {
-		if (name !== 'core/image') return settings;
+	const SUPPORTED_BLOCKS = ['core/image', 'core/cover'];
+
+	const DEVICE_OPTIONS = [
+		{ label: 'Tablet', key: 'tablet', icon: 'tablet' },
+		{ label: 'Mobile', key: 'mobile', icon: 'smartphone' },
+	];
+
+	function isSupportedBlock(name) {
+		return SUPPORTED_BLOCKS.includes(name);
+	}
+
+	function normalizeResponsiveValue(value) {
+		if (value === null || value === undefined) {
+			return undefined;
+		}
+
+		const normalized = String(value).trim();
+		return normalized === '' ? undefined : normalized;
+	}
+
+	function hasResponsiveValues(responsiveDimensions) {
+		return DEVICE_OPTIONS.some(({ key }) => {
+			const values = responsiveDimensions?.[key] || {};
+			return !!(normalizeResponsiveValue(values.width) || normalizeResponsiveValue(values.height));
+		});
+	}
+
+	function buildResponsiveStyle(attributes) {
+		const responsiveDimensions = attributes.responsiveDimensions || {};
+		const responsiveEnabled = !!attributes.useResponsiveDimensions;
+
+		if (!responsiveEnabled || !hasResponsiveValues(responsiveDimensions)) {
+			return null;
+		}
+
+		const style = {};
+
+		DEVICE_OPTIONS.forEach(({ key }) => {
+			const dimensions = responsiveDimensions[key] || {};
+			const width = normalizeResponsiveValue(dimensions.width);
+			const height = normalizeResponsiveValue(dimensions.height);
+
+			if (width) {
+				style[`--madeit-image-width-${key}`] = width;
+			}
+
+			if (height) {
+				style[`--madeit-image-height-${key}`] = height;
+			}
+		});
+
+		return Object.keys(style).length > 0 ? style : null;
+	}
+
+	function addClassName(className, nextClass) {
+		const source = String(className || '').trim();
+		if (!source) {
+			return nextClass;
+		}
+
+		if (source.split(/\s+/).includes(nextClass)) {
+			return source;
+		}
+
+		return `${source} ${nextClass}`;
+	}
+
+	function registerResponsiveAttributes(settings, name) {
+		if (!isSupportedBlock(name)) {
+			return settings;
+		}
 
 		settings.attributes = {
 			...settings.attributes,
-			imageWidthTablet: {
-				type: 'number',
+			useResponsiveDimensions: {
+				type: 'boolean',
+				default: false,
 			},
-			imageHeightTablet: {
-				type: 'number',
+			responsiveDimensions: {
+				type: 'object',
+				default: {},
 			},
-			imageWidthMobile: {
-				type: 'number',
-			},
-			imageHeightMobile: {
-				type: 'number',
+			responsiveActiveDevice: {
+				type: 'string',
+				default: '',
 			},
 		};
 
@@ -32,92 +103,56 @@
 
 	addFilter(
 		'blocks.registerBlockType',
-		'madeit/image-attributes',
-		addImageAttributes
+		'madeit/responsive-dimensions-attributes',
+		registerResponsiveAttributes
 	);
 
-	/* --------------------------------------------------
-	 * BREAKPOINT SWITCHER
-	 * -------------------------------------------------- */
-	const BreakpointSwitcher = ({ active, onChange }) =>
-		createElement(
-			'div',
-			{ className: 'madeit-breakpoint-switcher' },
-			[
-				{ key: 'tablet', icon: 'tablet' },
-				{ key: 'mobile', icon: 'smartphone' },
-			].map(({ key, icon }) =>
-				createElement(
-					'button',
-					{
-						key,
-						type: 'button',
-						className:
-							'madeit-bp-btn' + (active === key ? ' is-active' : ''),
-						onClick: () => onChange(key),
-					},
-					createElement('span', {
-						className: `dashicons dashicons-${icon}`,
-					})
-				)
-			)
-		);
-
-	/* --------------------------------------------------
-	 * CONTROL HEADER
-	 * -------------------------------------------------- */
-	const ControlHeader = ({ title, breakpoint, onBreakpointChange }) =>
-		createElement(
-			'div',
-			{ className: 'madeit-control-header' },
-			createElement(
-				'div',
-				{ className: 'madeit-control-header__left' },
-				createElement('div', { className: 'madeit-control-title' }, title)
-			),
-			createElement(
-				'div',
-				{ className: 'madeit-control-header__right' },
-				createElement(BreakpointSwitcher, {
-					active: breakpoint,
-					onChange: onBreakpointChange,
-				})
-			)
-		);
-
-	/* --------------------------------------------------
-	 * INSPECTOR CONTROLS
-	 * -------------------------------------------------- */
-	const withImageControls = createHigherOrderComponent((BlockEdit) => {
-		return (props) => {
-			if (props.name !== 'core/image') {
+	const withResponsiveDimensions = createHigherOrderComponent(
+		(BlockEdit) => (props) => {
+			if (!isSupportedBlock(props.name)) {
 				return createElement(BlockEdit, props);
 			}
 
-			const [breakpoint, setBreakpoint] = wp.element.useState('tablet');
+			const { attributes, setAttributes } = props;
+			const responsiveEnabled = !!attributes.useResponsiveDimensions;
+			const responsive = attributes.responsiveDimensions || {};
+			const selectedDevice = attributes.responsiveActiveDevice || '';
+			const activeDevice = DEVICE_OPTIONS.some(({ key }) => key === selectedDevice)
+				? selectedDevice
+				: '';
 
-			const {
-				attributes: {
-					imageWidthTablet,
-					imageHeightTablet,
-					imageWidthMobile,
-					imageHeightMobile,
-				},
-				setAttributes,
-			} = props;
+			const setCurrentDeviceValue = (property, nextValue) => {
+				if (!activeDevice) {
+					return;
+				}
 
-			const breakpointMap = {
-				tablet: {
-					width: imageWidthTablet,
-					height: imageHeightTablet,
-				},
-				mobile: {
-					width: imageWidthMobile,
-					height: imageHeightMobile,
-				},
+				setAttributes({
+					responsiveDimensions: {
+						...responsive,
+						[activeDevice]: {
+							...(responsive[activeDevice] || {}),
+							[property]: normalizeResponsiveValue(nextValue),
+						},
+					},
+				});
 			};
 
-			const current = breakpointMap[breakpoint];
+			const setPreviewDevice = (targetDevice) => {
+				const label = DEVICE_OPTIONS.find((option) => option.key === targetDevice)?.label;
+				if (!label) {
+					return;
+				}
+
+				const editPostDispatch = wp.data.dispatch('core/edit-post');
+				if (typeof editPostDispatch?.setDeviceType === 'function') {
+					editPostDispatch.setDeviceType(label);
+					return;
+				}
+
+				if (typeof editPostDispatch?.__experimentalSetPreviewDeviceType === 'function') {
+					editPostDispatch.__experimentalSetPreviewDeviceType(label);
+				}
+			};
 
 			return createElement(
 				Fragment,
@@ -125,223 +160,135 @@
 				createElement(BlockEdit, props),
 				createElement(
 					InspectorControls,
-					{},
+					{ group: 'dimensions' },
 					createElement(
-						PanelBody,
+						'div',
 						{
-							title: 'Responsive',
-							initialOpen: true,
 							className: 'madeit-responsive-image-panel',
 						},
-						createElement(ControlHeader, {
-							title: 'Responsive Image',
-							breakpoint,
-							onBreakpointChange: setBreakpoint,
+						createElement(ToggleControl, {
+							label: 'Responsive gebruiken',
+							checked: responsiveEnabled,
+							onChange: (enabled) =>
+								setAttributes({
+									useResponsiveDimensions: !!enabled,
+									responsiveActiveDevice: enabled ? attributes.responsiveActiveDevice || '' : '',
+								}),
 						}),
-						createElement(
-							'div',
-							{ className: 'madeit-controlUnits' },
-							createElement(TextControl, {
-								label: 'Breedte',
-								value: current.width || '',
-								onChange: (value) =>
-									setAttributes({
-										[`imageWidth${
-											breakpoint.charAt(0).toUpperCase() +
-											breakpoint.slice(1)
-										}`]: value ? parseInt(value, 10) : undefined,
-									}),
-								placeholder: 'Automatisch',
-							})
-						),
-						createElement(
-							'div',
-							{ className: 'madeit-controlUnits' },
-							createElement(TextControl, {
-								label: 'Hoogte',
-								value: current.height || '',
-								onChange: (value) =>
-									setAttributes({
-										[`imageHeight${
-											breakpoint.charAt(0).toUpperCase() +
-											breakpoint.slice(1)
-										}`]: value ? parseInt(value, 10) : undefined,
-									}),
-								placeholder: 'Automatisch',
-							})
-						)
+						responsiveEnabled
+							? createElement(
+								Fragment,
+								{},
+								createElement(
+									'div',
+									{ className: 'madeit-responsive-device-row' },
+									createElement('span', { className: 'madeit-responsive-device-label' }, 'Per apparaat'),
+									createElement(
+										ButtonGroup,
+										{ className: 'madeit-breakpoint-switcher' },
+										DEVICE_OPTIONS.map(({ key, label, icon }) =>
+											createElement(Button, {
+												key,
+												icon,
+												label,
+												isSmall: true,
+												variant: activeDevice === key ? 'primary' : 'secondary',
+												onClick: () => {
+													setAttributes({ responsiveActiveDevice: key });
+													setPreviewDevice(key);
+												},
+											})
+										)
+									)
+								),
+								activeDevice
+									? createElement(UnitControl, {
+										label: `Breedte (${activeDevice})`,
+										value: responsive[activeDevice]?.width || '',
+										onChange: (width) => setCurrentDeviceValue('width', width),
+									})
+									: createElement(
+										'p',
+										{ className: 'madeit-responsive-help' },
+										'Klik eerst op Tablet of Mobile om waardes in te vullen.'
+									),
+								activeDevice
+									? createElement(UnitControl, {
+										label: `Hoogte (${activeDevice})`,
+										value: responsive[activeDevice]?.height || '',
+										onChange: (height) => setCurrentDeviceValue('height', height),
+									})
+									: null
+							)
+							: null
 					)
 				)
 			);
-		};
-	}, 'withImageControls');
+		},
+		'withResponsiveDimensions'
+	);
 
 	addFilter(
 		'editor.BlockEdit',
-		'madeit/image-controls',
-		withImageControls
+		'madeit/responsive-dimensions',
+		withResponsiveDimensions
 	);
 
-	/* --------------------------------------------------
-	 * BUILD RESPONSIVE CSS VARIABLES
-	 * desktop = native Gutenberg width/height
-	 * mobile = custom min
-	 * tablet = optional override
-	 * -------------------------------------------------- */
-	function applyImageStyle(attributes) {
-		const {
-			width,
-			height,
-			imageWidthTablet,
-			imageHeightTablet,
-			imageWidthMobile,
-			imageHeightMobile,
-			style = {},
-		} = attributes;
+	function withResponsiveEditorStyles(BlockListBlock) {
+		return (props) => {
+			if (!isSupportedBlock(props.name)) {
+				return createElement(BlockListBlock, props);
+			}
 
-		const customStyle = { ...style };
+			const styleVars = buildResponsiveStyle(props.attributes || {});
+			if (!styleVars) {
+				return createElement(BlockListBlock, props);
+			}
 
-        const hasResponsive =
-            imageWidthMobile ||
-            imageHeightMobile ||
-            imageWidthTablet ||
-            imageHeightTablet;
-
-        // 👉 NIETS DOEN als geen responsive data
-        if (!hasResponsive) {
-            return customStyle;
-        }
-
-		if (imageWidthTablet || imageWidthMobile) {
-            const maxWidth = width || '1400px';
-            const minWidth = imageWidthMobile ? `${imageWidthMobile}px` : '250px';
-
-            customStyle['--madeit-image-width'] = `clamp(${minWidth}, 35vw, ${maxWidth})`;
-        }
-
-		if (imageHeightMobile || imageHeightTablet) {
-            const maxHeight = height || '800px';
-            const minHeight = imageHeightMobile ? `${imageHeightMobile}px` : '100px';
-
-            customStyle['--madeit-image-height'] = `clamp(${minHeight}, 90vw, ${maxHeight})`;
-        }
-
-        if (width && !imageWidthTablet && !imageWidthMobile) {
-            customStyle['--madeit-image-width'] = `${width}`;
-        }
-
-        if (height && !imageHeightTablet && !imageHeightMobile) {
-            customStyle['--madeit-image-height'] = `${height}`;
-        }
-
-
-		return customStyle;
+			const wrapperProps = props.wrapperProps || {};
+			return createElement(BlockListBlock, {
+				...props,
+				wrapperProps: {
+					...wrapperProps,
+					style: {
+						...(wrapperProps.style || {}),
+						...styleVars,
+					},
+					className: addClassName(wrapperProps.className, 'madeit-responsive-size'),
+				},
+			});
+		};
 	}
 
-	/* --------------------------------------------------
-	 * ADD CSS VARS TO SAVED BLOCK
-	 * -------------------------------------------------- */
-	function addImageExtraProps(extraProps, blockType, attributes) {
-		if (blockType.name !== 'core/image') {
+	addFilter(
+		'editor.BlockListBlock',
+		'madeit/responsive-dimensions-editor-style',
+		withResponsiveEditorStyles
+	);
+
+	function addResponsiveSaveProps(extraProps, blockType, attributes) {
+		if (!isSupportedBlock(blockType.name)) {
 			return extraProps;
 		}
-		const mergedStyle = {
-			...(extraProps.style || {}),
-			...applyImageStyle(attributes),
-		};
 
-		const {
-			width,
-			height,
-			imageWidthTablet,
-			imageHeightTablet,
-			imageWidthMobile,
-			imageHeightMobile,
-			style = mergedStyle,
-		} = attributes;
-
-		const hasResponsive =
-            imageWidthMobile ||
-            imageHeightMobile ||
-            imageWidthTablet ||
-            imageHeightTablet;
-
-
-		if (style.layout && typeof style.layout === 'object') {
-			delete style.layout;
+		const styleVars = buildResponsiveStyle(attributes || {});
+		if (!styleVars) {
+			return extraProps;
 		}
 
-		const result = {
+		return {
 			...extraProps,
-			style,
+			style: {
+				...(extraProps.style || {}),
+				...styleVars,
+			},
+			className: addClassName(extraProps.className, 'madeit-responsive-size'),
 		};
-
-		if (hasResponsive) {
-			result['data-has-responsive'] = true;
-			result.className = 'madeit-responsive-size';
-		}
-
-		return result;
 	}
 
 	addFilter(
 		'blocks.getSaveContent.extraProps',
-		'madeit/image-extra-props',
-		addImageExtraProps
+		'madeit/responsive-dimensions-save-style',
+		addResponsiveSaveProps
 	);
-
-	/* --------------------------------------------------
-	 * REPLACE GUTENBERG INLINE IMG WIDTH/HEIGHT
-	 * -------------------------------------------------- */
-	// function replaceImageStyles(node) {
-    //     if (!node || !node.props) {
-    //         return node;
-    //     }
-
-    //     // Direct image
-    //     if (node.type === 'img') {
-    //         const existingStyle = node.props.style || {};
-    //         const { width, height, aspectRatio, ...restStyle } = existingStyle;
-
-
-    //         return wp.element.cloneElement(node, {
-    //             style: {
-    //                 ...restStyle,
-    //                 width: 'var(--madeit-image-width, auto)',
-    //                 height: 'var(--madeit-image-height, auto)',
-    //             },
-    //         });
-    //     }
-
-    //     // Recursive children
-    //     if (node.props.children) {
-    //         const newChildren = wp.element.Children.map(node.props.children, (child) =>
-    //             replaceImageStyles(child)
-    //         );
-
-    //         return wp.element.cloneElement(node, {
-    //             children: newChildren,
-    //         });
-    //     }
-
-    //     return node;
-    // }
-
-    // function withResponsiveImageStyles(ExtraProps, blockType, attributes) {
-    //     if (blockType.name !== 'core/image') {
-    //         return ExtraProps;
-    //     }
-
-    //     return {
-    //         ...ExtraProps,
-    //         children: replaceImageStyles(ExtraProps.children),
-    //     };
-    // }
-
-    // addFilter(
-    //     'blocks.getSaveContent.extraProps',
-    //     'madeit/image-responsive-styles',
-    //     withResponsiveImageStyles
-    // );
-
 })(window.wp);
