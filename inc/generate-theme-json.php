@@ -195,7 +195,6 @@ function madeit_generate_gradients_colors()
             continue;
         }
 
-
         // =========================
         // CUSTOM CSS / MULTI-COLOR GRADIENT
         // =========================
@@ -235,8 +234,8 @@ function madeit_generate_gradients_colors()
                 if (!empty($gradientStops)) {
                     $result[] = [
                         'gradient' => 'linear-gradient(135deg, '.implode(', ', $gradientStops).')',
-                        'slug' => implode('-', $keys),
-                        'name' => implode(' and ', array_map('ucfirst', $keys)),
+                        'slug'     => implode('-', $keys),
+                        'name'     => implode(' and ', array_map('ucfirst', $keys)),
                     ];
                 }
 
