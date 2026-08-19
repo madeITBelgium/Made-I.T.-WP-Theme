@@ -2,6 +2,18 @@
 
 function madeit_filter_lock_content($content)
 {
+    if ($content === null) {
+        return '';
+    }
+
+    if (!is_string($content)) {
+        return $content;
+    }
+
+    if (strpos($content, 'madeit-lock-content') === false) {
+        return $content;
+    }
+    
     do_action('qm/start', 'madeit:filter_lock_content');
     if (!is_string($content)) {
         $content = (string) $content;
