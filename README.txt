@@ -3,7 +3,7 @@ Contributors: madeit
 Requires at least: WordPress 5.0
 Tested up to: 7.0
 Requires PHP: 8.5
-Version: 3.0.13
+Version: 3.0.14
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: madeit, bootstrap, bootstrap4, made i.t., Made I.T.
@@ -12,11 +12,10 @@ Tags: madeit, bootstrap, bootstrap4, made i.t., Made I.T.
 
 == Recent highlights ==
 
-This release improves Gutenberg editing, responsive media controls, security, and dependency maintenance:
-- Adds responsive width and height controls for supported image blocks.
-- Adds color and gradient overlays, opacity, and blend modes to Container Content blocks.
-- Improves protection against blocking local or private IP addresses and tunes rate limits.
-- Updates Gutenberg build tooling and package dependencies.
+This release improves Gutenberg blocks, mobile navigation, content locking, and B2B pricing:
+- Updates Advanced Controls, Card, Container, Content Column, and Content Container blocks with editor and rendering improvements.
+- Fixes mobile navigation behavior and updates the synchronized Gutenberg build assets.
+- Adds content checks to locked content handling and refines the B2B WooCommerce price check.
 
 == Installation ==
 
@@ -64,6 +63,13 @@ License: CC0 1.0 Universal (CC0 1.0)
 Source: https://unsplash.com/@englr?photo=bIhpiQA009k
 
 == Changelog ==
+= 3.0.14 =
+* Updated Advanced Controls, Card, Container, Content Column, and Content Container Gutenberg blocks and generated build assets.
+* Fixed mobile menu navigation behavior in the Bootstrap nav walker.
+* Added content checks to locked content handling.
+* Refactored the B2B WooCommerce price check.
+* Applied StyleCI formatting fixes and refreshed generated Gutenberg asset metadata.
+
 = 3.0.13 =
 * Added responsive per-device width and height controls for supported image blocks.
 * Added Container Content background overlays with color or gradient modes, opacity, and blend modes.

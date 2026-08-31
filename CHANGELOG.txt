@@ -1,6 +1,60 @@
 Made I.T. Theme Changelog
 ==========================
 
+Version 3.0.14 - 2026-08-31
+----------------------------
+Added
+- Added content checks to `madeit_filter_lock_content` so locked-content handling can distinguish empty or non-renderable content.
+- Added Gutenberg Card block configuration, editor styling, save output, and related editor controls.
+- Added Gutenberg Container and Content Column configuration and editor/save updates.
+
+Changed
+- Updated Advanced Controls block editor behavior and regenerated its build assets.
+- Updated Card, Container, Content Column, and Content Container source files and regenerated CSS, JavaScript, RTL CSS, and asset metadata.
+- Refined the B2B WooCommerce price check in `madeit_b2b_woocommerce_get_price`.
+- Applied StyleCI formatting fixes to generated Gutenberg asset metadata.
+
+Fixed
+- Fixed mobile menu behavior in `inc/bootstrap-navwalker.php`.
+
+Removed
+- No files or user-facing features were removed in this release window.
+
+Commits
+- `011358c7 Apply fixes from StyleCI`
+- `a4ec12ff Refactor price check in madeit_b2b_woocommerce_get_price`
+- `e0bf3f4a Enhance madeit_filter_lock_content with content checks`
+- `062a12da Update gutenberg blocks`
+- `f6034cb0 Fix mobile menu`
+- `8bebf658 Merge branch 'master' of github.com:madeITBelgium/Made-I.T.-WP-Theme`
+
+Files changed
+- `gutenberg/blocks/advanced-controls/build/index.asset.php`
+- `gutenberg/blocks/advanced-controls/build/index.js`
+- `gutenberg/blocks/advanced-controls/src/index.js`
+- `gutenberg/blocks/madeit-card/block.json`
+- `gutenberg/blocks/madeit-card/build/index-rtl.css`, `index.asset.php`, `index.css`, `index.js`, `style-index-rtl.css`, `style-index.css`
+- `gutenberg/blocks/madeit-card/src/edit.js`, `editor.scss`, `save.js`, `style.scss`
+- `gutenberg/blocks/madeit-color-image-block/build/index.asset.php`
+- `gutenberg/blocks/madeit-container/block.json`
+- `gutenberg/blocks/madeit-container/content-column/block.json`
+- `gutenberg/blocks/madeit-container/content-column/build/index.asset.php`, `index.js`
+- `gutenberg/blocks/madeit-container/content-column/src/edit.js`, `save.js`
+- `gutenberg/blocks/madeit-container/content-container/build/index-rtl.css`, `index.asset.php`, `index.css`, `index.js`
+- `gutenberg/blocks/madeit-container/content-container/src/edit.js`
+- `gutenberg/blocks/madeit-maps/build/index.asset.php`, `view.asset.php`
+- `gutenberg/blocks/madeit-review/build/index.asset.php`
+- `gutenberg/blocks/madeit-slider/build/image/index.asset.php`, `index.asset.php`
+- `gutenberg/blocks/madeit-tabs/build/index.asset.php`
+- `inc/bootstrap-navwalker.php`
+- `inc/lock-content.php`
+- `inc/woo-b2b.php`
+
+Notes
+- Comparison scope: `3.0.13..HEAD`
+- Files changed before documentation/version updates: 35 (1930 insertions, 1733 deletions)
+- `HEAD` was clean and synchronized with `origin/master` before this changelog update.
+
 Version 3.0.13 - 2026-08-18
 ----------------------------
 Added
