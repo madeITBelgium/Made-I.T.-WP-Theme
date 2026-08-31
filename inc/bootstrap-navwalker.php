@@ -236,12 +236,12 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu
                 foreach ($children_elements[$id] ?? [] as $i => $child) {
                     if (isset($children_elements[$child->ID])) {
                         $output .= '<li class="nav-item menu-item dropdown">';
-                        $output .= '<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown'.$rand.'_'.$child->ID.'" role="button" data-bs-toggle="dropdown" aria-expanded="false">'.$child->title.'</a>';
+                        $output .= '<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown'.$rand.'_'.$child->ID.'">'.$child->title.'</a>';
                         $output .= '<ul class="dropdown-menu" aria-labelledby="navbarDropdown'.$rand.'_'.$child->ID.'">';
                         foreach ($children_elements[$child->ID] ?? [] as $subchild) {
                             if (isset($children_elements[$subchild->ID])) {
-                                $output .= '<li clas="nav-item menu-item dropdown">';
-                                $output .= '<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown'.$rand.'_'.$subchild->ID.'" role="button" data-bs-toggle="dropdown" aria-expanded="false">'.$subchild->title.'</a>';
+                                $output .= '<li class="nav-item menu-item dropdown">';
+                                $output .= '<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown'.$rand.'_'.$subchild->ID.'">'.$subchild->title.'</a>';
                                 $output .= '<ul class="dropdown-menu" aria-labelledby="navbarDropdown'.$rand.'_'.$subchild->ID.'">';
                                 foreach ($children_elements[$subchild->ID] ?? [] as $subsubchild) {
                                     $output .= '<li><a class="nav-item menu-item" href="'.$subsubchild->url.'">'.$subsubchild->title.'</a></li>';
@@ -287,12 +287,12 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu
                 foreach ($children_elements[$id] ?? [] as $i => $child) {
                     if (isset($children_elements[$child->ID])) {
                         $output .= '<li class="nav-item menu-item dropdown">';
-                        $output .= '<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown'.$rand.'_'.$child->ID.'" role="button" data-bs-toggle="dropdown" aria-expanded="false">'.$child->title.'</a>';
+                        $output .= '<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown'.$rand.'_'.$child->ID.'">'.$child->title.'</a>';
                         $output .= '<ul class="dropdown-menu" aria-labelledby="navbarDropdown'.$rand.'_'.$child->ID.'">';
                         foreach ($children_elements[$child->ID] ?? [] as $subchild) {
                             if (isset($children_elements[$subchild->ID])) {
-                                $output .= '<li clas="nav-item menu-item dropdown">';
-                                $output .= '<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown'.$rand.'_'.$subchild->ID.'" role="button" data-bs-toggle="dropdown" aria-expanded="false">'.$subchild->title.'</a>';
+                                $output .= '<li class="nav-item menu-item dropdown">';
+                                $output .= '<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown'.$rand.'_'.$subchild->ID.'">'.$subchild->title.'</a>';
                                 $output .= '<ul class="dropdown-menu" aria-labelledby="navbarDropdown'.$rand.'_'.$subchild->ID.'">';
                                 foreach ($children_elements[$subchild->ID] ?? [] as $subsubchild) {
                                     $output .= '<li><a class="nav-item menu-item" href="'.$subsubchild->url.'">'.$subsubchild->title.'</a></li>';
@@ -353,12 +353,12 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu
                 foreach ($children_elements[$id] ?? [] as $i => $child) {
                     if (isset($children_elements[$child->ID])) {
                         $output .= '<li class="nav-item menu-item dropdown">';
-                        $output .= '<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown'.$rand.'_'.$child->ID.'" role="button" data-bs-toggle="dropdown" aria-expanded="false">'.$child->title.'</a>';
+                        $output .= '<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown'.$rand.'_'.$child->ID.'">'.$child->title.'</a>';
                         $output .= '<ul class="dropdown-menu" aria-labelledby="navbarDropdown'.$rand.'_'.$child->ID.'">';
                         foreach ($children_elements[$child->ID] ?? [] as $subchild) {
                             if (isset($children_elements[$subchild->ID])) {
-                                $output .= '<li clas="nav-item menu-item dropdown">';
-                                $output .= '<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown'.$rand.'_'.$subchild->ID.'" role="button" data-bs-toggle="dropdown" aria-expanded="false">'.$subchild->title.'</a>';
+                                $output .= '<li class="nav-item menu-item dropdown">';
+                                $output .= '<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown'.$rand.'_'.$subchild->ID.'">'.$subchild->title.'</a>';
                                 $output .= '<ul class="dropdown-menu" aria-labelledby="navbarDropdown'.$rand.'_'.$subchild->ID.'">';
                                 foreach ($children_elements[$subchild->ID] ?? [] as $subsubchild) {
                                     $output .= '<li><a class="nav-item menu-item" href="'.$subsubchild->url.'">'.$subsubchild->title.'</a></li>';
