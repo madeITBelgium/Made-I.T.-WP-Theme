@@ -128,7 +128,7 @@ if(defined('MADEIT_WOO_B2B_ONLY') && MADEIT_WOO_B2B_ONLY) {
     add_filter('woocommerce_get_price_html', 'madeit_b2b_woocommerce_get_price_html', 10, 2);
 
     function madeit_b2b_woocommerce_get_price( $price, $product ) {
-        if(empty($price)) {
+        if('' === $price || null === $price) {
             $price = $product->get_regular_price();
         }
 
