@@ -125,6 +125,13 @@
         "aosFade": {
             "type": "string",
             "default": ""
+        },
+        "aosDelay": {
+            "type": "number"
+        },
+        "aosDelayCustom": {
+            "type": "string",
+            "default": ""
         }
     }
 }

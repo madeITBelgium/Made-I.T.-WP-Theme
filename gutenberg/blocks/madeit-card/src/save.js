@@ -18,6 +18,9 @@ export default function save(props) {
 		hasTitle,
 		contentPadding,
 		mediaBleed,
+		url,
+		opensInNewTab,
+		linkTarget,
 	} = props.attributes;
 
 	const { className } = props;
@@ -30,6 +33,10 @@ export default function save(props) {
 		: undefined;
 
 	const TagName = 'h' + level;
+	const cardUrl = typeof url === 'object' && url !== null ? url.url : url;
+	const isNewTab = opensInNewTab !== undefined ? opensInNewTab : (linkTarget === '_blank' || (typeof url === 'object' && url !== null && url.opensInNewTab));
+	const target = isNewTab ? '_blank' : undefined;
+	const rel = isNewTab ? 'noopener' : undefined;
 
 	let wrapperClasses = classnames(className, {
 		card: true,
@@ -62,16 +69,39 @@ export default function save(props) {
 
 	return (
 		<div {...blockProps}>
-			{hasTitle && (
-				<div className="card-header">
-					<TagName>
-						<RichText.Content value={cardTitle} />
-					</TagName>
-				</div>
+			{cardUrl ? (
+				<>
+					<a
+						href={cardUrl}
+						className="card-link"
+						target={target}
+						rel={rel}
+					></a>
+					{hasTitle && (
+						<div className="card-header">
+							<TagName>
+								<RichText.Content value={cardTitle} />
+							</TagName>
+						</div>
+					)}
+					<div className="card-body">
+						<InnerBlocks.Content />
+					</div>
+				</>
+			) : (
+				<>
+					{hasTitle && (
+						<div className="card-header">
+							<TagName>
+								<RichText.Content value={cardTitle} />
+							</TagName>
+						</div>
+					)}
+					<div className="card-body">
+						<InnerBlocks.Content />
+					</div>
+				</>
 			)}
-			<div className="card-body">
-				<InnerBlocks.Content />
-			</div>
 		</div>
 	);
 }

@@ -13,6 +13,8 @@ export default function save( { attributes } ) {
         paddingMobile,
         maxContainerSize,
         aosFade,
+        aosDelay,
+        aosDelayCustom,
         innerWrapperClassName,
         textColor,
         backgroundColor,
@@ -116,6 +118,7 @@ export default function save( { attributes } ) {
         className: classes,
         style: outerStyle,
         'data-aos': aosFade || undefined,
+        'data-aos-delay': aosDelayCustom ? aosDelayCustom : ( aosDelay ? aosDelay : undefined ),
     });
 
     return (

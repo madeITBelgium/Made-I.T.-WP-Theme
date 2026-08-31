@@ -3,6 +3,7 @@ const MADEIT_ADVANCED_CONTROLS_EXCLUDED_BLOCKS = [
     'madeit/block-tabs',
     'madeit/reviews',
     'madeit/block-content-column',
+    'madeit/block-card',
 ];
 
 function madeit_hide_block_mobile(settings, name) {
@@ -19,7 +20,13 @@ function madeit_hide_block_mobile(settings, name) {
             },
             aosFade: {
                 type: 'string'
-            }
+            },
+            aosDelay: {
+                type: 'string'
+            },
+            aosDelayCustom: {
+                type: 'string'
+            },
         });
 
         if (name === 'core/image') {
@@ -65,7 +72,7 @@ wp.hooks.addFilter('blocks.registerBlockType', 'madeit/hide-block-on-mobile', ma
 const madeitAdvancedControls = wp.compose.createHigherOrderComponent((BlockEdit) => {
     return (props) => {
         const { Fragment } = wp.element;
-        const { ToggleControl, PanelBody, SelectControl } = wp.components;
+        const { ToggleControl, PanelBody, SelectControl, TextControl } = wp.components;
         const { InspectorControls, InspectorAdvancedControls } = wp.blockEditor;
         const { attributes, setAttributes, isSelected } = props;
         const isExcluded = MADEIT_ADVANCED_CONTROLS_EXCLUDED_BLOCKS.includes(props.name);
@@ -189,7 +196,7 @@ const madeitAdvancedControls = wp.compose.createHigherOrderComponent((BlockEdit)
             <Fragment>
                 <BlockEdit {...props} />
                 {isSelected && !isExcluded /*&& (props.name == 'core/cover')*/ && 
-                <InspectorAdvancedControls>
+                <InspectorControls>
                     <PanelBody
                         title={wp.i18n.__('Extra Made IT Opties')}
                         initialOpen={true}>
@@ -254,8 +261,44 @@ const madeitAdvancedControls = wp.compose.createHigherOrderComponent((BlockEdit)
                             options={ animationOptions }
                             onChange={(newval) => setAttributes({ aosFade: newval })}
                         />
+                        
+                        {attributes.aosFade && attributes.aosFade !== '' && (
+                            <>
+                                <SelectControl
+                                    __next40pxDefaultSize
+                                    label={ wp.i18n.__( 'Animation delay', 'madeit' ) }
+                                    value={ attributes.aosDelay }
+                                    options={[
+                                        { label: wp.i18n.__( 'No delay', 'madeit' ), value: '' },
+                                        { label: wp.i18n.__( '100ms', 'madeit' ), value: '100' },
+                                        { label: wp.i18n.__( '200ms', 'madeit' ), value: '200' },
+                                        { label: wp.i18n.__( '300ms', 'madeit' ), value: '300' },
+                                        { label: wp.i18n.__( '400ms', 'madeit' ), value: '400' },
+                                        { label: wp.i18n.__( '500ms', 'madeit' ), value: '500' },
+                                        { label: wp.i18n.__( '600ms', 'madeit' ), value: '600' },
+                                        { label: wp.i18n.__( '700ms', 'madeit' ), value: '700' },
+                                        { label: wp.i18n.__( '800ms', 'madeit' ), value: '800' },
+                                        { label: wp.i18n.__( '900ms', 'madeit' ), value: '900' },
+                                        { label: wp.i18n.__( '1000ms', 'madeit' ), value: '1000' },
+                                        { label: wp.i18n.__( 'Eigen invoer', 'madeit' ), value: 'custom' },
+
+                                    ]}
+                                    onChange={(newval) => setAttributes({ aosDelay: newval })}
+                                />
+
+                                {attributes.aosDelay === 'custom' && (
+                                    <TextControl
+                                        label={ wp.i18n.__( 'Custom animation delay (ms)', 'madeit' ) }
+                                        value={ attributes.aosDelayCustom }
+                                        onChange={(newval) => setAttributes({ aosDelayCustom: newval })}
+                                    />
+                                
+                                )}
+                            </>
+                        )}
+
                     </PanelBody>
-                </InspectorAdvancedControls>
+                </InspectorControls>
                 }
             </Fragment>
         );
@@ -264,7 +307,7 @@ const madeitAdvancedControls = wp.compose.createHigherOrderComponent((BlockEdit)
 wp.hooks.addFilter('editor.BlockEdit', 'madeit/advanced-control', madeitAdvancedControls);
 
 function madeitApplyExtraClass(extraProps, blockType, attributes) {
-    const { hideOnMobile, hideOnDesktop, lightbox, orderFirst, orderLast, maxContainerSize, aosFade, appendMarginToColumnsMobile, lockContent } = attributes;
+    const { hideOnMobile, hideOnDesktop, lightbox, orderFirst, orderLast, maxContainerSize, aosFade, aosDelay, aosDelayCustom, appendMarginToColumnsMobile, lockContent } = attributes;
     
     var showDesktop = true;
     var showMobile = true;
@@ -340,6 +383,14 @@ function madeitApplyExtraClass(extraProps, blockType, attributes) {
     
     if (typeof aosFade !== 'undefined' && aosFade !== '' && aosFade !== null ) {
         extraProps['data-aos'] = aosFade;
+    }
+
+    if (typeof aosDelay !== 'undefined' && aosDelay !== '' && aosDelay !== null ) {
+        extraProps['data-aos-delay'] = aosDelay;
+    }
+
+    if (typeof aosDelayCustom !== 'undefined' && aosDelayCustom !== '' && aosDelayCustom !== null ) {
+        extraProps['data-aos-delay'] = aosDelayCustom;
     }
     return extraProps;
 }

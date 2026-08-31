@@ -76,3 +76,19 @@
 		height: auto;
 	}
 }
+
+.madeit-control .block-editor-link-control,
+.madeit-control .block-editor-link-control * {
+	max-width: 100%;
+	min-width: 0;
+}
+
+.madeit-control .block-editor-link-control .block-editor-link-control__search-results-wrapper {
+    box-shadow: 0 0 4px #80808042;
+    margin-left: 4px;
+	background: #fff;
+}
+
+.madeit-control .block-editor-link-control .block-editor-link-control__search-results-wrapper .block-editor-link-control__search-results {
+	margin-top: 0px;
+}

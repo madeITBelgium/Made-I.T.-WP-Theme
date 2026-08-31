@@ -8,6 +8,21 @@
   "version": "2.0.0",
   "madeit": {
     "changelog": {
+      "3.0.3": [
+        {
+          "type": "info",
+          "label": "Update",
+          "text": "✨ De container block is geüpdate, er zijn nieuwe functionaliteiten toegevoegd.",
+          "intro": "✨ De container block is geüpdate, er zijn nieuwe functionaliteiten toegevoegd.",
+          "items": [
+            "Je kan nu overlay toevoegen aan je achtergrond.",
+            "Je kan nu een overlay kleur kiezen.",
+            "Je kan nu een overlay gradient kiezen.",
+            "Animation is toegevoegd + delay optie.",
+            "uiterlijk can kolommen is aangepast."
+          ]
+        }
+      ],
       "3.0.2": [
         {
           "type": "fix",

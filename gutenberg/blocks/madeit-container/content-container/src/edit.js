@@ -39,6 +39,7 @@ import {
     __experimentalBoxControl as BoxControl,
     __experimentalToolsPanel as ToolsPanel,
 	__experimentalToolsPanelItem as ToolsPanelItem,
+    TabPanel,
 } from "@wordpress/components";
 import {
     getColumnsTemplate,
@@ -48,7 +49,7 @@ import {
     toWidthPrecision,
     applyOpacityToGradient,
 } from './utils.js';
-import { ControlHeader, ResponsiveBoxControl, ResponsiveVisibilityPanel, UnitSelect, AdvancedUnitSelect } from '../../../../shared';
+import { ControlHeader, ResponsiveBoxControl, ResponsiveVisibilityPanel, UnitSelect, AdvancedUnitSelect, getTabIcon } from '../../../../shared';
 import containerVariations from './variations';
 import './editor.scss';
 
@@ -1235,1628 +1236,1404 @@ const clearPreviewBlockStyle = () => {
     } );
 };
 
-    useEffect( () => {
-        const bodyClass = 'madeit-content-container-advanced-tabs';
-        if ( isBlockSelected ) {
-            document.body.classList.add( bodyClass );
-        } else {
-            document.body.classList.remove( bodyClass );
-        }
-
-        return () => {
-            document.body.classList.remove( bodyClass );
-        };
-    }, [ isBlockSelected ] );
-
-    useEffect( () => {
-         if (!isBlockSelected) return;
-
-        const advancedPanel = document.querySelector(
-            '.block-editor-block-inspector__advanced'
-        );
-
-        if (!advancedPanel) return;
-
-        if (activeTab === 'advanced') {
-            advancedPanel.style.display = 'block'; 
-
-
-        } else if (activeTab === 'layout' || activeTab === 'style') {
-            console.log('Hiding advanced panel');
-            advancedPanel.style.display = 'none'; 
-        }
-    }, [ activeTab, isBlockSelected ] );
-
-    // 1. Body-class: enkel afhankelijk van isBlockSelected
-    useEffect(() => {
-        const bodyClass = 'madeit-content-container-advanced-tabs';
-        if (isBlockSelected) {
-            document.body.classList.add(bodyClass);
-        } else {
-            document.body.classList.remove(bodyClass);
-        }
-        return () => {
-            document.body.classList.remove(bodyClass);
-        };
-    }, [isBlockSelected]);
-
-    // 2. Stijlen panel klasse: ook direct bij selectie toevoegen, niet bij tab-wissel
-    useEffect(() => {
-        if (!isBlockSelected) return;
-
-        const stylesPanel = document.querySelector(
-            '.block-editor-block-styles'
-        )?.closest('.components-panel__body');
-
-        if (!stylesPanel) return;
-
-        stylesPanel.classList.add('madeit-gutenberg-styles-panel');
-
-        return () => {
-            stylesPanel.classList.remove('madeit-gutenberg-styles-panel');
-        };
-    }, [isBlockSelected]);
-
 
     return [
             <InspectorControls>
-                {/* Tab buttons */}
-                <div 
-                    style={{ display: 'flex', justifyContent: 'space-evenly' }}
-                    className={'TabContents'}
+
+                <TabPanel
+                    className="madeit-inspector-tabs"
+                    tabs={ [
+                        {
+                            name: 'settings',
+                            title: __( 'Algemeen' ),
+                            icon: <span dangerouslySetInnerHTML={{ __html: getTabIcon( 'settings' ) }} />,
+                        },
+                        {
+                            name: 'styles',
+                            title: __( 'Stijl' ),
+                            icon: <span dangerouslySetInnerHTML={{ __html: getTabIcon( 'styles' ) }} />,
+                        },
+                        {
+                            name: 'advanced',
+                            title: __( 'Advanced' ),
+                            icon: <span dangerouslySetInnerHTML={{ __html: getTabIcon( 'advanced' ) }} />,
+                        },
+                    ] }
                 >
-                    <Button 
-                        isPrimary={activeTab === 'layout'} 
-                        onClick={() => setActiveTab('layout')}
-                        style={{ flex: '1', justifyContent: 'center' }}
-                    >
-                        Layout
-                    </Button>
-                    <Button 
-                        isPrimary={activeTab === 'style'} 
-                        onClick={() => setActiveTab('style')}
-                        style={{ flex: '1', justifyContent: 'center' }}
-                    >
-                        Style
-                    </Button>
-                    <Button 
-                        isPrimary={activeTab === 'advanced'} 
-                        onClick={() => setActiveTab('advanced')}
-                        style={{ flex: '1', justifyContent: 'center' }}
-                    >
-                        Advanced
-                    </Button>
-                </div>
-
-                {/* Tab content */}
-                {activeTab === 'layout' && (
-                    <>
-                    {/* Algemene instellingen */}
-                    <PanelBody title="Container" initialOpen={true}>
-                        {/* Kolommen wijzigen */}
-                        <RangeControl
-                            __next40pxDefaultSize
-                            label={ __( 'Aantal kolommen' ) }
-                            value={ count }
-                            onChange={ ( value ) => updateColumns( count, value ) }
-                            min={ 1 }
-                            max={ 6 }
-                        />
-
-                        {/* Container breedte */}
-                        <SelectControl
-                            __next40pxDefaultSize
-                            label={ __( 'Inhoud breedte' ) }
-                            labelPosition='left'
-                            value={ size }
-                            options={ [
-                                { value: 'container', label: __( 'Boxed' ) },
-                                { value: 'container-fluid', label: __( 'Full width' ) },
-                            ] }
-                            onChange={ ( newSize ) => setAttributes( { size: newSize, madeitHasUserEdits: true } ) }
-                        />
-                        <hr></hr>
-                        {/* { canChooseContentWidth && (
-                            <SelectControl
-                                label={ __( 'Content breedte' ) }
-                                value={ computedContentWidth }
-                                onChange={ ( newSize ) =>
-                                    setAttributes( { contentWidth: newSize } )
-                                }
-                                options={ contentBoxedSizes }
-                            />
-                        ) } */}
-                        
-
-
-                        {/* Max width */}
-                        <div
-                            className="madeit-control"
-                            style={
-                                currentMaxWidthUnit == '__custom__'
-                                    ? { marginBottom: '52px' }
-                                    : {}
-                            }
-                        >
-                            <ControlHeader
-                                title={ __( 'max breedte' ) }
-                                breakpoint={ activeBreakpoint }
-                                onBreakpointChange={ setActiveBreakpoint }
-                                afterBreakpoint={
-                                    <AdvancedUnitSelect
-                                        value={currentMaxWidthUnit}
-                                        customValue={currentMaxWidthCustom}
-                                        units={['px', '%', 'em', 'rem', 'vw']}
-                                        onChange={(unit) =>
-                                            setAttributes({
-                                                [maxWidthUnitKey]: unit,
-                                                madeitHasUserEdits: true,
-                                            })
-                                        }
-                                        onCustomChange={(custom) =>
-                                            setAttributes({
-                                                [maxWidthCustomKey]: custom,
-                                                madeitHasUserEdits: true,
-                                            })
-                                        }
-                                    />
-                                    
-                                }
-                                
-                            />
-                            {/* If maxWidthUnitKey value = __custom__, doon't show the madeit-control-rangeRow */}
-                            { currentMaxWidthUnit !== '__custom__' && (
-                                <div className="madeit-control-rangeRow">
-                                    <RangeControl
-                                        __next40pxDefaultSize
-                                        label=""
-                                        value={
-                                            typeof currentMaxWidthValue === 'number'
-                                                ? currentMaxWidthValue
-                                                : 0
-                                        }
-                                        onChange={ ( value ) =>
-                                            setAttributes( {
-                                                [ maxWidthValueKey ]: value,
-                                                madeitHasUserEdits: true,
-                                            } )
-                                        }
-                                        min={ 0 }
-                                        max={ currentMaxWidthUnit === 'vh' || currentMaxWidthUnit === '%' ? 100 : 1000 }
-                                    />
-
-                                    <Button
-                                        className="madeit-control-rangeRow__reset"
-                                        icon="undo"
-                                        variant="tertiary"
-                                        onClick={ resetMaxWidth }
-                                        showTooltip
-                                        label={ __( 'Reset max breedte' ) }
-                                    />
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Container hoogte (min-height) */}
-                        <div
-                            className="madeit-control"
-                            style={
-                                currentMinHeightUnit == '__custom__'
-                                    ? { marginBottom: '52px' }
-                                    : {}
-                            }
-                        >
-                            <ControlHeader
-                                title={ __( 'Min hoogte' ) }
-                                breakpoint={ activeBreakpoint }
-                                onBreakpointChange={ setActiveBreakpoint }
-                                afterBreakpoint={
-                                    <AdvancedUnitSelect
-                                        value={currentMinHeightUnit}
-                                        customValue={currentMinHeightCustom}
-                                        units={['px', '%', 'em', 'rem', 'vh']}
-                                        onChange={(unit) =>
-                                            setAttributes({
-                                                [minHeightUnitKey]: unit,
-                                                madeitHasUserEdits: true,
-                                            })
-                                        }
-                                        onCustomChange={(custom) =>
-                                            setAttributes({
-                                                [minHeightCustomKey]: custom,
-                                                madeitHasUserEdits: true,
-                                            })
-                                        }
-                                    />
-                                }
-                                
-                            />
-
-                            
-                            {/* If maxWidthUnitKey value = __custom__, doon't show the madeit-control-rangeRow */}
-                            { currentMinHeightUnit !== '__custom__' && (
-                            <div className="madeit-control-rangeRow">
-                                <RangeControl
-                                    __next40pxDefaultSize
-                                    label=""
-                                    value={ minHeightValueForUi }
-                                    onChange={ ( value ) =>
-                                        setAttributes( {
-                                            [ minHeightValueKey ]: value,
-                                            madeitHasUserEdits: true,
-                                        } )
-                                    }
-                                    min={ 0 }
-                                    max={ minHeightUnitForUi === 'vh' ? 100 : 1000 }
-                                    description={ __( 'Gebruik 100vh om de container op volledige hoogte te bereiken' ) }
-                                />
-
-                                <Button
-                                    className="madeit-control-rangeRow__reset"
-                                    icon="undo"
-                                    variant="tertiary"
-                                    onClick={ resetMinHeight }
-                                    showTooltip
-                                    label={ __( 'Reset min hoogte' ) }
-                                />
-                            </div>
-                            )}
-                            
-                            <p 
-                                className='description'
-                                style={
-                                    currentMinHeightUnit == '__custom__'
-                                    ? { marginTop: '49px', marginBottom: '-51px' }
-                                    : {}   
-                                } 
-                            >
-                            Gebruik 100vh om de container op volledige hoogte te bereiken</p>
-                        </div>
-
-                        <hr></hr>
-                        <ControlHeader
-                            title={ __( 'Items' ) }
-                        />
-                        {/* Direction */}
-                        <div className="madeit-control">
-                            <ControlHeader
-                                title={ __( 'Direction' ) }
-                                breakpoint={ activeBreakpoint }
-                                onBreakpointChange={ setActiveBreakpoint }
-                            />
-
-                           <ToggleGroupControl
-                                __next40pxDefaultSize
-                                className="madeit-control-buttonGroup"
-                                value={ currentDirection }
-                                onChange={ ( value ) =>
-                                    setAttributes( { [ directionValueKey ]: value } )
-                                }
-                            >
-                                <ToggleGroupControlOption
-                                    value="row"
-                                    label={ <Icon icon="arrow-right-alt2" /> }
-                                    aria-label={ __( 'Row' ) }
-                                />
-
-                                <ToggleGroupControlOption
-                                    value="column"
-                                    label={ <Icon icon="arrow-down-alt2" /> }
-                                    aria-label={ __( 'Column' ) }
-                                />
-
-                                <ToggleGroupControlOption
-                                    value="row-reverse"
-                                    label={ <Icon icon="arrow-left-alt2" /> }
-                                    aria-label={ __( 'Row reverse' ) }
-                                />
-
-                                <ToggleGroupControlOption
-                                    value="column-reverse"
-                                    label={ <Icon icon="arrow-up-alt2" /> }
-                                    aria-label={ __( 'Column reverse' ) }
-                                />
-                            </ToggleGroupControl>
-                        </div>
-
-                        {/* Align items */}
-                        <div className="madeit-control">
-                            <ControlHeader
-                                title={ __( 'Align items' ) }
-                                breakpoint={ activeBreakpoint }
-                                onBreakpointChange={ setActiveBreakpoint }
-                                onReset={ resetAlignItems }
-                                resetLabel={ __( 'Reset align items' ) }
-                            />
-
-                            <ToggleGroupControl 
-                                __next40pxDefaultSize
-                                className="madeit-control-buttonGroup"
-                                value={ currentAlignItems }
-                                onChange={ ( value ) =>
-                                    setAttributes( { [ alignItemsValueKey ]: value } )
-                                }
-                            >
-
-                                { isRowDirection && (
-                                    <>
-                                        <ToggleGroupControlOption
-                                            value="flex-start"
-                                            label={ < FlexStartIconRotate /> }
-                                            aria-label={ __( 'Top' ) }
-                                        />
-
-                                        <ToggleGroupControlOption
-                                            value="center"
-                                            label={ < CenterIconRotate /> }
-                                            aria-label={ __( 'Center' ) }
-                                        />
-
-                                        <ToggleGroupControlOption
-                                            value="flex-end"
-                                            label={ < FlexEndIconRotate /> }
-                                            aria-label={ __( 'Bottom' ) }
-                                        />
-
-                                        <ToggleGroupControlOption
-                                            value="stretch"
-                                            label={ < StretchIconRotate /> }
-                                            aria-label={ __( 'Stretch' ) }
-                                        />
-                                    </>
-                                )}
-
-                                { isColumnDirection && (
-                                    <>
-                                        <ToggleGroupControlOption
-                                            value="flex-start"
-                                            label={ < FlexStartIcon /> }
-                                            aria-label={ __( 'Left' ) }
-                                        />
-
-                                        <ToggleGroupControlOption
-                                            value="center"
-                                            label={ < CenterIcon /> }
-                                            aria-label={ __( 'Center' ) }
-                                        />
-
-                                        <ToggleGroupControlOption
-                                            value="flex-end"
-                                            label={ < FlexEndIcon /> }
-                                            aria-label={ __( 'Right' ) }
-                                        />
-
-                                        <ToggleGroupControlOption
-                                            value="stretch"
-                                            label={ < StretchIcon /> }
-                                            aria-label={ __( 'Stretch' ) }
-                                        />
-                                    </>
-                                )}
-
-                            </ToggleGroupControl>
-                        </div>
-
-
-                        {/* Justify items */}
-                        <div className="madeit-control">
-                            <ControlHeader
-                                title={ __( 'Justify items' ) }
-                                breakpoint={ activeBreakpoint }
-                                onBreakpointChange={ setActiveBreakpoint }
-                                onReset={ resetJustifyContent }
-                                resetLabel={ __( 'Reset justify items' ) }
-                            />
-
-                            <ToggleGroupControl 
-                                __next40pxDefaultSize
-                                className="madeit-control-buttonGroup"
-                                value={ currentJustifyContent }
-                                onChange={ ( value ) =>
-                                    setAttributes( { [ justifyContentValueKey ]: value } )
-                                }
-                            >
-
-                                { isRowDirection && (
-                                    <>
-                                        <ToggleGroupControlOption
-                                            value="flex-start"
-                                            label={ < JustifyStartIcon /> }
-                                            aria-label={ __( 'Justify start' ) }
-                                        />
-
-                                        <ToggleGroupControlOption
-                                            value="center"
-                                            label={ < JustifyCenterIcon /> }
-                                            aria-label={ __( 'Justify center' ) }
-                                        />
-
-                                        <ToggleGroupControlOption
-                                            value="flex-end"
-                                            label={ < JustifyEndIcon /> }
-                                            aria-label={ __( 'Justify end' ) }
-                                        />
-
-                                        <ToggleGroupControlOption
-                                            value="space-between"
-                                            label={ < JustifyBetweenIcon /> }
-                                            aria-label={ __( 'Justify between' ) }
-                                        />
-
-                                        <ToggleGroupControlOption
-                                            value="space-around"
-                                            label={ < JustifySpaceAroundIcon /> }
-                                            aria-label={ __( 'Justify space around' ) }
-                                        />
-
-                                        <ToggleGroupControlOption
-                                            value="space-evenly"
-                                            label={ < JustifySpaceEvenlyIcon /> }
-                                            aria-label={ __( 'Justify space evenly' ) }
-                                        />
-                                    </>
-                                )}
-
-                                { isColumnDirection && (
-                                    <>
-                                        <ToggleGroupControlOption
-                                            value="flex-start"
-                                            label={ < JustifyStartIconRotate /> }
-                                            aria-label={ __( 'Justify start' ) }
-                                        />
-
-                                        <ToggleGroupControlOption
-                                            value="center"
-                                            label={ < JustifyCenterIconRotate /> }
-                                            aria-label={ __( 'Justify center' ) }
-                                        />
-
-                                        <ToggleGroupControlOption
-                                            value="flex-end"
-                                            label={ < JustifyEndIconRotate /> }
-                                            aria-label={ __( 'Justify end' ) }
-                                        />
-
-                                        <ToggleGroupControlOption
-                                            value="space-between"
-                                            label={ < JustifyBetweenIconRotate /> }
-                                            aria-label={ __( 'Justify between' ) }
-                                        />
-
-                                        <ToggleGroupControlOption
-                                            value="space-around"
-                                            label={ < JustifySpaceAroundIconRotate /> }
-                                            aria-label={ __( 'Justify space around' ) }
-                                        />
-
-                                        <ToggleGroupControlOption
-                                            value="space-evenly"
-                                            label={ < JustifySpaceEvenlyIconRotate /> }
-                                            aria-label={ __( 'Justify space evenly' ) }
-                                        />
-                                    </>
-                                )}
-
-                            </ToggleGroupControl>
-                        </div>
-
-                        {/* Wrap items */}
-                        <div className="madeit-control">
-                            <ControlHeader
-                                title={ __( 'Wrap' ) }
-                                breakpoint={ activeBreakpoint }
-                                onBreakpointChange={ setActiveBreakpoint }
-                                onReset={ resetFlexWrap }
-                                resetLabel={ __( 'Reset wrap' ) }
-                            />
-
-                            <ToggleGroupControl 
-                                __next40pxDefaultSize
-                                className="madeit-control-buttonGroup"
-                                value={ currentFlexWrap }
-                                onChange={ ( value ) =>
-                                    setAttributes( { [ flexWrapValueKey ]: value } )
-                                }
-                            >
-                                <ToggleGroupControlOption
-                                    value="wrap"
-                                    label={ __( 'Wrap' ) }
-                                    aria-label={ __( 'Wrap' ) }
-                                />
-
-                                <ToggleGroupControlOption
-                                    value="nowrap"
-                                    label={ __( 'No wrap' ) }
-                                    aria-label={ __( 'No wrap' ) }
-                                />
-                            </ToggleGroupControl>
-                        </div> 
-                    </PanelBody>
-
-                    <PanelBody title="Extra opties" initialOpen={false}>
-                        {/* Overflow */}
-                        <SelectControl
-                            __next40pxDefaultSize
-                            className="flex1"
-                            label={ __( 'Overflow' ) }
-                            labelPosition='left'
-                            value={ computedOverflow }
-                            options={ [
-                                { value: 'visible', label: __( 'Visible' ) },
-                                { value: 'hidden', label: __( 'Hidden' ) },
-                                { value: 'scroll', label: __( 'Scroll' ) },
-                                { value: 'auto', label: __( 'Auto' ) },
-                            ] }
-                            onChange={ ( newOverflow ) =>
-                                setAttributes( { overflow: newOverflow } )
-                            }
-                        />
-
-                        {/* HTML tag */}
-                        <SelectControl
-                            __next40pxDefaultSize
-                            className="flex1"
-                            label={ __( 'HTML tag' ) }
-                            labelPosition='left'
-                            value={ computedHtmlTag }
-                            options={ [
-                                { value: 'div', label: __( 'Standaard' ) },
-                                { value: 'div', label: __( 'div' ) },
-                                { value: 'section', label: __( 'section' ) },
-                                { value: 'article', label: __( 'article' ) },
-                                { value: 'main', label: __( 'main' ) },
-                                { value: 'header', label: __( 'header' ) },
-                                { value: 'footer', label: __( 'footer' ) },
-                            ] }
-                            onChange={ ( newHtmlTag ) =>
-                                setAttributes( { htmlTag: newHtmlTag } )
-                            }
-                        />
-                    </PanelBody>
-                    </>
-                )}
-
-                {activeTab === 'style' && (
-                    <>
-                        {/* Style blocks from gutenberg self */}
-                        {blockStyles?.length > 0 && (
-                            <PanelBody title="Stijlen" initialOpen={false}>
-                                <ToggleGroupControl
-                                    __next40pxDefaultSize
-                                    className="madeit-block-styles-picker"
-                                    value={
-                                        blockStyles.find( ( style ) =>
-                                            ( currentClassName || '' ).includes( `is-style-${ style.name }` )
-                                        )?.name || 'default'
-                                    }
-                                    onChange={ ( value ) => {
-
-                                        if ( value === 'default' ) {
-                                            applyBlockStyle( '' );
-                                            return;
-                                        }
-
-                                        applyBlockStyle( value );
-                                    } }
-                                >
-
-                                    <ToggleGroupControlOption
-                                        className='madeit-block-styles-picker-button'
-                                        value="default"
-                                        label={ __( 'Default' ) }
-                                    />
-
-                                    { blockStyles.map( ( style ) => (
-                                        <ToggleGroupControlOption
-                                            className='madeit-block-styles-picker-button'
-                                            key={ style.name }
-                                            value={ style.name }
-                                            label={ style.label }
-                                            onMouseEnter={ () => previewBlockStyle( style.name ) }
-                                            onMouseLeave={ clearPreviewBlockStyle }
-                                        />
-                                    ) ) }
-
-                                </ToggleGroupControl>
-                            </PanelBody>
-                        )}
-
-                        <PanelBody title="Achtergrond" initialOpen={true}>
-                            <ControlHeader
-                                title={ __( 'Achtergrond type' ) }
-                                onReset={ resetBackgroundType }
-                                afterBreakpoint={
-                                    <StyleSwitcher
-                                        active={ computedBackgroundType }
-                                        onChange={ handleBackgroundTypeChange }
-                                    />
-                                }
-                            />
-
-                            { computedBackgroundType === 'classic' && (
-                                
+                    { ( tab ) => (
+                        <div className={ `madeit-inspector-tab-content madeit-inspector-tab-content-${ tab.name }` }>
+                            { tab.name === 'settings' && (
                                 <>
-                                    {/* Achtergrond kleur */}
-                                    <div className="madeit-control">
-                                        <PanelColorSettings
-                                            initialOpen={ true }
-                                            colorSettings={ [
-                                                {
-                                                    label: __( 'Achtergrond kleur' ),
-                                                    value: containerBackgroundColor.color,
-                                                    onChange: ( value ) => setContainerBackgroundColor(value),
-                                                },
-                                            ] }
+                                    <PanelBody title="Container" initialOpen={true}>
+                                        {/* Kolommen wijzigen */}
+                                        <RangeControl
+                                            __next40pxDefaultSize
+                                            label={ __( 'Aantal kolommen' ) }
+                                            value={ count }
+                                            onChange={ ( value ) => updateColumns( count, value ) }
+                                            min={ 1 }
+                                            max={ 6 }
                                         />
-                                    </div>
 
-                                    {/* Achtergrond afbeelding */}
-                                    <div className="madeit-control">
-                                        <MediaUploadCheck>
-                                            <MediaUpload
-                                                onSelect={ ( media ) => setContainerBackgroundImage(media) }
-                                                allowedTypes={ ['image'] }
-                                                value={ containerBackgroundImage?.id }
-                                                render={ ( { open } ) => (
-                                                    <Button 
-                                                    onClick={ open } 
-                                                    style={ { width: '100%', height: '150px', justifyContent: 'center', padding: '0px' } 
-                                                    }>
-                                                    {/*  if no image selected, gray background with + icon and selecteer afbeelding in a div. Else if image selected, show the image */}
-                                                    { !containerBackgroundImage ? (
-                                                        <div style={ { width: '100%', height: '150px', backgroundColor: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0px' } }>
-                                                            { __( 'Selecteer afbeelding' ) }
-                                                        </div>
-                                                    ) : (
-                                                        <div className={ 'madeit-background-image-preview' }>
-                                                            <button className="remove-image-button" onClick={ (e) => { e.stopPropagation(); setContainerBackgroundImage(null); } }>
-                                                                { __( 'x' ) }
-                                                            </button>
-                                                            <img src={ containerBackgroundImage.url } alt={ containerBackgroundImage.alt } style={ { width: '100%', height: '150px', objectFit: 'cover' } } />
-                                                            <button className="edit-image-button" onClick={ (e) => { e.stopPropagation(); open(); } }>
-                                                                { __( 'Wijzig afbeelding' ) }
-                                                            </button>
-                                                        </div>
-                                                    ) }
-                                                    </Button>
-                                                ) }
+                                        {/* Container breedte */}
+                                        <SelectControl
+                                            __next40pxDefaultSize
+                                            label={ __( 'Inhoud breedte' ) }
+                                            labelPosition='left'
+                                            value={ size }
+                                            options={ [
+                                                { value: 'container', label: __( 'Boxed' ) },
+                                                { value: 'container-fluid', label: __( 'Full width' ) },
+                                            ] }
+                                            onChange={ ( newSize ) => setAttributes( { size: newSize, madeitHasUserEdits: true } ) }
+                                        />
+                                        <hr></hr>
+                                        {/* { canChooseContentWidth && (
+                                            <SelectControl
+                                                label={ __( 'Content breedte' ) }
+                                                value={ computedContentWidth }
+                                                onChange={ ( newSize ) =>
+                                                    setAttributes( { contentWidth: newSize } )
+                                                }
+                                                options={ contentBoxedSizes }
                                             />
-                                        </MediaUploadCheck>
-                                    </div>
+                                        ) } */}
+                                        
 
-                                    {/* Achtergrond positie */}
-                                    {  containerBackgroundImage && (
-                                        <>
-                                            <div className="madeit-control">
-                                                <SelectControl
+
+                                        {/* Max width */}
+                                        <div
+                                            className="madeit-control"
+                                            style={
+                                                currentMaxWidthUnit == '__custom__'
+                                                    ? { marginBottom: '52px' }
+                                                    : {}
+                                            }
+                                        >
+                                            <ControlHeader
+                                                title={ __( 'max breedte' ) }
+                                                breakpoint={ activeBreakpoint }
+                                                onBreakpointChange={ setActiveBreakpoint }
+                                                afterBreakpoint={
+                                                    <AdvancedUnitSelect
+                                                        value={currentMaxWidthUnit}
+                                                        customValue={currentMaxWidthCustom}
+                                                        units={['px', '%', 'em', 'rem', 'vw']}
+                                                        onChange={(unit) =>
+                                                            setAttributes({
+                                                                [maxWidthUnitKey]: unit,
+                                                                madeitHasUserEdits: true,
+                                                            })
+                                                        }
+                                                        onCustomChange={(custom) =>
+                                                            setAttributes({
+                                                                [maxWidthCustomKey]: custom,
+                                                                madeitHasUserEdits: true,
+                                                            })
+                                                        }
+                                                    />
+                                                    
+                                                }
+                                                
+                                            />
+                                            {/* If maxWidthUnitKey value = __custom__, doon't show the madeit-control-rangeRow */}
+                                            { currentMaxWidthUnit !== '__custom__' && (
+                                                <div className="madeit-control-rangeRow">
+                                                    <RangeControl
+                                                        __next40pxDefaultSize
+                                                        label=""
+                                                        value={
+                                                            typeof currentMaxWidthValue === 'number'
+                                                                ? currentMaxWidthValue
+                                                                : 0
+                                                        }
+                                                        onChange={ ( value ) =>
+                                                            setAttributes( {
+                                                                [ maxWidthValueKey ]: value,
+                                                                madeitHasUserEdits: true,
+                                                            } )
+                                                        }
+                                                        min={ 0 }
+                                                        max={ currentMaxWidthUnit === 'vh' || currentMaxWidthUnit === '%' ? 100 : 1000 }
+                                                    />
+
+                                                    <Button
+                                                        className="madeit-control-rangeRow__reset"
+                                                        icon="undo"
+                                                        variant="tertiary"
+                                                        onClick={ resetMaxWidth }
+                                                        showTooltip
+                                                        label={ __( 'Reset max breedte' ) }
+                                                    />
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* Container hoogte (min-height) */}
+                                        <div
+                                            className="madeit-control"
+                                            style={
+                                                currentMinHeightUnit == '__custom__'
+                                                    ? { marginBottom: '52px' }
+                                                    : {}
+                                            }
+                                        >
+                                            <ControlHeader
+                                                title={ __( 'Min hoogte' ) }
+                                                breakpoint={ activeBreakpoint }
+                                                onBreakpointChange={ setActiveBreakpoint }
+                                                afterBreakpoint={
+                                                    <AdvancedUnitSelect
+                                                        value={currentMinHeightUnit}
+                                                        customValue={currentMinHeightCustom}
+                                                        units={['px', '%', 'em', 'rem', 'vh']}
+                                                        onChange={(unit) =>
+                                                            setAttributes({
+                                                                [minHeightUnitKey]: unit,
+                                                                madeitHasUserEdits: true,
+                                                            })
+                                                        }
+                                                        onCustomChange={(custom) =>
+                                                            setAttributes({
+                                                                [minHeightCustomKey]: custom,
+                                                                madeitHasUserEdits: true,
+                                                            })
+                                                        }
+                                                    />
+                                                }
+                                                
+                                            />
+
+                                            
+                                            {/* If maxWidthUnitKey value = __custom__, doon't show the madeit-control-rangeRow */}
+                                            { currentMinHeightUnit !== '__custom__' && (
+                                            <div className="madeit-control-rangeRow">
+                                                <RangeControl
                                                     __next40pxDefaultSize
-                                                    label={ __( 'Achtergrond positie' ) }
-                                                    value={ computedContainerBackgroundPosition }
-                                                    options={ [
-                                                        { label: __( 'Links boven' ), value: 'left top' },
-                                                        { label: __( 'Midden boven' ), value: 'center top' },
-                                                        { label: __( 'Rechts boven' ), value: 'right top' },
-                                                        { label: __( 'Links midden' ), value: 'left center' },
-                                                        { label: __( 'Midden' ), value: 'center center' },
-                                                        { label: __( 'Rechts midden' ), value: 'right center' },
-                                                        { label: __( 'Links onder' ), value: 'left bottom' },
-                                                        { label: __( 'Midden onder' ), value: 'center bottom' },
-                                                        { label: __( 'Rechts onder' ), value: 'right bottom' },
-                                                    ] }
-                                                    onChange={ ( value ) => setContainerBackgroundPosition(value) }
+                                                    label=""
+                                                    value={ minHeightValueForUi }
+                                                    onChange={ ( value ) =>
+                                                        setAttributes( {
+                                                            [ minHeightValueKey ]: value,
+                                                            madeitHasUserEdits: true,
+                                                        } )
+                                                    }
+                                                    min={ 0 }
+                                                    max={ minHeightUnitForUi === 'vh' ? 100 : 1000 }
+                                                    description={ __( 'Gebruik 100vh om de container op volledige hoogte te bereiken' ) }
+                                                />
+
+                                                <Button
+                                                    className="madeit-control-rangeRow__reset"
+                                                    icon="undo"
+                                                    variant="tertiary"
+                                                    onClick={ resetMinHeight }
+                                                    showTooltip
+                                                    label={ __( 'Reset min hoogte' ) }
                                                 />
                                             </div>
-                                        </>
-                                    )}
-
-                                    {/* Achtergrond herhaling */}
-                                    {  containerBackgroundImage && (
-                                        <div className="madeit-control">
-                                            <SelectControl
-                                                __next40pxDefaultSize
-                                                label={ __( 'Achtergrond herhaling' ) }
-                                                value={ computedContainerBackgroundRepeat }
-                                                options={ [
-                                                    { label: __( 'No-repeat' ), value: 'no-repeat' },
-                                                    { label: __( 'Repeat' ), value: 'repeat' },
-                                                    { label: __( 'Repeat-x' ), value: 'repeat-x' },
-                                                    { label: __( 'Repeat-y' ), value: 'repeat-y' },
-                                                ] }
-                                                onChange={ ( value ) => setContainerBackgroundRepeat(value) }
-                                            />
+                                            )}
+                                            
+                                            <p 
+                                                className='description'
+                                                style={
+                                                    currentMinHeightUnit == '__custom__'
+                                                    ? { marginTop: '49px', marginBottom: '-51px' }
+                                                    : {}   
+                                                } 
+                                            >
+                                            Gebruik 100vh om de container op volledige hoogte te bereiken</p>
                                         </div>
-                                    )}
 
-                                    {/* Achtergrond grootte */}
-                                    {  containerBackgroundImage && (
+                                        <hr></hr>
+                                        <ControlHeader
+                                            title={ __( 'Items' ) }
+                                        />
+                                        {/* Direction */}
                                         <div className="madeit-control">
-                                            <SelectControl
-                                                __next40pxDefaultSize
-                                                label={ __( 'Achtergrond grootte' ) }
-                                                value={ computedContainerBackgroundSize }
-                                                options={ [
-                                                    { label: __( 'Auto' ), value: 'auto' },
-                                                    { label: __( 'Cover' ), value: 'cover' },
-                                                    { label: __( 'Contain' ), value: 'contain' },
-                                                ] }
-                                                onChange={ ( value ) => setContainerBackgroundSize(value) }
+                                            <ControlHeader
+                                                title={ __( 'Direction' ) }
+                                                breakpoint={ activeBreakpoint }
+                                                onBreakpointChange={ setActiveBreakpoint }
                                             />
+
+                                        <ToggleGroupControl
+                                                __next40pxDefaultSize
+                                                className="madeit-control-buttonGroup"
+                                                value={ currentDirection }
+                                                onChange={ ( value ) =>
+                                                    setAttributes( { [ directionValueKey ]: value } )
+                                                }
+                                            >
+                                                <ToggleGroupControlOption
+                                                    value="row"
+                                                    label={ <Icon icon="arrow-right-alt2" /> }
+                                                    aria-label={ __( 'Row' ) }
+                                                />
+
+                                                <ToggleGroupControlOption
+                                                    value="column"
+                                                    label={ <Icon icon="arrow-down-alt2" /> }
+                                                    aria-label={ __( 'Column' ) }
+                                                />
+
+                                                <ToggleGroupControlOption
+                                                    value="row-reverse"
+                                                    label={ <Icon icon="arrow-left-alt2" /> }
+                                                    aria-label={ __( 'Row reverse' ) }
+                                                />
+
+                                                <ToggleGroupControlOption
+                                                    value="column-reverse"
+                                                    label={ <Icon icon="arrow-up-alt2" /> }
+                                                    aria-label={ __( 'Column reverse' ) }
+                                                />
+                                            </ToggleGroupControl>
                                         </div>
-                                    )}
+
+                                        {/* Align items */}
+                                        <div className="madeit-control">
+                                            <ControlHeader
+                                                title={ __( 'Align items' ) }
+                                                breakpoint={ activeBreakpoint }
+                                                onBreakpointChange={ setActiveBreakpoint }
+                                                onReset={ resetAlignItems }
+                                                resetLabel={ __( 'Reset align items' ) }
+                                            />
+
+                                            <ToggleGroupControl 
+                                                __next40pxDefaultSize
+                                                className="madeit-control-buttonGroup"
+                                                value={ currentAlignItems }
+                                                onChange={ ( value ) =>
+                                                    setAttributes( { [ alignItemsValueKey ]: value } )
+                                                }
+                                            >
+
+                                                { isRowDirection && (
+                                                    <>
+                                                        <ToggleGroupControlOption
+                                                            value="flex-start"
+                                                            label={ < FlexStartIconRotate /> }
+                                                            aria-label={ __( 'Top' ) }
+                                                        />
+
+                                                        <ToggleGroupControlOption
+                                                            value="center"
+                                                            label={ < CenterIconRotate /> }
+                                                            aria-label={ __( 'Center' ) }
+                                                        />
+
+                                                        <ToggleGroupControlOption
+                                                            value="flex-end"
+                                                            label={ < FlexEndIconRotate /> }
+                                                            aria-label={ __( 'Bottom' ) }
+                                                        />
+
+                                                        <ToggleGroupControlOption
+                                                            value="stretch"
+                                                            label={ < StretchIconRotate /> }
+                                                            aria-label={ __( 'Stretch' ) }
+                                                        />
+                                                    </>
+                                                )}
+
+                                                { isColumnDirection && (
+                                                    <>
+                                                        <ToggleGroupControlOption
+                                                            value="flex-start"
+                                                            label={ < FlexStartIcon /> }
+                                                            aria-label={ __( 'Left' ) }
+                                                        />
+
+                                                        <ToggleGroupControlOption
+                                                            value="center"
+                                                            label={ < CenterIcon /> }
+                                                            aria-label={ __( 'Center' ) }
+                                                        />
+
+                                                        <ToggleGroupControlOption
+                                                            value="flex-end"
+                                                            label={ < FlexEndIcon /> }
+                                                            aria-label={ __( 'Right' ) }
+                                                        />
+
+                                                        <ToggleGroupControlOption
+                                                            value="stretch"
+                                                            label={ < StretchIcon /> }
+                                                            aria-label={ __( 'Stretch' ) }
+                                                        />
+                                                    </>
+                                                )}
+
+                                            </ToggleGroupControl>
+                                        </div>
+
+
+                                        {/* Justify items */}
+                                        <div className="madeit-control">
+                                            <ControlHeader
+                                                title={ __( 'Justify items' ) }
+                                                breakpoint={ activeBreakpoint }
+                                                onBreakpointChange={ setActiveBreakpoint }
+                                                onReset={ resetJustifyContent }
+                                                resetLabel={ __( 'Reset justify items' ) }
+                                            />
+
+                                            <ToggleGroupControl 
+                                                __next40pxDefaultSize
+                                                className="madeit-control-buttonGroup"
+                                                value={ currentJustifyContent }
+                                                onChange={ ( value ) =>
+                                                    setAttributes( { [ justifyContentValueKey ]: value } )
+                                                }
+                                            >
+
+                                                { isRowDirection && (
+                                                    <>
+                                                        <ToggleGroupControlOption
+                                                            value="flex-start"
+                                                            label={ < JustifyStartIcon /> }
+                                                            aria-label={ __( 'Justify start' ) }
+                                                        />
+
+                                                        <ToggleGroupControlOption
+                                                            value="center"
+                                                            label={ < JustifyCenterIcon /> }
+                                                            aria-label={ __( 'Justify center' ) }
+                                                        />
+
+                                                        <ToggleGroupControlOption
+                                                            value="flex-end"
+                                                            label={ < JustifyEndIcon /> }
+                                                            aria-label={ __( 'Justify end' ) }
+                                                        />
+
+                                                        <ToggleGroupControlOption
+                                                            value="space-between"
+                                                            label={ < JustifyBetweenIcon /> }
+                                                            aria-label={ __( 'Justify between' ) }
+                                                        />
+
+                                                        <ToggleGroupControlOption
+                                                            value="space-around"
+                                                            label={ < JustifySpaceAroundIcon /> }
+                                                            aria-label={ __( 'Justify space around' ) }
+                                                        />
+
+                                                        <ToggleGroupControlOption
+                                                            value="space-evenly"
+                                                            label={ < JustifySpaceEvenlyIcon /> }
+                                                            aria-label={ __( 'Justify space evenly' ) }
+                                                        />
+                                                    </>
+                                                )}
+
+                                                { isColumnDirection && (
+                                                    <>
+                                                        <ToggleGroupControlOption
+                                                            value="flex-start"
+                                                            label={ < JustifyStartIconRotate /> }
+                                                            aria-label={ __( 'Justify start' ) }
+                                                        />
+
+                                                        <ToggleGroupControlOption
+                                                            value="center"
+                                                            label={ < JustifyCenterIconRotate /> }
+                                                            aria-label={ __( 'Justify center' ) }
+                                                        />
+
+                                                        <ToggleGroupControlOption
+                                                            value="flex-end"
+                                                            label={ < JustifyEndIconRotate /> }
+                                                            aria-label={ __( 'Justify end' ) }
+                                                        />
+
+                                                        <ToggleGroupControlOption
+                                                            value="space-between"
+                                                            label={ < JustifyBetweenIconRotate /> }
+                                                            aria-label={ __( 'Justify between' ) }
+                                                        />
+
+                                                        <ToggleGroupControlOption
+                                                            value="space-around"
+                                                            label={ < JustifySpaceAroundIconRotate /> }
+                                                            aria-label={ __( 'Justify space around' ) }
+                                                        />
+
+                                                        <ToggleGroupControlOption
+                                                            value="space-evenly"
+                                                            label={ < JustifySpaceEvenlyIconRotate /> }
+                                                            aria-label={ __( 'Justify space evenly' ) }
+                                                        />
+                                                    </>
+                                                )}
+
+                                            </ToggleGroupControl>
+                                        </div>
+
+                                        {/* Wrap items */}
+                                        <div className="madeit-control">
+                                            <ControlHeader
+                                                title={ __( 'Wrap' ) }
+                                                breakpoint={ activeBreakpoint }
+                                                onBreakpointChange={ setActiveBreakpoint }
+                                                onReset={ resetFlexWrap }
+                                                resetLabel={ __( 'Reset wrap' ) }
+                                            />
+
+                                            <ToggleGroupControl 
+                                                __next40pxDefaultSize
+                                                className="madeit-control-buttonGroup"
+                                                value={ currentFlexWrap }
+                                                onChange={ ( value ) =>
+                                                    setAttributes( { [ flexWrapValueKey ]: value } )
+                                                }
+                                            >
+                                                <ToggleGroupControlOption
+                                                    value="wrap"
+                                                    label={ __( 'Wrap' ) }
+                                                    aria-label={ __( 'Wrap' ) }
+                                                />
+
+                                                <ToggleGroupControlOption
+                                                    value="nowrap"
+                                                    label={ __( 'No wrap' ) }
+                                                    aria-label={ __( 'No wrap' ) }
+                                                />
+                                            </ToggleGroupControl>
+                                        </div> 
+                                    </PanelBody>
+
+                                    <PanelBody title="Extra opties" initialOpen={false}>
+                                        {/* Overflow */}
+                                        <SelectControl
+                                            __next40pxDefaultSize
+                                            className="flex1"
+                                            label={ __( 'Overflow' ) }
+                                            labelPosition='left'
+                                            value={ computedOverflow }
+                                            options={ [
+                                                { value: 'visible', label: __( 'Visible' ) },
+                                                { value: 'hidden', label: __( 'Hidden' ) },
+                                                { value: 'scroll', label: __( 'Scroll' ) },
+                                                { value: 'auto', label: __( 'Auto' ) },
+                                            ] }
+                                            onChange={ ( newOverflow ) =>
+                                                setAttributes( { overflow: newOverflow } )
+                                            }
+                                        />
+
+                                        {/* HTML tag */}
+                                        <SelectControl
+                                            __next40pxDefaultSize
+                                            className="flex1"
+                                            label={ __( 'HTML tag' ) }
+                                            labelPosition='left'
+                                            value={ computedHtmlTag }
+                                            options={ [
+                                                { value: 'div', label: __( 'Standaard' ) },
+                                                { value: 'div', label: __( 'div' ) },
+                                                { value: 'section', label: __( 'section' ) },
+                                                { value: 'article', label: __( 'article' ) },
+                                                { value: 'main', label: __( 'main' ) },
+                                                { value: 'header', label: __( 'header' ) },
+                                                { value: 'footer', label: __( 'footer' ) },
+                                            ] }
+                                            onChange={ ( newHtmlTag ) =>
+                                                setAttributes( { htmlTag: newHtmlTag } )
+                                            }
+                                        />
+                                    </PanelBody>
                                 </>
-                            )}
+                            ) }
 
-                            { computedBackgroundType === 'gradient' && (
+                            { tab.name === 'styles' && (
                                 <>
-                                    {/* Gradient instellingen */}
-                                    <div className="madeit-control">
-                                        <GradientControl
-                                            label={ __( 'Gradient' ) }
-                                            gradients={ gradients }
-                                            value={ computedBackgroundGradientValue }
-                                            onChange={ ( value ) => setContainerBackgroundGradient( { gradient: value } ) }
-                                        />
-                                    </div>
-                                </>
-                            )}
-                        </PanelBody>
+                                    {/* Style blocks from gutenberg self */}
+                                    {blockStyles?.length > 0 && (
+                                        <PanelBody title="Stijlen" initialOpen={false}>
+                                            <ToggleGroupControl
+                                                __next40pxDefaultSize
+                                                className="madeit-block-styles-picker"
+                                                value={
+                                                    blockStyles.find( ( style ) =>
+                                                        ( currentClassName || '' ).includes( `is-style-${ style.name }` )
+                                                    )?.name || 'default'
+                                                }
+                                                onChange={ ( value ) => {
 
-                        <PanelBody title="Achtergrond overlay" initialOpen={false}>
-                            <div className="madeit-control">
-                                <ControlHeader
-                                    title={ __( 'Overlay' ) }
-                                    onReset={ resetBackgroundOverlay }
-                                />
-                            </div>
-
-                            <div className="madeit-control">
-                                <ToggleGroupControl
-                                    __next40pxDefaultSize
-                                    className="madeit-control-buttonGroup"
-                                    label={ __( 'Overlay type' ) }
-                                    value={ computedBackgroundOverlayMode }
-                                    onChange={ ( value ) =>
-                                        setAttributes( {
-                                            containerBackgroundOverlayType: value,
-                                            madeitHasUserEdits: true,
-                                        } )
-                                    }
-                                >
-                                    <ToggleGroupControlOption value="color" label={ __( 'Kleur' ) } />
-                                    <ToggleGroupControlOption value="gradient" label={ __( 'Gradient' ) } />
-                                </ToggleGroupControl>
-                            </div>
-
-                            { computedBackgroundOverlayMode === 'color' && (
-                                <div className="madeit-control">
-                                    <PanelColorSettings
-                                        initialOpen={ true }
-                                        colorSettings={ [
-                                            {
-                                                label: __( 'Overlay kleur' ),
-                                                value: containerBackgroundOverlayColor?.color,
-                                                onChange: ( value ) => {
-                                                    setContainerBackgroundOverlayColor( value );
-                                                    setAttributes( { madeitHasUserEdits: true } );
-                                                },
-                                            },
-                                        ] }
-                                    />
-                                </div>
-                            ) }
-
-                            { computedBackgroundOverlayMode === 'gradient' && (
-                                <div className="madeit-control">
-                                    <GradientControl
-                                        label={ __( 'Overlay gradient' ) }
-                                        gradients={ gradients }
-                                        value={ computedBackgroundOverlayGradientValue }
-                                        onChange={ ( value ) =>
-                                            setContainerBackgroundOverlayGradient( { gradient: value } )
-                                        }
-                                    />
-                                </div>
-                            ) }
-
-                            <div className="madeit-control">
-                                <RangeControl
-                                    __next40pxDefaultSize
-                                    label={ __( 'Overlay dekking' ) }
-                                    value={ computedBackgroundOverlayOpacity }
-                                    onChange={ ( value ) =>
-                                        setAttributes( {
-                                            containerBackgroundOverlayOpacity: value,
-                                            madeitHasUserEdits: true,
-                                        } )
-                                    }
-                                    min={ 0 }
-                                    max={ 100 }
-                                />
-                            </div>
-
-                            <div className="madeit-control">
-                                <SelectControl
-                                    __next40pxDefaultSize
-                                    label={ __( 'Blend mode' ) }
-                                    value={ computedBackgroundOverlayBlendMode }
-                                    options={ [
-                                        { label: __( 'Normal' ), value: 'normal' },
-                                        { label: __( 'Multiply' ), value: 'multiply' },
-                                        { label: __( 'Screen' ), value: 'screen' },
-                                        { label: __( 'Overlay' ), value: 'overlay' },
-                                        { label: __( 'Darken' ), value: 'darken' },
-                                        { label: __( 'Lighten' ), value: 'lighten' },
-                                        { label: __( 'Color dodge' ), value: 'color-dodge' },
-                                        { label: __( 'Color burn' ), value: 'color-burn' },
-                                        { label: __( 'Hard light' ), value: 'hard-light' },
-                                        { label: __( 'Soft light' ), value: 'soft-light' },
-                                        { label: __( 'Difference' ), value: 'difference' },
-                                        { label: __( 'Exclusion' ), value: 'exclusion' },
-                                        { label: __( 'Hue' ), value: 'hue' },
-                                        { label: __( 'Saturation' ), value: 'saturation' },
-                                        { label: __( 'Color' ), value: 'color' },
-                                        { label: __( 'Luminosity' ), value: 'luminosity' },
-                                    ] }
-                                    onChange={ ( value ) =>
-                                        setAttributes( {
-                                            containerBackgroundOverlayBlendMode: value,
-                                            madeitHasUserEdits: true,
-                                        } )
-                                    }
-                                />
-                            </div>
-                        </PanelBody>
-
-                        <PanelBody title="Spatie" initialOpen={false}>
-
-                            {/* Row gap */}
-                            <div className="madeit-control">
-                                <ControlHeader
-                                    title={ __( 'row gap' ) }
-                                    breakpoint={ activeBreakpoint }
-                                    onBreakpointChange={ setActiveBreakpoint }
-                                    afterBreakpoint={
-                                        <UnitSelect
-                                            value={ currentRowGapUnit }
-                                            units={ [ 'px', 'em', 'rem' ] }
-                                            onChange={ ( unit ) => {
-
-                                                const currentRowGap = attributes?.[ rowGapValueKey ] || {};
-
-                                                const nextRowGap = {};
-
-                                                Object.keys( currentRowGap ).forEach( ( key ) => {
-
-                                                    const raw = currentRowGap[ key ];
-
-                                                    if ( raw === undefined || raw === null || raw === '' ) {
+                                                    if ( value === 'default' ) {
+                                                        applyBlockStyle( '' );
                                                         return;
                                                     }
 
-                                                    const numeric = parseFloat( raw );
+                                                    applyBlockStyle( value );
+                                                } }
+                                            >
 
-                                                    if ( ! Number.isFinite( numeric ) ) {
-                                                        return;
-                                                    }
+                                                <ToggleGroupControlOption
+                                                    className='madeit-block-styles-picker-button'
+                                                    value="default"
+                                                    label={ __( 'Default' ) }
+                                                />
 
-                                                    nextRowGap[ key ] = `${ numeric }${ unit }`;
-                                                } );
+                                                { blockStyles.map( ( style ) => (
+                                                    <ToggleGroupControlOption
+                                                        className='madeit-block-styles-picker-button'
+                                                        key={ style.name }
+                                                        value={ style.name }
+                                                        label={ style.label }
+                                                        onMouseEnter={ () => previewBlockStyle( style.name ) }
+                                                        onMouseLeave={ clearPreviewBlockStyle }
+                                                    />
+                                                ) ) }
 
-                                                setAttributes( {
-                                                    [ rowGapValueKey ]: nextRowGap,
-                                                    [ rowGapUnitKey ]: unit,
-                                                    madeitHasUserEdits: true,
-                                                } );
-                                            } }
+                                            </ToggleGroupControl>
+                                        </PanelBody>
+                                    )}
+
+                                    <PanelBody title="Achtergrond" initialOpen={true}>
+                                        <ControlHeader
+                                            title={ __( 'Achtergrond type' ) }
+                                            onReset={ resetBackgroundType }
+                                            afterBreakpoint={
+                                                <StyleSwitcher
+                                                    active={ computedBackgroundType }
+                                                    onChange={ handleBackgroundTypeChange }
+                                                />
+                                            }
                                         />
-                                    }
-                                    
-                                />
 
-                                <div className="madeit-control-rangeRow">
-                                    <RangeControl
-                                        __next40pxDefaultSize
-                                        label=""
-                                        value={
-                                            typeof currentRowGapValue === 'number'
-                                                ? currentRowGapValue
-                                                : 0
-                                        }
-                                        onChange={ ( value ) =>
-                                            setAttributes( {
-                                                [ rowGapValueKey ]: value,
-                                                madeitHasUserEdits: true,
-                                            } )
-                                        }
-                                        min={ 0 }
-                                        max={ 100 }
-                                    />
+                                        { computedBackgroundType === 'classic' && (
+                                            
+                                            <>
+                                                {/* Achtergrond kleur */}
+                                                <div className="madeit-control">
+                                                    <PanelColorSettings
+                                                        initialOpen={ true }
+                                                        colorSettings={ [
+                                                            {
+                                                                label: __( 'Achtergrond kleur' ),
+                                                                value: containerBackgroundColor.color,
+                                                                onChange: ( value ) => setContainerBackgroundColor(value),
+                                                            },
+                                                        ] }
+                                                    />
+                                                </div>
 
-                                    <Button
-                                        className="madeit-control-rangeRow__reset"
-                                        icon="undo"
-                                        variant="tertiary"
-                                        onClick={ resetRowGap }
-                                        showTooltip
-                                        label={ __( 'Reset Row Gap' ) }
-                                    />
-                                </div>
-                            </div>
+                                                {/* Achtergrond afbeelding */}
+                                                <div className="madeit-control">
+                                                    <MediaUploadCheck>
+                                                        <MediaUpload
+                                                            onSelect={ ( media ) => setContainerBackgroundImage(media) }
+                                                            allowedTypes={ ['image'] }
+                                                            value={ containerBackgroundImage?.id }
+                                                            render={ ( { open } ) => (
+                                                                <Button 
+                                                                onClick={ open } 
+                                                                style={ { width: '100%', height: '150px', justifyContent: 'center', padding: '0px' } 
+                                                                }>
+                                                                {/*  if no image selected, gray background with + icon and selecteer afbeelding in a div. Else if image selected, show the image */}
+                                                                { !containerBackgroundImage ? (
+                                                                    <div style={ { width: '100%', height: '150px', backgroundColor: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0px' } }>
+                                                                        { __( 'Selecteer afbeelding' ) }
+                                                                    </div>
+                                                                ) : (
+                                                                    <div className={ 'madeit-background-image-preview' }>
+                                                                        <button className="remove-image-button" onClick={ (e) => { e.stopPropagation(); setContainerBackgroundImage(null); } }>
+                                                                            { __( 'x' ) }
+                                                                        </button>
+                                                                        <img src={ containerBackgroundImage.url } alt={ containerBackgroundImage.alt } style={ { width: '100%', height: '150px', objectFit: 'cover' } } />
+                                                                        <button className="edit-image-button" onClick={ (e) => { e.stopPropagation(); open(); } }>
+                                                                            { __( 'Wijzig afbeelding' ) }
+                                                                        </button>
+                                                                    </div>
+                                                                ) }
+                                                                </Button>
+                                                            ) }
+                                                        />
+                                                    </MediaUploadCheck>
+                                                </div>
 
+                                                {/* Achtergrond positie */}
+                                                {  containerBackgroundImage && (
+                                                    <>
+                                                        <div className="madeit-control">
+                                                            <SelectControl
+                                                                __next40pxDefaultSize
+                                                                label={ __( 'Achtergrond positie' ) }
+                                                                value={ computedContainerBackgroundPosition }
+                                                                options={ [
+                                                                    { label: __( 'Links boven' ), value: 'left top' },
+                                                                    { label: __( 'Midden boven' ), value: 'center top' },
+                                                                    { label: __( 'Rechts boven' ), value: 'right top' },
+                                                                    { label: __( 'Links midden' ), value: 'left center' },
+                                                                    { label: __( 'Midden' ), value: 'center center' },
+                                                                    { label: __( 'Rechts midden' ), value: 'right center' },
+                                                                    { label: __( 'Links onder' ), value: 'left bottom' },
+                                                                    { label: __( 'Midden onder' ), value: 'center bottom' },
+                                                                    { label: __( 'Rechts onder' ), value: 'right bottom' },
+                                                                ] }
+                                                                onChange={ ( value ) => setContainerBackgroundPosition(value) }
+                                                            />
+                                                        </div>
+                                                    </>
+                                                )}
 
-                            {/* Padding */}
-                            {/* <ResponsiveBoxControl
-                                __next40pxDefaultSize
-                                title={ __( 'Padding' ) }
-                                breakpoint={ activePaddingBreakpoint }
-                                onBreakpointChange={ setActivePaddingBreakpoint }
-                                values={ attributes?.[ paddingValueKey ] }
-                                onChange={ ( next ) =>
-                                    setAttributes( { [ paddingValueKey ]: next } )
-                                }
-                                onReset={ () => setAttributes( { [ paddingValueKey ]: undefined } ) }
-                                resetLabel={ __( 'Reset padding' ) }
-                                // allowReset={ true }
-                            /> */}
+                                                {/* Achtergrond herhaling */}
+                                                {  containerBackgroundImage && (
+                                                    <div className="madeit-control">
+                                                        <SelectControl
+                                                            __next40pxDefaultSize
+                                                            label={ __( 'Achtergrond herhaling' ) }
+                                                            value={ computedContainerBackgroundRepeat }
+                                                            options={ [
+                                                                { label: __( 'No-repeat' ), value: 'no-repeat' },
+                                                                { label: __( 'Repeat' ), value: 'repeat' },
+                                                                { label: __( 'Repeat-x' ), value: 'repeat-x' },
+                                                                { label: __( 'Repeat-y' ), value: 'repeat-y' },
+                                                            ] }
+                                                            onChange={ ( value ) => setContainerBackgroundRepeat(value) }
+                                                        />
+                                                    </div>
+                                                )}
 
-                            {/* Padding als één geheel */}
-                            <div className='madeit-control' style={{ display: 'flex', flexWrap: 'wrap', gap: '6px'}}>
-                                <ControlHeader
-                                    title={ __( 'Padding', 'madeit' ) }
-                                    breakpoint={ activeBreakpoint }
-                                    onBreakpointChange={ setActiveBreakpoint }
-                                    afterBreakpoint={
-                                        <UnitSelect
-                                            value={ paddingUnit }
-                                            units={ [ 'px', '%', 'em', 'rem', 'vw', 'vh' ] }
-                                            onChange={ ( unit ) => {
+                                                {/* Achtergrond grootte */}
+                                                {  containerBackgroundImage && (
+                                                    <div className="madeit-control">
+                                                        <SelectControl
+                                                            __next40pxDefaultSize
+                                                            label={ __( 'Achtergrond grootte' ) }
+                                                            value={ computedContainerBackgroundSize }
+                                                            options={ [
+                                                                { label: __( 'Auto' ), value: 'auto' },
+                                                                { label: __( 'Cover' ), value: 'cover' },
+                                                                { label: __( 'Contain' ), value: 'contain' },
+                                                            ] }
+                                                            onChange={ ( value ) => setContainerBackgroundSize(value) }
+                                                        />
+                                                    </div>
+                                                )}
+                                            </>
+                                        )}
 
-                                                const currentPadding =
-                                                    attributes?.[ paddingValueKey ] || {};
+                                        { computedBackgroundType === 'gradient' && (
+                                            <>
+                                                {/* Gradient instellingen */}
+                                                <div className="madeit-control">
+                                                    <GradientControl
+                                                        label={ __( 'Gradient' ) }
+                                                        gradients={ gradients }
+                                                        value={ computedBackgroundGradientValue }
+                                                        onChange={ ( value ) => setContainerBackgroundGradient( { gradient: value } ) }
+                                                    />
+                                                </div>
+                                            </>
+                                        )}
+                                    </PanelBody>
 
-                                                const nextPadding = {};
+                                    <PanelBody title="Achtergrond overlay" initialOpen={false}>
+                                        <div className="madeit-control">
+                                            <ControlHeader
+                                                title={ __( 'Overlay' ) }
+                                                onReset={ resetBackgroundOverlay }
+                                            />
+                                        </div>
 
-                                                [ 'top', 'right', 'bottom', 'left' ].forEach(
-                                                    ( key ) => {
+                                        <div className="madeit-control">
+                                            <ToggleGroupControl
+                                                __next40pxDefaultSize
+                                                className="madeit-control-buttonGroup"
+                                                label={ __( 'Overlay type' ) }
+                                                value={ computedBackgroundOverlayMode }
+                                                onChange={ ( value ) =>
+                                                    setAttributes( {
+                                                        containerBackgroundOverlayType: value,
+                                                        madeitHasUserEdits: true,
+                                                    } )
+                                                }
+                                            >
+                                                <ToggleGroupControlOption value="color" label={ __( 'Kleur' ) } />
+                                                <ToggleGroupControlOption value="gradient" label={ __( 'Gradient' ) } />
+                                            </ToggleGroupControl>
+                                        </div>
 
-                                                        const raw = currentPadding?.[ key ];
+                                        { computedBackgroundOverlayMode === 'color' && (
+                                            <div className="madeit-control">
+                                                <PanelColorSettings
+                                                    initialOpen={ true }
+                                                    colorSettings={ [
+                                                        {
+                                                            label: __( 'Overlay kleur' ),
+                                                            value: containerBackgroundOverlayColor?.color,
+                                                            onChange: ( value ) => {
+                                                                setContainerBackgroundOverlayColor( value );
+                                                                setAttributes( { madeitHasUserEdits: true } );
+                                                            },
+                                                        },
+                                                    ] }
+                                                />
+                                            </div>
+                                        ) }
 
-                                                        if ( ! raw ) {
-                                                            return;
-                                                        }
-
-                                                        const numeric = parseFloat( raw );
-
-                                                        if ( ! Number.isFinite( numeric ) ) {
-                                                            return;
-                                                        }
-
-                                                        nextPadding[ key ] =
-                                                            `${ numeric }${ unit }`;
-
+                                        { computedBackgroundOverlayMode === 'gradient' && (
+                                            <div className="madeit-control">
+                                                <GradientControl
+                                                    label={ __( 'Overlay gradient' ) }
+                                                    gradients={ gradients }
+                                                    value={ computedBackgroundOverlayGradientValue }
+                                                    onChange={ ( value ) =>
+                                                        setContainerBackgroundOverlayGradient( { gradient: value } )
                                                     }
-                                                );
+                                                />
+                                            </div>
+                                        ) }
 
-                                                setAttributes( {
-                                                    [ paddingValueKey ]: nextPadding,
-                                                    paddingUnit: unit,
-                                                    madeitHasUserEdits: true,
-                                                } );
+                                        <div className="madeit-control">
+                                            <RangeControl
+                                                __next40pxDefaultSize
+                                                label={ __( 'Overlay dekking' ) }
+                                                value={ computedBackgroundOverlayOpacity }
+                                                onChange={ ( value ) =>
+                                                    setAttributes( {
+                                                        containerBackgroundOverlayOpacity: value,
+                                                        madeitHasUserEdits: true,
+                                                    } )
+                                                }
+                                                min={ 0 }
+                                                max={ 100 }
+                                            />
+                                        </div>
 
-                                            } }
-                                        />
-                                    }
-                                />
+                                        <div className="madeit-control">
+                                            <SelectControl
+                                                __next40pxDefaultSize
+                                                label={ __( 'Blend mode' ) }
+                                                value={ computedBackgroundOverlayBlendMode }
+                                                options={ [
+                                                    { label: __( 'Normal' ), value: 'normal' },
+                                                    { label: __( 'Multiply' ), value: 'multiply' },
+                                                    { label: __( 'Screen' ), value: 'screen' },
+                                                    { label: __( 'Overlay' ), value: 'overlay' },
+                                                    { label: __( 'Darken' ), value: 'darken' },
+                                                    { label: __( 'Lighten' ), value: 'lighten' },
+                                                    { label: __( 'Color dodge' ), value: 'color-dodge' },
+                                                    { label: __( 'Color burn' ), value: 'color-burn' },
+                                                    { label: __( 'Hard light' ), value: 'hard-light' },
+                                                    { label: __( 'Soft light' ), value: 'soft-light' },
+                                                    { label: __( 'Difference' ), value: 'difference' },
+                                                    { label: __( 'Exclusion' ), value: 'exclusion' },
+                                                    { label: __( 'Hue' ), value: 'hue' },
+                                                    { label: __( 'Saturation' ), value: 'saturation' },
+                                                    { label: __( 'Color' ), value: 'color' },
+                                                    { label: __( 'Luminosity' ), value: 'luminosity' },
+                                                ] }
+                                                onChange={ ( value ) =>
+                                                    setAttributes( {
+                                                        containerBackgroundOverlayBlendMode: value,
+                                                        madeitHasUserEdits: true,
+                                                    } )
+                                                }
+                                            />
+                                        </div>
+                                    </PanelBody>
 
-                                <div
-                                    className="madeit-controls"
-                                    style={ {
-                                        display: 'flex',
-                                        alignItems: 'flex-start',
-                                        maxWidth: 'calc(100% - 35px)',
-                                    } }
-                                >
-                                    { [
-                                        { label: 'Bovenaan', key: 'top', status: 'default' },
-                                        { label: 'Rechts', key: 'right', status: 'default' },
-                                        { label: 'Onderaan', key: 'bottom', status: 'default' },
-                                        { label: 'Links', key: 'left', status: 'default' },
-                                    ].map( ( item ) => {
+                                    <PanelBody title="Spatie" initialOpen={false}>
 
-                                        const currentPadding =
-                                            attributes?.[ paddingValueKey ] || {};
+                                        {/* Row gap */}
+                                        <div className="madeit-control">
+                                            <ControlHeader
+                                                title={ __( 'row gap' ) }
+                                                breakpoint={ activeBreakpoint }
+                                                onBreakpointChange={ setActiveBreakpoint }
+                                                afterBreakpoint={
+                                                    <UnitSelect
+                                                        value={ currentRowGapUnit }
+                                                        units={ [ 'px', 'em', 'rem' ] }
+                                                        onChange={ ( unit ) => {
 
-                                        const rawValue = currentPadding?.[ item.key ];
+                                                            const currentRowGap = attributes?.[ rowGapValueKey ] || {};
 
-                                        const numericValue = parseFloat( rawValue );
+                                                            const nextRowGap = {};
 
-                                        const displayValue = Number.isFinite( numericValue )
-                                            ? numericValue
-                                            : '';
+                                                            Object.keys( currentRowGap ).forEach( ( key ) => {
 
-                                        return (
+                                                                const raw = currentRowGap[ key ];
+
+                                                                if ( raw === undefined || raw === null || raw === '' ) {
+                                                                    return;
+                                                                }
+
+                                                                const numeric = parseFloat( raw );
+
+                                                                if ( ! Number.isFinite( numeric ) ) {
+                                                                    return;
+                                                                }
+
+                                                                nextRowGap[ key ] = `${ numeric }${ unit }`;
+                                                            } );
+
+                                                            setAttributes( {
+                                                                [ rowGapValueKey ]: nextRowGap,
+                                                                [ rowGapUnitKey ]: unit,
+                                                                madeitHasUserEdits: true,
+                                                            } );
+                                                        } }
+                                                    />
+                                                }
+                                                
+                                            />
+
+                                            <div className="madeit-control-rangeRow">
+                                                <RangeControl
+                                                    __next40pxDefaultSize
+                                                    label=""
+                                                    value={
+                                                        typeof currentRowGapValue === 'number'
+                                                            ? currentRowGapValue
+                                                            : 0
+                                                    }
+                                                    onChange={ ( value ) =>
+                                                        setAttributes( {
+                                                            [ rowGapValueKey ]: value,
+                                                            madeitHasUserEdits: true,
+                                                        } )
+                                                    }
+                                                    min={ 0 }
+                                                    max={ 100 }
+                                                />
+
+                                                <Button
+                                                    className="madeit-control-rangeRow__reset"
+                                                    icon="undo"
+                                                    variant="tertiary"
+                                                    onClick={ resetRowGap }
+                                                    showTooltip
+                                                    label={ __( 'Reset Row Gap' ) }
+                                                />
+                                            </div>
+                                        </div>
+
+
+                                        {/* Padding */}
+                                        {/* <ResponsiveBoxControl
+                                            __next40pxDefaultSize
+                                            title={ __( 'Padding' ) }
+                                            breakpoint={ activePaddingBreakpoint }
+                                            onBreakpointChange={ setActivePaddingBreakpoint }
+                                            values={ attributes?.[ paddingValueKey ] }
+                                            onChange={ ( next ) =>
+                                                setAttributes( { [ paddingValueKey ]: next } )
+                                            }
+                                            onReset={ () => setAttributes( { [ paddingValueKey ]: undefined } ) }
+                                            resetLabel={ __( 'Reset padding' ) }
+                                            // allowReset={ true }
+                                        /> */}
+
+                                        {/* Padding als één geheel */}
+                                        <div className='madeit-control' style={{ display: 'flex', flexWrap: 'wrap', gap: '6px'}}>
+                                            <ControlHeader
+                                                title={ __( 'Padding', 'madeit' ) }
+                                                breakpoint={ activeBreakpoint }
+                                                onBreakpointChange={ setActiveBreakpoint }
+                                                afterBreakpoint={
+                                                    <UnitSelect
+                                                        value={ paddingUnit }
+                                                        units={ [ 'px', '%', 'em', 'rem', 'vw', 'vh' ] }
+                                                        onChange={ ( unit ) => {
+
+                                                            const currentPadding =
+                                                                attributes?.[ paddingValueKey ] || {};
+
+                                                            const nextPadding = {};
+
+                                                            [ 'top', 'right', 'bottom', 'left' ].forEach(
+                                                                ( key ) => {
+
+                                                                    const raw = currentPadding?.[ key ];
+
+                                                                    if ( ! raw ) {
+                                                                        return;
+                                                                    }
+
+                                                                    const numeric = parseFloat( raw );
+
+                                                                    if ( ! Number.isFinite( numeric ) ) {
+                                                                        return;
+                                                                    }
+
+                                                                    nextPadding[ key ] =
+                                                                        `${ numeric }${ unit }`;
+
+                                                                }
+                                                            );
+
+                                                            setAttributes( {
+                                                                [ paddingValueKey ]: nextPadding,
+                                                                paddingUnit: unit,
+                                                                madeitHasUserEdits: true,
+                                                            } );
+
+                                                        } }
+                                                    />
+                                                }
+                                            />
+
                                             <div
-                                                key={ item.key }
+                                                className="madeit-controls"
                                                 style={ {
                                                     display: 'flex',
-                                                    flexDirection: 'column',
-                                                    alignItems: 'center',
-                                                    flex: 1,
+                                                    alignItems: 'flex-start',
+                                                    maxWidth: 'calc(100% - 35px)',
                                                 } }
-                                                className="control-item"
                                             >
-                                                <input
-                                                    type="number"
-                                                    value={ displayValue }
-                                                    min={ -9999 }
-                                                    disabled={ item.status === 'disabled' }
-                                                    onChange={ ( e ) => {
+                                                { [
+                                                    { label: 'Bovenaan', key: 'top', status: 'default' },
+                                                    { label: 'Rechts', key: 'right', status: 'default' },
+                                                    { label: 'Onderaan', key: 'bottom', status: 'default' },
+                                                    { label: 'Links', key: 'left', status: 'default' },
+                                                ].map( ( item ) => {
 
-                                                        const val = e.target.value;
+                                                    const currentPadding =
+                                                        attributes?.[ paddingValueKey ] || {};
 
-                                                        const currentPadding =
-                                                            attributes?.[ paddingValueKey ] || {};
+                                                    const rawValue = currentPadding?.[ item.key ];
+
+                                                    const numericValue = parseFloat( rawValue );
+
+                                                    const displayValue = Number.isFinite( numericValue )
+                                                        ? numericValue
+                                                        : '';
+
+                                                    return (
+                                                        <div
+                                                            key={ item.key }
+                                                            style={ {
+                                                                display: 'flex',
+                                                                flexDirection: 'column',
+                                                                alignItems: 'center',
+                                                                flex: 1,
+                                                            } }
+                                                            className="control-item"
+                                                        >
+                                                            <input
+                                                                type="number"
+                                                                value={ displayValue }
+                                                                min={ -9999 }
+                                                                disabled={ item.status === 'disabled' }
+                                                                onChange={ ( e ) => {
+
+                                                                    const val = e.target.value;
+
+                                                                    const currentPadding =
+                                                                        attributes?.[ paddingValueKey ] || {};
+
+                                                                    setAttributes( {
+                                                                        [ paddingValueKey ]: {
+                                                                            ...currentPadding,
+                                                                            [ item.key ]:
+                                                                                val === ''
+                                                                                    ? undefined
+                                                                                    : `${ val }${ paddingUnit || 'px' }`,
+                                                                        },
+                                                                    } );
+
+                                                                } }
+                                                                style={ {
+                                                                    width: '100%',
+                                                                    height: '27px',
+                                                                    minHeight: '27px',
+                                                                    fontSize: '.85em',
+                                                                    textAlign: 'center',
+                                                                } }
+                                                            />
+
+                                                            <span
+                                                                style={ {
+                                                                    fontSize: '9px',
+                                                                    marginTop: '4px',
+                                                                } }
+                                                            >
+                                                                { __( item.label, 'madeit' ) }
+                                                            </span>
+                                                        </div>
+                                                    );
+
+                                                } ) }
+                                            </div>
+
+                                            <Button
+                                                title="Waarden koppelen"
+                                                variant="tertiary"
+                                                onClick={ () => {
+
+                                                    const currentPadding =
+                                                        attributes?.[ paddingValueKey ] || {};
+
+                                                    const values = [
+                                                        currentPadding.top,
+                                                        currentPadding.right,
+                                                        currentPadding.bottom,
+                                                        currentPadding.left,
+                                                    ];
+
+                                                    const allEqual = values.every(
+                                                        ( val ) => val === values[ 0 ]
+                                                    );
+
+                                                    if ( allEqual ) {
 
                                                         setAttributes( {
                                                             [ paddingValueKey ]: {
-                                                                ...currentPadding,
-                                                                [ item.key ]:
-                                                                    val === ''
-                                                                        ? undefined
-                                                                        : `${ val }${ paddingUnit || 'px' }`,
+                                                                top: undefined,
+                                                                right: undefined,
+                                                                bottom: undefined,
+                                                                left: undefined,
                                                             },
                                                         } );
 
-                                                    } }
-                                                    style={ {
-                                                        width: '100%',
-                                                        height: '27px',
-                                                        minHeight: '27px',
-                                                        fontSize: '.85em',
-                                                        textAlign: 'center',
-                                                    } }
-                                                />
+                                                    } else {
 
-                                                <span
-                                                    style={ {
-                                                        fontSize: '9px',
-                                                        marginTop: '4px',
-                                                    } }
-                                                >
-                                                    { __( item.label, 'madeit' ) }
-                                                </span>
-                                            </div>
-                                        );
+                                                        const firstValue =
+                                                            values.find( ( val ) => val ) || '';
 
-                                    } ) }
-                                </div>
-
-                                <Button
-                                    title="Waarden koppelen"
-                                    variant="tertiary"
-                                    onClick={ () => {
-
-                                        const currentPadding =
-                                            attributes?.[ paddingValueKey ] || {};
-
-                                        const values = [
-                                            currentPadding.top,
-                                            currentPadding.right,
-                                            currentPadding.bottom,
-                                            currentPadding.left,
-                                        ];
-
-                                        const allEqual = values.every(
-                                            ( val ) => val === values[ 0 ]
-                                        );
-
-                                        if ( allEqual ) {
-
-                                            setAttributes( {
-                                                [ paddingValueKey ]: {
-                                                    top: undefined,
-                                                    right: undefined,
-                                                    bottom: undefined,
-                                                    left: undefined,
-                                                },
-                                            } );
-
-                                        } else {
-
-                                            const firstValue =
-                                                values.find( ( val ) => val ) || '';
-
-                                            setAttributes( {
-                                                [ paddingValueKey ]: {
-                                                    top: firstValue,
-                                                    right: firstValue,
-                                                    bottom: firstValue,
-                                                    left: firstValue,
-                                                },
-                                            } );
-
-                                        }
-
-                                    } }
-                                    style={ {
-                                        height: 'fit-content',
-                                        marginLeft: '10px',
-                                        marginTop: '9px',
-                                        padding: '0',
-                                    } }
-                                    showTooltip
-                                >
-                                    { (() => {
-
-                                        const currentPadding =
-                                            attributes?.[ paddingValueKey ] || {};
-
-                                        const values = [
-                                            currentPadding.top,
-                                            currentPadding.right,
-                                            currentPadding.bottom,
-                                            currentPadding.left,
-                                        ];
-
-                                        const allEqual = values.every(
-                                            ( val ) =>
-                                                val === values[ 0 ] &&
-                                                val !== undefined
-                                        );
-
-                                        return allEqual ? (
-                                            <span
-                                                className="dashicons dashicons-editor-unlink"
-                                                style={ {
-                                                    fontSize: '15px',
-                                                    width: 'min-content',
-                                                } }
-                                            />
-                                        ) : (
-                                            <span
-                                                className="dashicons dashicons-admin-links"
-                                                style={ {
-                                                    fontSize: '15px',
-                                                    width: 'min-content',
-                                                } }
-                                            />
-                                        );
-
-                                    } )()}
-                                </Button>
-                            </div>
-
-                            {/* Margin */}
-                            
-                            {/* <ResponsiveBoxControl
-                                __next40pxDefaultSize
-                                title={ __( 'Margin' ) }
-                                breakpoint={ activeMarginBreakpoint }
-                                onBreakpointChange={ setActiveMarginBreakpoint }
-                                values={ attributes?.[ marginValueKey ] }
-                                onChange={ ( next ) =>
-                                    setAttributes( { [ marginValueKey ]: next } )
-                                }
-                                onReset={ () => setAttributes( { [ marginValueKey ]: undefined } ) }
-                                resetLabel={ __( 'Reset margin' ) }
-                                // allowReset={ true }
-                                inputProps={ { min: -1000, max: 1000 } }
-                                sides={ [ 'top', 'bottom' ] }
-                            /> */}
-
-                            {/* Margin als één geheel */}
-                            <div className='madeit-control' style={{ display: 'flex', flexWrap: 'wrap', gap: '6px'}}>
-                                <ControlHeader
-                                    title={ __( 'Margin', 'madeit' ) }
-                                    breakpoint={ activeBreakpoint }
-                                    onBreakpointChange={ setActiveBreakpoint }
-                                    afterBreakpoint={
-                                        <UnitSelect
-                                            value={ marginUnit }
-                                            units={ [ 'px', '%', 'em', 'rem', 'vw', 'vh' ] }
-                                            onChange={ ( unit ) => {
-
-                                                const currentMargin =
-                                                    attributes?.[ marginValueKey ] || {};
-
-                                                const nextMargin = {};
-
-                                                [ 'top', 'right', 'bottom', 'left' ].forEach(
-                                                    ( key ) => {
-
-                                                        const raw = currentMargin?.[ key ];
-
-                                                        if ( ! raw ) {
-                                                            return;
-                                                        }
-
-                                                        const numeric = parseFloat( raw );
-
-                                                        if ( ! Number.isFinite( numeric ) ) {
-                                                            return;
-                                                        }
-
-                                                        nextMargin[ key ] =
-                                                            `${ numeric }${ unit }`;
+                                                        setAttributes( {
+                                                            [ paddingValueKey ]: {
+                                                                top: firstValue,
+                                                                right: firstValue,
+                                                                bottom: firstValue,
+                                                                left: firstValue,
+                                                            },
+                                                        } );
 
                                                     }
-                                                );
 
-                                                setAttributes( {
-                                                    [ marginValueKey ]: nextMargin,
-                                                    marginUnit: unit,
-                                                    madeitHasUserEdits: true,
-                                                } );
+                                                } }
+                                                style={ {
+                                                    height: 'fit-content',
+                                                    marginLeft: '10px',
+                                                    marginTop: '9px',
+                                                    padding: '0',
+                                                } }
+                                                showTooltip
+                                            >
+                                                { (() => {
 
-                                            } }
-                                        />
-                                    }
-                                />
+                                                    const currentPadding =
+                                                        attributes?.[ paddingValueKey ] || {};
 
-                                <div
-                                    className="madeit-controls"
-                                    style={ {
-                                        display: 'flex',
-                                        alignItems: 'flex-start',
-                                        maxWidth: 'calc(100% - 35px)',
-                                    } }
-                                >
-                                    { [
-                                        { label: 'Bovenaan', key: 'top', status: 'default' },
-                                        { label: 'Rechts', key: 'right', status: 'disabled' },
-                                        { label: 'Onderaan', key: 'bottom', status: 'default' },
-                                        { label: 'Links', key: 'left', status: 'disabled' },
-                                    ].map( ( item ) => {
+                                                    const values = [
+                                                        currentPadding.top,
+                                                        currentPadding.right,
+                                                        currentPadding.bottom,
+                                                        currentPadding.left,
+                                                    ];
 
-                                        const currentMargin =
-                                            attributes?.[ marginValueKey ] || {};
+                                                    const allEqual = values.every(
+                                                        ( val ) =>
+                                                            val === values[ 0 ] &&
+                                                            val !== undefined
+                                                    );
 
-                                        const rawValue = currentMargin?.[ item.key ];
+                                                    return allEqual ? (
+                                                        <span
+                                                            className="dashicons dashicons-editor-unlink"
+                                                            style={ {
+                                                                fontSize: '15px',
+                                                                width: 'min-content',
+                                                            } }
+                                                        />
+                                                    ) : (
+                                                        <span
+                                                            className="dashicons dashicons-admin-links"
+                                                            style={ {
+                                                                fontSize: '15px',
+                                                                width: 'min-content',
+                                                            } }
+                                                        />
+                                                    );
 
-                                        const numericValue = parseFloat( rawValue );
+                                                } )()}
+                                            </Button>
+                                        </div>
 
-                                        const displayValue = Number.isFinite( numericValue )
-                                            ? numericValue
-                                            : '';
+                                        {/* Margin */}
+                                        
+                                        {/* <ResponsiveBoxControl
+                                            __next40pxDefaultSize
+                                            title={ __( 'Margin' ) }
+                                            breakpoint={ activeMarginBreakpoint }
+                                            onBreakpointChange={ setActiveMarginBreakpoint }
+                                            values={ attributes?.[ marginValueKey ] }
+                                            onChange={ ( next ) =>
+                                                setAttributes( { [ marginValueKey ]: next } )
+                                            }
+                                            onReset={ () => setAttributes( { [ marginValueKey ]: undefined } ) }
+                                            resetLabel={ __( 'Reset margin' ) }
+                                            // allowReset={ true }
+                                            inputProps={ { min: -1000, max: 1000 } }
+                                            sides={ [ 'top', 'bottom' ] }
+                                        /> */}
 
-                                        return (
+                                        {/* Margin als één geheel */}
+                                        <div className='madeit-control' style={{ display: 'flex', flexWrap: 'wrap', gap: '6px'}}>
+                                            <ControlHeader
+                                                title={ __( 'Margin', 'madeit' ) }
+                                                breakpoint={ activeBreakpoint }
+                                                onBreakpointChange={ setActiveBreakpoint }
+                                                afterBreakpoint={
+                                                    <UnitSelect
+                                                        value={ marginUnit }
+                                                        units={ [ 'px', '%', 'em', 'rem', 'vw', 'vh' ] }
+                                                        onChange={ ( unit ) => {
+
+                                                            const currentMargin =
+                                                                attributes?.[ marginValueKey ] || {};
+
+                                                            const nextMargin = {};
+
+                                                            [ 'top', 'right', 'bottom', 'left' ].forEach(
+                                                                ( key ) => {
+
+                                                                    const raw = currentMargin?.[ key ];
+
+                                                                    if ( ! raw ) {
+                                                                        return;
+                                                                    }
+
+                                                                    const numeric = parseFloat( raw );
+
+                                                                    if ( ! Number.isFinite( numeric ) ) {
+                                                                        return;
+                                                                    }
+
+                                                                    nextMargin[ key ] =
+                                                                        `${ numeric }${ unit }`;
+
+                                                                }
+                                                            );
+
+                                                            setAttributes( {
+                                                                [ marginValueKey ]: nextMargin,
+                                                                marginUnit: unit,
+                                                                madeitHasUserEdits: true,
+                                                            } );
+
+                                                        } }
+                                                    />
+                                                }
+                                            />
+
                                             <div
-                                                key={ item.key }
+                                                className="madeit-controls"
                                                 style={ {
                                                     display: 'flex',
-                                                    flexDirection: 'column',
-                                                    alignItems: 'center',
-                                                    flex: 1,
+                                                    alignItems: 'flex-start',
+                                                    maxWidth: 'calc(100% - 35px)',
                                                 } }
-                                                className="control-item"
                                             >
-                                                <input
-                                                    type="number"
-                                                    value={ displayValue }
-                                                    min={ -9999 }
-                                                    disabled={ item.status === 'disabled' }
-                                                    onChange={ ( e ) => {
+                                                { [
+                                                    { label: 'Bovenaan', key: 'top', status: 'default' },
+                                                    { label: 'Rechts', key: 'right', status: 'disabled' },
+                                                    { label: 'Onderaan', key: 'bottom', status: 'default' },
+                                                    { label: 'Links', key: 'left', status: 'disabled' },
+                                                ].map( ( item ) => {
 
-                                                        const val = e.target.value;
+                                                    const currentMargin =
+                                                        attributes?.[ marginValueKey ] || {};
 
-                                                        const currentMargin =
-                                                            attributes?.[ marginValueKey ] || {};
+                                                    const rawValue = currentMargin?.[ item.key ];
+
+                                                    const numericValue = parseFloat( rawValue );
+
+                                                    const displayValue = Number.isFinite( numericValue )
+                                                        ? numericValue
+                                                        : '';
+
+                                                    return (
+                                                        <div
+                                                            key={ item.key }
+                                                            style={ {
+                                                                display: 'flex',
+                                                                flexDirection: 'column',
+                                                                alignItems: 'center',
+                                                                flex: 1,
+                                                            } }
+                                                            className="control-item"
+                                                        >
+                                                            <input
+                                                                type="number"
+                                                                value={ displayValue }
+                                                                min={ -9999 }
+                                                                disabled={ item.status === 'disabled' }
+                                                                onChange={ ( e ) => {
+
+                                                                    const val = e.target.value;
+
+                                                                    const currentMargin =
+                                                                        attributes?.[ marginValueKey ] || {};
+
+                                                                    setAttributes( {
+                                                                        [ marginValueKey ]: {
+                                                                            ...currentMargin,
+                                                                            [ item.key ]:
+                                                                                val === ''
+                                                                                    ? undefined
+                                                                                    : `${ val }${ marginUnit || 'px' }`,
+                                                                        },
+                                                                    } );
+
+                                                                } }
+                                                                style={ {
+                                                                    width: '100%',
+                                                                    height: '27px',
+                                                                    minHeight: '27px',
+                                                                    fontSize: '.85em',
+                                                                    textAlign: 'center',
+                                                                } }
+                                                            />
+
+                                                            <span
+                                                                style={ {
+                                                                    fontSize: '9px',
+                                                                    marginTop: '4px',
+                                                                } }
+                                                            >
+                                                                { __( item.label, 'madeit' ) }
+                                                            </span>
+                                                        </div>
+                                                    );
+
+                                                } ) }
+                                            </div>
+
+                                            <Button
+                                                title="Waarden koppelen"
+                                                variant="tertiary"
+                                                onClick={ () => {
+
+                                                    const currentMargin =
+                                                        attributes?.[ marginValueKey ] || {};
+
+                                                    const values = [
+                                                        currentMargin.top,
+                                                        currentMargin.right,
+                                                        currentMargin.bottom,
+                                                        currentMargin.left,
+                                                    ];
+
+                                                    const allEqual = values.every(
+                                                        ( val ) => val === values[ 0 ]
+                                                    );
+
+                                                    if ( allEqual ) {
 
                                                         setAttributes( {
                                                             [ marginValueKey ]: {
-                                                                ...currentMargin,
-                                                                [ item.key ]:
-                                                                    val === ''
-                                                                        ? undefined
-                                                                        : `${ val }${ marginUnit || 'px' }`,
+                                                                top: undefined,
+                                                                right: undefined,
+                                                                bottom: undefined,
+                                                                left: undefined,
                                                             },
                                                         } );
 
-                                                    } }
-                                                    style={ {
-                                                        width: '100%',
-                                                        height: '27px',
-                                                        minHeight: '27px',
-                                                        fontSize: '.85em',
-                                                        textAlign: 'center',
-                                                    } }
-                                                />
+                                                    } else {
 
-                                                <span
-                                                    style={ {
-                                                        fontSize: '9px',
-                                                        marginTop: '4px',
-                                                    } }
-                                                >
-                                                    { __( item.label, 'madeit' ) }
-                                                </span>
-                                            </div>
-                                        );
+                                                        const firstValue =
+                                                            values.find( ( val ) => val ) || '';
 
-                                    } ) }
-                                </div>
+                                                        setAttributes( {
+                                                            [ marginValueKey ]: {
+                                                                top: firstValue,
+                                                                right: firstValue,
+                                                                bottom: firstValue,
+                                                                left: firstValue,
+                                                            },
+                                                        } );
 
-                                <Button
-                                    title="Waarden koppelen"
-                                    variant="tertiary"
-                                    onClick={ () => {
+                                                    }
 
-                                        const currentMargin =
-                                            attributes?.[ marginValueKey ] || {};
-
-                                        const values = [
-                                            currentMargin.top,
-                                            currentMargin.right,
-                                            currentMargin.bottom,
-                                            currentMargin.left,
-                                        ];
-
-                                        const allEqual = values.every(
-                                            ( val ) => val === values[ 0 ]
-                                        );
-
-                                        if ( allEqual ) {
-
-                                            setAttributes( {
-                                                [ marginValueKey ]: {
-                                                    top: undefined,
-                                                    right: undefined,
-                                                    bottom: undefined,
-                                                    left: undefined,
-                                                },
-                                            } );
-
-                                        } else {
-
-                                            const firstValue =
-                                                values.find( ( val ) => val ) || '';
-
-                                            setAttributes( {
-                                                [ marginValueKey ]: {
-                                                    top: firstValue,
-                                                    right: firstValue,
-                                                    bottom: firstValue,
-                                                    left: firstValue,
-                                                },
-                                            } );
-
-                                        }
-
-                                    } }
-                                    style={ {
-                                        height: 'fit-content',
-                                        marginLeft: '10px',
-                                        marginTop: '9px',
-                                        padding: '0',
-                                    } }
-                                    showTooltip
-                                >
-                                    { (() => {
-
-                                        const currentMargin =
-                                            attributes?.[ marginValueKey ] || {};
-
-                                        const values = [
-                                            currentMargin.top,
-                                            currentMargin.right,
-                                            currentMargin.bottom,
-                                            currentMargin.left,
-                                        ];
-
-                                        const allEqual = values.every(
-                                            ( val ) =>
-                                                val === values[ 0 ] &&
-                                                val !== undefined
-                                        );
-
-                                        return allEqual ? (
-                                            <span
-                                                className="dashicons dashicons-editor-unlink"
-                                                style={ {
-                                                    fontSize: '15px',
-                                                    width: 'min-content',
                                                 } }
-                                            />
-                                        ) : (
-                                            <span
-                                                className="dashicons dashicons-admin-links"
                                                 style={ {
-                                                    fontSize: '15px',
-                                                    width: 'min-content',
+                                                    height: 'fit-content',
+                                                    marginLeft: '10px',
+                                                    marginTop: '9px',
+                                                    padding: '0',
                                                 } }
-                                            />
-                                        );
+                                                showTooltip
+                                            >
+                                                { (() => {
 
-                                    } )()}
-                                </Button>
-                            </div>
+                                                    const currentMargin =
+                                                        attributes?.[ marginValueKey ] || {};
 
-                        </PanelBody>
-                    </>
-                )}
+                                                    const values = [
+                                                        currentMargin.top,
+                                                        currentMargin.right,
+                                                        currentMargin.bottom,
+                                                        currentMargin.left,
+                                                    ];
 
-                {activeTab === 'advanced' && (
-                    <>
-                        <ResponsiveVisibilityPanel
-                            title="Responsive"
-                            initialOpen={ true }
-                            hideOnDesktop={ hideOnDesktop }
-                            hideOnTablet={ hideOnTablet }
-                            hideOnMobile={ hideOnMobile }
-                            setAttributes={ setAttributes }
-                        />
+                                                    const allEqual = values.every(
+                                                        ( val ) =>
+                                                            val === values[ 0 ] &&
+                                                            val !== undefined
+                                                    );
 
-                        <PanelBody className="disabledPanel" title="Binnenkomende animatie" initialOpen={false}>
-                            {/* Animatie type */}
+                                                    return allEqual ? (
+                                                        <span
+                                                            className="dashicons dashicons-editor-unlink"
+                                                            style={ {
+                                                                fontSize: '15px',
+                                                                width: 'min-content',
+                                                            } }
+                                                        />
+                                                    ) : (
+                                                        <span
+                                                            className="dashicons dashicons-admin-links"
+                                                            style={ {
+                                                                fontSize: '15px',
+                                                                width: 'min-content',
+                                                            } }
+                                                        />
+                                                    );
 
-                            {/* Animatie duur */}
+                                                } )()}
+                                            </Button>
+                                        </div>
 
-                            {/* Animatie vertraging */}
-                        </PanelBody>
-                    </>
-                )}
+                                    </PanelBody>
+                                </>
 
-                {/* 
-                <PanelBody
-                    title={__('Container settings')}
-                    initialOpen={true}>
-                    <SelectControl
-                        label={ __( 'Size' ) }
-                        value={ size }
-                        options={ containerSizes.map( ( { value, label } ) => ( {
-                            value: value,
-                            label: label,
-                        } ) ) }
-                        onChange={ ( newSize ) => setAttributes( { size: newSize } ) }
-                    />
-                    
-                    <ToolsPanel label={ __( 'Dimensions' ) } resetAll={ resetAllContainer }>
-                        <ToolsPanelItem
-                            hasValue={ () => !! containerPadding }
-                            label={ __( 'Padding' ) }
-                            onDeselect={ () => setContainerPadding( undefined ) }
-                        >
-                            <BoxControl
-                                label={ __( 'Padding' ) }
-                                onChange={ setContainerPadding }
-                                values={ containerPadding }
-                                allowReset={ false }
-                            />
-                        </ToolsPanelItem>
-                        <ToolsPanelItem
-                            hasValue={ () => !! containerMargin }
-                            label={ __( 'Margin' ) }
-                            onDeselect={ () => setContainerMargin( undefined ) }
-                        >
-                            <BoxControl
-                                label={ __( 'Margin' ) }
-                                onChange={ setContainerMargin }
-                                values={ containerMargin }
-                                allowReset={ false }
-                                sides={ [ 'bottom', 'top' ] }
-                            />
-                        </ToolsPanelItem>
-                    </ToolsPanel>
+                            ) }
 
-                    { size !== 'container-content-boxed' && (
-                        <PanelColorSettings
-                            title={ __( 'Container Color Settings' ) }
-                            initialOpen={ false }
-                            colorSettings={ [
-                                {
-                                    value: containerBackgroundColor.color,
-                                    onChange: ( value ) => setContainerBackgroundColor(value),
-                                    label: __( 'Background Color' ),
-                                },
-                                {
-                                    value: rowTextColor.color,
-                                    onChange: ( value ) => setRowTextColor(value),
-                                    label: __( 'Text Color' ),
-                                },
-                            ] }
-                            >
-                            <ContrastChecker
-                                { ...{
-                                    textColor: rowTextColor.color,
-                                    backgroundColor: containerBackgroundColor.color,
-                                    fallbackTextColor,
-                                    fallbackBackgroundColor,
-                                } }
-                            />
-                        </PanelColorSettings>
-                    )}
-                    { size === 'container-content-boxed' && (
-                        <PanelColorSettings
-                            title={ __( 'Container Color Settings' ) }
-                            initialOpen={ false }
-                            colorSettings={ [
-                                {
-                                    value: containerBackgroundColor.color,
-                                    onChange: ( value ) => setContainerBackgroundColor(value),
-                                    label: __( 'Background Color' ),
-                                }
-                            ] }
-                            >
-                            <ContrastChecker
-                                { ...{
-                                    textColor: rowTextColor.color,
-                                    backgroundColor: containerBackgroundColor.color,
-                                    fallbackTextColor,
-                                    fallbackBackgroundColor,
-                                } }
-                            />
-                        </PanelColorSettings>
-                    )}
-                </PanelBody>
-
-                <PanelBody
-                    title={__('Row settings')}
-                    initialOpen={true}>
-                        <RangeControl
-                            label={ __( 'Columns' ) }
-                            value={ count }
-                            onChange={ ( value ) => updateColumns( count, value ) }
-                            min={ 1 }
-                            max={ 6 }
-                        />
-                        { size === 'container-content-boxed' && (
-                            <div>
-                                <ToolsPanel label={ __( 'Dimensions' ) } resetAll={ resetAllRow }>
-                                    <ToolsPanelItem
-                                        hasValue={ () => !! rowPadding }
-                                        label={ __( 'Padding' ) }
-                                        onDeselect={ () => setRowPadding( undefined ) }
-                                    >
-                                        <BoxControl
-                                            label={ __( 'Padding' ) }
-                                            onChange={ setRowPadding }
-                                            values={ rowPadding }
-                                            allowReset={ false }
-                                        />
-                                    </ToolsPanelItem>
-                                    <ToolsPanelItem
-                                        hasValue={ () => !! rowMargin }
-                                        label={ __( 'Margin' ) }
-                                        onDeselect={ () => setRowMargin( undefined ) }
-                                    >
-                                        <BoxControl
-                                            label={ __( 'Margin' ) }
-                                            onChange={ setRowMargin }
-                                            values={ rowMargin }
-                                            allowReset={ false }
-                                            sides={ [ 'bottom', 'top' ] }
-                                        />
-                                    </ToolsPanelItem>
-                                </ToolsPanel>
-                                <PanelColorSettings
-                                    title={ __( 'Row Color Settings' ) }
-                                    initialOpen={ false }
-                                    colorSettings={ [
-                                        {
-                                            value: rowBackgroundColor.color,
-                                            onChange:  ( value ) => setRowBackgroundColor(value),
-                                            label: __( 'Background Color' ),
-                                        },
-                                        {
-                                            value: rowTextColor.color,
-                                            onChange: ( value ) => setRowTextColor(value),
-                                            label: __( 'Text Color' ),
-                                        },
-                                    ] }
-                                    >
-                                    <ContrastChecker
-                                        { ...{
-                                            textColor: rowTextColor.color,
-                                            backgroundColor: rowBackgroundColor.color,
-                                            fallbackTextColor,
-                                            fallbackBackgroundColor,
-                                        } }
+                            { tab.name === 'advanced' && (
+                                <>
+                                    <ResponsiveVisibilityPanel
+                                        title="Responsive"
+                                        initialOpen={ true }
+                                        hideOnDesktop={ hideOnDesktop }
+                                        hideOnTablet={ hideOnTablet }
+                                        hideOnMobile={ hideOnMobile }
+                                        setAttributes={ setAttributes }
                                     />
-                                </PanelColorSettings>
-                            </div>
-                        )}
-                </PanelBody> */
-                }
+
+                                    <PanelBody className="disabledPanel" title="Binnenkomende animatie" initialOpen={false}>
+                                        {/* Animatie type */}
+
+                                        {/* Animatie duur */}
+
+                                        {/* Animatie vertraging */}
+                                    </PanelBody>
+                                </>
+
+                            ) }
+
+                        </div>
+                    ) }
+                </TabPanel>
+
             </InspectorControls>,
             <BlockControls>
                 <BlockVerticalAlignmentToolbar

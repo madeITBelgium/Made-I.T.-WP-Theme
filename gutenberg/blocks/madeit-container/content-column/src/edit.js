@@ -12,6 +12,7 @@ import {
     PanelBody,
     RangeControl,
     SelectControl,
+    TextControl,
     TabPanel,
     ToggleControl,
     __experimentalBoxControl as BoxControl,
@@ -98,6 +99,8 @@ function ColumnEdit( props ) {
         marginUnitTablet,
         marginUnitMobile,
         aosFade,
+        aosDelay,
+        aosDelayCustom,
         maxContainerSize,
         orderFirst,
         orderLast,
@@ -719,6 +722,7 @@ function ColumnEdit( props ) {
                                             value={ aosFade || '' }
                                             options={ [
                                                 { label: __( 'Geen', 'madeit' ), value: '' },
+                                                // Fade animations
                                                 { label: __( 'Fade', 'madeit' ), value: 'fade' },
                                                 { label: __( 'Fade up', 'madeit' ), value: 'fade-up' },
                                                 { label: __( 'Fade down', 'madeit' ), value: 'fade-down' },
@@ -728,16 +732,20 @@ function ColumnEdit( props ) {
                                                 { label: __( 'Fade up left', 'madeit' ), value: 'fade-up-left' },
                                                 { label: __( 'Fade down right', 'madeit' ), value: 'fade-down-right' },
                                                 { label: __( 'Fade down left', 'madeit' ), value: 'fade-down-left' },
+
+                                                // Flip animations
                                                 { label: __( 'Flip up', 'madeit' ), value: 'flip-up' },
                                                 { label: __( 'Flip down', 'madeit' ), value: 'flip-down' },
                                                 { label: __( 'Flip left', 'madeit' ), value: 'flip-left' },
                                                 { label: __( 'Flip right', 'madeit' ), value: 'flip-right' },
-                                                { label: __( 'Slide up right', 'madeit' ), value: 'slide-up-right' },
-                                                { label: __( 'Slide up left', 'madeit' ), value: 'slide-up-left' },
-                                                { label: __( 'Slide down right', 'madeit' ), value: 'slide-down-right' },
-                                                { label: __( 'Slide down left', 'madeit' ), value: 'slide-down-left' },
+
+                                                // Slide animations
                                                 { label: __( 'Slide up', 'madeit' ), value: 'slide-up' },
                                                 { label: __( 'Slide down', 'madeit' ), value: 'slide-down' },
+                                                { label: __( 'Slide left', 'madeit' ), value: 'slide-left' },
+                                                { label: __( 'Slide right', 'madeit' ), value: 'slide-right' },
+
+                                                // Zoom animations
                                                 { label: __( 'Zoom in', 'madeit' ), value: 'zoom-in' },
                                                 { label: __( 'Zoom in up', 'madeit' ), value: 'zoom-in-up' },
                                                 { label: __( 'Zoom in down', 'madeit' ), value: 'zoom-in-down' },
@@ -751,6 +759,40 @@ function ColumnEdit( props ) {
                                             ] }
                                             onChange={ ( value ) => setAttributes( { aosFade: value || '' } ) }
                                         />
+
+                                        {/* If option is selected, show additional settings */}
+                                        { aosFade && (
+                                            <>
+                                                <SelectControl
+                                                    label={ __( 'Animatie vertraging (ms)', 'madeit' ) }
+                                                    value={ aosDelay || '' }
+                                                    options={ [
+                                                        { label: __( 'Geen', 'madeit' ), value: '' },
+                                                        { label: __( '100ms', 'madeit' ), value: '100' },
+                                                        { label: __( '200ms', 'madeit' ), value: '200' },
+                                                        { label: __( '300ms', 'madeit' ), value: '300' },
+                                                        { label: __( '400ms', 'madeit' ), value: '400' },
+                                                        { label: __( '500ms', 'madeit' ), value: '500' },
+                                                        { label: __( '600ms', 'madeit' ), value: '600' },
+                                                        { label: __( '700ms', 'madeit' ), value: '700' },
+                                                        { label: __( '800ms', 'madeit' ), value: '800' },
+                                                        { label: __( '900ms', 'madeit' ), value: '900' },
+                                                        { label: __( '1000ms', 'madeit' ), value: '1000' },
+                                                        { label: __( 'Eigen invoer', 'madeit' ), value: 'custom' },
+                                                    ] }
+                                                    onChange={ ( value ) => setAttributes( { aosDelay: value || '' } ) }
+                                                />
+
+                                                { aosDelay === 'custom' && (
+                                                    <TextControl
+                                                        label={ __( 'Eigen animatie vertraging (ms)', 'madeit' ) }
+                                                        value={ aosDelayCustom || '' }
+                                                        onChange={ ( value ) => setAttributes( { aosDelayCustom: value || '' } ) }
+                                                    />
+                                                ) }
+
+                                            </>
+                                        ) }
                                     </PanelBody>
                                 </>
                             ) }
