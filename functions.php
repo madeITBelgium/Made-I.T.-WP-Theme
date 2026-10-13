@@ -2395,7 +2395,7 @@ if (!function_exists('madeit_user_analytics')) {
         <script type="text/plain" data-category="analytics" data-service="WebsiteTool">
             (function() {
             var script = document.createElement('script');
-                script.src = 'https://www.websitetool.be/script.js';
+                script.src = 'https://app.websitetool.be/script.js';
                 script.async = true;
                 document.head.appendChild(script);
             })();
