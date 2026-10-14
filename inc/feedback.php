@@ -31,7 +31,7 @@ function feedback_script()
     <script type="text/javascript">
         (function(k) {
             s=document.createElement("script");s.module=true;s.defer=true;
-            s.src="'.esc_url('https://www.websitetool.be/feedbucket.js').'";
+            s.src="'.esc_url('https://app.websitetool.be/feedbucket.js').'";
             s.dataset.feedbucket=k;document.head.appendChild(s);
         })("'.esc_js('MADEIT').'")
     </script>';

@@ -516,8 +516,7 @@ function under_construction_is_allowed_crawler(): bool {
     $allowed_crawlers = [
         'googlebot',
         'bingbot',
-        'yandexbot',
-        'baiduspider',
+        'Google-InspectionTool',
         'duckduckbot',
         'slurp',
         'applebot',
