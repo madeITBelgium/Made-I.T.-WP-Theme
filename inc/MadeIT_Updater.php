@@ -201,22 +201,25 @@ class MadeIT_Updater
 
         require_once ABSPATH.'wp-admin/includes/class-wp-upgrader.php';
         global $wp_filesystem;
-        $source_base = basename($source);
-        $active_theme = wp_get_theme()->stylesheet;
         /*
          * Check for upgrade process, return if not correct upgrader.
          */
-        if (!($upgrader instanceof \Theme_Upgrader)) {
+        if (!($upgrader instanceof \Theme_Upgrader) || is_wp_error($source) || !is_string($source)) {
             return $source;
         }
         /*
-         * Set source for updating only for current active theme.
+         * Rename the package only when this updater's theme is being updated.
          */
-        if ($active_theme === $upgrader->skin->theme_info->stylesheet) {
-            $corrected_source = str_replace($source_base, $active_theme, $source);
-        } else {
+        if (!is_array($hook_extra) || !isset($hook_extra['theme']) || $hook_extra['theme'] !== $this->slug) {
             return $source;
         }
+
+        $source_base = basename(untrailingslashit($source));
+        if ($source_base === $this->slug) {
+            return $source;
+        }
+
+        $corrected_source = trailingslashit(dirname(untrailingslashit($source))).$this->slug.'/';
         $upgrader->skin->feedback(
             sprintf(
                 esc_html__('Renaming %1$s to %2$s', 'github-updater').'&#8230;',
