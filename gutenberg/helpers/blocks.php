@@ -112,8 +112,8 @@ add_filter('render_block', function (string $block_content, array $block): strin
     $attrs = $block['attrs'] ?? [];
     $device_values = [
         'desktop' => ['x' => $attrs['translateXDesktop'] ?? $attrs['translateX'] ?? 0, 'y' => $attrs['translateYDesktop'] ?? $attrs['translateY'] ?? 0],
-        'tablet' => ['x' => $attrs['translateXTablet'] ?? $attrs['translateX'] ?? 0, 'y' => $attrs['translateYTablet'] ?? $attrs['translateY'] ?? 0],
-        'mobile' => ['x' => $attrs['translateXMobile'] ?? $attrs['translateX'] ?? 0, 'y' => $attrs['translateYMobile'] ?? $attrs['translateY'] ?? 0],
+        'tablet'  => ['x' => $attrs['translateXTablet'] ?? $attrs['translateX'] ?? 0, 'y' => $attrs['translateYTablet'] ?? $attrs['translateY'] ?? 0],
+        'mobile'  => ['x' => $attrs['translateXMobile'] ?? $attrs['translateX'] ?? 0, 'y' => $attrs['translateYMobile'] ?? $attrs['translateY'] ?? 0],
     ];
 
     $has_transform = false;
@@ -137,7 +137,7 @@ add_filter('render_block', function (string $block_content, array $block): strin
         return $block_content;
     }
 
-    $class_name = 'madeit-transform-' . wp_unique_id('madeit-transform-');
+    $class_name = 'madeit-transform-'.wp_unique_id('madeit-transform-');
     $existing_classes = $processor->get_attribute('class');
     $classes = is_string($existing_classes) ? preg_split('/\s+/', trim($existing_classes)) : [];
     $classes[] = $class_name;
@@ -147,15 +147,15 @@ add_filter('render_block', function (string $block_content, array $block): strin
     $style = is_string($style) ? trim($style) : '';
     $style_vars = [];
     foreach ($device_values as $device => $values) {
-        $style_vars[] = '--madeit-translate-x-' . $device . ':' . (float) $values['x'] . 'px';
-        $style_vars[] = '--madeit-translate-y-' . $device . ':' . (float) $values['y'] . 'px';
+        $style_vars[] = '--madeit-translate-x-'.$device.':'.(float) $values['x'].'px';
+        $style_vars[] = '--madeit-translate-y-'.$device.':'.(float) $values['y'].'px';
     }
 
     $merged_style = $style;
     if ($merged_style !== '' && substr($merged_style, -1) !== ';') {
         $merged_style .= ';';
     }
-    $merged_style .= implode(';', $style_vars) . ';';
+    $merged_style .= implode(';', $style_vars).';';
     $processor->set_attribute('style', $merged_style);
 
     $block_html = $processor->get_updated_html();
@@ -168,5 +168,5 @@ add_filter('render_block', function (string $block_content, array $block): strin
         $css .= '@media (max-width: 767px){.'.$class_name.'{transform:translate(var(--madeit-translate-x-mobile,0),var(--madeit-translate-y-mobile,0));}}';
     }
 
-    return '<style>' . $css . '</style>' . $block_html;
+    return '<style>'.$css.'</style>'.$block_html;
 }, 10, 2);
