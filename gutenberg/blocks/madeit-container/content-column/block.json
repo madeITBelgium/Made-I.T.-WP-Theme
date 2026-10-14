@@ -124,14 +124,24 @@
         },
         "aosFade": {
             "type": "string",
-            "default": ""
+            "default": "",
+            "source": "attribute",
+            "selector": ".wp-block-madeit-block-content-column",
+            "attribute": "data-aos"
         },
         "aosDelay": {
-            "type": "number"
+            "type": "string",
+            "default": "",
+            "source": "attribute",
+            "selector": ".wp-block-madeit-block-content-column",
+            "attribute": "data-aos-delay"
         },
         "aosDelayCustom": {
             "type": "string",
-            "default": ""
+            "default": "",
+            "source": "attribute",
+            "selector": ".wp-block-madeit-block-content-column",
+            "attribute": "data-aos-delay"
         }
     }
 }

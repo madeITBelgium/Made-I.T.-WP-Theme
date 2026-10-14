@@ -1,0 +1,330 @@
+/*
+ * ============================================================
+ * VIDEO LIGHTBOX
+ * ============================================================
+ */
+
+
+/*
+ * ------------------------------------------------------------
+ * TRIGGER
+ * ------------------------------------------------------------
+ */
+
+.madeit-video-lightbox-block {
+    width: 100%;
+}
+
+
+.madeit-video-lightbox__trigger {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: auto;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    background: transparent;
+    box-shadow: none; 
+    cursor: pointer;
+    text-align: left;
+}
+
+
+/*
+ * ------------------------------------------------------------
+ * POSTER
+ * ------------------------------------------------------------
+ */
+
+.madeit-video-lightbox__trigger {
+    &[data-aspect-ratio="4/3"] .madeit-video-lightbox__poster {
+        aspect-ratio: 4/3;
+    }
+
+    &[data-aspect-ratio="16/9"] .madeit-video-lightbox__poster {
+        aspect-ratio: 16/9;
+    }
+
+    &[data-aspect-ratio="1/1"] .madeit-video-lightbox__poster {
+        aspect-ratio: 1/1;
+    }
+
+    &[data-aspect-ratio="9/16"] .madeit-video-lightbox__poster {
+        aspect-ratio: 9/16;
+    }
+}
+
+.madeit-video-lightbox__poster {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+
+    
+}
+
+
+/*
+ * ------------------------------------------------------------
+ * PLAY BUTTON
+ * ------------------------------------------------------------
+ */
+
+.madeit-video-lightbox__play {
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+    width: var(
+        --madeit-video-lightbox-play-size,
+        80px
+    );
+    height: var(
+        --madeit-video-lightbox-play-size,
+        80px
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: #fff;
+    color: #000;
+    box-shadow:
+        0 5px 20px rgba(0, 0, 0, 0.2);
+    transition:
+        transform 0.2s ease,
+        background-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.madeit-video-lightbox__play > span {
+    display: block;
+    margin-left: 4px;
+    font-size: calc(
+        var(--madeit-video-lightbox-play-size, 80px) * 0.3
+    );
+    line-height: 1;
+}
+
+
+.madeit-video-lightbox__trigger:hover
+.madeit-video-lightbox__play {
+    transform:
+        translate(-50%, -50%)
+        scale(1.1);
+
+    box-shadow:
+        0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+
+/*
+ * ------------------------------------------------------------
+ * LIGHTBOX
+ * ------------------------------------------------------------
+ */
+
+.madeit-video-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    background: rgba(
+        0,
+        0,
+        0,
+        var(
+            --madeit-video-lightbox-overlay-opacity,
+            0.9
+        )
+    );
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+        opacity 0.25s ease,
+        visibility 0.25s ease;
+}
+
+
+.madeit-video-lightbox.is-open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+
+/*
+ * ------------------------------------------------------------
+ * INNER
+ * ------------------------------------------------------------
+ */
+
+.madeit-video-lightbox__inner {
+    position: relative;
+    width: min(
+        1200px,
+        100%
+    );
+    max-width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/*
+ * ------------------------------------------------------------
+ * VIDEO
+ * ------------------------------------------------------------
+ */
+
+.madeit-video-lightbox__video {
+    display: block;
+    width: 100%;
+    max-width: 1200px;
+    max-height: 85vh;
+    aspect-ratio: 16/9;
+    object-fit: contain;
+    background: #000;
+
+}
+
+.madeit-video-lightbox__youtube {
+    max-width: 100%;
+    width: 1200px;
+    height: auto;
+    aspect-ratio: 16/9;
+}
+
+/*
+ * Auto aspect ratio
+ */
+
+.madeit-video-lightbox__video[src] {
+    &[style*="auto"] {
+        aspect-ratio: auto;
+    }
+}
+
+
+/*
+ * ------------------------------------------------------------
+ * CLOSE
+ * ------------------------------------------------------------
+ */
+
+.madeit-video-lightbox__close {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 2;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: #fff;
+    color: #000;
+    cursor: pointer;
+    font-size: 34px;
+    line-height: 1;
+    box-shadow:
+        0 5px 20px rgba(0, 0, 0, 0.25);
+    transition:
+        transform 0.2s ease,
+        background-color 0.2s ease;
+}
+
+
+.madeit-video-lightbox__close:hover {
+    transform: scale(1.08);
+}
+
+
+.madeit-video-lightbox__close span {
+    display: block;
+
+    margin-top: -3px;
+}
+
+
+/*
+ * ------------------------------------------------------------
+ * BODY
+ * ------------------------------------------------------------
+ */
+
+body.madeit-video-lightbox-open {
+    overflow: hidden;
+}
+
+
+/*
+ * ------------------------------------------------------------
+ * PLACEHOLDER
+ * ------------------------------------------------------------
+ */
+
+.madeit-video-lightbox__placeholder {
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    padding: 40px;
+    border: 2px dashed #ccd3d9;
+    background: #f5f7f9;
+    text-align: center;
+}
+
+
+.madeit-video-lightbox__placeholder p {
+    margin: 0;
+}
+
+
+/*
+ * ------------------------------------------------------------
+ * MOBILE
+ * ------------------------------------------------------------
+ */
+
+@media (max-width: 767px) {
+
+    .madeit-video-lightbox {
+        padding: 20px;
+    }
+
+
+    .madeit-video-lightbox__video {
+        max-height: 80vh;
+    }
+
+    .madeit-video-lightbox__youtube {
+        width: 767px;
+    }
+
+
+    .madeit-video-lightbox__close {
+        top: 15px;
+        right: 15px;
+
+        width: 44px;
+        height: 44px;
+
+        font-size: 28px;
+    }
+
+}

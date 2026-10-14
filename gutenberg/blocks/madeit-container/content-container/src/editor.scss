@@ -51,6 +51,9 @@ $default-block-margin:  28px;
 //  {
 //     display: none !important;
 // }
+.flex-wrap {
+    flex-wrap: wrap;
+}
 .TabContents {
     button {
         border-bottom: 2px solid transparent;
@@ -273,7 +276,7 @@ body.madeit-content-container-advanced-tabs
 
     // Lege container: lichtgrijze achtergrond en vaste hoogte voor betere zichtbaarheid.
     .components-dropdown.block-editor-inserter {
-        min-height: var(--madeit-min-height-desktop, 100px);
+        min-height: 100px;
         border: 1px dashed #bbb;
 
         &:hover {

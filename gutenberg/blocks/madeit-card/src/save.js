@@ -7,6 +7,39 @@ import {
 	useBlockProps,
 } from '@wordpress/block-editor';
 
+const boxShadowToCss = (shadow) => {
+	if (!shadow || typeof shadow !== 'object') {
+		return 'none';
+	}
+
+	const color = shadow.color || 'rgba(0, 0, 0, 0.15)';
+	const x = shadow.x ?? shadow.horizontal ?? '0px';
+	const y = shadow.y ?? shadow.vertical ?? '0px';
+	const blur = shadow.blur ?? '0px';
+	const spread = shadow.spread ?? '0px';
+	const inset = shadow.inset ? 'inset ' : '';
+
+	return `${ inset }${ x }px ${ y }px ${ blur }px ${ spread }px ${ color }`;
+};
+
+const normalizeBorderWidth = (value) => {
+	if (!value || typeof value !== 'object') {
+		return { top: '1px', right: '1px', bottom: '1px', left: '1px' };
+	}
+
+	return {
+		top: value.top ?? '1px',
+		right: value.right ?? '1px',
+		bottom: value.bottom ?? '1px',
+		left: value.left ?? '1px',
+	};
+};
+
+const borderWidthToCss = (value) => {
+	const safe = normalizeBorderWidth(value);
+	return `${ safe.top } ${ safe.right } ${ safe.bottom } ${ safe.left }`;
+};
+
 export default function save(props) {
 	const {
 		customBackgroundColor,
@@ -21,7 +54,102 @@ export default function save(props) {
 		url,
 		opensInNewTab,
 		linkTarget,
+		minHeight,
+		minHeightUnit,
+		alignItems,
+		borderHover,
+		borderHoverType,
+		borderType,
+		borderWidth,
+		borderWidthUnit,
+		borderColor,
+		borderHoverWidth,
+		borderHoverWidthUnit,
+		borderHoverColor,
+		borderRadius,
+		boxShadow,
+		shadowHover,
+		boxShadowHover,
 	} = props.attributes;
+
+	const styleVars = {};
+	const safePadding = contentPadding && typeof contentPadding === 'object'
+		? contentPadding
+		: {
+			top: '1.25rem',
+			right: '1.25rem',
+			bottom: '1.25rem',
+			left: '1.25rem',
+		};
+
+	if (safePadding.top || safePadding.right || safePadding.bottom || safePadding.left) {
+		styleVars['--madeit-card-content-padding-top'] = safePadding.top;
+		styleVars['--madeit-card-content-padding-right'] = safePadding.right;
+		styleVars['--madeit-card-content-padding-bottom'] = safePadding.bottom;
+		styleVars['--madeit-card-content-padding-left'] = safePadding.left;
+	}
+
+	if (minHeight > 0) {
+		styleVars['--madeit-card-min-height'] = `${ minHeight }${ minHeightUnit || 'px' }`;
+	}
+
+	if (alignItems && alignItems !== 'stretch') {
+		styleVars['--madeit-card-align-items'] = alignItems;
+	}
+
+	const hasDefaultBorder = borderType && borderType !== 'none';
+	const hasHoverBorder = (borderHover === 'hover' || borderHover === true) && borderHoverType && borderHoverType !== 'none';
+	const hasCustomBorderWidth = borderWidth && typeof borderWidth === 'object' && Object.values(borderWidth).some((value) => value && value !== '1px' && value !== '0px');
+	const hasCustomHoverBorderWidth = borderHoverWidth && typeof borderHoverWidth === 'object' && Object.values(borderHoverWidth).some((value) => value && value !== '1px' && value !== '0px');
+	const hasCustomBorderColor = !!borderColor && borderColor !== 'transparent';
+	const hasCustomHoverBorderColor = !!borderHoverColor && borderHoverColor !== 'transparent' && borderHoverColor !== borderColor;
+
+	if (hasDefaultBorder) {
+		styleVars['--madeit-card-border-style'] = borderType;
+		if (hasCustomBorderWidth) {
+			styleVars['--madeit-card-border-width'] = borderWidthToCss(borderWidth);
+		}
+		if (hasCustomBorderColor) {
+			styleVars['--madeit-card-border-color'] = borderColor;
+		}
+	}
+
+	if (hasHoverBorder) {
+		styleVars['--madeit-card-border-hover-style'] = borderHoverType;
+		if (hasCustomHoverBorderWidth) {
+			styleVars['--madeit-card-border-hover-width'] = borderWidthToCss(borderHoverWidth);
+		}
+		if (hasCustomHoverBorderColor) {
+			styleVars['--madeit-card-border-hover-color'] = borderHoverColor;
+		}
+	}
+
+	if (borderRadius && typeof borderRadius === 'object') {
+		const radiusCss = [
+			borderRadius.top ?? '0px',
+			borderRadius.right ?? '0px',
+			borderRadius.bottom ?? '0px',
+			borderRadius.left ?? '0px',
+		].join(' ');
+
+		if (radiusCss !== '0px 0px 0px 0px') {
+			styleVars['--madeit-card-border-radius'] = radiusCss;
+		}
+	}
+
+	if (boxShadow && typeof boxShadow === 'object') {
+		const shadowCss = boxShadowToCss(boxShadow);
+		if (shadowCss && shadowCss !== 'none' && shadowCss !== '0px 0px 0px 0px rgba(0, 0, 0, 0.15)') {
+			styleVars['--madeit-card-box-shadow'] = shadowCss;
+		}
+	}
+
+	if (shadowHover === 'hover' && boxShadowHover && typeof boxShadowHover === 'object') {
+		const shadowHoverCss = boxShadowToCss(boxShadowHover);
+		if (shadowHoverCss && shadowHoverCss !== 'none' && shadowHoverCss !== '0px 0px 0px 0px rgba(0, 0, 0, 0.15)') {
+			styleVars['--madeit-card-box-shadow-hover'] = shadowHoverCss;
+		}
+	}
 
 	const { className } = props;
 
@@ -37,6 +165,13 @@ export default function save(props) {
 	const isNewTab = opensInNewTab !== undefined ? opensInNewTab : (linkTarget === '_blank' || (typeof url === 'object' && url !== null && url.opensInNewTab));
 	const target = isNewTab ? '_blank' : undefined;
 	const rel = isNewTab ? 'noopener' : undefined;
+	const borderRadiusValue = borderRadius || {};
+	const radiusCss = [
+		borderRadiusValue.top ?? '0px',
+		borderRadiusValue.right ?? '0px',
+		borderRadiusValue.bottom ?? '0px',
+		borderRadiusValue.left ?? '0px',
+	].join(' ');
 
 	let wrapperClasses = classnames(className, {
 		card: true,
@@ -60,10 +195,7 @@ export default function save(props) {
 				? undefined
 				: customBackgroundColor,
 			color: textColorClass ? undefined : customTextColor,
-			'--madeit-card-content-padding-top': contentPadding?.top,
-			'--madeit-card-content-padding-right': contentPadding?.right,
-			'--madeit-card-content-padding-bottom': contentPadding?.bottom,
-			'--madeit-card-content-padding-left': contentPadding?.left,
+			...styleVars,
 		},
 	});
 

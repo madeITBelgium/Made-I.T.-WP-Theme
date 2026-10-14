@@ -235,3 +235,22 @@ p.block-editor-rich-text__editable[aria-label="Leeg blok; begin met schrijven of
     .theme-browser .theme .theme-name { 
         height: auto;
     }
+
+
+    .wp-block-madeitforms-submit-button__width-25 .wp-block-madeitforms-submit-button__link {
+        width: 25% !important;
+    }
+    .wp-block-madeitforms-submit-button__width-50 .wp-block-madeitforms-submit-button__link {
+        width: 50% !important;
+    }
+    .wp-block-madeitforms-submit-button__width-75 .wp-block-madeitforms-submit-button__link {
+        width: 75% !important;
+    }
+    .wp-block-madeitforms-submit-button__width-100 .wp-block-madeitforms-submit-button__link {
+        width: 100% !important;
+    }
+
+
+    .madeit-forms-honeypot {
+        display: none !important;
+    }

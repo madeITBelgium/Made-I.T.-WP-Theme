@@ -4,6 +4,50 @@
 	--madeit-card-content-padding-right: 1.25rem;
 	--madeit-card-content-padding-bottom: 1.25rem;
 	--madeit-card-content-padding-left: 1.25rem;
+	--madeit-card-min-height: auto;
+	--madeit-card-align-items: stretch;
+	--madeit-card-border-style: none;
+	--madeit-card-border-width: 1px;
+	--madeit-card-border-color: transparent;
+	--madeit-card-border-hover-style: none;
+	--madeit-card-border-hover-width: 1px;
+	--madeit-card-border-hover-color: transparent;
+	--madeit-card-border-radius: ;
+	--madeit-card-box-shadow: none;
+	--madeit-card-box-shadow-hover: none;
+
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: var(--madeit-card-align-items);
+	min-height: var(--madeit-card-min-height);
+	border-radius: var(--madeit-card-border-radius, var(--wp--custom--border-radius--default)) !important;
+	box-shadow: var(--madeit-card-box-shadow);
+	border: var(--madeit-card-border-style, solid) var(--madeit-card-border-color, transparent) !important;
+    border-width: var(--madeit-card-border-width) !important;
+	transition: all 0.3s ease;
+    
+	&:hover {
+		border-width: var(--madeit-card-border-hover-width, 0px) !important;
+		border-style: var(--madeit-card-border-hover-style, 0px) !important;
+		border-color: var(--madeit-card-border-hover-color, transparent) !important;
+		box-shadow: var(--madeit-card-box-shadow-hover, 0px 0px 0px 0px transparent);
+		transition: all 0.3s ease;
+	}
+
+	&[style*='--madeit-card-align-items:center'] {
+		.card-body .wp-block-image {
+			margin: auto;
+		}
+	}
+
+	&[style*='--madeit-card-align-items:flex-end'] {
+		.card-body .wp-block-image {
+			margin-left: auto;
+		}
+	}
+
+	
 }
 
 .wp-block-madeit-block-card a.card-link {
@@ -17,10 +61,18 @@
 }
 
 .wp-block-madeit-block-card .card-body {
+	text-align: var(--madeit-card-align-items);
 	padding: var(--madeit-card-content-padding-top)
 		var(--madeit-card-content-padding-right)
 		var(--madeit-card-content-padding-bottom)
 		var(--madeit-card-content-padding-left);
+}
+
+.wp-block-madeit-block-card:hover {
+	border-width: var(--madeit-card-border-hover-width);
+	border-style: var(--madeit-card-border-hover-style);
+	border-color: var(--madeit-card-border-hover-color);
+	box-shadow: var(--madeit-card-box-shadow-hover, var(--madeit-card-box-shadow));
 }
 
 

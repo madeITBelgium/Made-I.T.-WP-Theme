@@ -1,0 +1,104 @@
+/*
+ * ============================================================
+ * VIDEO LIGHTBOX - EDITOR
+ * ============================================================
+ */
+
+.madeit-video-lightbox-block {
+
+    .madeit-video-lightbox__preview {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        aspect-ratio: var(
+            --madeit-video-lightbox-aspect-ratio,
+            16/9
+        );
+        background: #000;
+    }
+
+
+    .madeit-video-lightbox__poster {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+
+    .madeit-video-lightbox__play {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: var(
+            --madeit-video-lightbox-play-size,
+            80px
+        );
+        height: var(
+            --madeit-video-lightbox-play-size,
+            80px
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        background: #fff;
+        color: #000;
+        box-shadow:
+            0 5px 20px rgba(0, 0, 0, 0.2);
+    }
+
+
+    .madeit-video-lightbox__play > span {
+        margin-left: 4px;
+        font-size: calc(
+            var(--madeit-video-lightbox-play-size, 80px) * 0.3
+        );
+        line-height: 1;
+    }
+
+
+    .madeit-video-lightbox__placeholder-icon {
+        width: 70px;
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: #476a8a;
+        color: #fff;
+        font-size: 24px;
+    }
+
+
+    /*
+     * Zorg ervoor dat de video preview
+     * niet daadwerkelijk afgespeeld wordt
+     * in Gutenberg.
+     */
+
+    video.madeit-video-lightbox__poster {
+        pointer-events: none;
+    }
+}
+
+
+/*
+ * ------------------------------------------------------------
+ * INSPECTOR
+ * ------------------------------------------------------------
+ */
+
+.madeit-video-lightbox-block {
+
+    .components-panel__body {
+
+        .components-base-control {
+            margin-bottom: 16px;
+        }
+
+    }
+
+}

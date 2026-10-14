@@ -1288,16 +1288,6 @@ const clearPreviewBlockStyle = () => {
                                             onChange={ ( newSize ) => setAttributes( { size: newSize, madeitHasUserEdits: true } ) }
                                         />
                                         <hr></hr>
-                                        {/* { canChooseContentWidth && (
-                                            <SelectControl
-                                                label={ __( 'Content breedte' ) }
-                                                value={ computedContentWidth }
-                                                onChange={ ( newSize ) =>
-                                                    setAttributes( { contentWidth: newSize } )
-                                                }
-                                                options={ contentBoxedSizes }
-                                            />
-                                        ) } */}
                                         
 
 
@@ -1755,7 +1745,7 @@ const clearPreviewBlockStyle = () => {
                                         <PanelBody title="Stijlen" initialOpen={false}>
                                             <ToggleGroupControl
                                                 __next40pxDefaultSize
-                                                className="madeit-block-styles-picker"
+                                                className="madeit-block-styles-picker flex-wrap"
                                                 value={
                                                     blockStyles.find( ( style ) =>
                                                         ( currentClassName || '' ).includes( `is-style-${ style.name }` )

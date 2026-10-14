@@ -18,6 +18,7 @@
 
 .madeit-control .components-range-control {
     margin: 0;
+    flex: 1 1 0;
 }
 
 /* ToolsPanel styling when used inside our shared control wrapper. */
@@ -79,6 +80,13 @@
     align-items: center;
     justify-content: space-between;
     gap: 8px;
+}
+
+.madeit-control-header .madeit-control-header__tools:has( > .components-base-control) .madeit-unit-select {
+    margin-left: 0;
+}
+.madeit-control-header .madeit-control-header__tools .madeit-unit-select {
+    margin-left: auto;
 }
 
 .madeit-control-breakpoints {
@@ -258,4 +266,82 @@ body.madeit-preview--mobile .is-hidden-mobile {
 /* FIX */
 .madeit-control .components-range-control__number {
     width: auto !important;
+}
+
+
+
+.madeit-transform-row {
+    margin-top: 16px;
+}
+
+.madeit-transform-trigger {
+    width: 100%;
+    justify-content: flex-start;
+}
+
+.madeit-transform-popover .components-popover__content {
+    width: 280px;
+    padding: 0;
+}
+
+.madeit-transform-popover__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 12px 8px;
+    font-weight: 600;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.madeit-transform-popover__body {
+    padding: 8px 12px 12px;
+}
+
+.madeit-transform-popover__section-title {
+    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: 600;
+    color: #757575;
+    margin: 4px 0 8px;
+}
+
+.madeit-transform-device-tabs  {
+    display: flex;
+    justify-content: space-between;
+    flex: 1;
+    max-width: 50px;
+}
+
+.madeit-transform-device-tab.is-active span:before {
+    color: #493c92;
+}
+.madeit-transform-device-tab .tablet,
+.madeit-transform-device-tab .mobile,
+.madeit-transform-device-tab .desktop {
+    flex: 1;
+    text-align: center;
+    cursor: pointer;
+}
+
+.madeit-transform-device-tab .mobile:before {
+    content: "\f3cd";
+    font-family: "Font Awesome 5 Free";
+    display: block;
+    color: #757575;
+    font-weight: 900;
+}
+
+.madeit-transform-device-tab .desktop:before {
+    content: "\f108";
+    font-family: "Font Awesome 5 Free";
+    display: block;
+    color: #757575;
+    font-weight: 900;
+}
+.madeit-transform-device-tab .tablet:before {
+    content: "\f3fa";
+    font-family: "Font Awesome 5 Free";
+    display: block;
+    color: #757575;
+    font-weight: 900;
 }

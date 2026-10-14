@@ -3,6 +3,7 @@
 	border-top-width: var(--separator-thickness, 1px);
 	border-top-style: var(--separator-style, solid);
 	opacity: 1;
+	margin: 0 auto;
 }
 
 .wp-block-separator.is-aligned-left {
@@ -55,3 +56,32 @@
 	margin-left: auto;
 	margin-right: 0;
 }
+
+
+/* Editor styles */
+hr.block-editor-block-list__block {
+	/* border-top: none !important; */
+	background-color: transparent !important;
+	
+}
+/* hr.block-editor-block-list__block::after {
+	content: '';
+	display: block;
+	border-top: var(--separator-thickness, 1px) var(--separator-style, solid) currentColor;
+	width: var(--separator-width, 100%);
+	margin: auto auto !important;
+    top: 50% !important;
+    position: absolute;
+}
+
+hr.block-editor-block-list__block.is-aligned-center::after {
+	margin: 0 auto;
+}
+
+hr.block-editor-block-list__block.is-aligned-left::after {
+	margin: 0 auto 0 0;
+}
+
+hr.block-editor-block-list__block.is-aligned-right::after {
+	margin: 0 0 0 auto;
+} */

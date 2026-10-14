@@ -397,6 +397,7 @@ wp.domReady(function () {
                             // Header: Madeitheek + tabs + sluiten
                             const header = document.createElement('div');
                             header.classList.add('madeitheek-header');
+                            header.style = 'position: sticky; order: -1; top: 0; z-index: 99; display: flex; align-items: center; justify-content: space-between; gap: 12px; background: #fff; padding: 12px 16px; border-bottom: 1px solid #e0e0e0;';
 
                             const headerTitle = document.createElement('div');
                             headerTitle.textContent = 'Madeitheek';
@@ -434,6 +435,9 @@ wp.domReady(function () {
                             const setStatus = (text, isLoading) => {
                                 statusText.textContent = text || '';
                                 status.classList.toggle('is-loading', !!isLoading);
+                                if (!isLoading) {
+                                    showFilter();
+                                }
                             };
 
                             setStatus('Laden…', true);
@@ -448,6 +452,85 @@ wp.domReady(function () {
 
                             let activeTab = 'blocks';
                             const tabButtons = {};
+
+                            const filterContainer = document.createElement('div');
+                            filterContainer.classList.add('madeitheek-filter-container');
+                            filterContainer.style.display = 'none';
+                            const filterSelect = document.createElement('select');
+                            filterSelect.classList.add('madeitheek-filter-select');
+                            filterContainer.appendChild(filterSelect);
+
+                            const contentWrap = document.createElement('div');
+                            contentWrap.classList.add('madeitheek-content-wrap');
+                            contentWrap.style = '';
+
+                            const leftRail = document.createElement('div');
+                            leftRail.classList.add('madeitheek-left-rail');
+                            leftRail.style = 'width: 180px; flex-shrink: 0; margin-bottom: 20px';
+                            leftRail.appendChild(filterContainer);
+
+                            const listWrap = document.createElement('div');
+                            listWrap.classList.add('madeitheek-list-wrap');
+                            listWrap.style = 'flex: 1; min-width: 0;';
+                            listWrap.appendChild(list);
+
+                            contentWrap.appendChild(leftRail);
+                            contentWrap.appendChild(listWrap);
+
+                            templateContainer.style = 'max-height: 80vh; overflow: scroll; display: flex; flex-direction: column;';
+                            templateContainer.appendChild(contentWrap);
+
+                            const formatCategoryLabel = (category) => {
+                                return String(category || '')
+                                    .replace(/[-_]+/g, ' ')
+                                    .replace(/\b\w/g, char => char.toUpperCase());
+                            };
+
+                            const updateFilterOptions = (items) => {
+                                const categories = new Set();
+                                items.forEach((item) => {
+                                    const values = Array.isArray(item.categories) ? item.categories : [];
+                                    values.forEach((category) => {
+                                        const value = String(category || '').trim();
+                                        if (value) {
+                                            categories.add(value);
+                                        }
+                                    });
+                                });
+
+                                filterSelect.innerHTML = '';
+                                const allOption = new Option('Alle', 'all');
+                                filterSelect.appendChild(allOption);
+
+                                [...categories].sort().forEach((category) => {
+                                    const option = new Option(formatCategoryLabel(category), category);
+                                    filterSelect.appendChild(option);
+                                });
+
+                                if (categories.size > 0) {
+                                    filterContainer.style.display = 'block';
+                                } else {
+                                    filterContainer.style.display = 'none';
+                                }
+
+                                filterSelect.value = 'all';
+                            };
+
+                            const showFilter = () => {
+                                if (filterSelect.options.length > 1) {
+                                    filterContainer.style.display = 'block';
+                                }
+                            };
+
+                            filterSelect.addEventListener('change', (event) => {
+                                const selectedCategory = event.target.value;
+                                const allItems = list.querySelectorAll('.madeitheek-item');
+                                allItems.forEach((item) => {
+                                    const categories = (item.dataset.categories || '').split(' ').filter(Boolean);
+                                    const matches = selectedCategory === 'all' || categories.includes(selectedCategory);
+                                    item.style.display = matches ? '' : 'none';
+                                });
+                            });
 
                             // remove the builder bar in the preview, we don't want it there and it can cause issues with the block preview rendering
                             const removeBuilderBar = (container) => {
@@ -675,7 +758,7 @@ wp.domReady(function () {
                                         label: `${p?.title || p?.name}`,
                                         content: p?.content,
                                         viewportWidth: p?.viewport_width,
-                                        categories: p?.categories,
+                                        categories: Array.isArray(p?.categories) ? p.categories : [],
                                         postTypes: p?.post_types,
                                     }));
 
@@ -733,8 +816,17 @@ wp.domReady(function () {
                                             items = [...data.templates, ...data.userPatterns];
                                         }
 
-                                        items.forEach(item => {
-                                            list.appendChild(createItemCard(item.label, item.content, item.viewportWidth));
+                                        updateFilterOptions(items);
+
+                                        items.forEach((item) => {
+                                            const btn = createItemCard(item.label, item.content, item.viewportWidth);
+                                            const itemCategories = Array.isArray(item.categories) ? item.categories : [];
+                                            btn.dataset.categories = itemCategories
+                                                .map((category) => String(category || '').trim())
+                                                .filter(Boolean)
+                                                .join(' ');
+                                            btn.classList.add('madeitheek-item');
+                                            list.appendChild(btn);
                                         });
 
                                         if (!items.length) {
@@ -779,7 +871,6 @@ wp.domReady(function () {
 
                             templateContainer.appendChild(header);
                             templateContainer.appendChild(status);
-                            templateContainer.appendChild(list);
                             modal.appendChild(templateContainer);
                             document.body.appendChild(modal);
 

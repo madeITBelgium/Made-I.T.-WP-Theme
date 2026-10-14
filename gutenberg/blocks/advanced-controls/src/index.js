@@ -7,6 +7,46 @@ const MADEIT_ADVANCED_CONTROLS_EXCLUDED_BLOCKS = [
 ];
 
 function madeit_hide_block_mobile(settings, name) {
+    // Deze attributen altijd toevoegen, ook aan excluded blocks
+    if (typeof settings.attributes !== 'undefined') {
+        settings.attributes = Object.assign(settings.attributes, {
+            translateX: {
+                type: 'number',
+                default: '',
+            },
+            translateY: {
+                type: 'number',
+                default: '',
+            },
+            translateXDesktop: {
+                type: 'number',
+                default: '',
+            },
+            translateYDesktop: {
+                type: 'number',
+                default: '',
+            },
+            translateXTablet: {
+                type: 'number',
+                default: '',
+            },
+            translateYTablet: {
+                type: 'number',
+                default: '',
+            },
+            translateXMobile: {
+                type: 'number',
+                default: '',
+            },
+            translateYMobile: {
+                type: 'number',
+                default: '',
+            },
+        });
+    }
+
+
+
     if (MADEIT_ADVANCED_CONTROLS_EXCLUDED_BLOCKS.includes(name)) {
         return settings;
     }
@@ -19,13 +59,16 @@ function madeit_hide_block_mobile(settings, name) {
                 type: 'boolean',
             },
             aosFade: {
-                type: 'string'
+                type: 'string',
+                default: ''
             },
             aosDelay: {
-                type: 'string'
+                type: 'string',
+                default: ''
             },
             aosDelayCustom: {
-                type: 'string'
+                type: 'string',
+                default: ''
             },
         });
 
@@ -71,11 +114,21 @@ wp.hooks.addFilter('blocks.registerBlockType', 'madeit/hide-block-on-mobile', ma
 
 const madeitAdvancedControls = wp.compose.createHigherOrderComponent((BlockEdit) => {
     return (props) => {
-        const { Fragment } = wp.element;
-        const { ToggleControl, PanelBody, SelectControl, TextControl } = wp.components;
+        const { Fragment, useState } = wp.element;
+        const { ToggleControl, PanelBody, SelectControl, TextControl, RangeControl, Popover, Button } = wp.components;
         const { InspectorControls, InspectorAdvancedControls } = wp.blockEditor;
         const { attributes, setAttributes, isSelected } = props;
+        const { setDeviceType } = wp.data.useDispatch('core/editor');
+        const deviceType = wp.data.useSelect((select) => select('core/editor').getDeviceType(), []);
         const isExcluded = MADEIT_ADVANCED_CONTROLS_EXCLUDED_BLOCKS.includes(props.name);
+        const [isTransformOpen, setIsTransformOpen] = useState(false);
+        const activeDevice = ['desktop', 'tablet', 'mobile'].includes((deviceType || '').toLowerCase()) ? (deviceType || '').toLowerCase() : 'desktop';
+        const transformDeviceMap = {
+            desktop: 'Desktop',
+            tablet: 'Tablet',
+            mobile: 'Mobile',
+        };
+        const getTranslateValueForDevice = (axis, device) => getTranslateValueForAttributes(attributes, axis, device);
         
         var animationOptions = [
             {
@@ -297,6 +350,78 @@ const madeitAdvancedControls = wp.compose.createHigherOrderComponent((BlockEdit)
                             </>
                         )}
 
+                        <div className="madeit-transform-row">
+                            <Button
+                                variant="secondary"
+                                className="madeit-transform-trigger"
+                                onClick={() => setIsTransformOpen(!isTransformOpen)}
+                            >
+                                <span className="dashicons dashicons-move" style={{ marginRight: 6 }}></span>
+                                {wp.i18n.__('Transform', 'madeit')}
+                            </Button>
+
+                            {isTransformOpen && (
+                                <Popover
+                                    position="bottom left"
+                                    onClose={() => setIsTransformOpen(false)}
+                                    className="madeit-transform-popover"
+                                >
+                                    <div className="madeit-transform-popover__header">
+                                        <span>
+                                            {wp.i18n.__('Transform settings', 'madeit')}
+                                        </span>
+                                        <span className="madeit-transform-device-tabs">
+                                            {['desktop', 'tablet', 'mobile'].map((device) => (
+                                                <span
+                                                    key={device}
+                                                    className={`madeit-transform-device-tab ${activeDevice === device ? 'is-active' : ''}`}
+                                                    onClick={() => setDeviceType(transformDeviceMap[device])}
+                                                >
+                                                    <span className={device}></span>
+                                                </span>
+                                            ))}
+                                        </span>
+                                        <Button
+                                            icon="no-alt"
+                                            label={wp.i18n.__('Sluiten', 'madeit')}
+                                            onClick={() => setIsTransformOpen(false)}
+                                        />
+                                    </div>
+                                    <div className="madeit-transform-popover__body">
+                                        <p className="madeit-transform-popover__section-title">
+                                            {wp.i18n.__('Move', 'madeit')}
+                                        </p>
+                                        <RangeControl
+                                            __next40pxDefaultSize
+                                            label={wp.i18n.__('X (px)', 'madeit')}
+                                            value={getTranslateValueForDevice('x', activeDevice)}
+                                            onChange={(newval) => setAttributes({ [
+                                                `translateX${activeDevice.charAt(0).toUpperCase()}${activeDevice.slice(1)}`
+                                            ]: newval })}
+                                            min={-200}
+                                            max={200}
+                                            step={1}
+                                            allowReset
+                                            resetFallbackValue={0}
+                                        />
+                                        <RangeControl
+                                            __next40pxDefaultSize
+                                            label={wp.i18n.__('Y (px)', 'madeit')}
+                                            value={getTranslateValueForDevice('y', activeDevice)}
+                                            onChange={(newval) => setAttributes({ [
+                                                `translateY${activeDevice.charAt(0).toUpperCase()}${activeDevice.slice(1)}`
+                                            ]: newval })}
+                                            min={-200}
+                                            max={200}
+                                            step={1}
+                                            allowReset
+                                            resetFallbackValue={0}
+                                        />
+                                    </div>
+                                </Popover>
+                            )}
+                        </div>
+
                     </PanelBody>
                 </InspectorControls>
                 }
@@ -306,8 +431,49 @@ const madeitAdvancedControls = wp.compose.createHigherOrderComponent((BlockEdit)
 }, 'madeitAdvancedControls');
 wp.hooks.addFilter('editor.BlockEdit', 'madeit/advanced-control', madeitAdvancedControls);
 
+function hasTranslateValue(value) {
+    if (typeof value === 'undefined' || value === null || value === '') {
+        return false;
+    }
+
+    const numericValue = Number(value);
+    return Number.isFinite(numericValue) && numericValue !== 0;
+}
+
+function getTranslateValueForAttributes(attributes, axis, device) {
+    const normalizedDevice = ['desktop', 'tablet', 'mobile'].includes(device || '') ? device : 'desktop';
+    const suffix = normalizedDevice.charAt(0).toUpperCase() + normalizedDevice.slice(1);
+    const key = axis === 'x' ? `translateX${suffix}` : `translateY${suffix}`;
+    const value = attributes?.[key];
+    if (hasTranslateValue(value)) {
+        return Number(value);
+    }
+
+    const fallbackKey = axis === 'x' ? 'translateX' : 'translateY';
+    const fallbackValue = attributes?.[fallbackKey];
+    if (hasTranslateValue(fallbackValue)) {
+        return Number(fallbackValue);
+    }
+
+    return 0;
+}
+
 function madeitApplyExtraClass(extraProps, blockType, attributes) {
-    const { hideOnMobile, hideOnDesktop, lightbox, orderFirst, orderLast, maxContainerSize, aosFade, aosDelay, aosDelayCustom, appendMarginToColumnsMobile, lockContent } = attributes;
+    const { hideOnMobile, hideOnDesktop, lightbox, orderFirst, orderLast, maxContainerSize, aosFade, aosDelay, aosDelayCustom, appendMarginToColumnsMobile, lockContent, translateX, translateY } = attributes;
+    const deviceNames = ['desktop', 'tablet', 'mobile'];
+    const resolveTranslateValue = (axis, device) => {
+        const key = axis === 'x' ? `translateX${device.charAt(0).toUpperCase()}${device.slice(1)}` : `translateY${device.charAt(0).toUpperCase()}${device.slice(1)}`;
+        const value = attributes[key];
+        if (typeof value !== 'undefined' && value !== null && value !== '') {
+            return Number(value);
+        }
+        const legacyKey = axis === 'x' ? 'translateX' : 'translateY';
+        const legacyValue = attributes[legacyKey];
+        if (typeof legacyValue !== 'undefined' && legacyValue !== null && legacyValue !== '') {
+            return Number(legacyValue);
+        }
+        return 0;
+    };
     
     var showDesktop = true;
     var showMobile = true;
@@ -392,6 +558,61 @@ function madeitApplyExtraClass(extraProps, blockType, attributes) {
     if (typeof aosDelayCustom !== 'undefined' && aosDelayCustom !== '' && aosDelayCustom !== null ) {
         extraProps['data-aos-delay'] = aosDelayCustom;
     }
+
+    if (hasTranslateValue(translateX) || hasTranslateValue(translateY) || deviceNames.some((device) => hasTranslateValue(resolveTranslateValue('x', device)) || hasTranslateValue(resolveTranslateValue('y', device)))) {
+        const desktopX = resolveTranslateValue('x', 'desktop');
+        const desktopY = resolveTranslateValue('y', 'desktop');
+        const tabletX = resolveTranslateValue('x', 'tablet');
+        const tabletY = resolveTranslateValue('y', 'tablet');
+        const mobileX = resolveTranslateValue('x', 'mobile');
+        const mobileY = resolveTranslateValue('y', 'mobile');
+
+        extraProps.style = Object.assign({}, extraProps.style, {
+            '--madeit-translate-x-desktop': `${desktopX}px`,
+            '--madeit-translate-y-desktop': `${desktopY}px`,
+            '--madeit-translate-x-tablet': `${tabletX}px`,
+            '--madeit-translate-y-tablet': `${tabletY}px`,
+            '--madeit-translate-x-mobile': `${mobileX}px`,
+            '--madeit-translate-y-mobile': `${mobileY}px`,
+            // transform: `translate(${desktopX}px, ${desktopY}px)`,
+        });
+    }
+
     return extraProps;
 }
 wp.hooks.addFilter('blocks.getSaveContent.extraProps', 'madeit/apply-class', madeitApplyExtraClass);
+
+const withTransformPreview = wp.compose.createHigherOrderComponent((BlockListBlock) => {
+    return (props) => {
+        const { attributes } = props;
+        const deviceType = wp.data.select('core/editor')?.getDeviceType?.();
+        const activeDevice = ['desktop', 'tablet', 'mobile'].includes((deviceType || '').toLowerCase()) ? (deviceType || '').toLowerCase() : 'desktop';
+
+        let wrapperProps = props.wrapperProps || {};
+
+        if (
+            hasTranslateValue(attributes?.translateX) ||
+            hasTranslateValue(attributes?.translateY) ||
+            hasTranslateValue(getTranslateValueForAttributes(attributes, 'x', 'desktop')) ||
+            hasTranslateValue(getTranslateValueForAttributes(attributes, 'y', 'desktop')) ||
+            hasTranslateValue(getTranslateValueForAttributes(attributes, 'x', 'tablet')) ||
+            hasTranslateValue(getTranslateValueForAttributes(attributes, 'y', 'tablet')) ||
+            hasTranslateValue(getTranslateValueForAttributes(attributes, 'x', 'mobile')) ||
+            hasTranslateValue(getTranslateValueForAttributes(attributes, 'y', 'mobile'))
+        ) {
+            const x = getTranslateValueForAttributes(attributes, 'x', activeDevice);
+            const y = getTranslateValueForAttributes(attributes, 'y', activeDevice);
+            wrapperProps = {
+                ...wrapperProps,
+                style: {
+                    ...wrapperProps.style,
+                    transform: `translate(${x}px, ${y}px)`,
+                },
+            };
+        }
+
+        return <BlockListBlock {...props} wrapperProps={wrapperProps} />;
+    };
+}, 'withTransformPreview');
+
+wp.hooks.addFilter('editor.BlockListBlock', 'madeit/live-transform-preview', withTransformPreview);

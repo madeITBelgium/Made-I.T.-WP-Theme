@@ -108,6 +108,7 @@
 /* Square image */
 .wp-block-image.is-style-square {
     position: relative;
+    aspect-ratio: 1;
     overflow: hidden;
 }
 
@@ -126,12 +127,6 @@
 .wp-block-image.is-style-square img {
     object-fit: cover;
     height: 100%;
-    margin-top: -50%;
-    top: 50%;
-    position: absolute;
-    width: 100%;
-    left: 50%;
-    margin-left: -50%;
 }
 
 .wp-block-image.is-style-square:after {
@@ -149,4 +144,19 @@
     .wp-block-group-is-layout-grid {
         grid-template-columns: repeat(var(--madeit-cols-mobile, var(--madeit-cols-tablet), var(--madeit-cols-tablet)), minmax(0, 1fr)) !important;
     }
+}
+
+
+
+.wp-block-madeitforms-submit-button__width-25 .wp-block-madeitforms-submit-button__link {
+    width: 25% !important;
+}
+.wp-block-madeitforms-submit-button__width-50 .wp-block-madeitforms-submit-button__link {
+    width: 50% !important;
+}
+.wp-block-madeitforms-submit-button__width-75 .wp-block-madeitforms-submit-button__link {
+    width: 75% !important;
+}
+.wp-block-madeitforms-submit-button__width-100 .wp-block-madeitforms-submit-button__link {
+    width: 100% !important;
 }

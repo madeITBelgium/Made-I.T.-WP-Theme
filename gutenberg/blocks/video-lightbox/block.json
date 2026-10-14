@@ -1,0 +1,74 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "madeit/video-lightbox",
+	"version": "1.0.0",
+	"title": "Video Lightbox",
+	"category": "madeit",
+	"description": "Toon een video als thumbnail en open deze in een grote lightbox.",
+	"icon": "format-video",
+	"textdomain": "madeit",
+	"supports": {
+		"html": false,
+		"align": true,
+		"anchor": true
+	},
+	"attributes": {
+		"videoUrl": {
+			"type": "string",
+			"default": ""
+		},
+		"videoId": {
+			"type": "number",
+			"default": 0
+		},
+		"posterUrl": {
+			"type": "string",
+			"default": ""
+		},
+		"posterId": {
+			"type": "number",
+			"default": 0
+		},
+		"videoTitle": {
+			"type": "string",
+			"default": ""
+		},
+		"controls": {
+			"type": "boolean",
+			"default": true
+		},
+		"autoplay": {
+			"type": "boolean",
+			"default": true
+		},
+		"loop": {
+			"type": "boolean",
+			"default": false
+		},
+		"muted": {
+			"type": "boolean",
+			"default": false
+		},
+		"closeOnOverlay": {
+			"type": "boolean",
+			"default": true
+		},
+		"aspectRatio": {
+			"type": "string",
+			"default": "16/9"
+		},
+		"playButtonSize": {
+			"type": "number",
+			"default": 80
+		},
+		"overlayOpacity": {
+			"type": "number",
+			"default": 90
+		}
+	},
+	"editorScript": "file:./build/index.js",
+	"style": "file:./build/style-index.css",
+	"editorStyle": "file:./build/index.css",
+	"viewScript": "file:./build/view.js"
+}

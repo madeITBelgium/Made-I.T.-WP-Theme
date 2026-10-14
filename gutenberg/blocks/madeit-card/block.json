@@ -91,10 +91,10 @@
     "contentPadding": {
       "type": "object",
       "default": {
-        "top": "1.25rem",
-        "right": "1.25rem",
-        "bottom": "1.25rem",
-        "left": "1.25rem"
+        "top": "20px",
+        "right": "20px",
+        "bottom": "20px",
+        "left": "20px"
       }
     },
 
@@ -105,6 +105,89 @@
     "mediaBleed": {
       "type": "boolean",
       "default": false
+    },
+    "minHeight": {
+      "type": "number",
+      "default": 0
+    },
+    "minHeightUnit": {
+      "type": "string",
+      "default": "px"
+    },
+    "alignItems": {
+      "type": "string",
+      "default": "stretch"
+    },
+    "borderHover": {
+      "type": "string",
+      "default": "default"
+    },
+    "borderHoverType": {
+      "type": "string",
+      "default": "none"
+    },
+    "borderType": {
+      "type": "string",
+      "default": "none"
+    },
+    "borderWidth": {
+      "type": "object",
+      "default": {
+        "top": "1px",
+        "right": "1px",
+        "bottom": "1px",
+        "left": "1px"
+      }
+    },
+    "borderWidthUnit": {
+      "type": "string",
+      "default": "px"
+    },
+    "borderColor": {
+      "type": "string",
+      "default": "transparent"
+    },
+    "borderHoverWidth": {
+      "type": "object",
+      "default": {
+        "top": "1px",
+        "right": "1px",
+        "bottom": "1px",
+        "left": "1px"
+      }
+    },
+    "borderHoverWidthUnit": {
+      "type": "string",
+      "default": "px"
+    },
+    "borderHoverColor": {
+      "type": "string",
+      "default": "transparent"
+    },
+    "borderRadius": {
+      "type": "object",
+      "default": {
+        "top": "0px",
+        "right": "0px",
+        "bottom": "0px",
+        "left": "0px"
+      }
+    },
+    "borderRadiusUnit": {
+      "type": "string",
+      "default": "px"
+    },
+    "boxShadow": {
+      "type": "object",
+      "default": {}
+    },
+    "shadowHover": {
+      "type": "string",
+      "default": "default"
+    },
+    "boxShadowHover": {
+      "type": "object",
+      "default": {}
     },
 
     "url": {
@@ -128,14 +211,24 @@
       },
       "aosFade": {
           "type": "string",
-          "default": ""
+          "default": "",
+          "source": "attribute",
+          "selector": ".wp-block-madeit-block-content-card",
+          "attribute": "data-aos"
       },
       "aosDelay": {
-          "type": "number"
+          "type": "string",
+          "default": "",
+          "source": "attribute",
+          "selector": ".wp-block-madeit-block-content-card",
+          "attribute": "data-aos-delay"
       },
       "aosDelayCustom": {
           "type": "string",
-          "default": ""
+          "default": "",
+          "source": "attribute",
+          "selector": ".wp-block-madeit-block-content-card",
+          "attribute": "data-aos-delay"
       }
   },
   "supports": {

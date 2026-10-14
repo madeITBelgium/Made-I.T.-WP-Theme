@@ -107,3 +107,66 @@ add_filter('render_block', function (string $block_content, array $block): strin
 
     return $processor->get_updated_html();
 }, 10, 2);
+
+add_filter('render_block', function (string $block_content, array $block): string {
+    $attrs = $block['attrs'] ?? [];
+    $device_values = [
+        'desktop' => ['x' => $attrs['translateXDesktop'] ?? $attrs['translateX'] ?? 0, 'y' => $attrs['translateYDesktop'] ?? $attrs['translateY'] ?? 0],
+        'tablet' => ['x' => $attrs['translateXTablet'] ?? $attrs['translateX'] ?? 0, 'y' => $attrs['translateYTablet'] ?? $attrs['translateY'] ?? 0],
+        'mobile' => ['x' => $attrs['translateXMobile'] ?? $attrs['translateX'] ?? 0, 'y' => $attrs['translateYMobile'] ?? $attrs['translateY'] ?? 0],
+    ];
+
+    $has_transform = false;
+    foreach ($device_values as $device => $values) {
+        if (is_numeric((string) $values['x']) && (float) $values['x'] !== 0.0) {
+            $has_transform = true;
+            break;
+        }
+        if (is_numeric((string) $values['y']) && (float) $values['y'] !== 0.0) {
+            $has_transform = true;
+            break;
+        }
+    }
+
+    if (!$has_transform || !class_exists('WP_HTML_Tag_Processor')) {
+        return $block_content;
+    }
+
+    $processor = new WP_HTML_Tag_Processor($block_content);
+    if (!$processor->next_tag()) {
+        return $block_content;
+    }
+
+    $class_name = 'madeit-transform-' . wp_unique_id('madeit-transform-');
+    $existing_classes = $processor->get_attribute('class');
+    $classes = is_string($existing_classes) ? preg_split('/\s+/', trim($existing_classes)) : [];
+    $classes[] = $class_name;
+    $processor->set_attribute('class', trim(implode(' ', array_filter(array_unique($classes)))));
+
+    $style = $processor->get_attribute('style');
+    $style = is_string($style) ? trim($style) : '';
+    $style_vars = [];
+    foreach ($device_values as $device => $values) {
+        $style_vars[] = '--madeit-translate-x-' . $device . ':' . (float) $values['x'] . 'px';
+        $style_vars[] = '--madeit-translate-y-' . $device . ':' . (float) $values['y'] . 'px';
+    }
+
+    $merged_style = $style;
+    if ($merged_style !== '' && substr($merged_style, -1) !== ';') {
+        $merged_style .= ';';
+    }
+    $merged_style .= implode(';', $style_vars) . ';';
+    $processor->set_attribute('style', $merged_style);
+
+    $block_html = $processor->get_updated_html();
+
+    $css = ".{$class_name}{transform:translate(var(--madeit-translate-x-desktop,0),var(--madeit-translate-y-desktop,0));}";
+    if (isset($device_values['tablet'])) {
+        $css .= '@media (max-width: 1024px){.'.$class_name.'{transform:translate(var(--madeit-translate-x-tablet,0),var(--madeit-translate-y-tablet,0));}}';
+    }
+    if (isset($device_values['mobile'])) {
+        $css .= '@media (max-width: 767px){.'.$class_name.'{transform:translate(var(--madeit-translate-x-mobile,0),var(--madeit-translate-y-mobile,0));}}';
+    }
+
+    return '<style>' . $css . '</style>' . $block_html;
+}, 10, 2);

@@ -1940,7 +1940,8 @@ add_action('enqueue_block_editor_assets', static function (): void {
 
 // require_once get_parent_theme_file_path('/inc/core/fontStyles/local-fonts.php');
 require_once get_parent_theme_file_path('/inc/core/separator-extension/separator-extension.php');
-require_once get_parent_theme_file_path('/inc/core/image-extention/image-extention.php');
+// require_once get_parent_theme_file_path('/inc/core/image-extention/image-extention.php');
+require_once get_parent_theme_file_path('/inc/core/icons/iconLibrary.php');
 
 
 // responsive.js for responsive block editor preview (editor-only; uses wp.* globals).
