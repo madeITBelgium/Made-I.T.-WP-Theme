@@ -27,13 +27,17 @@ function feedback_script()
         </script>';
     }
 
+    //get domainname of wordpress
+    $domainname = parse_url(home_url(), PHP_URL_HOST);
+    $domainname = preg_replace('/^www\./', '', $domainname);
+
     $scriptHtml .= '
     <script type="text/javascript">
         (function(k) {
             s=document.createElement("script");s.module=true;s.defer=true;
             s.src="'.esc_url('https://app.websitetool.be/feedbucket.js').'";
             s.dataset.feedbucket=k;document.head.appendChild(s);
-        })("'.esc_js('MADEIT').'")
+        })("'.esc_js('1-' . $domainname).'")
     </script>';
 
     return $scriptHtml;

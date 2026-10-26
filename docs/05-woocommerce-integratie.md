@@ -2,6 +2,48 @@
 
 Het Made I.T. thema biedt uitgebreide ondersteuning voor WooCommerce met custom styling, aangepaste functionaliteiten en B2B features.
 
+## WebsiteTool Webshoptracking
+
+De bestaande WebsiteTool-integratie wordt automatisch uitgebreid wanneer WooCommerce actief is. Er is geen tweede installatiecode nodig. Registreer het exacte webshopdomein in WebsiteTool en zorg dat de bestaande cookiebanner actief is.
+
+| Actie | Moment | Gegevens |
+| --- | --- | --- |
+| `wtTrackProductView` | Productdetailpagina | Product-ID, naam, numerieke prijs, eerste categorie, SKU en aantal |
+| `wtTrackAddToCart` | Na een bevestigde toevoeging door WooCommerce | Het daadwerkelijk toegevoegde product of de variatie en het toegevoegde aantal |
+| `wtTrackCheckout` | Openen van de checkout, niet de betaal- of bevestigingsendpoint | Actueel numeriek winkelwagentotaal |
+| `wtTrackPurchase` | Bevestigingspagina van een order met status `processing`, `completed` of `on-hold` | Bestelnummer, ordertotaal, facturatie-e-mailadres en bestelde producten |
+
+De integratie ondersteunt gewone paginaverzoeken, de eigen AJAX-winkelwagen van het thema, de klassieke WooCommerce-AJAX-events en het WooCommerce Blocks-signaal `wc-blocks_added_to_cart`. Mislukte toevoegingen leveren geen event op. Een productvariatie gebruikt zijn eigen ID en SKU en de categorie van het hoofdproduct.
+
+Productweergaven en winkelwagentoevoegingen gebruiken de actuele weergaveprijs van WooCommerce. Aankopen gebruiken de opgeslagen productnaam en de regelprijs na korting, exclusief belasting, gedeeld door het aantal. Het aankoopbedrag is altijd het volledige ordertotaal, inclusief eventuele belastingen en verzendkosten; het wordt niet uit de producten berekend.
+
+### Toestemming en initialisatie
+
+Er wordt alleen verzonden wanneer CookieConsent de service `WebsiteTool` binnen `analytics` toestaat, de relevante trackingfunctie beschikbaar is en `window.wtinit === true`. Het script wacht maximaal ongeveer een minuut op de asynchrone tracker en respecteert ingetrokken toestemming. Zonder cookietoestemmingsmodule wordt niets verstuurd. Het bestaande tracking script blijft verantwoordelijk voor paginaweergaven en wordt niet opnieuw geladen.
+
+Het facturatie-e-mailadres is een persoonsgegeven en wordt uitsluitend in de aankoopaanroep meegestuurd na toestemming. Controleer of deze verwerking past bij de privacyverklaring en rechtsgrond van de webshop. Er worden geen betaalgegevens meegestuurd.
+
+### Aankopen en dubbele metingen
+
+Ordergegevens worden alleen beschikbaar gemaakt op de bevestigingspagina met een geldige ordersleutel of voor de ingelogde eigenaar van de bestelling. Orders met status `pending`, `failed`, `cancelled` of `refunded` worden niet als aankoop verstuurd. `on-hold` telt wel mee voor bevestigde bestellingen met bijvoorbeeld een offline betaalmethode.
+
+Een aankoopmarkering per interne order-ID wordt opgeslagen in `localStorage`, met `sessionStorage` als alternatief. Hierdoor veroorzaakt verversen in dezelfde browser geen tweede aankoopaanroep. Als beide opslagvormen geblokkeerd zijn, wordt de aankoop overgeslagen om dubbele metingen te voorkomen. De markering bevat geen e-mailadres. Dit is geen serverbrede deduplicatie: een andere browser of gewiste opslag kan opnieuw meten. De WebsiteTool-aanroep geeft geen ontvangstbevestiging; aflevering bij netwerkproblemen kan daarom niet worden gegarandeerd.
+
+Bestellingen die pas later buiten de bevestigingspagina een toegestane status krijgen, vereisen een nieuw bezoek aan die pagina. Deze browserintegratie verstuurt geen achtergrondconversies of terugbetalingen. Sluit winkelwagen, checkout en orderbevestigingen uit van paginacaching en vernieuw de paginacache tijdig, zodat de AJAX-nonce op gecachte productpagina's geldig blijft.
+
+### Controleren
+
+Voer de zelfstandige regressietests uit vanuit de themamap:
+
+```sh
+php bin/test-websitetool-ecommerce.php
+node bin/test-websitetool-ecommerce.js
+```
+
+Test daarnaast met toestemming op het geregistreerde domein een productweergave, een succesvolle winkelwagentoevoeging, checkout en een testbestelling. Controleer in het netwerkpaneel de aanvragen naar `app.websitetool.be/ping/event`, met `e: "ecommerce"` en de verwachte actie in `a`. Ververs de bevestigingspagina: er mag geen tweede aankoop worden verstuurd. Herhaal zonder analytics-toestemming: er mogen geen WebsiteTool-metingen vertrekken.
+
+Eigen doelen en promotie-events blijven optioneel handwerk via `wtTrackGoal` en `wtTrackContent`. Roep ze alleen na een geslaagde actie en met passende toestemming aan; automatische WebsiteTool-doelen hoeven niet opnieuw geregistreerd te worden.
+
 ## Basis WooCommerce Setup
 
 ### Theme Support
