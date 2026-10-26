@@ -37,7 +37,7 @@ function feedback_script()
             s=document.createElement("script");s.module=true;s.defer=true;
             s.src="'.esc_url('https://app.websitetool.be/feedbucket.js').'";
             s.dataset.feedbucket=k;document.head.appendChild(s);
-        })("'.esc_js('1-' . $domainname).'")
+        })("'.esc_js('1-'.$domainname).'")
     </script>';
 
     return $scriptHtml;

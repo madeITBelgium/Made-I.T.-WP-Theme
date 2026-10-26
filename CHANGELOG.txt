@@ -1,6 +1,134 @@
 Made I.T. Theme Changelog
 ==========================
 
+Version 3.0.15 - 2026-10-26
+----------------------------
+Added
+- Added WebsiteTool WooCommerce product-view, confirmed add-to-cart, checkout, and purchase events, including classic AJAX, the theme's custom AJAX flow, and WooCommerce Blocks signals.
+- Added consent and tracker-initialization checks, browser-storage purchase deduplication, order-access validation, and standalone PHP/JavaScript regression tests.
+- Added a Video Lightbox Gutenberg block with a poster/thumbnail, YouTube and HTML5 video playback, configurable playback/overlay settings, editor controls, and frontend assets.
+- Added a Font Awesome icon collection with ten bundled SVG icons, guarded by availability of the WordPress icon registration APIs.
+- Added per-device X/Y block translation controls and matching server-rendered responsive transforms.
+- Added category filtering and a sticky header to the Madeitheek template library.
+- Added Card minimum height, content alignment, border/radius, hover, shadow, and linked-card controls and output.
+
+Changed
+- Moved WebsiteTool analytics and feedback scripts to app.websitetool.be; feedback now uses a 1-<hostname> identifier with the leading www. removed.
+- Added WP Rocket delay exclusions for the ecommerce script and its localized configuration while preserving existing exclusions.
+- Updated Content Column animation attributes to read AOS values from saved HTML and use string-based delay values.
+- Updated Container style-picker wrapping and empty-container editor sizing; refreshed affected Gutenberg build assets and metadata.
+- Updated form submit-button width styling, editor honeypot visibility, and frontend block styling.
+- Changed maintenance-mode crawler access: added Google-InspectionTool and removed YandexBot/Baiduspider from the allowlist.
+- Added a dedicated Video Lightbox npm workspace and lockfile with @wordpress/scripts ^26.0.0 and swiper ^11.2.7; no existing dependency manifest was changed.
+
+Fixed
+- Limited updater source-directory renaming to the updater's own theme, rejected invalid/error sources, and avoided renaming an already-correct directory.
+- Added legacy separator attribute parsing and deprecated-save migration, and corrected separator alignment/style serialization.
+- Removed the frontend Swiper wrapper display override that interfered with the Slider fade effect.
+
+Removed
+- Disabled automatic loading of the custom image extension in functions.php; the extension files remain in the repository.
+- No files were deleted or renamed in the comparison window.
+
+Commits (newest first)
+- dab1c520 Improve tracking
+- a1654247 Improve tracking
+- ef7ad6e3 Improve updater
+- f4e183d1 Merge branch 'master' of github.com:madeITBelgium/Made-I.T.-WP-Theme
+- d1ede762 Update
+- 8472fde6 Update feedbucket.js URL in feedback.php
+- 5a67d05c Update script source URL for WebsiteTool
+- 93d5ae16 Update allowed crawlers in under-construction.php
+
+Files changed (A = added, M = modified; compared with 3.0.14)
+M assets/css/gutenberg.css - Form submit-button widths and hidden editor honeypot.
+M assets/css/gutenfront.css - Frontend block styling and form submit-button widths.
+M assets/js/editor-restrict-blocks.js - Madeitheek category filters and sticky library header.
+A assets/js/websitetool-ecommerce.js - Consent-aware event dispatch, async readiness, cart listeners, and purchase deduplication.
+A bin/test-websitetool-ecommerce.js - Browser behavior regression tests using Node's built-in APIs.
+A bin/test-websitetool-ecommerce.php - Server payload, cart event, order access, and order status regression tests.
+M docs/05-woocommerce-integratie.md - Tracking setup, payload semantics, privacy, limitations, and test instructions.
+M functions.php - WebsiteTool endpoint/module loading, WP Rocket exclusions, icon loading, disabled image extension, and release version.
+M gutenberg/blocks/advanced-controls/build/index.asset.php - Refreshed generated editor dependency/version metadata.
+M gutenberg/blocks/advanced-controls/build/index.js - Rebuilt advanced controls editor bundle.
+M gutenberg/blocks/advanced-controls/src/index.js - Responsive translation controls and animation attribute adjustments.
+M gutenberg/blocks/madeit-card/block.json - Expanded Card styling attributes and block metadata.
+M gutenberg/blocks/madeit-card/build/index.asset.php - Refreshed generated editor dependency/version metadata.
+M gutenberg/blocks/madeit-card/build/index.js - Rebuilt Card editor bundle.
+M gutenberg/blocks/madeit-card/build/style-index-rtl.css - Generated RTL Card styling.
+M gutenberg/blocks/madeit-card/build/style-index.css - Generated Card styling.
+M gutenberg/blocks/madeit-card/src/edit.js - Height, alignment, border, hover, and shadow editor controls.
+M gutenberg/blocks/madeit-card/src/index.js - Updated block registration and legacy Card save handling.
+M gutenberg/blocks/madeit-card/src/save.js - Serialized Card styling variables and extended attributes.
+M gutenberg/blocks/madeit-card/src/style.scss - Card layout, border/radius, hover, shadow, and alignment styling.
+M gutenberg/blocks/madeit-container/content-column/block.json - Saved-HTML sources for AOS animation/delay attributes.
+M gutenberg/blocks/madeit-container/content-column/build/index.asset.php - Refreshed generated editor dependency/version metadata.
+M gutenberg/blocks/madeit-container/content-column/build/index.js - Rebuilt Content Column editor bundle.
+M gutenberg/blocks/madeit-container/content-container/build/index-rtl.css - Generated RTL Container editor styling.
+M gutenberg/blocks/madeit-container/content-container/build/index.asset.php - Refreshed generated editor dependency/version metadata.
+M gutenberg/blocks/madeit-container/content-container/build/index.css - Generated Container editor styling.
+M gutenberg/blocks/madeit-container/content-container/build/index.js - Rebuilt Container editor bundle.
+M gutenberg/blocks/madeit-container/content-container/src/edit.js - Wrapping style picker and removal of obsolete commented controls.
+M gutenberg/blocks/madeit-container/content-container/src/editor.scss - Style-picker wrapping and fixed empty-container inserter height.
+M gutenberg/blocks/madeit-slider/block.json - Added fade-effect fix to block changelog metadata.
+M gutenberg/blocks/madeit-slider/build/image/index.asset.php - Refreshed generated image editor dependency/version metadata.
+M gutenberg/blocks/madeit-slider/build/index.asset.php - Refreshed generated Slider dependency/version metadata.
+M gutenberg/blocks/madeit-slider/build/style-index.css - Generated fade-effect styling correction.
+M gutenberg/blocks/madeit-slider/src/style.scss - Removed conflicting Swiper wrapper display override.
+A gutenberg/blocks/video-lightbox/block.json - Block registration metadata and playback/display attributes.
+A gutenberg/blocks/video-lightbox/build/block.json - Built block metadata.
+A gutenberg/blocks/video-lightbox/build/index.asset.php - Generated editor dependency/version metadata.
+A gutenberg/blocks/video-lightbox/build/index.css - Generated editor styling.
+A gutenberg/blocks/video-lightbox/build/index.js - Built editor bundle.
+A gutenberg/blocks/video-lightbox/build/style-index.css - Generated shared/frontend styling.
+A gutenberg/blocks/video-lightbox/build/view.asset.php - Generated frontend dependency/version metadata.
+A gutenberg/blocks/video-lightbox/build/view.js - Built frontend playback/lightbox bundle.
+A gutenberg/blocks/video-lightbox/package-lock.json - Locked dependencies for the new block workspace.
+A gutenberg/blocks/video-lightbox/package.json - Block build/start commands and dependency declarations.
+A gutenberg/blocks/video-lightbox/register.php - Guarded block registration on init.
+A gutenberg/blocks/video-lightbox/src/block.json - Source block schema and attributes.
+A gutenberg/blocks/video-lightbox/src/edit.js - Video/poster selection and playback/display editor controls.
+A gutenberg/blocks/video-lightbox/src/editor.scss - Source editor styling.
+A gutenberg/blocks/video-lightbox/src/index.js - Source editor registration.
+A gutenberg/blocks/video-lightbox/src/save.js - Saved thumbnail/trigger markup and player settings.
+A gutenberg/blocks/video-lightbox/src/style.scss - Source thumbnail/lightbox styling.
+A gutenberg/blocks/video-lightbox/src/view.js - Frontend YouTube/HTML5 playback and lightbox interaction.
+M gutenberg/helpers/blocks.php - Server-rendered responsive translation styles for blocks.
+M gutenberg/shared/editor-controls.css - Shared range/unit controls and transform-popover styling.
+M inc/MadeIT_Updater.php - Theme-specific package directory renaming and invalid-source guards.
+M inc/admin/underConstruction/under-construction.php - Revised allowed crawler list.
+A inc/core/icons/font-awesome-icons.php - Guarded registration of the Font Awesome collection and icons.
+A inc/core/icons/iconLibrary.php - Icon library loader.
+A inc/core/icons/icons/regular-house.svg - Bundled regular house icon.
+A inc/core/icons/icons/regular-user.svg - Bundled regular user icon.
+A inc/core/icons/icons/social-facebook.svg - Bundled Facebook icon.
+A inc/core/icons/icons/social-instagram.svg - Bundled Instagram icon.
+A inc/core/icons/icons/social-linkedin.svg - Bundled LinkedIn icon.
+A inc/core/icons/icons/social-twitch.svg - Bundled Twitch icon.
+A inc/core/icons/icons/social-youtube.svg - Bundled YouTube icon.
+A inc/core/icons/icons/solid-house.svg - Bundled solid house icon.
+A inc/core/icons/icons/solid-info.svg - Bundled solid information icon.
+A inc/core/icons/icons/solid-user.svg - Bundled solid user icon.
+M inc/core/separator-extension/assets/separator.css - Separator centering and editor background styling.
+M inc/core/separator-extension/assets/separator.js - Legacy attribute migration and updated save/editor alignment handling.
+M inc/feedback.php - Updated feedback host and domain-derived feedback identifier.
+A inc/websitetool-ecommerce.php - WooCommerce event queue, AJAX endpoint, page payloads, and protected purchase data.
+
+Release preparation (additional local changes)
+M CHANGELOG.txt - Added detailed 3.0.15 release notes, commit list, and complete file inventory.
+M README.txt - Updated release highlights, compact changelog, and version.
+M style.css - Updated theme header version to 3.0.15.
+- functions.php is already included above; MADEIT_VERSION was also updated to 3.0.15.
+
+Notes
+- Comparison scope: 3.0.14..dab1c520 (HEAD on branch 3.0 at release preparation).
+- Committed comparison: 72 files, 34 added and 38 modified; 25271 insertions and 502 deletions.
+- Working tree was clean before release preparation; no pre-existing uncommitted changes were present.
+- Release documentation and version changes are local and uncommitted; no release tag or commit was created.
+- Validated the complete 75-file inventory and A/M statuses against Git, including release preparation files; all three version fields match 3.0.15.
+- Validation passed: standalone PHP/browser tracking regression tests, functions.php syntax check, and git diff --check.
+- Live WebsiteTool delivery and end-to-end Gutenberg, updater, icon, and crawler behavior were not verified during release preparation; no block rebuild was performed.
+
 Version 3.0.14 - 2026-08-31
 ----------------------------
 Added
