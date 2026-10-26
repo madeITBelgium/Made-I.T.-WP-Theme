@@ -28,14 +28,20 @@ acf_add_local_field_group([
             'label'         => 'Actief vanaf',
             'name'          => 'popup_start',
             'type'          => 'date_time_picker',
-            'return_format' => 'Y-m-d H:i:s',
+            'display_format'=> 'd/m/Y H:i',
+            'return_format' => 'd-m-Y H:i',
+            'first_day'     => 1,
+            'time_format'   => 'd-m-Y H:i',
         ],
         [
             'key'           => 'field_popup_end',
             'label'         => 'Actief tot',
             'name'          => 'popup_end',
             'type'          => 'date_time_picker',
-            'return_format' => 'Y-m-d H:i:s',
+            'display_format'=> 'd/m/Y H:i',
+            'return_format' => 'd-m-Y H:i',
+            'first_day'     => 1,
+            'time_format'   => 'd-m-Y H:i',
         ],
         [
             'key'           => 'field_popup_delay',
@@ -99,6 +105,23 @@ acf_add_local_field_group([
                     ],
                 ],
             ],
+        ],
+
+        // Preview
+        [
+            'key'       => 'tab_preview',
+            'label'     => 'Preview',
+            'type'      => 'tab',
+            'placement' => 'left',
+        ],
+        [
+            'key'       => 'field_popup_preview',
+            'label'     => 'Live voorbeeld',
+            'name'      => 'popup_preview',
+            'type'      => 'message',
+            'message'   => '',
+            'new_lines' => 'none',
+            'esc_html'  => 0,
         ],
 
         // Display

@@ -19,6 +19,7 @@ require_once MPOPUP_PATH.'/inc/core/popup/includes/post-type.php';
 require_once MPOPUP_PATH.'/inc/core/popup/includes/fields.php';
 require_once MPOPUP_PATH.'/inc/core/popup/includes/helper.php';
 require_once MPOPUP_PATH.'/inc/core/popup/includes/frontend.php';
+require_once MPOPUP_PATH.'/inc/core/popup/includes/preview.php';
 
 // Assets
 add_action('wp_enqueue_scripts', function () {

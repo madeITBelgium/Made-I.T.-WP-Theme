@@ -41,6 +41,14 @@ Configureert Gutenberg/Block Editor ondersteuning.
 
 ## Content en Layout Functies
 
+### Popup live voorbeeld
+
+In de ACF-velden van de popup staat onder de tab **Preview** het veld **Live voorbeeld**. Klik op **Voorbeeld laden / vernieuwen** om de huidige, nog niet opgeslagen titel, blokinhoud en Custom CSS te bekijken met de frontend-stylesheets. Met **Live bijwerken** worden volgende wijzigingen automatisch verwerkt. **Scherm** wisselt tussen de beschikbare desktopbreedte en een mobiele breedte van 375 px.
+
+Het voorbeeld werkt ook voor concepten, uitgeschakelde en geplande popups. Het slaat niets op, activeert niets en negeert planning, paginatargets, vertraging en bezoeklimieten. Links en formulieren in het voorbeeld navigeren of verzenden niet. Na het sluiten kun je het voorbeeld opnieuw openen met de vernieuwknop.
+
+De preview is alleen toegankelijk met bewerkrechten voor de popup en een geldige nonce. De popup gebruikt dezelfde HTML-rendering en eigen CSS op de frontend en in het voorbeeld. Gebruik voor popup-specifieke CSS bijvoorbeeld `#popup-123 .modal-content { background: #fff; }` (vervang `123` door het popup-ID); ongerichte CSS-selectors kunnen ook andere delen van een frontendpagina beinvloeden. Het voorbeeld toont de popup los van de rest van de pagina; pagina-specifieke styles van een doelpagina worden niet nagebootst.
+
 ### madeit_content_width()
 Bepaalt de content breedte gebaseerd op layout en sidebar configuratie.
 

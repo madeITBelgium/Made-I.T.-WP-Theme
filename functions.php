@@ -2533,6 +2533,7 @@ require_once get_parent_theme_file_path('/gutenberg/loader.php');
  * Under construction notice.
  */
 require_once get_parent_theme_file_path('/inc/admin/underConstruction/under-construction.php');
+require_once get_parent_theme_file_path('/inc/admin/woocommerce/woocommerce.php');
 
 /**
  * WooCommerce.
