@@ -2267,7 +2267,11 @@ Wp Rocket settings
 if (!function_exists('madeit_wprocket_pre_get_rocket_option_delay_js_exclusions')) {
     function madeit_wprocket_pre_get_rocket_option_delay_js_exclusions($optie, $default)
     {
-        return ['aos.js', 'cookieconsent.js', 'cookieconsent-config.js', 'script.js', 'tracking-ids.js', 'script-fix-jquery.js', 'jquery.min.js'] + $default;
+        $exclusions = ['aos.js', 'cookieconsent.js', 'cookieconsent-config.js', 'script.js', 'tracking-ids.js', 'script-fix-jquery.js', 'jquery.min.js'] + $default;
+        $exclusions[] = 'websitetool-ecommerce.js';
+        $exclusions[] = 'madeitWtEcommerce';
+
+        return $exclusions;
     }
     add_filter('pre_get_rocket_option_delay_js_exclusions', 'madeit_wprocket_pre_get_rocket_option_delay_js_exclusions', 10, 2);
 }
@@ -2541,6 +2545,7 @@ require_once get_parent_theme_file_path('/inc/admin/woocommerce/woocommerce.php'
 $activePlugins = apply_filters('active_plugins', get_option('active_plugins'));
 if (in_array('woocommerce/woocommerce.php', $activePlugins)) {
     require get_parent_theme_file_path('/inc/woocommerce.php');
+    require get_parent_theme_file_path('/inc/websitetool-ecommerce.php');
 
     if(defined('MADEIT_WOOCOMMERCE_ADD_PRODUCT_AJAX') && MADEIT_WOOCOMMERCE_ADD_PRODUCT_AJAX) {
         require get_parent_theme_file_path('/inc/add-to-cart-ajax.php');
