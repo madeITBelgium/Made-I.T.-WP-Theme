@@ -3,7 +3,7 @@ Contributors: madeit
 Requires at least: WordPress 5.0
 Tested up to: 7.0
 Requires PHP: 8.5
-Version: 3.0.14
+Version: 3.0.15
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: madeit, bootstrap, bootstrap4, made i.t., Made I.T.
@@ -12,10 +12,11 @@ Tags: madeit, bootstrap, bootstrap4, made i.t., Made I.T.
 
 == Recent highlights ==
 
-This release improves Gutenberg blocks, mobile navigation, content locking, and B2B pricing:
-- Updates Advanced Controls, Card, Container, Content Column, and Content Container blocks with editor and rendering improvements.
-- Fixes mobile navigation behavior and updates the synchronized Gutenberg build assets.
-- Adds content checks to locked content handling and refines the B2B WooCommerce price check.
+This release adds consent-aware webshop tracking and expands the Gutenberg editing experience:
+- Adds WebsiteTool tracking for WooCommerce product views, confirmed cart additions, checkout, and purchases, with browser-side purchase deduplication.
+- Adds a Video Lightbox block, a guarded Font Awesome icon collection, responsive block translation controls, and Madeitheek category filters.
+- Expands Card styling controls and improves Container, Content Column, Slider, separator migration, and form styling.
+- Fixes theme update package renaming, updates WebsiteTool and feedback endpoints, and adjusts maintenance-mode crawler access.
 
 == Installation ==
 
@@ -63,6 +64,17 @@ License: CC0 1.0 Universal (CC0 1.0)
 Source: https://unsplash.com/@englr?photo=bIhpiQA009k
 
 == Changelog ==
+= 3.0.15 =
+* Added consent-aware WebsiteTool webshop tracking, WooCommerce AJAX/Blocks integration, regression tests, and setup documentation.
+* Updated WebsiteTool script endpoints and switched feedback identification to the normalized website hostname.
+* Added the Video Lightbox Gutenberg block with thumbnail, YouTube/local video playback, and configurable overlay/player settings.
+* Added a Font Awesome icon collection when the WordPress icon registration APIs are available.
+* Added responsive block translation controls and category filtering in the Madeitheek library.
+* Expanded Card border, hover, shadow, height, alignment, and linked-card controls; refreshed related build assets.
+* Improved Content Column AOS attributes, Container editor layouts, Slider fade styling, separator migration, and form/button styling.
+* Fixed updater package renaming to target only this updater's theme and safely handle invalid sources.
+* Adjusted maintenance-mode crawler access and disabled automatic loading of the custom image extension.
+
 = 3.0.14 =
 * Updated Advanced Controls, Card, Container, Content Column, and Content Container Gutenberg blocks and generated build assets.
 * Fixed mobile menu navigation behavior in the Bootstrap nav walker.
