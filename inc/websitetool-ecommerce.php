@@ -11,13 +11,13 @@ function madeit_wt_product($product, $quantity = 1)
     $category = !is_wp_error($categories) && !empty($categories) ? reset($categories) : null;
 
     return [
-        'id' => (string) $product->get_id(),
-        'name' => $product->get_name(),
-        'price' => (float) wc_get_price_to_display($product),
+        'id'          => (string) $product->get_id(),
+        'name'        => $product->get_name(),
+        'price'       => (float) wc_get_price_to_display($product),
         'category_id' => $category ? (string) $category->term_id : '',
-        'category' => $category ? $category->name : '',
-        'sku' => $product->get_sku(),
-        'quantity' => (float) $quantity,
+        'category'    => $category ? $category->name : '',
+        'sku'         => $product->get_sku(),
+        'quantity'    => (float) $quantity,
     ];
 }
 
@@ -34,9 +34,9 @@ function madeit_wt_added_to_cart($cart_item_key, $product_id, $quantity, $variat
 
     $events = WC()->session->get('madeit_wt_cart_events', []);
     $events[] = [
-        'id' => wp_generate_uuid4(),
+        'id'     => wp_generate_uuid4(),
         'method' => 'wtTrackAddToCart',
-        'data' => madeit_wt_product($product, $quantity),
+        'data'   => madeit_wt_product($product, $quantity),
     ];
     WC()->session->set('madeit_wt_cart_events', array_slice($events, -50));
 }
@@ -70,8 +70,8 @@ function madeit_wt_enqueue_ecommerce()
     wp_enqueue_script('madeit-websitetool-ecommerce', get_parent_theme_file_uri('/assets/js/websitetool-ecommerce.js'), [], MADEIT_VERSION, true);
     wp_localize_script('madeit-websitetool-ecommerce', 'madeitWtEcommerce', [
         'cartUrl' => WC_AJAX::get_endpoint('madeit_wt_cart_events'),
-        'nonce' => wp_create_nonce('madeit_wt_cart_events'),
-        'siteId' => get_current_blog_id(),
+        'nonce'   => wp_create_nonce('madeit_wt_cart_events'),
+        'siteId'  => get_current_blog_id(),
     ]);
 }
 add_action('wp_enqueue_scripts', 'madeit_wt_enqueue_ecommerce');
@@ -103,11 +103,11 @@ function madeit_wt_page_events()
                 $quantity = (float) $item->get_quantity();
                 $product = $item->get_product();
                 $data = $product ? madeit_wt_product($product, $quantity) : [
-                    'id' => (string) ($item->get_variation_id() ?: $item->get_product_id()),
+                    'id'          => (string) ($item->get_variation_id() ?: $item->get_product_id()),
                     'category_id' => '',
-                    'category' => '',
-                    'sku' => '',
-                    'quantity' => $quantity,
+                    'category'    => '',
+                    'sku'         => '',
+                    'quantity'    => $quantity,
                 ];
                 $data['name'] = $item->get_name();
                 $data['price'] = $quantity > 0 ? (float) $item->get_total() / $quantity : 0;
@@ -115,11 +115,11 @@ function madeit_wt_page_events()
             }
             $events[] = [
                 'method' => 'wtTrackPurchase',
-                'data' => [
-                    'order_id' => (string) $order->get_order_number(),
+                'data'   => [
+                    'order_id'    => (string) $order->get_order_number(),
                     'total_value' => (float) $order->get_total(),
-                    'user_email' => $order->get_billing_email(),
-                    'products' => $products,
+                    'user_email'  => $order->get_billing_email(),
+                    'products'    => $products,
                 ],
                 'purchaseId' => (string) $order->get_id(),
             ];
