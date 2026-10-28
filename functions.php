@@ -2134,6 +2134,7 @@ if (!function_exists('madeit_add_mobile_menu_items_to_main_menu') && function_ex
 
                 $newItems = [];
                 $i = 1;
+                $j = -1;
                 foreach ($items as $j => $item) {
                     $item->menu_order = $i++;
                     $newItems[] = $item;
