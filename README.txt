@@ -13,7 +13,7 @@ Tags: madeit, bootstrap, bootstrap4, made i.t., Made I.T.
 == Recent highlights ==
 
 This release adds consent-aware webshop tracking and expands the Gutenberg editing experience:
-- Adds WebsiteTool tracking for WooCommerce product views, confirmed cart additions, checkout, and purchases, with browser-side purchase deduplication.
+- Adds WebsiteTool tracking for WooCommerce product views, confirmed cart additions, checkout, purchases, and successful account registrations, with browser-side purchase deduplication.
 - Adds a Video Lightbox block, a guarded Font Awesome icon collection, responsive block translation controls, and Madeitheek category filters.
 - Expands Card styling controls and improves Container, Content Column, Slider, separator migration, and form styling.
 - Fixes theme update package renaming, updates WebsiteTool and feedback endpoints, and adjusts maintenance-mode crawler access.

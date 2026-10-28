@@ -5,6 +5,12 @@ define('ABSPATH', __DIR__);
 $session_data = [];
 $context = [];
 $customer_id = 0;
+$user_meta = [];
+$admin = false;
+$ajax = false;
+$cron = false;
+$currency = 'EUR';
+$actions = [];
 $order_status = 'processing';
 $product = new class() {
     public function get_parent_id()
@@ -129,6 +135,40 @@ $order = new class() {
 
 function add_action(...$arguments)
 {
+    $GLOBALS['actions'][$arguments[0]] = $arguments[1];
+}
+function is_admin()
+{
+    return $GLOBALS['admin'];
+}
+function wp_doing_ajax()
+{
+    return $GLOBALS['ajax'];
+}
+function wp_doing_cron()
+{
+    return $GLOBALS['cron'];
+}
+function get_woocommerce_currency()
+{
+    return $GLOBALS['currency'];
+}
+function update_user_meta($customer_id, $key, $value)
+{
+    $GLOBALS['user_meta'][$customer_id][$key] = $value;
+}
+function get_user_meta($customer_id, $key, $single)
+{
+    return $GLOBALS['user_meta'][$customer_id][$key] ?? '';
+}
+function delete_user_meta($customer_id, $key, $value)
+{
+    if (get_user_meta($customer_id, $key, true) !== $value) {
+        return false;
+    }
+    unset($GLOBALS['user_meta'][$customer_id][$key]);
+
+    return true;
 }
 function WC()
 {
@@ -266,4 +306,38 @@ check(count(page_events()) === 1, 'Order owner must be allowed to view purchase'
 $customer_id = 8;
 check(page_events() === [], 'Other customers must not access purchase data');
 
-echo "WebsiteTool PHP tests passed: products, variations, confirmed adds, checkout, order access, statuses, historical totals.\n";
+$context = [];
+$customer_id = 0;
+check($actions['woocommerce_created_customer'] === 'madeit_wt_customer_registered', 'Registration must hook into successful customer creation');
+$actions['woocommerce_created_customer'](7);
+check(page_events() === [], 'Guests must not consume account registration events');
+$customer_id = 8;
+check(page_events() === [], 'Another account must not consume the registration');
+$customer_id = 7;
+$registration = page_events();
+check(count($registration) === 1, 'Successful registration must produce one event after login');
+check($registration[0]['method'] === 'wtTrackRegistration', 'Registration must use the requested tracking method');
+check($registration[0]['data'] === ['value' => 0, 'currency' => 'EUR', 'status' => 'completed'], 'Registration payload must match the tracking API');
+check(!empty($registration[0]['id']), 'Registration must have a deduplication ID');
+check(page_events() === [], 'Refreshing must not repeat registration');
+
+$currency = 'USD';
+$actions['woocommerce_created_customer'](7);
+check(page_events()[0]['data']['currency'] === 'USD', 'Registration must use the shop currency');
+$admin = true;
+$actions['woocommerce_created_customer'](7);
+check(page_events() === [], 'Admin-created accounts must not track frontend registrations');
+$ajax = true;
+$actions['woocommerce_created_customer'](7);
+check(count(page_events()) === 1, 'Frontend AJAX registrations must be supported');
+$admin = false;
+$ajax = false;
+$cron = true;
+$actions['woocommerce_created_customer'](7);
+check(page_events() === [], 'Scheduled account creation must not track registrations');
+$cron = false;
+$session = null;
+$actions['woocommerce_created_customer'](7);
+check(page_events() === [], 'Account creation without a storefront session must not track registrations');
+
+echo "WebsiteTool PHP tests passed: products, variations, confirmed adds, checkout, order access, statuses, historical totals, registrations.\n";
