@@ -61,6 +61,24 @@ function madeit_wt_cart_events()
 }
 add_action('wc_ajax_madeit_wt_cart_events', 'madeit_wt_cart_events');
 
+function madeit_wt_customer_registered($customer_id)
+{
+    if ((is_admin() && !wp_doing_ajax()) || wp_doing_cron() || !WC()->session) {
+        return;
+    }
+
+    update_user_meta($customer_id, '_madeit_wt_registration_event', [
+        'id'     => wp_generate_uuid4(),
+        'method' => 'wtTrackRegistration',
+        'data'   => [
+            'value'    => 0,
+            'currency' => get_woocommerce_currency(),
+            'status'   => 'completed',
+        ],
+    ]);
+}
+add_action('woocommerce_created_customer', 'madeit_wt_customer_registered');
+
 function madeit_wt_enqueue_ecommerce()
 {
     if (is_admin()) {
@@ -79,6 +97,12 @@ add_action('wp_enqueue_scripts', 'madeit_wt_enqueue_ecommerce');
 function madeit_wt_page_events()
 {
     $events = madeit_wt_take_cart_events();
+
+    $customer_id = get_current_user_id();
+    $registration = $customer_id ? get_user_meta($customer_id, '_madeit_wt_registration_event', true) : '';
+    if ($registration && delete_user_meta($customer_id, '_madeit_wt_registration_event', $registration)) {
+        $events[] = $registration;
+    }
 
     if (is_product()) {
         $product = wc_get_product(get_queried_object_id());

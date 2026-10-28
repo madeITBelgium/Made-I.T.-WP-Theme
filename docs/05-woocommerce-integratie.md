@@ -12,8 +12,11 @@ De bestaande WebsiteTool-integratie wordt automatisch uitgebreid wanneer WooComm
 | `wtTrackAddToCart` | Na een bevestigde toevoeging door WooCommerce | Het daadwerkelijk toegevoegde product of de variatie en het toegevoegde aantal |
 | `wtTrackCheckout` | Openen van de checkout, niet de betaal- of bevestigingsendpoint | Actueel numeriek winkelwagentotaal |
 | `wtTrackPurchase` | Bevestigingspagina van een order met status `processing`, `completed` of `on-hold` | Bestelnummer, ordertotaal, facturatie-e-mailadres en bestelde producten |
+| `wtTrackRegistration` | Eerste ingelogde pagina na een geslaagde WooCommerce-accountregistratie | `value: 0`, winkelvaluta (bijvoorbeeld `EUR`) en `status: 'completed'` |
 
 De integratie ondersteunt gewone paginaverzoeken, de eigen AJAX-winkelwagen van het thema, de klassieke WooCommerce-AJAX-events en het WooCommerce Blocks-signaal `wc-blocks_added_to_cart`. Mislukte toevoegingen leveren geen event op. Een productvariatie gebruikt zijn eigen ID en SKU en de categorie van het hoofdproduct.
+
+Registraties gebruiken `woocommerce_created_customer`, dus niet het indienen van het formulier. Dit omvat nieuwe accounts via Mijn account en de klassieke of Blocks-checkout. Het registratie-event wordt tijdelijk bij het nieuwe account bewaard, overleeft de login-redirect en wordt eenmaal aan de eerste ingelogde pagina meegegeven. Als automatisch inloggen is uitgeschakeld, gebeurt dit pas na de eerste login. Alleen het eigen account kan het event ophalen; verversen en opnieuw inloggen maken geen nieuw event aan. Bestaande accounts en mislukte registraties leveren geen registratie-event op. Accountaanmaak via het beheer, cron of zonder WooCommerce-sessie wordt niet gemeten. Er worden geen accountgegevens meegestuurd.
 
 Productweergaven en winkelwagentoevoegingen gebruiken de actuele weergaveprijs van WooCommerce. Aankopen gebruiken de opgeslagen productnaam en de regelprijs na korting, exclusief belasting, gedeeld door het aantal. Het aankoopbedrag is altijd het volledige ordertotaal, inclusief eventuele belastingen en verzendkosten; het wordt niet uit de producten berekend.
 
@@ -41,6 +44,8 @@ node bin/test-websitetool-ecommerce.js
 ```
 
 Test daarnaast met toestemming op het geregistreerde domein een productweergave, een succesvolle winkelwagentoevoeging, checkout en een testbestelling. Controleer in het netwerkpaneel de aanvragen naar `app.websitetool.be/ping/event`, met `e: "ecommerce"` en de verwachte actie in `a`. Ververs de bevestigingspagina: er mag geen tweede aankoop worden verstuurd. Herhaal zonder analytics-toestemming: er mogen geen WebsiteTool-metingen vertrekken.
+
+Registreer ook een nieuw account via Mijn account en tijdens checkout. Controleer dat `wtTrackRegistration` eenmaal wordt aangeroepen met waarde `0`, de winkelvaluta en status `completed`. Test een ongeldig registratieformulier, verversen en inloggen met een bestaand account: die mogen geen nieuw registratie-event opleveren. Herhaal zonder analytics-toestemming: er mag geen registratie worden verstuurd. Net als de overige pagina-events wordt een registratie na het meegeven aan de pagina niet opnieuw vanaf de server aangeboden als toestemming uitblijft of de browser sluit. Sluit ook Mijn account uit van paginacaching.
 
 Eigen doelen en promotie-events blijven optioneel handwerk via `wtTrackGoal` en `wtTrackContent`. Roep ze alleen na een geslaagde actie en met passende toestemming aan; automatische WebsiteTool-doelen hoeven niet opnieuw geregistreerd te worden.
 

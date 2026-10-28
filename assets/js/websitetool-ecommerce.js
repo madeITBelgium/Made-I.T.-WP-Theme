@@ -74,7 +74,7 @@
 
     function enqueue(events) {
         events.forEach(function (event) {
-            if (['wtTrackProductView', 'wtTrackAddToCart', 'wtTrackCheckout', 'wtTrackPurchase'].indexOf(event.method) === -1) {
+            if (['wtTrackProductView', 'wtTrackAddToCart', 'wtTrackCheckout', 'wtTrackPurchase', 'wtTrackRegistration'].indexOf(event.method) === -1) {
                 return;
             }
             if (event.id && seen[event.id]) {

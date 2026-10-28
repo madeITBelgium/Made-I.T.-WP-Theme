@@ -1,6 +1,66 @@
 Made I.T. Theme Changelog
 ==========================
 
+Version 3.0.16 - 2026-10-28
+----------------------------
+Comparison
+- Previous release: 3.0.15, commit 2c7953d3.
+- Latest available tag: 3.0.14. The newer 3.0.15 release commit is used as the release baseline to avoid repeating the changes already documented below.
+- Compared 2c7953d3 with HEAD 7ed72aad and included the local 3.0.16 release metadata and documentation updates.
+
+Added
+- Added wtTrackRegistration after successful WooCommerce customer creation via My account and classic or Blocks checkout, using value 0, the WooCommerce shop currency, and status completed.
+- Added an account-owned pending registration event that survives login redirects and is consumed on the first logged-in page. If automatic login is disabled, delivery waits until the first login.
+- Added PHP regression coverage for the successful-creation hook, exact registration payload, shop currency, account isolation, one-time consumption, AJAX registration, and admin/cron/sessionless exclusions.
+- Added browser regression coverage for registration dispatch, delayed tracker readiness, analytics consent, duplicate event IDs, and consent revocation.
+
+Changed
+- Allowed wtTrackRegistration through the existing browser event queue, retaining consent and tracker-initialization requirements.
+- Extended WooCommerce documentation with registration timing, privacy, cache exclusions, manual checks, and delivery limitations.
+- Updated README highlights and release notes; synchronized README.txt, style.css, and MADEIT_VERSION at 3.0.16.
+- Included StyleCI formatting of PHP regression fixtures, tracking payload arrays, block helpers, icon registration, feedback, and eight generated asset metadata files. Asset dependencies and version hashes are unchanged; no block rebuild or dependency update is included.
+
+Fixed
+- No additional functional bugfixes beyond the new registration event lifecycle.
+
+Removed
+- No features, files, or dependencies were removed. No files were renamed.
+
+Limitations
+- Registrations require a WooCommerce storefront session. Admin and cron account creation are excluded.
+- Registration payloads contain no account details and are dispatched only with WebsiteTool analytics consent.
+- Once a pending event is emitted into a page, the server does not offer it again if consent remains absent or the browser closes; WebsiteTool delivery is not acknowledged.
+- Actual WebsiteTool reception still requires a manual check on the registered domain.
+
+Commits (newest first; since 3.0.15)
+- 7ed72aad Add registration tracking
+- 37727a62 Merge pull request #1423 from madeITBelgium/analysis-0pexgE
+- 2a65d072 Apply fixes from StyleCI
+- Local, uncommitted release preparation: version metadata, README summary, and this changelog.
+
+Files changed (M = modified; compared with release commit 2c7953d3, including local release preparation)
+M CHANGELOG.txt - Detailed 3.0.16 release notes, baseline, commit list, limitations, and complete file inventory.
+M README.txt - Registration tracking highlights, 3.0.16 release summary, and version metadata.
+M assets/js/websitetool-ecommerce.js - Permit registration events in the existing consent-aware tracking queue.
+M bin/test-websitetool-ecommerce.js - Registration dispatch, readiness, consent, revocation, and deduplication tests.
+M bin/test-websitetool-ecommerce.php - Registration lifecycle, payload, currency, ownership, exclusions, and StyleCI fixture formatting.
+M docs/05-woocommerce-integratie.md - Registration behavior, privacy, cache exclusions, limitations, and manual verification.
+M functions.php - Bump MADEIT_VERSION to 3.0.16.
+M gutenberg/blocks/advanced-controls/build/index.asset.php - PHP formatting only; dependency list and asset hash unchanged.
+M gutenberg/blocks/madeit-card/build/index.asset.php - PHP formatting only; dependency list and asset hash unchanged.
+M gutenberg/blocks/madeit-container/content-column/build/index.asset.php - PHP formatting only; dependency list and asset hash unchanged.
+M gutenberg/blocks/madeit-container/content-container/build/index.asset.php - PHP formatting only; dependency list and asset hash unchanged.
+M gutenberg/blocks/madeit-slider/build/image/index.asset.php - PHP formatting only; dependency list and asset hash unchanged.
+M gutenberg/blocks/madeit-slider/build/index.asset.php - PHP formatting only; dependency list and asset hash unchanged.
+M gutenberg/blocks/video-lightbox/build/index.asset.php - PHP formatting only; dependency list and asset hash unchanged.
+M gutenberg/blocks/video-lightbox/build/view.asset.php - PHP formatting only; dependency list and asset hash unchanged.
+M gutenberg/helpers/blocks.php - StyleCI array alignment and concatenation formatting; rendering behavior unchanged.
+M inc/core/icons/font-awesome-icons.php - StyleCI formatting and short array syntax; icon registrations unchanged.
+M inc/core/icons/iconLibrary.php - StyleCI comment, whitespace, and concatenation formatting; include behavior unchanged.
+M inc/feedback.php - StyleCI concatenation formatting; feedback identifier unchanged.
+M inc/websitetool-ecommerce.php - Successful-registration hook, pending account event consumption, and payload formatting.
+M style.css - Bump WordPress theme version to 3.0.16.
+
 Version 3.0.15 - 2026-10-26
 ----------------------------
 Added

@@ -34,7 +34,7 @@ function browser(events, options = {}) {
             return { json: async () => ({ success: true, data: options.cartEvents || [] }) };
         }
     };
-    ['wtTrackProductView', 'wtTrackAddToCart', 'wtTrackCheckout', 'wtTrackPurchase'].forEach(method => {
+    ['wtTrackProductView', 'wtTrackAddToCart', 'wtTrackCheckout', 'wtTrackPurchase', 'wtTrackRegistration'].forEach(method => {
         window[method] = data => calls.push({ method, data });
     });
     if (options.blockStorage) {
@@ -65,6 +65,26 @@ async function test() {
     const product = { method: 'wtTrackProductView', data: { id: '42', price: 59.95 } };
     const checkout = { method: 'wtTrackCheckout', data: 119.9 };
     const purchase = { method: 'wtTrackPurchase', purchaseId: '1001', data: { order_id: 'ORD-1001', total_value: 119.9 } };
+    const registration = { id: 'registration-7', method: 'wtTrackRegistration', data: { value: 0, currency: 'EUR', status: 'completed' } };
+    const registered = browser([registration, registration], { ready: false, consent: false });
+    assert.equal(registered.calls.length, 0);
+    registered.window.wtinit = true;
+    registered.consent(true);
+    registered.listeners['cc:onConsent']();
+    assert.equal(registered.calls.length, 1);
+    assert.equal(registered.calls[0].method, 'wtTrackRegistration');
+    assert.equal(JSON.stringify(registered.calls[0].data), JSON.stringify(registration.data));
+    registered.listeners['cc:onConsent']();
+    assert.equal(registered.calls.length, 1);
+
+    const revokedRegistration = browser([registration], { ready: false });
+    revokedRegistration.consent(false);
+    revokedRegistration.listeners['cc:onChange']();
+    revokedRegistration.window.wtinit = true;
+    revokedRegistration.consent(true);
+    revokedRegistration.listeners['cc:onConsent']();
+    assert.equal(revokedRegistration.calls.length, 0);
+
     const delayed = browser([product, checkout], { ready: false });
     assert.equal(delayed.calls.length, 0);
     delayed.tick();
@@ -128,7 +148,7 @@ async function test() {
     missingMethod.tick();
     assert.equal(missingMethod.calls.length, 1);
 
-    console.log('WebsiteTool browser tests passed: consent, async loading, revocation, AJAX/Blocks, deduplication, blocked storage.');
+    console.log('WebsiteTool browser tests passed: consent, async loading, revocation, AJAX/Blocks, deduplication, blocked storage, registrations.');
 }
 
 test().catch(error => { console.error(error); process.exitCode = 1; });

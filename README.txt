@@ -3,7 +3,7 @@ Contributors: madeit
 Requires at least: WordPress 5.0
 Tested up to: 7.0
 Requires PHP: 8.5
-Version: 3.0.15
+Version: 3.0.16
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: madeit, bootstrap, bootstrap4, made i.t., Made I.T.
@@ -12,11 +12,11 @@ Tags: madeit, bootstrap, bootstrap4, made i.t., Made I.T.
 
 == Recent highlights ==
 
-This release adds consent-aware webshop tracking and expands the Gutenberg editing experience:
-- Adds WebsiteTool tracking for WooCommerce product views, confirmed cart additions, checkout, and purchases, with browser-side purchase deduplication.
-- Adds a Video Lightbox block, a guarded Font Awesome icon collection, responsive block translation controls, and Madeitheek category filters.
-- Expands Card styling controls and improves Container, Content Column, Slider, separator migration, and form styling.
-- Fixes theme update package renaming, updates WebsiteTool and feedback endpoints, and adjusts maintenance-mode crawler access.
+This release extends the existing consent-aware WebsiteTool webshop tracking:
+- Tracks successful WooCommerce account registrations through My account and checkout with value 0, the shop currency, and completed status.
+- Preserves registration events across login redirects and emits them once for the new account, subject to analytics consent and tracker readiness.
+- Adds registration regression tests and documents delayed login, privacy, caching, and delivery limitations.
+- Includes PHP formatting cleanup without changing existing block assets, icon behavior, or feedback configuration.
 
 == Installation ==
 
@@ -64,6 +64,14 @@ License: CC0 1.0 Universal (CC0 1.0)
 Source: https://unsplash.com/@englr?photo=bIhpiQA009k
 
 == Changelog ==
+= 3.0.16 =
+* Added WebsiteTool registration tracking for successfully created WooCommerce customer accounts via My account and checkout.
+* Preserved pending registration events across login redirects and consumed them once for the account owner; existing logins and failed registrations create no new event.
+* Reused analytics consent, asynchronous tracker readiness, and browser event deduplication; excluded admin, cron, and sessionless account creation.
+* Expanded PHP and JavaScript regression tests and WooCommerce tracking documentation.
+* Applied StyleCI PHP formatting cleanup to block asset metadata, block helpers, icon registration, feedback, and tracking code without functional changes.
+* Updated theme metadata and MADEIT_VERSION to 3.0.16.
+
 = 3.0.15 =
 * Added consent-aware WebsiteTool webshop tracking, WooCommerce AJAX/Blocks integration, regression tests, and setup documentation.
 * Updated WebsiteTool script endpoints and switched feedback identification to the normalized website hostname.
