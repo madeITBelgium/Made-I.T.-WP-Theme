@@ -10,7 +10,7 @@
  * Made I.T. Theme only works in WordPress 4.7 or later.
  */
 if (!defined('MADEIT_VERSION')) {
-    define('MADEIT_VERSION', '3.0.15');
+    define('MADEIT_VERSION', '3.0.16');
 }
 
 // Updater configuration
@@ -3416,5 +3416,4 @@ add_action('admin_head', function(){
     }
 
 });
-
 
