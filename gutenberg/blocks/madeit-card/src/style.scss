@@ -9,12 +9,13 @@
 	--madeit-card-border-style: none;
 	--madeit-card-border-width: 1px;
 	--madeit-card-border-color: transparent;
-	--madeit-card-border-hover-style: none;
-	--madeit-card-border-hover-width: 1px;
-	--madeit-card-border-hover-color: transparent;
+	// Hover values fall back to the default values of the same card when no hover style is set.
+	--madeit-card-border-hover-style: var(--madeit-card-border-style);
+	--madeit-card-border-hover-width: var(--madeit-card-border-width);
+	--madeit-card-border-hover-color: var(--madeit-card-border-color);
 	--madeit-card-border-radius: ;
 	--madeit-card-box-shadow: none;
-	--madeit-card-box-shadow-hover: none;
+	--madeit-card-box-shadow-hover: var(--madeit-card-box-shadow);
 
 	position: relative;
 	display: flex;
@@ -28,11 +29,10 @@
 	transition: all 0.3s ease;
     
 	&:hover {
-		border-width: var(--madeit-card-border-hover-width, 0px) !important;
-		border-style: var(--madeit-card-border-hover-style, 0px) !important;
-		border-color: var(--madeit-card-border-hover-color, transparent) !important;
-		box-shadow: var(--madeit-card-box-shadow-hover, 0px 0px 0px 0px transparent);
-		transition: all 0.3s ease;
+		border-width: var(--madeit-card-border-hover-width) !important;
+		border-style: var(--madeit-card-border-hover-style) !important;
+		border-color: var(--madeit-card-border-hover-color) !important;
+		box-shadow: var(--madeit-card-box-shadow-hover);
 	}
 
 	&[style*='--madeit-card-align-items:center'] {
@@ -66,13 +66,6 @@
 		var(--madeit-card-content-padding-right)
 		var(--madeit-card-content-padding-bottom)
 		var(--madeit-card-content-padding-left);
-}
-
-.wp-block-madeit-block-card:hover {
-	border-width: var(--madeit-card-border-hover-width);
-	border-style: var(--madeit-card-border-hover-style);
-	border-color: var(--madeit-card-border-hover-color);
-	box-shadow: var(--madeit-card-box-shadow-hover, var(--madeit-card-box-shadow));
 }
 
 

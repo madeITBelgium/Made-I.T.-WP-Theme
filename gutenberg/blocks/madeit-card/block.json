@@ -11,6 +11,28 @@
   "version": "1.3.0",
   "madeit": {
     "changelog": {
+      "3.0.2": [
+        {
+          "type": "update",
+          "label": "Fix",
+          "intro": "Opgeloste problemen:",
+          "items": [
+            "Hover border en hover schaduw werken nu altijd, ongeacht welk tabje (Default/Hover) open staat.",
+            "Schaduwwaarden geven geen ongeldige CSS meer (bv. 0pxpx).",
+            "Zonder hover schaduw/border wordt de gewone schaduw/border behouden bij hover.",
+            "Binnenkomende animatie blijft bewaard na het herladen van de editor."
+          ]
+        },
+        {
+          "type": "feature",
+          "label": "Nieuw",
+          "intro": "Nieuwe functies:",
+          "items": [
+            "Card-stijl kopiëren en plakken via de toolbar.",
+            "Card linken naar het huidige bericht (bv. in een Query Loop)."
+          ]
+        }
+      ],
       "3.0.1": [
         {
           "type": "update",
@@ -61,6 +83,10 @@
     "madeit"
   ],
   "textdomain": "madeit",
+  "usesContext": [
+    "postId",
+    "postType"
+  ],
   "editorScript": "file:./build/index.js",
   "editorStyle": "file:./build/index.css",
   "style": "file:./build/style-index.css",
@@ -117,10 +143,6 @@
     "alignItems": {
       "type": "string",
       "default": "stretch"
-    },
-    "borderHover": {
-      "type": "string",
-      "default": "default"
     },
     "borderHoverType": {
       "type": "string",
@@ -181,10 +203,6 @@
       "type": "object",
       "default": {}
     },
-    "shadowHover": {
-      "type": "string",
-      "default": "default"
-    },
     "boxShadowHover": {
       "type": "object",
       "default": {}
@@ -200,6 +218,10 @@
     "linkTarget": {
       "type": "string"
     },
+    "linkToPost": {
+      "type": "boolean",
+      "default": false
+    },
     "hideOnDesktop": {
           "type": "boolean"
       },
@@ -213,21 +235,21 @@
           "type": "string",
           "default": "",
           "source": "attribute",
-          "selector": ".wp-block-madeit-block-content-card",
+          "selector": ".wp-block-madeit-block-card",
           "attribute": "data-aos"
       },
       "aosDelay": {
           "type": "string",
           "default": "",
           "source": "attribute",
-          "selector": ".wp-block-madeit-block-content-card",
+          "selector": ".wp-block-madeit-block-card",
           "attribute": "data-aos-delay"
       },
       "aosDelayCustom": {
           "type": "string",
           "default": "",
           "source": "attribute",
-          "selector": ".wp-block-madeit-block-content-card",
+          "selector": ".wp-block-madeit-block-card",
           "attribute": "data-aos-delay"
       }
   },

@@ -20,84 +20,38 @@ import {
 	RangeControl,
 	TextControl,
 	ColorPalette,
+	Button,
+	ToolbarGroup,
+	ToolbarDropdownMenu,
 	__experimentalToggleGroupControl as ToggleGroupControl,
 	__experimentalToggleGroupControlOption as ToggleGroupControlOption,
 } from '@wordpress/components';
-import { withSelect } from '@wordpress/data';
+import { withSelect, useDispatch, useSelect } from '@wordpress/data';
+import { useState } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { __ } from '@wordpress/i18n';
 import classnames from 'classnames';
 import { ControlHeader, UnitSelect, getTabIcon, ResponsiveVisibilityPanel } from '../../../shared';
+import {
+	CARD_STYLE_KEYS,
+	CARD_STYLE_STORAGE_KEY,
+	getCardStyleVars,
+	hasShadow,
+	normalizeBorderWidth,
+	normalizeRadius,
+	normalizeShadow,
+} from './utils';
 
-const paddingToVars = (padding) => {
-	if (!padding || typeof padding !== 'object') {
-		return {};
+const AOS_DELAY_PRESETS = [ '', '100', '200', '300', '400', '500' ];
+
+const readCardStyleClipboard = () => {
+	try {
+		const raw = window.localStorage.getItem( CARD_STYLE_STORAGE_KEY );
+		const parsed = raw ? JSON.parse( raw ) : null;
+		return parsed && typeof parsed === 'object' ? parsed : null;
+	} catch ( e ) {
+		return null;
 	}
-
-	const vars = {};
-	if (padding.top !== undefined) vars['--madeit-card-content-padding-top'] = padding.top;
-	if (padding.right !== undefined) vars['--madeit-card-content-padding-right'] = padding.right;
-	if (padding.bottom !== undefined) vars['--madeit-card-content-padding-bottom'] = padding.bottom;
-	if (padding.left !== undefined) vars['--madeit-card-content-padding-left'] = padding.left;
-
-	return vars;
-};
-
-const normalizeRadius = (value) => {
-	if (!value || typeof value !== 'object') {
-		return { top: '0px', right: '0px', bottom: '0px', left: '0px' };
-	}
-
-	return {
-		top: value.top ?? '0px',
-		right: value.right ?? '0px',
-		bottom: value.bottom ?? '0px',
-		left: value.left ?? '0px',
-	};
-};
-
-const borderRadiusToCss = (value) => {
-	const safe = normalizeRadius(value);
-	return `${ safe.top } ${ safe.right } ${ safe.bottom } ${ safe.left }`;
-};
-
-const normalizeBorderWidth = (value) => {
-	if (!value || typeof value !== 'object') {
-		return { top: '1px', right: '1px', bottom: '1px', left: '1px' };
-	}
-
-	return {
-		top: value.top ?? '1px',
-		right: value.right ?? '1px',
-		bottom: value.bottom ?? '1px',
-		left: value.left ?? '1px',
-	};
-};
-
-const borderWidthToCss = (value) => {
-	const safe = normalizeBorderWidth(value);
-	return `${ safe.top } ${ safe.right } ${ safe.bottom } ${ safe.left }`;
-};
-
-const normalizeShadow = (value) => {
-	if (!value || typeof value !== 'object') {
-		return { x: '0px', y: '0px', blur: '0px', spread: '0px', color: '#000000', inset: false };
-	}
-
-	return {
-		x: value.x ?? value.horizontal ?? '0px',
-		y: value.y ?? value.vertical ?? '0px',
-		blur: value.blur ?? '0px',
-		spread: value.spread ?? '0px',
-		color: value.color || '#000000',
-		inset: !!value.inset,
-	};
-};
-
-const shadowToCss = (value) => {
-	const safe = normalizeShadow(value);
-	const prefix = safe.inset ? 'inset ' : '';
-	return `${ prefix }${ safe.x }px ${ safe.y }px ${ safe.blur }px ${ safe.spread }px ${ safe.color }`;
 };
 
 const FlexStartIcon = () => (
@@ -123,6 +77,7 @@ function CardEdit(props) {
 		textColor,
 		setTextColor,
 		className,
+		context,
 	} = props;
 
 	const {
@@ -134,6 +89,7 @@ function CardEdit(props) {
 		url,
 		opensInNewTab,
 		linkTarget,
+		linkToPost = false,
 		hideOnDesktop,
 		hideOnTablet,
 		hideOnMobile,
@@ -143,7 +99,6 @@ function CardEdit(props) {
 		minHeight = 0,
 		minHeightUnit = 'px',
 		alignItems = 'stretch',
-		borderHover = 'default',
 		borderHoverType = 'none',
 		borderType = 'none',
 		borderWidth = {},
@@ -155,7 +110,6 @@ function CardEdit(props) {
 		borderRadius = {},
 		borderRadiusUnit = 'px',
 		boxShadow = {},
-		shadowHover = 'default',
 		boxShadowHover = {},
 	} = attributes;
 
@@ -175,11 +129,120 @@ function CardEdit(props) {
 	const safeHoverBorderWidth = normalizeBorderWidth(borderHoverWidth);
 	const safeRadius = normalizeRadius(borderRadius);
 	const safeShadow = normalizeShadow(boxShadow);
-	const safeShadowHover = normalizeShadow(boxShadowHover);
-	const hasDefaultBorder = borderType && borderType !== 'none';
-	const hasHoverBorder = borderHover === 'hover' && borderHoverType && borderHoverType !== 'none';
-	const hasDefaultShadow = shadowHover === 'default';
-	const hasHoverShadow = shadowHover === 'hover' && !!boxShadowHover && typeof boxShadowHover === 'object';
+	const hasHoverBorder = borderHoverType && borderHoverType !== 'none';
+	const hasHoverShadow = hasShadow(boxShadowHover);
+	// Without its own hover shadow the hover controls start from the default shadow (that is also what is shown on hover).
+	const safeShadowHover = normalizeShadow(hasHoverShadow ? boxShadowHover : boxShadow);
+	const aosDelaySelectValue = aosDelay === 'custom' || AOS_DELAY_PRESETS.includes(aosDelay) ? aosDelay : 'custom';
+	const aosDelayCustomValue = aosDelaySelectValue === 'custom' && !aosDelayCustom && aosDelay !== 'custom' ? aosDelay : aosDelayCustom;
+
+	const [ borderTab, setBorderTab ] = useState('default');
+	const [ shadowTab, setShadowTab ] = useState('default');
+
+	const { createSuccessNotice, createWarningNotice } = useDispatch('core/notices');
+
+	const postId = context?.postId;
+	const postType = context?.postType;
+	const postTitle = useSelect(
+		(select) => {
+			if (!linkToPost || !postId || !postType) {
+				return undefined;
+			}
+			const record = select('core').getEntityRecord('postType', postType, postId);
+			return record?.title?.rendered || record?.title?.raw;
+		},
+		[ linkToPost, postId, postType ]
+	);
+
+	const copyCardStyle = () => {
+		const data = {};
+		CARD_STYLE_KEYS.forEach((key) => {
+			if (attributes[ key ] !== undefined) {
+				data[ key ] = attributes[ key ];
+			}
+		});
+
+		try {
+			window.localStorage.setItem(CARD_STYLE_STORAGE_KEY, JSON.stringify(data));
+			createSuccessNotice(__('Card-stijl gekopieerd.', 'madeit'), { type: 'snackbar' });
+		} catch (e) {
+			createWarningNotice(__('Card-stijl kon niet gekopieerd worden.', 'madeit'), { type: 'snackbar' });
+		}
+	};
+
+	const pasteCardStyle = () => {
+		const data = readCardStyleClipboard();
+		if (!data) {
+			createWarningNotice(__('Er is nog geen card-stijl gekopieerd.', 'madeit'), { type: 'snackbar' });
+			return;
+		}
+
+		// Keys missing in the copied data are reset, so the card looks exactly like the copied one.
+		const next = {};
+		CARD_STYLE_KEYS.forEach((key) => {
+			next[ key ] = data[ key ];
+		});
+		setAttributes(next);
+		createSuccessNotice(__('Card-stijl geplakt.', 'madeit'), { type: 'snackbar' });
+	};
+
+	const renderShadowControls = (shadow, attributeKey, colorLabel) => {
+		const update = (changes) => setAttributes({ [ attributeKey ]: { ...shadow, ...changes } });
+
+		return (
+			<div style={ { display: 'grid', gap: '8px' } }>
+				<PanelColorSettings
+					colorSettings={ [
+						{ value: shadow.color || '', onChange: (color) => update({ color }), label: colorLabel, enableAlpha: true },
+					] }
+				/>
+				<div style={ { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' } }>
+					<RangeControl
+						__next40pxDefaultSize
+						label={ __('Horizontaal', 'madeit') }
+						value={ shadow.x }
+						min={ -100 }
+						max={ 100 }
+						onChange={ (value) => update({ x: value ?? 0 }) }
+					/>
+					<RangeControl
+						__next40pxDefaultSize
+						label={ __('Verticaal', 'madeit') }
+						value={ shadow.y }
+						min={ -100 }
+						max={ 100 }
+						onChange={ (value) => update({ y: value ?? 0 }) }
+					/>
+					<RangeControl
+						__next40pxDefaultSize
+						label={ __('Blur', 'madeit') }
+						value={ shadow.blur }
+						min={ 0 }
+						max={ 100 }
+						onChange={ (value) => update({ blur: value ?? 0 }) }
+					/>
+					<RangeControl
+						__next40pxDefaultSize
+						label={ __('Spread', 'madeit') }
+						value={ shadow.spread }
+						min={ -50 }
+						max={ 50 }
+						onChange={ (value) => update({ spread: value ?? 0 }) }
+					/>
+				</div>
+				<SelectControl
+					__next40pxDefaultSize
+					label={ __('Position', 'madeit') }
+					value={ shadow.inset ? 'inset' : 'outset' }
+					onChange={ (value) => update({ inset: value === 'inset' }) }
+					options={ [
+						{ label: __('Outset', 'madeit'), value: 'outset' },
+						{ label: __('Inset', 'madeit'), value: 'inset' },
+					] }
+				/>
+			</div>
+		);
+	};
 
 	const fallbackTextColor = '#FFFFFF';
 	const fallbackBackgroundColor = '#000000';
@@ -193,18 +256,7 @@ function CardEdit(props) {
 		style: {
 			backgroundColor: backgroundColor?.color || undefined,
 			color: textColor?.color || undefined,
-			...paddingToVars(contentPadding),
-			'--madeit-card-min-height': minHeight > 0 ? `${ minHeight }${ minHeightUnit }` : 'auto',
-			'--madeit-card-align-items': alignItems || 'stretch',
-			'--madeit-card-border-style': hasDefaultBorder ? borderType : 'none',
-			'--madeit-card-border-width': hasDefaultBorder ? borderWidthToCss(safeBorderWidth) : '0px 0px 0px 0px',
-			'--madeit-card-border-color': hasDefaultBorder ? (borderColor || 'transparent') : 'transparent',
-			'--madeit-card-border-hover-style': hasHoverBorder ? borderHoverType : 'none',
-			'--madeit-card-border-hover-width': hasHoverBorder ? borderWidthToCss(safeHoverBorderWidth) : '0px 0px 0px 0px',
-			'--madeit-card-border-hover-color': hasHoverBorder ? (borderHoverColor || borderColor || 'transparent') : 'transparent',
-			'--madeit-card-border-radius': borderRadiusToCss(safeRadius),
-			'--madeit-card-box-shadow': hasDefaultShadow ? shadowToCss(safeShadow) : 'none',
-			'--madeit-card-box-shadow-hover': hasHoverShadow ? shadowToCss(safeShadowHover) : 'none',
+			...getCardStyleVars(attributes),
 		},
 	});
 
@@ -370,9 +422,9 @@ function CardEdit(props) {
 										<ToggleGroupControl 
 												__next40pxDefaultSize
 												className="madeit-control-buttonGroup"
-												value={ borderHover }
+												value={ borderTab }
 												onChange={ ( value ) =>
-													setAttributes( { borderHover: value } )
+													setBorderTab( value )
 												}
 											>
 																
@@ -380,7 +432,7 @@ function CardEdit(props) {
 											<ToggleGroupControlOption value="hover" label="Hover" />
 										</ToggleGroupControl>
 
-										{ borderHover == 'default' && (
+										{ borderTab === 'default' && (
 											// Border type
 											<>
 											<div className="madeit-control">
@@ -462,8 +514,13 @@ function CardEdit(props) {
 										</>
 										) }
 
-										{ borderHover == 'hover' && (
+										{ borderTab === 'hover' && (
 											<>
+											<p style={ { fontSize: '12px', color: '#757575', margin: '8px 0' } }>
+												{ hasHoverBorder
+													? __( 'Deze border wordt getoond wanneer je over de card hovert.', 'madeit' )
+													: __( 'Geen hover border ingesteld: bij hover blijft de gewone border zichtbaar.', 'madeit' ) }
+											</p>
 											<div className="madeit-control">
 												<SelectControl
 													label={ __( 'Border type' ) }
@@ -577,9 +634,9 @@ function CardEdit(props) {
 										<ToggleGroupControl 
 												__next40pxDefaultSize
 												className="madeit-control-buttonGroup"
-												value={ shadowHover }
+												value={ shadowTab }
 												onChange={ ( value ) =>
-													setAttributes( { shadowHover: value } )
+													setShadowTab( value )
 												}
 											>
 																
@@ -587,105 +644,46 @@ function CardEdit(props) {
 											<ToggleGroupControlOption value="hover" label="Hover" />
 										</ToggleGroupControl>
 
-										{ shadowHover === 'hover' && (
+										{ shadowTab === 'hover' && (
 											<div className="madeit-control">
-												<ControlHeader title={ __( ' Box shadow hover ' ) } />
-												<div style={ { display: 'grid', gap: '8px' } }>
-
-													<PanelColorSettings
-														colorSettings={ [
-																{ value: safeShadowHover.color || '', onChange: ( color ) => setAttributes( { boxShadowHover: { ...safeShadowHover, color: color } } ), label: __( 'Shadow Hover Color', 'madeit' ), enableAlpha: true },
-														] }
+												<ControlHeader title={ __( 'Box shadow hover', 'madeit' ) } />
+												<p style={ { fontSize: '12px', fontStyle: 'normal', color: '#757575', margin: '0 0 8px' } }>
+													{ hasHoverShadow
+														? __( 'Deze schaduw wordt getoond wanneer je over de card hovert.', 'madeit' )
+														: __( 'Geen hover schaduw ingesteld: bij hover blijft de gewone schaduw zichtbaar.', 'madeit' ) }
+												</p>
+												{ renderShadowControls( safeShadowHover, 'boxShadowHover', __( 'Shadow Hover Color', 'madeit' ) ) }
+												{ hasHoverShadow && (
+													<Button
+														variant="secondary"
+														isDestructive
+														size="small"
+														style={ { marginTop: '8px' } }
+														onClick={ () => setAttributes( { boxShadowHover: {} } ) }
 													>
-													</PanelColorSettings>
-													<div style={ { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' } }>
-														<RangeControl
-															__next40pxDefaultSize
-															label={ __( 'Horizontaal', 'madeit' ) }
-															value={ safeShadowHover.x }
-															onChange={ ( value ) => setAttributes( { boxShadowHover: { ...safeShadowHover, x: value, horizontal: value } } ) }
-														/>
-														<RangeControl
-															__next40pxDefaultSize
-															label={ __( 'Verticaal', 'madeit' ) }
-															value={ safeShadowHover.y }
-															onChange={ ( value ) => setAttributes( { boxShadowHover: { ...safeShadowHover, y: value, vertical: value } } ) }
-														/>
-														<RangeControl
-															__next40pxDefaultSize
-															label={ __( 'Blur', 'madeit' ) }
-															value={ safeShadowHover.blur }
-															onChange={ ( value ) => setAttributes( { boxShadowHover: { ...safeShadowHover, blur: value } } ) }
-														/>
-														<RangeControl
-															__next40pxDefaultSize
-															label={ __( 'Spread', 'madeit' ) }
-															value={ safeShadowHover.spread }
-															onChange={ ( value ) => setAttributes( { boxShadowHover: { ...safeShadowHover, spread: value } } ) }
-														/>
-													</div>
-													<SelectControl
-														label={ __( 'Position', 'madeit' ) }
-														value={ safeShadowHover.inset ? 'inset' : 'outset' }
-														onChange={ ( value ) => setAttributes( { boxShadowHover: { ...safeShadowHover, inset: value === 'inset' } } ) }
-														options={ [
-															{ label: __( 'Outset', 'madeit' ), value: 'outset' },
-															{ label: __( 'Inset', 'madeit' ), value: 'inset' },
-														] }
-													/>
-												</div>
+														{ __( 'Hover schaduw verwijderen', 'madeit' ) }
+													</Button>
+												) }
 											</div>
 										) }
 
-										{ shadowHover === 'default' && (
-										<div className="madeit-control">
-											<ControlHeader title={ __( ' Box shadow ' ) } />
-											<div style={ { display: 'grid', gap: '8px' } }>
-
-												<PanelColorSettings
-														colorSettings={ [
-																{ value: safeShadow.color || '', onChange: ( color ) => setAttributes( { boxShadow: { ...safeShadow, color: color } } ), label: __( 'Shadow Color', 'madeit' ), enableAlpha: true },
-														] }
+										{ shadowTab === 'default' && (
+											<div className="madeit-control">
+												<ControlHeader title={ __( 'Box shadow', 'madeit' ) } />
+												{ renderShadowControls( safeShadow, 'boxShadow', __( 'Shadow Color', 'madeit' ) ) }
+												{ hasShadow( boxShadow ) && (
+													<Button
+														variant="secondary"
+														isDestructive
+														size="small"
+														style={ { marginTop: '8px' } }
+														onClick={ () => setAttributes( { boxShadow: {} } ) }
 													>
-												</PanelColorSettings>
-												<div style={ { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' } }>
-													<RangeControl
-														__next40pxDefaultSize
-														label={ __( 'Horizontaal', 'madeit' ) }
-														value={ safeShadow.x }
-														onChange={ ( value ) => setAttributes( { boxShadow: { ...safeShadow, x: value, horizontal: value } } ) }
-													/>
-													<RangeControl
-														__next40pxDefaultSize
-														label={ __( 'Verticaal', 'madeit' ) }
-														value={ safeShadow.y }
-														onChange={ ( value ) => setAttributes( { boxShadow: { ...safeShadow, y: value, vertical: value } } ) }
-													/>
-													<RangeControl
-														__next40pxDefaultSize
-														label={ __( 'Blur', 'madeit' ) }
-														value={ safeShadow.blur }
-														onChange={ ( value ) => setAttributes( { boxShadow: { ...safeShadow, blur: value } } ) }
-													/>
-													<RangeControl
-														__next40pxDefaultSize
-														label={ __( 'Spread', 'madeit' ) }
-														value={ safeShadow.spread }
-														onChange={ ( value ) => setAttributes( { boxShadow: { ...safeShadow, spread: value } } ) }
-													/>
-												</div>
-												<SelectControl
-													label={ __( 'Position', 'madeit' ) }
-													value={ safeShadow.inset ? 'inset' : 'outset' }
-													onChange={ ( value ) => setAttributes( { boxShadow: { ...safeShadow, inset: value === 'inset' } } ) }
-													options={ [
-														{ label: __( 'Outset', 'madeit' ), value: 'outset' },
-														{ label: __( 'Inset', 'madeit' ), value: 'inset' },
-													] }
-												/>
+														{ __( 'Schaduw verwijderen', 'madeit' ) }
+													</Button>
+												) }
 											</div>
-										</div>
-										)}
+										) }
 									</PanelBody>
 								</>
 							)}
@@ -695,23 +693,47 @@ function CardEdit(props) {
 									<PanelBody title={ __( 'Geavanceerd' ) }>
 										<ControlHeader title={ __( 'Card linken', 'madeit' ) } />
 										<div className="madeit-control">
-											<LinkControl
-												style={ { maxWidth: '100%' } }
-												value={ cardUrl ? { url: cardUrl, opensInNewTab: !!isNewTab } : undefined }
-												onChange={ ( nextValue ) => {
-													if ( ! nextValue || ! nextValue.url ) {
-														setAttributes( { url: undefined, opensInNewTab: false, linkTarget: undefined } );
-													} else {
-														const newOpensInNewTab = !!nextValue.opensInNewTab;
-														setAttributes( {
-															url: nextValue.url,
-															opensInNewTab: newOpensInNewTab,
-															linkTarget: newOpensInNewTab ? '_blank' : undefined,
-														} );
-													}
-												} }
+											<ToggleControl
+												label={ __( 'Link naar huidig bericht', 'madeit' ) }
+												help={ __( 'Handig in een Query Loop: elke card linkt automatisch naar zijn eigen bericht/pagina.', 'madeit' ) }
+												checked={ !!linkToPost }
+												onChange={ ( state ) => setAttributes( { linkToPost: state } ) }
 											/>
 										</div>
+
+										{ linkToPost ? (
+											<div className="madeit-control">
+												<p style={ { fontSize: '12px', color: '#757575', margin: '0 0 8px' } }>
+													{ postTitle
+														? __( 'Linkt naar:', 'madeit' ) + ' ' + postTitle.replace( /<[^>]*>/g, '' )
+														: __( 'De link wordt op de website ingevuld met de URL van het bericht waarin de card staat.', 'madeit' ) }
+												</p>
+												<ToggleControl
+													label={ __( 'Openen in nieuw tabblad', 'madeit' ) }
+													checked={ !!isNewTab }
+													onChange={ ( state ) => setAttributes( { opensInNewTab: state, linkTarget: state ? '_blank' : undefined } ) }
+												/>
+											</div>
+										) : (
+											<div className="madeit-control">
+												<LinkControl
+													style={ { maxWidth: '100%' } }
+													value={ cardUrl ? { url: cardUrl, opensInNewTab: !!isNewTab } : undefined }
+													onChange={ ( nextValue ) => {
+														if ( ! nextValue || ! nextValue.url ) {
+															setAttributes( { url: undefined, opensInNewTab: false, linkTarget: undefined } );
+														} else {
+															const newOpensInNewTab = !!nextValue.opensInNewTab;
+															setAttributes( {
+																url: nextValue.url,
+																opensInNewTab: newOpensInNewTab,
+																linkTarget: newOpensInNewTab ? '_blank' : undefined,
+															} );
+														}
+													} }
+												/>
+											</div>
+										) }
 
 										<ResponsiveVisibilityPanel
 											title="Responsive"
@@ -742,8 +764,9 @@ function CardEdit(props) {
 										{ aosFade && (
 											<>
 												<SelectControl
+													__next40pxDefaultSize
 													label={ __( 'Animatie vertraging (ms)', 'madeit' ) }
-													value={ aosDelay || '' }
+													value={ aosDelaySelectValue }
 													options={ [
 														{ label: __( 'Geen', 'madeit' ), value: '' },
 														{ label: __( '100ms', 'madeit' ), value: '100' },
@@ -753,14 +776,23 @@ function CardEdit(props) {
 														{ label: __( '500ms', 'madeit' ), value: '500' },
 														{ label: __( 'Eigen invoer', 'madeit' ), value: 'custom' },
 													] }
-													onChange={ ( value ) => setAttributes( { aosDelay: value || '' } ) }
+													onChange={ ( value ) => {
+														if ( value === 'custom' ) {
+															setAttributes( { aosDelay: 'custom', aosDelayCustom: aosDelayCustomValue || '' } );
+														} else {
+															setAttributes( { aosDelay: value || '', aosDelayCustom: '' } );
+														}
+													} }
 												/>
 
-												{ aosDelay === 'custom' && (
+												{ aosDelaySelectValue === 'custom' && (
 													<TextControl
+														__next40pxDefaultSize
+														type="number"
+														min={ 0 }
 														label={ __( 'Eigen animatie vertraging (ms)', 'madeit' ) }
-														value={ aosDelayCustom || '' }
-														onChange={ ( value ) => setAttributes( { aosDelayCustom: value || '' } ) }
+														value={ aosDelayCustomValue || '' }
+														onChange={ ( value ) => setAttributes( { aosDelay: 'custom', aosDelayCustom: value || '' } ) }
 													/>
 												) }
 											</>
@@ -772,6 +804,27 @@ function CardEdit(props) {
 					) }
 				</TabPanel>
 			</InspectorControls>
+
+			<BlockControls group="other">
+				<ToolbarGroup>
+					<ToolbarDropdownMenu
+						icon="admin-appearance"
+						label={ __( 'Card-stijl', 'madeit' ) }
+						controls={ [
+							{
+								title: __( 'Kopieer card-stijl', 'madeit' ),
+								icon: 'admin-page',
+								onClick: copyCardStyle,
+							},
+							{
+								title: __( 'Plak card-stijl', 'madeit' ),
+								icon: 'clipboard',
+								onClick: pasteCardStyle,
+							},
+						] }
+					/>
+				</ToolbarGroup>
+			</BlockControls>
 
 			{ hasTitle && (
 				<BlockControls group="block">

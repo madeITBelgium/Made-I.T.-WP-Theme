@@ -7,6 +7,7 @@ import metadata from './../block.json';
 import edit from './edit';
 import save from './save';
 import icon from './icon';
+import deprecatedV2 from './deprecated-v2';
 
 import classnames from 'classnames';
 import { InnerBlocks, getColorClassName, RichText } from '@wordpress/block-editor';
@@ -19,6 +20,7 @@ registerBlockType(metadata.name, {
 
     // Deprecated versie van de block om oude content zonder padding vars te valideren.
     deprecated: [
+        deprecatedV2,
         {
             attributes: {
                 backgroundColor: { type: 'string' },
