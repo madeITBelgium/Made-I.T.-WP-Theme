@@ -9,13 +9,25 @@ function madeit_wt_product($product, $quantity = 1)
     $category_product_id = $product->get_parent_id() ?: $product->get_id();
     $categories = get_the_terms($category_product_id, 'product_cat');
     $category = !is_wp_error($categories) && !empty($categories) ? reset($categories) : null;
+    $category_names = [];
+    if ($category) {
+        foreach (array_reverse(get_ancestors($category->term_id, 'product_cat', 'taxonomy')) as $ancestor_id) {
+            $ancestor = get_term($ancestor_id, 'product_cat');
+            if (!$ancestor || is_wp_error($ancestor)) {
+                error_log('WebsiteTool: Could not load product category ancestor '.$ancestor_id);
+                continue;
+            }
+            $category_names[] = $ancestor->name;
+        }
+        $category_names[] = $category->name;
+    }
 
     return [
         'id'          => (string) $product->get_id(),
         'name'        => $product->get_name(),
         'price'       => (float) wc_get_price_to_display($product),
         'category_id' => $category ? (string) $category->term_id : '',
-        'category'    => $category ? $category->name : '',
+        'category'    => implode(' > ', $category_names),
         'sku'         => $product->get_sku(),
         'quantity'    => (float) $quantity,
     ];
