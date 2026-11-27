@@ -97,9 +97,9 @@ acf_add_local_field_group([
                 'all'      => 'Alle pagina\'s',
                 'selected' => 'Geselecteerde pagina\'s',
             ],
-            'default_value' => 'selected',
-            'layout'        => 'horizontal',
-            'instructions'  => 'Kies "Alle pagina\'s" om de popup overal op de website te tonen, zonder pagina\'s te moeten aanduiden.',
+            'default_value'     => 'selected',
+            'layout'            => 'horizontal',
+            'instructions'      => 'Kies "Alle pagina\'s" om de popup overal op de website te tonen, zonder pagina\'s te moeten aanduiden.',
             'conditional_logic' => [
                 [
                     [

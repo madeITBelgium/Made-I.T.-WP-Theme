@@ -180,16 +180,19 @@ function WC()
 function get_the_terms($identifier, $taxonomy)
 {
     check($identifier === 42, 'Variations must use parent categories');
+
     return $GLOBALS['categories'];
 }
 function get_ancestors($identifier, $taxonomy, $resource_type)
 {
     check($identifier === 9 && $taxonomy === 'product_cat' && $resource_type === 'taxonomy', 'Product category ancestors must use the selected category');
+
     return $GLOBALS['category_ancestors'];
 }
 function get_term($identifier, $taxonomy)
 {
     check($taxonomy === 'product_cat', 'Ancestor terms must use the product category taxonomy');
+
     return $GLOBALS['category_terms'][$identifier] ?? null;
 }
 function is_wp_error($value)
