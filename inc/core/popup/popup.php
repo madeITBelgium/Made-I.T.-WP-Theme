@@ -16,8 +16,8 @@ define('MPOPUP_URL', get_parent_theme_file_uri()); // URL voor assets
 
 // Includes
 require_once MPOPUP_PATH.'/inc/core/popup/includes/post-type.php';
+require_once MPOPUP_PATH.'/inc/core/popup/includes/helper.php'; // vóór fields.php: fields gebruikt mp_popup_display_choices()
 require_once MPOPUP_PATH.'/inc/core/popup/includes/fields.php';
-require_once MPOPUP_PATH.'/inc/core/popup/includes/helper.php';
 require_once MPOPUP_PATH.'/inc/core/popup/includes/frontend.php';
 require_once MPOPUP_PATH.'/inc/core/popup/includes/preview.php';
 

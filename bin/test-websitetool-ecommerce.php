@@ -12,6 +12,9 @@ $cron = false;
 $currency = 'EUR';
 $actions = [];
 $order_status = 'processing';
+$categories = [(object) ['term_id' => 9, 'name' => 'Tassen']];
+$category_ancestors = [];
+$category_terms = [];
 $product = new class() {
     public function get_parent_id()
     {
@@ -177,8 +180,17 @@ function WC()
 function get_the_terms($identifier, $taxonomy)
 {
     check($identifier === 42, 'Variations must use parent categories');
-
-    return [(object) ['term_id' => 9, 'name' => 'Tassen']];
+    return $GLOBALS['categories'];
+}
+function get_ancestors($identifier, $taxonomy, $resource_type)
+{
+    check($identifier === 9 && $taxonomy === 'product_cat' && $resource_type === 'taxonomy', 'Product category ancestors must use the selected category');
+    return $GLOBALS['category_ancestors'];
+}
+function get_term($identifier, $taxonomy)
+{
+    check($taxonomy === 'product_cat', 'Ancestor terms must use the product category taxonomy');
+    return $GLOBALS['category_terms'][$identifier] ?? null;
 }
 function is_wp_error($value)
 {
@@ -269,16 +281,30 @@ function page_events()
 
 require __DIR__.'/../inc/websitetool-ecommerce.php';
 
+check(madeit_wt_product($product)['category'] === 'Tassen', 'A top-level category must retain its name');
+$categories = [];
+check(madeit_wt_product($product)['category'] === '' && madeit_wt_product($product)['category_id'] === '', 'Products without a category must retain empty category fields');
+$categories = [(object) ['term_id' => 9, 'name' => 'Tassen']];
+$category_ancestors = [8, 7];
+$category_terms = [
+    7 => (object) ['name' => 'Hoofdcategorie'],
+    8 => (object) ['name' => 'Subcategorie'],
+];
+
 madeit_wt_added_to_cart('cart-key', 42, 2, 43);
 $events = madeit_wt_take_cart_events();
 check(count($events) === 1, 'Confirmed cart add must produce one event');
 check($events[0]['data']['quantity'] === 2.0, 'Quantity must be numeric');
 check($events[0]['data']['price'] === 59.95, 'Price must be numeric');
 check($events[0]['data']['id'] === '43', 'Variation ID must be preserved');
+check($events[0]['data']['category_id'] === '9', 'Selected category ID must be preserved');
+check($events[0]['data']['category'] === 'Hoofdcategorie > Subcategorie > Tassen', 'Cart events must include the complete category path');
 check(madeit_wt_take_cart_events() === [], 'Cart events must be consumed once');
 
 $context = ['product' => true];
-check(page_events()[0]['method'] === 'wtTrackProductView', 'Product detail must track a view');
+$product_view = page_events()[0];
+check($product_view['method'] === 'wtTrackProductView', 'Product detail must track a view');
+check($product_view['data']['category'] === 'Hoofdcategorie > Subcategorie > Tassen', 'Product views must include the complete category path');
 $context = ['checkout' => true];
 check(page_events()[0]['data'] === 119.9, 'Checkout must use numeric cart total');
 $context['endpoint'] = true;
@@ -294,6 +320,7 @@ $purchase = page_events()[0];
 check($purchase['data']['total_value'] === 119.9, 'Purchase must use actual order total');
 check($purchase['data']['products'][0]['price'] === 49.95, 'Purchase must use historical discounted unit price');
 check($purchase['data']['products'][0]['name'] === 'Bestelde rugzak', 'Purchase must use historical item name');
+check($purchase['data']['products'][0]['category'] === 'Hoofdcategorie > Subcategorie > Tassen', 'Purchases must include the complete category path');
 check($purchase['data']['user_email'] === 'klant@example.be', 'Purchase must include billing email');
 foreach (['pending', 'failed', 'cancelled', 'refunded'] as $order_status) {
     check(page_events() === [], 'Unconfirmed or invalid orders must not track purchases');

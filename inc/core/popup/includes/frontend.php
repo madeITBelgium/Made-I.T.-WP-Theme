@@ -30,24 +30,52 @@ add_filter('render_block_core/button', 'madeit_popup_collect_and_decorate_button
 
 
 function mp_render_popup($popup, $overrides = []) {
-    $style    = get_field('popup_style', $popup->ID) ?: 'default';
     $delay    = (int) get_field('popup_delay', $popup->ID);
     $sessions = get_field('popup_sessions', $popup->ID);
     $action   = get_field('popup_action', $popup->ID);
     $css      = $overrides['css'] ?? get_field('popup_custom_css', $popup->ID);
+    $display  = mp_get_popup_display($popup->ID, $overrides);
+
+    $size_classes = [
+        'small'  => 'modal-sm',
+        'medium' => '',
+        'large'  => 'modal-lg',
+        'xl'     => 'modal-xl',
+    ];
+
+    // Zonder animatie geen 'fade'-klasse (Bootstrap animeert dan ook de achtergrond niet)
+    $modal_classes = ['modal', 'madeit-popup', 'popup-'.$display['style'], 'popup-anim-'.$display['animation']];
+    if ($display['animation'] !== 'none') {
+        $modal_classes[] = 'fade';
+    }
+    if (!$display['show_title']) {
+        $modal_classes[] = 'popup-no-title';
+    }
+
+    $dialog_classes = array_filter([
+        'modal-dialog',
+        'modal-dialog-centered',
+        $size_classes[$display['size']],
+        'popup-pos-'.str_replace('_', '-', $display['position']),
+    ]);
     ?>
-    <div class="modal fade madeit-popup popup-<?= esc_attr($style); ?>"
+    <div class="<?= esc_attr(implode(' ', $modal_classes)); ?>"
          id="popup-<?= (int) $popup->ID; ?>"
          data-id="<?= (int) $popup->ID; ?>"
          data-action="<?= esc_attr($action); ?>"
          data-delay="<?= esc_attr($delay); ?>"
-         data-sessies="<?= esc_attr($sessions); ?>">
-        <div class="modal-dialog modal-dialog-centered">
+         data-sessies="<?= esc_attr($sessions); ?>"
+         <?php if (!$display['show_title']) : ?>aria-label="<?= esc_attr($popup->post_title); ?>"<?php endif; ?>>
+        <div class="<?= esc_attr(implode(' ', $dialog_classes)); ?>">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><?= esc_html($popup->post_title); ?></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
+                <?php if ($display['show_title']) : ?>
+                    <div class="modal-header">
+                        <h5 class="modal-title"><?= esc_html($popup->post_title); ?></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<?= esc_attr__('Sluiten', 'madeit'); ?>"></button>
+                    </div>
+                <?php else : ?>
+                    <button type="button" class="btn-close popup-close-floating" data-bs-dismiss="modal" aria-label="<?= esc_attr__('Sluiten', 'madeit'); ?>"></button>
+                <?php endif; ?>
                 <div class="modal-body">
                     <?= apply_filters('the_content', $popup->post_content); ?>
                 </div>
@@ -84,11 +112,7 @@ function mp_render_popups() {
             return true;
         }
 
-        $pages = get_field('popup_pages', $popup->ID);
-
-        if (!$pages) return false;
-
-        return in_array($pageId, (array) $pages);
+        return mp_popup_applies_to_page($popup->ID, $pageId);
     });
 
     foreach ($popups as $popup) {

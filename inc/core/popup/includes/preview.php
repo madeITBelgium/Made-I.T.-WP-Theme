@@ -19,7 +19,7 @@ function mp_popup_preview_field($field)
          data-url="<?= esc_url(add_query_arg('mp_popup_preview', '1', home_url('/'))); ?>"
          data-post-id="<?= (int) $post->ID; ?>"
          data-nonce="<?= esc_attr(wp_create_nonce('mp_popup_preview_'.$post->ID)); ?>">
-        <p><?= esc_html__('Bekijk je huidige titel, inhoud en eigen CSS zonder op te slaan of te activeren. Planning, triggers en bezoeklimieten worden in dit voorbeeld genegeerd.', 'madeit'); ?></p>
+        <p><?= esc_html__('Bekijk je huidige titel, inhoud, weergave en eigen CSS zonder op te slaan of te activeren. Planning, triggers en bezoeklimieten worden in dit voorbeeld genegeerd.', 'madeit'); ?></p>
         <p>
             <button type="button" class="button" data-preview-refresh><?= esc_html__('Voorbeeld laden / vernieuwen', 'madeit'); ?></button>
             <label>
@@ -91,7 +91,13 @@ function mp_popup_preview_response()
     setup_postdata($popup);
 
     ob_start();
-    mp_render_popup($popup, ['css' => wp_unslash($_POST['css'])]);
+    $overrides = ['css' => wp_unslash($_POST['css'])];
+    foreach (['show_title', 'style', 'size', 'position', 'animation'] as $key) {
+        if (isset($_POST[$key]) && is_string($_POST[$key]) && $_POST[$key] !== '') {
+            $overrides[$key] = sanitize_text_field(wp_unslash($_POST[$key])); // wordt in mp_get_popup_display() gecontroleerd
+        }
+    }
+    mp_render_popup($popup, $overrides);
     $markup = ob_get_clean();
 
     remove_action('wp_footer', 'mp_render_popups');

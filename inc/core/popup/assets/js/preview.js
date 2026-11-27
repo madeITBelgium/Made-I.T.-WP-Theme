@@ -23,12 +23,22 @@
             const classicContent = document.getElementById('content');
             const tinyEditor = window.tinymce && window.tinymce.get('content');
             const css = document.querySelector('[data-key="field_popup_custom_css"] textarea');
+            const field = function (key) {
+                const el = document.querySelector('[data-key="field_popup_' + key + '"] select');
+                return el ? el.value : '';
+            };
+            const showTitle = document.querySelector('[data-key="field_popup_show_title"] input[type="checkbox"]');
             return {
                 title: isBlockEditor ? editor.getEditedPostAttribute('title') : (classicTitle ? classicTitle.value : ''),
                 content: isBlockEditor ? editor.getEditedPostContent() : (
                     tinyEditor && !tinyEditor.isHidden() ? tinyEditor.getContent() : (classicContent ? classicContent.value : '')
                 ),
-                css: css ? css.value : ''
+                css: css ? css.value : '',
+                show_title: showTitle ? (showTitle.checked ? '1' : '0') : '',
+                style: field('style'),
+                size: field('size'),
+                position: field('position'),
+                animation: field('animation')
             };
         }
 

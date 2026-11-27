@@ -4,6 +4,8 @@ if (!defined('ABSPATH') || !function_exists('acf_add_local_field_group')) {
     return;
 }
 
+$choices = mp_popup_display_choices();
+
 acf_add_local_field_group([
     'key'    => 'group_popup',
     'title'  => 'M-Popup',
@@ -87,15 +89,17 @@ acf_add_local_field_group([
             'default_value' => 'specific_pages',
         ],
         [
-            'key'           => 'field_popup_pages',
-            'label'         => 'Pagina\'s',
-            'name'          => 'popup_pages',
-            'type'          => 'relationship',
-            'post_type'     => ['page', 'post', 'product'],
-            'return_format' => 'id',
-
-            'instructions' => 'Selecteer hier de pagina\'s waarop deze popup mag verschijnen. Als je niets aanduid zal hij overal verschijnen.',
-
+            'key'     => 'field_popup_pages_mode',
+            'label'   => 'Tonen op',
+            'name'    => 'popup_pages_mode',
+            'type'    => 'button_group',
+            'choices' => [
+                'all'      => 'Alle pagina\'s',
+                'selected' => 'Geselecteerde pagina\'s',
+            ],
+            'default_value' => 'selected',
+            'layout'        => 'horizontal',
+            'instructions'  => 'Kies "Alle pagina\'s" om de popup overal op de website te tonen, zonder pagina\'s te moeten aanduiden.',
             'conditional_logic' => [
                 [
                     [
@@ -105,6 +109,81 @@ acf_add_local_field_group([
                     ],
                 ],
             ],
+        ],
+        [
+            'key'           => 'field_popup_pages',
+            'label'         => 'Pagina\'s',
+            'name'          => 'popup_pages',
+            'type'          => 'relationship',
+            'post_type'     => ['page', 'post', 'product'],
+            'return_format' => 'id',
+
+            'instructions' => 'Selecteer hier de pagina\'s waarop deze popup mag verschijnen.',
+
+            'conditional_logic' => [
+                [
+                    [
+                        'field'    => 'field_popup_action',
+                        'operator' => '==',
+                        'value'    => 'specific_pages',
+                    ],
+                    [
+                        'field'    => 'field_popup_pages_mode',
+                        'operator' => '==',
+                        'value'    => 'selected',
+                    ],
+                ],
+            ],
+        ],
+
+        // Weergave
+        [
+            'key'       => 'tab_display',
+            'label'     => 'Weergave',
+            'type'      => 'tab',
+            'placement' => 'left',
+        ],
+        [
+            'key'           => 'field_popup_show_title',
+            'label'         => 'Titel tonen',
+            'name'          => 'popup_show_title',
+            'type'          => 'true_false',
+            'ui'            => 1,
+            'default_value' => 1,
+            'message'       => '',
+            'instructions'  => 'Toon de titel van de popup bovenaan. Zet uit als je enkel de inhoud wilt tonen (de sluitknop blijft zichtbaar).',
+        ],
+        [
+            'key'           => 'field_popup_style',
+            'label'         => 'Stijl',
+            'name'          => 'popup_style',
+            'type'          => 'select',
+            'choices'       => $choices['style'],
+            'default_value' => 'default',
+        ],
+        [
+            'key'           => 'field_popup_size',
+            'label'         => 'Grootte',
+            'name'          => 'popup_size',
+            'type'          => 'select',
+            'choices'       => $choices['size'],
+            'default_value' => 'medium',
+        ],
+        [
+            'key'           => 'field_popup_position',
+            'label'         => 'Positie',
+            'name'          => 'popup_position',
+            'type'          => 'select',
+            'choices'       => $choices['position'],
+            'default_value' => 'center',
+        ],
+        [
+            'key'           => 'field_popup_animation',
+            'label'         => 'Animatie',
+            'name'          => 'popup_animation',
+            'type'          => 'select',
+            'choices'       => $choices['animation'],
+            'default_value' => 'slide_down',
         ],
 
         // Preview
@@ -123,181 +202,6 @@ acf_add_local_field_group([
             'new_lines' => 'none',
             'esc_html'  => 0,
         ],
-
-        // Display
-        // [
-        //     'key' => 'tab_display',
-        //     'label' => 'Weergave',
-        //     'type' => 'tab',
-        //     'placement' => 'left',
-        //     'disabled' => 'true',
-        // ],
-        // // Message veld: horizontale sub-tabs
-        // [
-        //     'key' => 'field_display_subtabs',
-        //     'label' => '',
-        //     'name' => 'display_subtabs',
-        //     'type' => 'message',
-        //     'message' => '
-        //         <div class="m-popup-subtabs">
-        //             <button class="m-popup-subtab active" data-tab="preset">Preset</button>
-        //             <button class="m-popup-subtab" data-tab="style">Stijl</button>
-        //             <button class="m-popup-subtab" data-tab="size">Grootte</button>
-        //             <button class="m-popup-subtab" data-tab="animation">Animatie</button>
-        //             <button class="m-popup-subtab" data-tab="position">Positie</button>
-        //         </div>
-        //     ',
-        //     'new_lines' => 'none',
-        //     'esc_html' => 0,
-        // ],
-
-        // // Groep: Preset
-        // [
-        //     'key' => 'group_display_preset',
-        //     'label' => 'Preset',
-        //     'name' => 'display_preset_group',
-        //     'type' => 'group',
-        //     'sub_fields' => [
-        //         [
-        //             'key' => 'field_display_preset_info',
-        //             'label' => '',
-        //             'name' => 'display_preset_info',
-        //             'type' => 'message',
-        //             'message' => 'Kies een preset voor de weergave van de popup. Je kunt later nog extra CSS toevoegen in het tabblad Geavanceerd.',
-        //             'new_lines' => 'wpautop',
-        //             'esc_html' => 0, // Laat HTML toe als je het wilt
-        //         ],
-        //         [
-        //             'key' => 'field_popup_template',
-        //             'label' => 'Template',
-        //             'name' => 'popup_template',
-        //             'type' => 'post_object',
-        //             'post_type' => ['popup_template'],
-        //             'return_format' => 'id',
-        //         ]
-        //     ],
-        // ],
-
-        // // Group: Style
-        // [
-        //     'key' => 'group_display_style',
-        //     'label' => 'Stijl',
-        //     'name' => 'display_style_group',
-        //     'type' => 'group',
-        //     'sub_fields' => [
-        //         [
-        //             'key' => 'field_display_style_select',
-        //             'label' => 'Popup stijl',
-        //             'name' => 'popup_style',
-        //             'type' => 'select',
-        //             'choices' => [
-        //                 'default' => 'Standaard',
-        //                 'light' => 'Licht',
-        //                 'dark' => 'Donker',
-        //                 'christmas' => 'Kerst',
-        //             ],
-        //         ],
-        //     ],
-        // ],
-
-        // // Group: Size
-        // [
-        //     'key' => 'group_display_size',
-        //     'label' => 'Grootte',
-        //     'name' => 'display_size_group',
-        //     'type' => 'group',
-        //     'sub_fields' => [
-        //         [
-        //             'key' => 'field_popup_size',
-        //             'label' => 'Popup grootte',
-        //             'name' => 'popup_size',
-        //             'type' => 'select',
-        //             'choices' => [
-        //                 'small' => 'Klein 40%',
-        //                 'medium' => 'Middel 60%',
-        //                 'large' => 'Groot 80%',
-        //                 'extra_large' => 'Extra groot 90%',
-        //             ],
-        //             'default_value' => 'medium',
-        //             'descriptions' => 'Kies de grootte van de popup.',
-        //         ],
-        //         //min width
-        //         [
-        //             'key' => 'field_popup_min_width',
-        //             'label' => 'Minimale breedte (px)',
-        //             'name' => 'popup_min_width',
-        //             'type' => 'number',
-        //             'default_value' => 300,
-        //             'instructions' => 'Stel de minimale breedte van de popup in pixels in. Standaard is 300px.',
-        //         ],
-        //         //max width
-        //         [
-        //             'key' => 'field_popup_max_width',
-        //             'label' => 'Maximale breedte (px)',
-        //             'name' => 'popup_max_width',
-        //             'type' => 'number',
-        //             'default_value' => 800,
-        //             'instructions' => 'Stel de maximale breedte van de popup in pixels in. Standaard is 800px.',
-        //         ],
-        //     ],
-        // ],
-
-        // // groep: animation
-        // [
-        //     'key' => 'group_display_animation',
-        //     'label' => 'Animatie',
-        //     'name' => 'display_animation_group',
-        //     'type' => 'group',
-        //     'sub_fields' => [
-        //         [
-        //             'key' => 'field_popup_animation',
-        //             'label' => 'Popup animatie',
-        //             'name' => 'popup_animation',
-        //             'type' => 'select',
-        //             'choices' => [
-        //                 'fade' => 'Vervagen',
-        //                 'slide_down' => 'Naar beneden schuiven',
-        //                 'zoom_in' => 'Inzoomen',
-        //                 'bounce' => 'Stuiteren',
-        //             ],
-        //             'default_value' => 'fade',
-        //             'instructions' => 'Kies de animatie voor het verschijnen van de popup.',
-        //         ],
-        //         [
-        //             'key' => 'field_popup_animation_speed',
-        //             'label' => 'Animatie snelheid (ms)',
-        //             'name' => 'popup_animation_speed',
-        //             'type' => 'number',
-        //             'default_value' => 300,
-        //             'instructions' => 'Stel de snelheid van de animatie in milliseconden in. Standaard is 300ms.',
-        //         ]
-        //     ],
-        // ],
-
-        // // groep: position
-        // [
-        //     'key' => 'group_display_position',
-        //     'label' => 'Positie',
-        //     'name' => 'display_position_group',
-        //     'type' => 'group',
-        //     'sub_fields' => [
-        //         [
-        //             'key' => 'field_popup_position',
-        //             'label' => 'Popup positie',
-        //             'name' => 'popup_position',
-        //             'type' => 'select',
-        //             'choices' => [
-        //                 'center' => 'Midden',
-        //                 'top_left' => 'Boven links',
-        //                 'top_right' => 'Boven rechts',
-        //                 'bottom_left' => 'Onder links',
-        //                 'bottom_right' => 'Onder rechts',
-        //             ],
-        //             'default_value' => 'center',
-        //             'instructions' => 'Kies de positie van de popup op het scherm.',
-        //         ],
-        //     ],
-        // ],
 
         // Advanced
         [

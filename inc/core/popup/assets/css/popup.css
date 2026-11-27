@@ -1,6 +1,85 @@
-.m-popup--dark .modal-content { background:#111;color:#fff; }
-.m-popup--light .modal-content { background:#fff;color:#000; }
-.m-popup--christmas .modal-header { background:#b30000;color:#fff; }
+.modal.madeit-popup {
+        z-index: 9999999999999999999999999999;
+}
+.modal-body:has(.wp-block-madeit-block-content) {
+    padding: 0;
+    border-radius: 7px;
+}
+/* Stijlen */
+.popup-light .modal-content { 
+    background:#fff;
+    color:#000; 
+}
+.popup-dark .modal-content { 
+    background:#111;
+    color:#fff; 
+}
+.popup-dark .modal-header { 
+    border-bottom-color:rgba(255,255,255,.15); 
+}
+.popup-dark .btn-close { 
+    filter:invert(1) grayscale(100%) brightness(200%); 
+}
+.popup-christmas .modal-header { 
+    background:#b30000;
+    color:#fff; 
+}
+.popup-christmas .modal-header .btn-close { 
+    filter:invert(1) grayscale(100%) brightness(200%); 
+}
+.popup-christmas.popup-no-title .modal-content { 
+    border-top:6px solid #b30000; 
+}
+.popup-no-title .popup-close-floating {
+    right: 0;
+    padding: 20px;
+    position: absolute;
+    z-index: 99;
+}
+
+/* Zonder titel: sluitknop zweeft rechtsboven */
+.popup-close-floating { 
+    position:absolute;
+    top:.75rem;
+    right:.75rem;
+    z-index:5; 
+}
+
+/* Positie */
+.madeit-popup .popup-pos-top,
+.madeit-popup .popup-pos-top-left,
+.madeit-popup .popup-pos-top-right { 
+    align-items:flex-start; 
+}
+.madeit-popup .popup-pos-bottom,
+.madeit-popup .popup-pos-bottom-left,
+.madeit-popup .popup-pos-bottom-right { 
+    align-items:flex-end; 
+}
+@media (min-width:576px) {
+    .madeit-popup .popup-pos-top-left,
+    .madeit-popup .popup-pos-bottom-left { 
+        margin-left:1.75rem;
+        margin-right:auto; 
+    }
+    .madeit-popup .popup-pos-top-right,
+    .madeit-popup .popup-pos-top-right,
+    .madeit-popup .popup-pos-bottom-right { 
+        margin-left:auto;
+        margin-right:1.75rem; 
+    }
+}
+
+/* Animatie (slide_down = standaard Bootstrap-gedrag, 'none' = geen fade-klasse) */
+.modal.madeit-popup.popup-anim-fade.fade .modal-dialog { 
+    transform:none; 
+}
+.modal.madeit-popup.popup-anim-slide_up.fade:not(.show) .modal-dialog { 
+    transform:translate(0,50px); 
+}
+.modal.madeit-popup.popup-anim-zoom_in.fade:not(.show) .modal-dialog { 
+    transform:scale(.85); 
+}
 
 .editor-styles-wrapper {
     padding: 0 50px;

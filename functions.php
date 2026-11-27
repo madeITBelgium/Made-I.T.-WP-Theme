@@ -1731,6 +1731,8 @@ if (!function_exists('madeit_woocommerce_account_menu_item_classes')) {
     add_filter('woocommerce_account_menu_item_classes', 'madeit_woocommerce_account_menu_item_classes', 10, 2);
 }
 
+
+require_once (get_template_directory()) . '/inc/admin/woocommerce/woocommerce-ajax.php';
 /*
  * Add cart icon to menu.
  */
